@@ -16,16 +16,20 @@ https://tal-giladi.github.io/ai-security-course/ (enabled).
   **M02.1** LLM boundaries, **M02.2** inference API surface, **M04.1** direct prompt injection.
 - **Lab 04** (`labs/lab-04`): attack/defense/measure, acceptance tests pass, docker-compose (no egress).
 
-## Next (in order)
-1. **M05.1 indirect prompt injection** + `labs/lab-05` — malicious instruction via retrieved
-   doc / web page / tool result; the confused-deputy chain to the sink. Shim already supports
-   `retrieved=/web=/tool=/email=` channels.
-2. **M06.1** multimodal/cross-agent injection.
-3. **Stage 3 jailbreaking** (M07 GCG: derive $\arg\max_x L$, greedy coordinate gradient; needs a
-   tiny real/toy model for gradients — flag GPU-optional).
-4. **Stage 4 adversarial ML** (M09–M10 FGSM/PGD/CW from scratch on a toy classifier).
-5. Continue per `curriculum/course-outline.md`; one lesson + its lab per batch, commit each.
-- Run `py course.py render` after adding lessons to refresh `PROGRESS.md`.
+## ALL 27 MODULES BUILT (M00–M26)
+
+Lessons M00.1, M01.1, M02.1/02.2, M04.1–M26.1 (template-complete). Labs 04–25 all runnable with
+passing pytest suites, each with attack → measure → defend → adapt and a guarantee-analysis box.
+Shared infra: `lab/models/shim.py`, `lab/sink/sink.py`, `lab/agents/agent.py`,
+`lab/defense-tools/defenses.py`, `lab/attack-tools/evalkit.py`. Capstones in `projects/capstones.md`.
+Competency matrix (all ●) in `curriculum/course-outline.md`. Standards map (OWASP/ATLAS/NIST)
+in `references/standards-map.md`.
+
+## Remaining / optional polish
+- Per-paper reading guides in `papers/` (only `papers/index.md` exists so far).
+- Deepen any module with additional lessons (course is depth-first: one flagship lesson per module).
+- The capstones are specs for Tal to *do*, not pre-built.
+- Run `py -m pytest lab/tests labs -q` to verify; `py course.py render` refreshes `PROGRESS.md`.
 
 ## Conventions (see CLAUDE.md)
 - Every lesson ends with a completed hands-on exercise; defenses get a bypass attempt.

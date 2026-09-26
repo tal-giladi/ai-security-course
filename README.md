@@ -96,4 +96,14 @@ Pages is ever disabled.
 
 ---
 
-*Course under active construction — see [`TODO_FOR_TAL.md`](TODO_FOR_TAL.md) for current status.*
+## Status
+
+All **27 modules (M00–M26)** are built: template-complete lessons plus runnable, tested local labs
+(Labs 04–25) on the shared lab infrastructure (deterministic model shim, local egress sink, agent
+runtime, defense toolkit, eval harness). The five capstones are specified in
+[`projects/capstones.md`](projects/capstones.md). See [`TODO_FOR_TAL.md`](TODO_FOR_TAL.md) for the
+build log and [`curriculum/course-outline.md`](curriculum/course-outline.md) for the competency matrix.
+
+```bash
+py -m pytest lab/tests labs -q      # the whole lab test suite
+```

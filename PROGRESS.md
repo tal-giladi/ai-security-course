@@ -6,7 +6,7 @@ _Last updated 2026-09-26. Started 2026-09-26._
 
 ## Where I am
 
-- **Lessons done:** 0/26 (0%)
+- **Lessons done:** 0/27 (0%)
 - **Open struggles:** 0
 - **Next:** [00.1 Threat modeling for AI systems](lessons/module-00/lesson-01.md)
 
@@ -139,6 +139,13 @@ python course.py struggle 05.2 "note"
 <summary><b>25 · Automated red teaming</b> — 0/1</summary>
 
 - [ ] ⬜ [25.1 Automated red teaming](lessons/module-25/lesson-01.md)
+
+</details>
+
+<details>
+<summary><b>26 · Synthesis</b> — 0/1</summary>
+
+- [ ] ⬜ [26.1 Purple-team synthesis, standards & capstones](lessons/module-26/lesson-01.md)
 
 </details>
 

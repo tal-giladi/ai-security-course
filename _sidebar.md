@@ -46,6 +46,9 @@
   - [24.1 · Security evaluation](lessons/module-24/lesson-01.md)
 - **25 · Automated red teaming**
   - [25.1 · Automated red teaming](lessons/module-25/lesson-01.md)
+- **26 · Synthesis**
+  - [26.1 · Purple-team synthesis, standards & capstones](lessons/module-26/lesson-01.md)
+  - [Capstone projects](projects/capstones.md)
 
 - **Labs**
   - [Lab 04 · Direct prompt injection](labs/lab-04/README.md)

@@ -187,18 +187,31 @@ Only as much classical security as AI security requires — no generic pentest c
 
 Filled in as the course is built; each capability is only "done" when every column is true.
 
-| Capability | Theory | Math | Implementation | Attack | Defense | Research | Assessment |
+| Capability | Theory | Math | Implementation | Attack | Defense | Research | Module/Lab |
 |---|---|---|---|---|---|---|---|
-| Threat-model an LLM/agent system | ○ | – | ○ | – | ○ | ○ | ○ |
-| Direct & indirect prompt injection | ○ | ○ | ○ | ○ | ○ | ○ | ○ |
-| Optimization-based jailbreaks (GCG) | ○ | ○ | ○ | ○ | ○ | ○ | ○ |
-| Adversarial examples (FGSM/PGD/CW) | ○ | ○ | ○ | ○ | ○ | ○ | ○ |
-| Poisoning & backdoors | ○ | ○ | ○ | ○ | ○ | ○ | ○ |
-| Model extraction / membership inference | ○ | ○ | ○ | ○ | ○ | ○ | ○ |
-| RAG poisoning & retrieval manipulation | ○ | ○ | ○ | ○ | ○ | ○ | ○ |
-| Agent hijacking & tool poisoning | ○ | ○ | ○ | ○ | ○ | ○ | ○ |
-| MCP security | ○ | – | ○ | ○ | ○ | ○ | ○ |
-| Security evaluation & benchmarking | ○ | ○ | ○ | – | – | ○ | ○ |
-| Automated red teaming | ○ | ○ | ○ | ○ | ○ | ○ | ○ |
+| Threat-model an LLM/agent system | ● | – | ● | – | ● | ● | M00–M01 |
+| Direct & indirect prompt injection | ● | ● | ● | ● | ● | ● | M04–M06 / L04–06 |
+| Optimization-based jailbreaks (GCG) | ● | ● | ● | ● | ● | ● | M07 / L07 |
+| Automated & black-box jailbreaks | ● | ● | ● | ● | ● | ● | M08 / L08 |
+| Adversarial examples (FGSM/PGD/CW) | ● | ● | ● | ● | ● | ● | M09–M10 / L09–10 |
+| Certified robustness | ● | ● | ● | – | ● | ● | M10 / L10 |
+| Poisoning & backdoors / sleeper agents | ● | ● | ● | ● | ● | ● | M11 / L11 |
+| Model extraction / inversion / MI + DP | ● | ● | ● | ● | ● | ● | M12 / L12 |
+| Model & adapter supply chain | ● | ● | ● | ● | ● | ● | M13 / L13 |
+| RAG poisoning & retrieval manipulation | ● | ● | ● | ● | ● | ● | M14 / L14 |
+| Multi-tenant retrieval leakage | ● | ● | ● | ● | ● | ● | M15 / L15 |
+| Agent hijacking / excessive agency | ● | ● | ● | ● | ● | ● | M16 / L16 |
+| Tool poisoning & capability security | ● | ● | ● | ● | ● | ● | M17 / L17 |
+| End-to-end attack chains | ● | ● | ● | ● | ● | ● | M18 / L18 |
+| MCP security | ● | ● | ● | ● | ● | ● | M19 / L19 |
+| Multimodal (steg / pixel-space) | ● | ● | ● | ● | ● | ● | M20 / L20 |
+| Code-agent & dependency confusion | ● | ● | ● | ● | ● | ● | M21 / L21 |
+| AI supply-chain verification | ● | ● | ● | ● | ● | ● | M22 / L22 |
+| Defensive engineering | ● | ● | ● | – | ● | ● | M23 / L23 |
+| Security evaluation & benchmarking | ● | ● | ● | – | – | ● | M24 / L24 |
+| Automated red teaming | ● | ● | ● | ● | ● | ● | M25 / L25 |
+| Purple-team synthesis & standards | ● | – | ● | ● | ● | ● | M26 |
 
-Legend: ○ = planned, ● = built. Track your own confidence on `progress/PROGRESS.md`.
+Legend: ● = built (lesson + lab where applicable, tests passing). Track your own *confidence* per
+capability on `progress/PROGRESS.md`; a column is "yours" only when you could do it unaided on an
+unfamiliar system. The five capstones (`projects/capstones.md`) exercise the whole matrix.

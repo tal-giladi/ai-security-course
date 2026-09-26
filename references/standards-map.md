@@ -25,14 +25,31 @@ Framework category ─▶ Threat ─▶ Concrete vulnerability ─▶ Local vuln
 
 ## MITRE ATLAS
 
-Tactics/techniques (reconnaissance, resource development, initial access, ML model access,
-execution, persistence, exfiltration, impact) mapped to modules. Table added in M26.
+| ATLAS tactic | Course module(s) | Lab |
+|---|---|---|
+| Reconnaissance / Resource Development | M00 (surface mapping, threat model) | — |
+| ML Model Access | M02–M03, M12 (extraction) | lab-12 |
+| Initial Access / Execution (via prompts) | M04–M06 (injection) | lab-04–06 |
+| ML Attack Staging (evasion/optimization) | M07–M10 (jailbreak, adversarial ML) | lab-07–10 |
+| Poison Training Data | M11 | lab-11 |
+| Exfiltration | M05, M12, M18 (confused-deputy chains, MI) | lab-05, lab-12, lab-18 |
+| ML Supply Chain Compromise | M13, M21, M22 | lab-13, lab-21, lab-22 |
+| Persistence | M18 (memory poisoning), M11 (backdoors) | lab-18, lab-11 |
+| Impact / Defenses | M23 (blue team), M24 (evaluation), M25 (red team) | lab-23–25 |
+
+Use ATLAS technique IDs when reporting findings to a security team; each lab reproduces the
+technique locally so the mapping is concrete, not nominal.
 
 ## NIST
 
 - **NIST AI RMF (AI 100-1)** — govern/map/measure/manage, mapped to the course's
   understand→attack→defend→measure cycle (M26).
-- **NIST AI 100-2 (Adversarial ML taxonomy)** — evasion, poisoning, privacy, abuse; aligns with
-  Stages 4–5 (M09–M13) and M24.
+- **NIST AI 100-2 (Adversarial ML taxonomy)** — evasion (M04–M10), poisoning (M11), privacy
+  (M12), abuse (M04–M08); measured with M24.
 
-*(Verified links added alongside each module as it is written.)*
+| NIST AI RMF function | How the course realizes it |
+|---|---|
+| **Govern** | policy/authorization design, least privilege, guarantee-analysis discipline (M16, M23) |
+| **Map** | threat modeling, DFDs, attack surface enumeration (M00–M01) |
+| **Measure** | ASR+CIs, ROC/AUC, robustness, coverage, adaptive evaluation (M24), automated red teaming (M25) |
+| **Manage** | enforced controls, monitoring, audit, incident response (M23); CI regression gating (M24–M25) |

@@ -10,7 +10,7 @@ from agent import Policy  # noqa: E402
 def test_vulnerable_agent_is_a_confused_deputy():
     a = run_task(make_agent())
     assert exfiltrated(a), "over-privileged agent should exfiltrate via the injected tool directive"
-    assert len(a.reachable_actions()) == 4
+    assert len(a.reachable_actions()) == 5   # read_file, http_get, send_email, run_shell, whoami
 
 
 def test_least_privilege_blocks_exfiltration():

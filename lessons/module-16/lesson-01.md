@@ -68,7 +68,7 @@ Every arrow is a surface:
 successful injection has a large blast radius. Quantify it as the **reachable-action set**: the tools
 (and argument ranges) the policy permits. From 00.1, attack surface grows *multiplicatively* in
 (untrusted input locations × reachable privileges); every tool added is reachable from *every*
-injection channel. The lab prints this set: a 4-tool agent exposes read/egress/email; removing tools
+injection channel. The lab prints this set: a 5-tool agent exposes read/egress/email/shell; removing tools
 shrinks it directly.
 
 ### The confused deputy, now executable
