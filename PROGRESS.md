@@ -6,7 +6,7 @@ _Last updated 2026-09-26. Started 2026-09-26._
 
 ## Where I am
 
-- **Lessons done:** 0/21 (0%)
+- **Lessons done:** 0/22 (0%)
 - **Open struggles:** 0
 - **Next:** [00.1 Threat modeling for AI systems](lessons/module-00/lesson-01.md)
 
@@ -104,6 +104,13 @@ python course.py struggle 05.2 "note"
 <summary><b>20 · Multimodal (deep)</b> — 0/1</summary>
 
 - [ ] ⬜ [20.1 Multimodal security (deep)](lessons/module-20/lesson-01.md)
+
+</details>
+
+<details>
+<summary><b>21 · Code-agent security</b> — 0/1</summary>
+
+- [ ] ⬜ [21.1 Code-agent security](lessons/module-21/lesson-01.md)
 
 </details>
 

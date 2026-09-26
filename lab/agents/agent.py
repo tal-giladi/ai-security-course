@@ -90,10 +90,17 @@ class Agent:
             self.sink(f"mailto:{to}?body={body}")   # egress -> local sink
         return f"[email sent to {to}]"
 
+    def run_shell(self, cmd):
+        # INERT: records the command it WOULD run (to the sink) instead of executing anything.
+        # A real coding agent's shell tool is arbitrary code execution (M01) -- here it's a marker.
+        if self.sink:
+            self.sink(f"shell:{cmd}")
+        return f"[would run: {cmd}]"
+
     def whoami(self):
         return "agent v1"
 
-    TOOLS = ("read_file", "http_get", "send_email", "whoami")
+    TOOLS = ("read_file", "http_get", "send_email", "run_shell", "whoami")
 
     def reachable_actions(self):
         """Attack-surface size: tools the policy currently permits (excessive agency metric)."""
