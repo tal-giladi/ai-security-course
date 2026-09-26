@@ -6,7 +6,7 @@ _Last updated 2026-09-26. Started 2026-09-26._
 
 ## Where I am
 
-- **Lessons done:** 0/13 (0%)
+- **Lessons done:** 0/14 (0%)
 - **Open struggles:** 0
 - **Next:** [00.1 Threat modeling for AI systems](lessons/module-00/lesson-01.md)
 
@@ -68,10 +68,11 @@ python course.py struggle 05.2 "note"
 </details>
 
 <details>
-<summary><b>11 · Model-level security</b> — 0/2</summary>
+<summary><b>11 · Model-level security</b> — 0/3</summary>
 
 - [ ] ⬜ [11.1 Poisoning, backdoors & sleeper agents](lessons/module-11/lesson-01.md)
 - [ ] ⬜ [12.1 Extraction, inversion & membership inference](lessons/module-12/lesson-01.md)
+- [ ] ⬜ [13.1 Adapter & weight supply chain](lessons/module-13/lesson-01.md)
 
 </details>
 
