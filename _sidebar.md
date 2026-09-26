@@ -97,3 +97,5 @@
   - [Standards map: OWASP / ATLAS / NIST](references/standards-map.md)
   - [External tools & fallbacks](references/tools-and-fallbacks.md)
   - [The local security lab](lab/README.md)
+  - [Curriculum changelog](research/CHANGELOG.md)
+  - [How the course stays current](research/README.md)
