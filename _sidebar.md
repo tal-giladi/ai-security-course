@@ -4,6 +4,25 @@
 - [Paper curriculum](papers/index.md)
 - [Progress](PROGRESS.md)
 
+- **Papers**
+  - [Paper curriculum (index)](papers/index.md)
+  - [01 · Greshake — indirect injection](papers/01-greshake-indirect-injection.md)
+  - [02 · Wallace — instruction hierarchy](papers/02-wallace-instruction-hierarchy.md)
+  - [03 · Zou — GCG](papers/03-zou-gcg.md)
+  - [04 · Chao — PAIR](papers/04-chao-pair.md)
+  - [05 · Mehrotra — TAP](papers/05-mehrotra-tap.md)
+  - [06 · Goodfellow — FGSM](papers/06-goodfellow-fgsm.md)
+  - [07 · Madry — PGD](papers/07-madry-pgd.md)
+  - [08 · Carlini & Wagner — C&W](papers/08-carlini-wagner.md)
+  - [09 · Croce & Hein — AutoAttack](papers/09-croce-autoattack.md)
+  - [10 · Gu — BadNets](papers/10-gu-badnets.md)
+  - [11 · Hubinger — Sleeper Agents](papers/11-hubinger-sleeper.md)
+  - [12 · Tramèr — model stealing](papers/12-tramer-stealing.md)
+  - [13 · Shokri — membership inference](papers/13-shokri-membership.md)
+  - [14 · Carlini — training-data extraction](papers/14-carlini-extracting.md)
+  - [15 · Zou — PoisonedRAG](papers/15-zou-poisonedrag.md)
+  - [16 · Debenedetti — AgentDojo](papers/16-debenedetti-agentdojo.md)
+
 - **0 · Threat modeling**
   - [00.1 · Threat modeling for AI systems](lessons/module-00/lesson-01.md)
 - **1 · AppSec primitives**

@@ -26,7 +26,9 @@ Competency matrix (all ●) in `curriculum/course-outline.md`. Standards map (OW
 in `references/standards-map.md`.
 
 ## Remaining / optional polish
-- Per-paper reading guides in `papers/` (only `papers/index.md` exists so far).
+- Per-paper reading guides in `papers/` — **DONE**: 16 guides (`papers/01..16-*.md`), linked from
+  `papers/index.md` and `_sidebar.md`. Each has why/prereqs/what-to-read/reproduce-locally/code/
+  limitations/what-changed. Standards (OWASP/ATLAS/NIST) stay in `references/standards-map.md`.
 - Deepen any module with additional lessons (course is depth-first: one flagship lesson per module).
 - The capstones are specs for Tal to *do*, not pre-built.
 - Run `py -m pytest lab/tests labs -q` to verify; `py course.py render` refreshes `PROGRESS.md`.
