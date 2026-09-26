@@ -25,6 +25,8 @@
   - [11.1 · Poisoning, backdoors & sleeper agents](lessons/module-11/lesson-01.md)
   - [12.1 · Extraction, inversion & membership inference](lessons/module-12/lesson-01.md)
   - [13.1 · Adapter & weight supply chain](lessons/module-13/lesson-01.md)
+- **14 · RAG security**
+  - [14.1 · RAG retrieval attack surface](lessons/module-14/lesson-01.md)
 
 - **Labs**
   - [Lab 04 · Direct prompt injection](labs/lab-04/README.md)
@@ -37,6 +39,7 @@
   - [Lab 11 · Backdoors & sleeper agents](labs/lab-11/README.md)
   - [Lab 12 · Membership inference & DP](labs/lab-12/README.md)
   - [Lab 13 · Supply chain: pickle & malicious LoRA](labs/lab-13/README.md)
+  - [Lab 14 · RAG retrieval poisoning](labs/lab-14/README.md)
 
 - **Reference**
   - [Standards map: OWASP / ATLAS / NIST](references/standards-map.md)
