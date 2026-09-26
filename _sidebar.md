@@ -38,6 +38,8 @@
   - [20.1 · Multimodal security (deep)](lessons/module-20/lesson-01.md)
 - **21 · Code-agent security**
   - [21.1 · Code-agent security](lessons/module-21/lesson-01.md)
+- **22 · AI supply chain**
+  - [22.1 · AI supply-chain security](lessons/module-22/lesson-01.md)
 
 - **Labs**
   - [Lab 04 · Direct prompt injection](labs/lab-04/README.md)
@@ -58,6 +60,7 @@
   - [Lab 19 · MCP security](labs/lab-19/README.md)
   - [Lab 20 · Steganography & multimodal](labs/lab-20/README.md)
   - [Lab 21 · Code-agent security](labs/lab-21/README.md)
+  - [Lab 22 · AI supply-chain verification](labs/lab-22/README.md)
 
 - **Reference**
   - [Standards map: OWASP / ATLAS / NIST](references/standards-map.md)
