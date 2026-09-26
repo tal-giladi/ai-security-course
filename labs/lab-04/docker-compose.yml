@@ -1,0 +1,11 @@
+# Lab 04 — reproducible run in an isolated container with NO network egress.
+# `docker compose up` runs the attack suite against the vulnerable and defended bot.
+# The lab needs no internet; network_mode: none enforces that (safety model, lab/README.md).
+services:
+  lab04:
+    image: python:3.12-slim
+    working_dir: /course
+    network_mode: none          # no egress — offline shim only
+    volumes:
+      - ../../:/course:ro        # mount the repo read-only
+    command: ["python", "labs/lab-04/attack.py"]

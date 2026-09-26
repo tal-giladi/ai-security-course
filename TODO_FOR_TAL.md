@@ -15,7 +15,9 @@ Commit-tracked so a stopped session resumes from here.
    `references/tools-and-fallbacks.md`, `lab/README.md`, `papers/index.md`.
 2. Lab infrastructure: `lab/docker-compose.yml`, a toy vulnerable LLM app + local model shim
    (so labs run CPU-only, no external API), the local egress sink, synthetic-canary convention.
-3. Lessons, one small batch at a time, each with its lab + exercise:
+3. DONE M00.1, M01.1, M02.1, M02.2, M04.1 + Lab 04 (attack/defense/measure, tests pass).
+4. Next: M05.1 indirect injection + lab-05 (retrieval/web/tool channel, confused deputy).
+5. Then Stage 3 jailbreaking (GCG math), Stage 4 adversarial ML, etc. per course-outline.md.
    - M00.1 Threat modeling → M01.1 AppSec primitives → M02.1/02.2 LLM boundaries.
    - Then Stage 2 (prompt injection) with `labs/lab-04`, `lab-05`.
 4. Regenerate `PROGRESS.md` via `python course.py render` once lessons exist.

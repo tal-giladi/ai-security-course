@@ -6,7 +6,7 @@ _Last updated 2026-09-26. Started 2026-09-26._
 
 ## Where I am
 
-- **Lessons done:** 0/4 (0%)
+- **Lessons done:** 0/5 (0%)
 - **Open struggles:** 0
 - **Next:** [00.1 Threat modeling for AI systems](lessons/module-00/lesson-01.md)
 
@@ -39,6 +39,13 @@ python course.py struggle 05.2 "note"
 
 - [ ] ⬜ [02.1 Where the boundaries really are](lessons/module-02/lesson-01.md)
 - [ ] ⬜ [02.2 The inference API attack surface](lessons/module-02/lesson-02.md)
+
+</details>
+
+<details>
+<summary><b>4 · Prompt injection</b> — 0/1</summary>
+
+- [ ] ⬜ [04.1 Direct injection & the instruction hierarchy](lessons/module-04/lesson-01.md)
 
 </details>
 
