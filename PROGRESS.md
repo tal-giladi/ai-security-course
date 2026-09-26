@@ -6,7 +6,7 @@ _Last updated 2026-09-26. Started 2026-09-26._
 
 ## Where I am
 
-- **Lessons done:** 0/23 (0%)
+- **Lessons done:** 0/24 (0%)
 - **Open struggles:** 0
 - **Next:** [00.1 Threat modeling for AI systems](lessons/module-00/lesson-01.md)
 
@@ -118,6 +118,13 @@ python course.py struggle 05.2 "note"
 <summary><b>22 · AI supply chain</b> — 0/1</summary>
 
 - [ ] ⬜ [22.1 AI supply-chain security](lessons/module-22/lesson-01.md)
+
+</details>
+
+<details>
+<summary><b>23 · Blue team</b> — 0/1</summary>
+
+- [ ] ⬜ [23.1 Defensive engineering](lessons/module-23/lesson-01.md)
 
 </details>
 
