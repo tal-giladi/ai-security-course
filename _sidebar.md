@@ -17,12 +17,14 @@
   - [06.1 · Multimodal & cross-agent injection](lessons/module-06/lesson-01.md)
 - **7 · Jailbreaking**
   - [07.1 · Optimization-based jailbreaks (GCG)](lessons/module-07/lesson-01.md)
+  - [08.1 · Automated & black-box jailbreaks](lessons/module-08/lesson-01.md)
 
 - **Labs**
   - [Lab 04 · Direct prompt injection](labs/lab-04/README.md)
   - [Lab 05 · Indirect injection & confused deputy](labs/lab-05/README.md)
   - [Lab 06 · Multimodal & cross-agent injection](labs/lab-06/README.md)
   - [Lab 07 · GCG optimization-based jailbreaks](labs/lab-07/README.md)
+  - [Lab 08 · Automated black-box jailbreaks](labs/lab-08/README.md)
 
 - **Reference**
   - [Standards map: OWASP / ATLAS / NIST](references/standards-map.md)

@@ -6,7 +6,7 @@ _Last updated 2026-09-26. Started 2026-09-26._
 
 ## Where I am
 
-- **Lessons done:** 0/8 (0%)
+- **Lessons done:** 0/9 (0%)
 - **Open struggles:** 0
 - **Next:** [00.1 Threat modeling for AI systems](lessons/module-00/lesson-01.md)
 
@@ -52,9 +52,10 @@ python course.py struggle 05.2 "note"
 </details>
 
 <details>
-<summary><b>7 · Jailbreaking</b> — 0/1</summary>
+<summary><b>7 · Jailbreaking</b> — 0/2</summary>
 
 - [ ] ⬜ [07.1 Optimization-based jailbreaks (GCG)](lessons/module-07/lesson-01.md)
+- [ ] ⬜ [08.1 Automated & black-box jailbreaks](lessons/module-08/lesson-01.md)
 
 </details>
 
