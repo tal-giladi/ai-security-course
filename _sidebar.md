@@ -34,6 +34,8 @@
   - [18.1 · End-to-end attack chains](lessons/module-18/lesson-01.md)
 - **19 · MCP security**
   - [19.1 · MCP security](lessons/module-19/lesson-01.md)
+- **20 · Multimodal (deep)**
+  - [20.1 · Multimodal security (deep)](lessons/module-20/lesson-01.md)
 
 - **Labs**
   - [Lab 04 · Direct prompt injection](labs/lab-04/README.md)
@@ -52,6 +54,7 @@
   - [Lab 17 · Tool poisoning & abuse](labs/lab-17/README.md)
   - [Lab 18 · End-to-end attack chain](labs/lab-18/README.md)
   - [Lab 19 · MCP security](labs/lab-19/README.md)
+  - [Lab 20 · Steganography & multimodal](labs/lab-20/README.md)
 
 - **Reference**
   - [Standards map: OWASP / ATLAS / NIST](references/standards-map.md)
