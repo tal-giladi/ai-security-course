@@ -1,0 +1,10 @@
+# Lab 07 needs torch. The image (bundling CPU torch) is pulled once by the Docker daemon; the
+# container itself runs with NO network egress. Primary path is just `py labs/lab-07/gcg.py`.
+services:
+  lab07:
+    image: pytorch/pytorch:2.4.1-cpu   # or any image with CPU torch; pulled once at setup
+    working_dir: /course
+    network_mode: none
+    volumes:
+      - ../../:/course:ro
+    command: ["python", "labs/lab-07/gcg.py"]
