@@ -6,7 +6,7 @@ _Last updated 2026-09-26. Started 2026-09-26._
 
 ## Where I am
 
-- **Lessons done:** 0/9 (0%)
+- **Lessons done:** 0/10 (0%)
 - **Open struggles:** 0
 - **Next:** [00.1 Threat modeling for AI systems](lessons/module-00/lesson-01.md)
 
@@ -56,6 +56,13 @@ python course.py struggle 05.2 "note"
 
 - [ ] ⬜ [07.1 Optimization-based jailbreaks (GCG)](lessons/module-07/lesson-01.md)
 - [ ] ⬜ [08.1 Automated & black-box jailbreaks](lessons/module-08/lesson-01.md)
+
+</details>
+
+<details>
+<summary><b>9 · Adversarial ML</b> — 0/1</summary>
+
+- [ ] ⬜ [09.1 Adversarial examples I (FGSM/PGD)](lessons/module-09/lesson-01.md)
 
 </details>
 

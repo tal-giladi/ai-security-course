@@ -1,0 +1,8 @@
+services:
+  lab09:
+    image: pytorch/pytorch:2.4.1-cpu
+    working_dir: /course
+    network_mode: none
+    volumes:
+      - ../../:/course:ro
+    command: ["python", "labs/lab-09/adv.py"]
