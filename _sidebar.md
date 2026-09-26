@@ -44,6 +44,8 @@
   - [23.1 · Defensive engineering](lessons/module-23/lesson-01.md)
 - **24 · Security evaluation**
   - [24.1 · Security evaluation](lessons/module-24/lesson-01.md)
+- **25 · Automated red teaming**
+  - [25.1 · Automated red teaming](lessons/module-25/lesson-01.md)
 
 - **Labs**
   - [Lab 04 · Direct prompt injection](labs/lab-04/README.md)
@@ -67,6 +69,7 @@
   - [Lab 22 · AI supply-chain verification](labs/lab-22/README.md)
   - [Lab 23 · Compose & measure defenses](labs/lab-23/README.md)
   - [Lab 24 · Security evaluation](labs/lab-24/README.md)
+  - [Lab 25 · Automated red teaming](labs/lab-25/README.md)
 
 - **Reference**
   - [Standards map: OWASP / ATLAS / NIST](references/standards-map.md)
