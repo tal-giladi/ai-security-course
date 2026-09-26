@@ -32,6 +32,8 @@
   - [16.1 · The agent attack surface](lessons/module-16/lesson-01.md)
   - [17.1 · Tool poisoning & abuse](lessons/module-17/lesson-01.md)
   - [18.1 · End-to-end attack chains](lessons/module-18/lesson-01.md)
+- **19 · MCP security**
+  - [19.1 · MCP security](lessons/module-19/lesson-01.md)
 
 - **Labs**
   - [Lab 04 · Direct prompt injection](labs/lab-04/README.md)
@@ -49,6 +51,7 @@
   - [Lab 16 · Excessive agency & confused deputy](labs/lab-16/README.md)
   - [Lab 17 · Tool poisoning & abuse](labs/lab-17/README.md)
   - [Lab 18 · End-to-end attack chain](labs/lab-18/README.md)
+  - [Lab 19 · MCP security](labs/lab-19/README.md)
 
 - **Reference**
   - [Standards map: OWASP / ATLAS / NIST](references/standards-map.md)
