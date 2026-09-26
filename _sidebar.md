@@ -14,10 +14,12 @@
 - **4 · Prompt injection**
   - [04.1 · Direct injection & the instruction hierarchy](lessons/module-04/lesson-01.md)
   - [05.1 · Indirect prompt injection](lessons/module-05/lesson-01.md)
+  - [06.1 · Multimodal & cross-agent injection](lessons/module-06/lesson-01.md)
 
 - **Labs**
   - [Lab 04 · Direct prompt injection](labs/lab-04/README.md)
   - [Lab 05 · Indirect injection & confused deputy](labs/lab-05/README.md)
+  - [Lab 06 · Multimodal & cross-agent injection](labs/lab-06/README.md)
 
 - **Reference**
   - [Standards map: OWASP / ATLAS / NIST](references/standards-map.md)
