@@ -6,7 +6,7 @@ _Last updated 2026-09-26. Started 2026-09-26._
 
 ## Where I am
 
-- **Lessons done:** 0/15 (0%)
+- **Lessons done:** 0/16 (0%)
 - **Open struggles:** 0
 - **Next:** [00.1 Threat modeling for AI systems](lessons/module-00/lesson-01.md)
 
@@ -77,9 +77,10 @@ python course.py struggle 05.2 "note"
 </details>
 
 <details>
-<summary><b>14 · RAG security</b> — 0/1</summary>
+<summary><b>14 · RAG security</b> — 0/2</summary>
 
 - [ ] ⬜ [14.1 RAG retrieval attack surface](lessons/module-14/lesson-01.md)
+- [ ] ⬜ [15.1 Multi-tenant retrieval leakage](lessons/module-15/lesson-01.md)
 
 </details>
 

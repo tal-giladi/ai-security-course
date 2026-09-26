@@ -27,6 +27,7 @@
   - [13.1 · Adapter & weight supply chain](lessons/module-13/lesson-01.md)
 - **14 · RAG security**
   - [14.1 · RAG retrieval attack surface](lessons/module-14/lesson-01.md)
+  - [15.1 · Multi-tenant retrieval leakage](lessons/module-15/lesson-01.md)
 
 - **Labs**
   - [Lab 04 · Direct prompt injection](labs/lab-04/README.md)
@@ -40,6 +41,7 @@
   - [Lab 12 · Membership inference & DP](labs/lab-12/README.md)
   - [Lab 13 · Supply chain: pickle & malicious LoRA](labs/lab-13/README.md)
   - [Lab 14 · RAG retrieval poisoning](labs/lab-14/README.md)
+  - [Lab 15 · Multi-tenant retrieval leakage](labs/lab-15/README.md)
 
 - **Reference**
   - [Standards map: OWASP / ATLAS / NIST](references/standards-map.md)
