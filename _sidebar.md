@@ -21,6 +21,8 @@
 - **9 · Adversarial ML**
   - [09.1 · Adversarial examples I (FGSM/PGD)](lessons/module-09/lesson-01.md)
   - [10.1 · CW, transfer & certified robustness](lessons/module-10/lesson-01.md)
+- **11 · Model-level security**
+  - [11.1 · Poisoning, backdoors & sleeper agents](lessons/module-11/lesson-01.md)
 
 - **Labs**
   - [Lab 04 · Direct prompt injection](labs/lab-04/README.md)
@@ -30,6 +32,7 @@
   - [Lab 08 · Automated black-box jailbreaks](labs/lab-08/README.md)
   - [Lab 09 · FGSM/PGD adversarial examples](labs/lab-09/README.md)
   - [Lab 10 · CW, transfer & certified robustness](labs/lab-10/README.md)
+  - [Lab 11 · Backdoors & sleeper agents](labs/lab-11/README.md)
 
 - **Reference**
   - [Standards map: OWASP / ATLAS / NIST](references/standards-map.md)

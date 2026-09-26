@@ -6,7 +6,7 @@ _Last updated 2026-09-26. Started 2026-09-26._
 
 ## Where I am
 
-- **Lessons done:** 0/11 (0%)
+- **Lessons done:** 0/12 (0%)
 - **Open struggles:** 0
 - **Next:** [00.1 Threat modeling for AI systems](lessons/module-00/lesson-01.md)
 
@@ -64,6 +64,13 @@ python course.py struggle 05.2 "note"
 
 - [ ] ⬜ [09.1 Adversarial examples I (FGSM/PGD)](lessons/module-09/lesson-01.md)
 - [ ] ⬜ [10.1 CW, transfer & certified robustness](lessons/module-10/lesson-01.md)
+
+</details>
+
+<details>
+<summary><b>11 · Model-level security</b> — 0/1</summary>
+
+- [ ] ⬜ [11.1 Poisoning, backdoors & sleeper agents](lessons/module-11/lesson-01.md)
 
 </details>
 
