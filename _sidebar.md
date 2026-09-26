@@ -13,9 +13,11 @@
   - [02.2 · The inference API attack surface](lessons/module-02/lesson-02.md)
 - **4 · Prompt injection**
   - [04.1 · Direct injection & the instruction hierarchy](lessons/module-04/lesson-01.md)
+  - [05.1 · Indirect prompt injection](lessons/module-05/lesson-01.md)
 
 - **Labs**
   - [Lab 04 · Direct prompt injection](labs/lab-04/README.md)
+  - [Lab 05 · Indirect injection & confused deputy](labs/lab-05/README.md)
 
 - **Reference**
   - [Standards map: OWASP / ATLAS / NIST](references/standards-map.md)

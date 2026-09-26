@@ -2,6 +2,9 @@
 import sys
 from pathlib import Path
 
+# Drop any same-named modules cached by another lab in a combined pytest run, then import ours.
+for _m in ("app", "attack"):
+    sys.modules.pop(_m, None)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from app import SupportBot          # noqa: E402
 from attack import asr              # noqa: E402
