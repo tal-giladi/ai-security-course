@@ -69,6 +69,7 @@ class Agent:
     secret: str = field(default_factory=lambda: f"LAB-CANARY-{uuid.uuid4()}")
     policy: Policy = field(default_factory=Policy)
     files: dict = field(default_factory=dict)      # virtual filesystem: path -> content
+    web: dict = field(default_factory=dict)        # virtual web: url -> page content (untrusted)
     sink: object = None                            # callable(url_or_payload) to record egress
     log: list = field(default_factory=list)        # audit log of (tool, args, allowed, reason)
     max_steps: int = 5
@@ -80,7 +81,9 @@ class Agent:
     def http_get(self, url):
         if self.sink:
             self.sink(url)                          # egress -> local sink (records the request)
-        return f"[fetched {url}]"
+        # If we have a page for this URL, return its (UNTRUSTED) content -- a browsing agent reads
+        # attacker-controlled pages. Otherwise a placeholder.
+        return self.web.get(url, f"[fetched {url}]")
 
     def send_email(self, to, body=""):
         if self.sink:

@@ -6,7 +6,7 @@ _Last updated 2026-09-26. Started 2026-09-26._
 
 ## Where I am
 
-- **Lessons done:** 0/18 (0%)
+- **Lessons done:** 0/19 (0%)
 - **Open struggles:** 0
 - **Next:** [00.1 Threat modeling for AI systems](lessons/module-00/lesson-01.md)
 
@@ -85,10 +85,11 @@ python course.py struggle 05.2 "note"
 </details>
 
 <details>
-<summary><b>16 · Agent security</b> — 0/2</summary>
+<summary><b>16 · Agent security</b> — 0/3</summary>
 
 - [ ] ⬜ [16.1 The agent attack surface](lessons/module-16/lesson-01.md)
 - [ ] ⬜ [17.1 Tool poisoning & abuse](lessons/module-17/lesson-01.md)
+- [ ] ⬜ [18.1 End-to-end attack chains](lessons/module-18/lesson-01.md)
 
 </details>
 

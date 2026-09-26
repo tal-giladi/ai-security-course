@@ -1,0 +1,8 @@
+services:
+  lab18:
+    image: python:3.12-slim
+    working_dir: /course
+    network_mode: none
+    volumes:
+      - ../../:/course:ro
+    command: ["python", "labs/lab-18/chain.py"]
