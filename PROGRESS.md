@@ -6,7 +6,7 @@ _Last updated 2026-09-26. Started 2026-09-26._
 
 ## Where I am
 
-- **Lessons done:** 0/10 (0%)
+- **Lessons done:** 0/11 (0%)
 - **Open struggles:** 0
 - **Next:** [00.1 Threat modeling for AI systems](lessons/module-00/lesson-01.md)
 
@@ -60,9 +60,10 @@ python course.py struggle 05.2 "note"
 </details>
 
 <details>
-<summary><b>9 · Adversarial ML</b> — 0/1</summary>
+<summary><b>9 · Adversarial ML</b> — 0/2</summary>
 
 - [ ] ⬜ [09.1 Adversarial examples I (FGSM/PGD)](lessons/module-09/lesson-01.md)
+- [ ] ⬜ [10.1 CW, transfer & certified robustness](lessons/module-10/lesson-01.md)
 
 </details>
 

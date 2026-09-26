@@ -20,6 +20,7 @@
   - [08.1 · Automated & black-box jailbreaks](lessons/module-08/lesson-01.md)
 - **9 · Adversarial ML**
   - [09.1 · Adversarial examples I (FGSM/PGD)](lessons/module-09/lesson-01.md)
+  - [10.1 · CW, transfer & certified robustness](lessons/module-10/lesson-01.md)
 
 - **Labs**
   - [Lab 04 · Direct prompt injection](labs/lab-04/README.md)
@@ -28,6 +29,7 @@
   - [Lab 07 · GCG optimization-based jailbreaks](labs/lab-07/README.md)
   - [Lab 08 · Automated black-box jailbreaks](labs/lab-08/README.md)
   - [Lab 09 · FGSM/PGD adversarial examples](labs/lab-09/README.md)
+  - [Lab 10 · CW, transfer & certified robustness](labs/lab-10/README.md)
 
 - **Reference**
   - [Standards map: OWASP / ATLAS / NIST](references/standards-map.md)
