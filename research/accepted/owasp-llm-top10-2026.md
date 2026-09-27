@@ -3,7 +3,7 @@
 - **Topic ID:** owasp-llm-top10-2026
 - **Status:** ADD
 - **Next review:** n/a
-- **Course change:** lessons/frontier/update-01.md (new lesson F.1); references/standards-map.md (appended 2026 crosswalk section); curriculum/course-outline.md (appended F.1 line + dependency row); _sidebar.md (Frontier updates section). Lab code (labs/lab-26-hidden-context/) PENDING — see below.
+- **Course change:** lessons/frontier/update-01.md (new lesson F.1); references/standards-map.md (appended 2026 crosswalk section); curriculum/course-outline.md (appended F.1 line + dependency row); _sidebar.md (Frontier updates section); labs/lab-26-hidden-context/ (shipped 2026-09-27, see below).
 - **Candidates:** C-20260926-01
 
 ## Summary
@@ -36,6 +36,13 @@ network_mode: none compose) was written and its own 8 tests passed on 2026-09-27
 `lab/models/*`; 60 other tests pass). Per protocol, lab code waits for a green suite. The
 reference code is embedded in the lesson. Ship the lab once the shim is restored.
 
+**Update 2026-09-27 (manual follow-up, outside the weekly run):** the shim was committed
+(`!lab/models/shim.py` in `.gitignore`, commit 081baa5); the full suite is green on a fresh clone
+(83 passed). The lab was rebuilt from the lesson's reference code and shipped with its 8 tests;
+its output matches the matrix printed in the lesson. The weekly protocol gained a "baseline
+first" rule so pre-existing breakage no longer blocks a new lab.
+
 ## History
 
 - 2026-09-27 — ADD — adopted standard that re-numbers every OWASP ID the course cites and generalizes a taught risk; frontier lesson + crosswalk, lab pending on a green test suite — weekly/2026-W39.md — candidates C-20260926-01
+- 2026-09-27 — ADD (follow-up) — lab-26 shipped after the missing shim was committed; suite green — manual follow-up — candidates C-20260926-01

@@ -239,12 +239,13 @@ real app you are authorized to test.
 **Lab F.1 — hidden-context leak matrix.** CPU-only, stdlib only, offline, synthetic
 `LAB-CANARY-*` markers, no network. Expected runtime: < 1 s; ~60 min for the exercise.
 
-**Implementation status: PENDING.** The lab (`labs/lab-26-hidden-context/`: app, probes,
-crosswalk, 8 acceptance tests, `network_mode: none` compose) was written and its own tests
-pass, but it is **not yet shipped** because the pre-existing course test suite cannot currently
-run end-to-end (the shared model shim is missing from the repository), and the review protocol
-forbids committing lab code without a fully green suite. Until then, build it yourself from the
-reference code below — which is the exercise anyway.
+Code: [`labs/lab-26-hidden-context/`](../../labs/lab-26-hidden-context/README.md) — `app.py`
+(target + filters), `attack.py` (probes + leak matrix), `crosswalk.py`, `test_lab26.py`.
+
+```bash
+py labs/lab-26-hidden-context/attack.py
+py -m pytest labs/lab-26-hidden-context -q
+```
 
 </div>
 

@@ -178,6 +178,17 @@ the concept — not a threat-feed summary, not artificially long.
   root: `python -m pytest lab/tests labs -q` — it must pass with **all** pre-existing tests still
   passing. If tests still cannot run, do not commit lab code: add the lesson without new code,
   record the implementation as pending in the topic file, and say so in the weekly report.
+- **Baseline first (overrides the rule above when the breakage is not yours).** Before writing
+  any lab code, run the full suite on the unchanged checkout and save the list of failing/erroring
+  test files. If the baseline is already red, the new lab **still ships** when (a) its own tests
+  pass and (b) after your change the failing set is exactly the baseline set — no new failures.
+  Do not fix unrelated shared infra yourself; record the pre-existing breakage under
+  `## Repository health` in the weekly report, with the failing files and the one-line cause.
+- **Never ship a lesson that points to missing material.** Every lab/file path a new lesson links
+  must exist in the same commit. If a lab really cannot ship, the lesson must not reference its
+  path as if it existed.
+- **Final message:** if anything needs Tal's action, start it with `ACTION NEEDED:` followed by
+  what he should do, in one plain sentence (no file names or stack traces).
 
 ## Step 6 — Weekly report, changelog, reset
 

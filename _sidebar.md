@@ -94,6 +94,7 @@
   - [Lab 23 · Compose & measure defenses](labs/lab-23/README.md)
   - [Lab 24 · Security evaluation](labs/lab-24/README.md)
   - [Lab 25 · Automated red teaming](labs/lab-25/README.md)
+  - [Lab 26 · Hidden context exposure (F.1)](labs/lab-26-hidden-context/README.md)
 
 - **Reference**
   - [Standards map: OWASP / ATLAS / NIST](references/standards-map.md)

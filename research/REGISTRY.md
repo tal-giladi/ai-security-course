@@ -5,7 +5,7 @@ Every topic the weekly review has decided on, so nothing is reconsidered without
 
 | Status | Topic | Next review | Course change | Last decision |
 |---|---|---|---|---|
-| ADD | [OWASP LLM Top 10 2026 — crosswalk and Hidden Context Exposure](research/accepted/owasp-llm-top10-2026.md) | n/a | lessons/frontier/update-01.md (new lesson F.1); references/standards-map.md (appended 2026 crosswalk section); curriculum/course-outline.md (appended F.1 line + dependency row); _sidebar.md (Frontier updates section). Lab code (labs/lab-26-hidden-context/) PENDING — see below. | 2026-09-27 |
+| ADD | [OWASP LLM Top 10 2026 — crosswalk and Hidden Context Exposure](research/accepted/owasp-llm-top10-2026.md) | n/a | lessons/frontier/update-01.md (new lesson F.1); references/standards-map.md (appended 2026 crosswalk section); curriculum/course-outline.md (appended F.1 line + dependency row); _sidebar.md (Frontier updates section); labs/lab-26-hidden-context/ (shipped 2026-09-27, see below). | 2026-09-27 |
 | WAIT | [DNS as a covert channel around agent egress controls](research/deferred/dns-covert-channel-agent-egress.md) | 2026-10-04 | none | 2026-09-27 |
 | WAIT | [Jailbreaks across agent components (SoK)](research/deferred/agentic-jailbreak-taxonomy.md) | 2026-11-22 | none | 2026-09-27 |
 | WAIT | [Learned poison-set selection for LLM backdoors (SAILS)](research/deferred/poison-set-selection-backdoors.md) | 2026-11-22 | none | 2026-09-27 |
