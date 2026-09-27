@@ -9,6 +9,7 @@ venv/
 .pytest_cache/
 lab/models/*
 !lab/models/.gitkeep
+!lab/models/shim.py
 lab/.data/
 *.safetensors
 *.gguf
