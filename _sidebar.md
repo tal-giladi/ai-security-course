@@ -68,6 +68,8 @@
 - **26 · Synthesis**
   - [26.1 · Purple-team synthesis, standards & capstones](lessons/module-26/lesson-01.md)
   - [Capstone projects](projects/capstones.md)
+- **Frontier updates**
+  - [F.1 · OWASP LLM Top 10 2026: crosswalk & hidden-context exposure](lessons/frontier/update-01.md)
 
 - **Labs**
   - [Lab 04 · Direct prompt injection](labs/lab-04/README.md)

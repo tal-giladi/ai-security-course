@@ -23,6 +23,25 @@ Framework category ─▶ Threat ─▶ Concrete vulnerability ─▶ Local vuln
 | LLM09 | Misinformation | M14, M24 | lab-14 |
 | LLM10 | Unbounded Consumption | M23 | defense-tools |
 
+### OWASP Top 10 for LLM Applications (2026) — crosswalk (added 2026-09-27)
+
+Released 2026-08-03. The 2025 table above is kept as the course was written; lessons cite 2025
+IDs. Read them through this crosswalk and write IDs with their year (`LLM08:2026`). Details and
+the Hidden Context Exposure lab: [F.1](../lessons/frontier/update-01.md).
+
+| 2026 ID | Category | 2025 ID | Course module | Lab |
+|---|---|---|---|---|
+| LLM01:2026 | Prompt Injection | LLM01 | M04–M06 | lab-04, lab-05, lab-06 |
+| LLM02:2026 | Sensitive Information Disclosure | LLM02 | M12, M15 | lab-12, lab-15 |
+| LLM03:2026 | Excessive Agency | LLM06 | M16–M18 | lab-16, lab-18 |
+| LLM04:2026 | Supply Chain | LLM03 | M13, M21–M22 | lab-13, lab-22 |
+| LLM05:2026 | Data & Model Poisoning | LLM04 | M11 | lab-11 |
+| LLM06:2026 | Unbounded Consumption | LLM10 | M23 | defense-tools |
+| LLM07:2026 | Misinformation | LLM09 | M14, M24 | lab-14 |
+| LLM08:2026 | Hidden Context Exposure (was System Prompt Leakage, broadened) | LLM07 | M02, M04, M14–M18, F.1 | lab-04 |
+| LLM09:2026 | Vector & Embedding Weaknesses | LLM08 | M14–M15 | lab-14, lab-15 |
+| LLM10:2026 | Improper Output Handling | LLM05 | M03, M23 | lab-04, defense-tools |
+
 ## MITRE ATLAS
 
 | ATLAS tactic | Course module(s) | Lab |

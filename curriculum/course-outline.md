@@ -133,6 +133,11 @@ Only as much classical security as AI security requires — no generic pentest c
 - **M26 Purple-team synthesis & standards** — OWASP LLM Top 10 / MITRE ATLAS / NIST AI RMF
   mapped onto everything built; then the capstones and the research project.
 
+### Frontier updates (added by the weekly curriculum review)
+- **F.1 OWASP LLM Top 10 2026: crosswalk & hidden-context exposure** (added 2026-09-27) — the
+  2025→2026 ID crosswalk and LLM08:2026 Hidden Context Exposure measured per context slot.
+  Depends on M04, M14, M16, M26. Layer: Current. Lab: pending (reference code in the lesson).
+
 ---
 
 ## Module dependency table
@@ -166,6 +171,7 @@ Only as much classical security as AI security requires — no generic pentest c
 | M24 Security evaluation | M23, sibling: evaluation | Current | `lab/attack-tools` |
 | M25 Automated red teaming | M08, M24 | Current | `lab/attack-tools` |
 | M26 Synthesis & standards | all | Current | `projects/` |
+| F.1 OWASP 2026 crosswalk & hidden context | M04, M14, M16, M26 | Current | pending (in-lesson reference code) |
 
 *"sibling"* = provided by the LLM Research Engineer course; see `prerequisite-map.md`.
 

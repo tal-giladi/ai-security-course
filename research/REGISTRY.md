@@ -5,4 +5,10 @@ Every topic the weekly review has decided on, so nothing is reconsidered without
 
 | Status | Topic | Next review | Course change | Last decision |
 |---|---|---|---|---|
-| — | (no topics yet) | | | |
+| ADD | [OWASP LLM Top 10 2026 — crosswalk and Hidden Context Exposure](research/accepted/owasp-llm-top10-2026.md) | n/a | lessons/frontier/update-01.md (new lesson F.1); references/standards-map.md (appended 2026 crosswalk section); curriculum/course-outline.md (appended F.1 line + dependency row); _sidebar.md (Frontier updates section). Lab code (labs/lab-26-hidden-context/) PENDING — see below. | 2026-09-27 |
+| WAIT | [DNS as a covert channel around agent egress controls](research/deferred/dns-covert-channel-agent-egress.md) | 2026-10-04 | none | 2026-09-27 |
+| WAIT | [Jailbreaks across agent components (SoK)](research/deferred/agentic-jailbreak-taxonomy.md) | 2026-11-22 | none | 2026-09-27 |
+| WAIT | [Learned poison-set selection for LLM backdoors (SAILS)](research/deferred/poison-set-selection-backdoors.md) | 2026-11-22 | none | 2026-09-27 |
+| WAIT | [MCP runtime-gated tool-metadata poisoning (Deadbugz)](research/deferred/mcp-runtime-metadata-rug-pull.md) | 2026-10-25 | none | 2026-09-27 |
+| WAIT | [Prompt-injection detector over-defense and distribution shift (PIDS-Bench)](research/deferred/prompt-injection-detector-over-defense.md) | 2026-11-08 | none | 2026-09-27 |
+| REJECT | [CVE-2026-58138 — pre-auth RCE in Orkes Conductor (agent orchestration backend)](research/rejected/orkes-conductor-cve-2026-58138.md) | on new evidence | none | 2026-09-27 |
