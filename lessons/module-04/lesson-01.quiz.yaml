@@ -1,0 +1,35 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: 25868f38bf68
+  question: Which set of one-line definitions for direct injection, indirect injection, and jailbreak is correct?
+  options:
+    - "Direct: via retrieved docs. Indirect: attacker's own input. Jailbreak: stealing the system prompt"
+    - "Direct: defeats safety training. Indirect: via tool output. Jailbreak: attacker's own input"
+    - "Direct: attacker's own input overrides instructions. Indirect: via content the model reads. Jailbreak: defeats safety training"
+    - "Direct: via emails. Indirect: via web pages. Jailbreak: any injection that succeeds"
+  correct: 2
+- source: 37578813fd02
+  question: Why can base64-encoding a payload succeed where the plaintext fails?
+  options:
+    - Encoding raises the instruction's authority to that of the system prompt
+    - Encoding moves it outside what safety training covered, while decoding still works
+    - Encoding hides the payload from the model, which follows it unknowingly
+    - Encoding makes the payload shorter, so it fits under the context limit
+  correct: 1
+- source: c1ac2623af4a
+  question: Why report a Wilson interval on ASR instead of just the point estimate?
+  options:
+    - ASR from finite $N$ near 0 or 1 needs a calibrated range to tell real differences from noise
+    - The Wilson interval is always narrower, so defenses look stronger
+    - A point estimate cannot be computed when $N$ is below 100
+    - Wilson intervals remove the need to run more trials when results overlap
+  correct: 0
+- source: 8dfbe33cf7ec
+  question: The output scrubber holds under a fully jailbroken model, yet is not a complete fix. Why?
+  options:
+    - It is only a system-prompt rule, so a jailbroken model can talk past it
+    - It slows responses too much to run on every message in production
+    - It blocks every form of the secret, but only for the first turn
+    - It is enforced code, but only blocks what it matches; encoded or split secrets escape
+  correct: 3

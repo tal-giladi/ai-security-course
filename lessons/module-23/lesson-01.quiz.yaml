@@ -1,0 +1,27 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: d4e68d4e2606
+  question: Which pairing of enforced vs probabilistic controls is correct?
+  options:
+    - "Enforced: jailbreak classifier, PII detector. Probabilistic: egress allowlist, sandbox"
+    - "Enforced: output moderation, anomaly detection. Probabilistic: authz, rate limiting"
+    - "Enforced: system prompt rules. Probabilistic: sandboxing, output scrubbing"
+    - "Enforced: egress allowlist, authz, sandbox. Probabilistic: jailbreak and PII detectors"
+  correct: 3
+- source: 7aa7b571b0af
+  question: A detector has 90% recall and 5% FP rate. At attack prevalence $\pi=0.5\%$, why are its alerts mostly false?
+  options:
+    - "Low base rate: false positives dominate, so precision is only about 8%"
+    - Recall of 90% means 10% of all alerts are false, which dominates
+    - The detector overfits to the lab set, so recall drops to near 0 in production
+    - At low prevalence the FP rate rises from 5% to about 50%
+  correct: 0
+- source: b04d73d4e132
+  question: Why prefer one enforced control over stacking probabilistic filters on the same hop?
+  options:
+    - Stacked filters multiply recall, so they reach 100% faster than code
+    - Enforced controls have more false positives but are easier to write
+    - Enforced sets the hop to 0 with no FP cost; stacked filters leave residual risk and compound FPs
+    - Stacked filters cancel each other's false positives, which wastes their benefit
+  correct: 2

@@ -1,0 +1,27 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: 67d7eee0a14c
+  question: Why is securing model behavior insufficient?
+  options:
+    - Because model outputs cannot be evaluated at all
+    - A compromise at any artifact in the graph compromises the system
+    - Because weights are the only artifact attackers can modify
+    - Because behavior checks are too slow for production use
+  correct: 1
+- source: 9d40174c4a2f
+  question: Why does verification beat detection for the supply chain?
+  options:
+    - Detection has no false negatives, but verification is cheaper
+    - Verification finds novel backdoors that scanners miss
+    - Detection requires trusting publishers, while verification does not
+    - A changed byte changes the hash, so tampering has ~zero false negatives
+  correct: 3
+- source: 73e8df2083f2
+  question: What is the residual risk of a verification gate, and how do you cover it?
+  options:
+    - Hash collisions; cover them by switching to a longer hash function
+    - Slow downloads; cover them with a local mirror of the registry
+    - A trusted publisher signing a backdoored artifact; add behavioral vetting
+    - Unsigned artifacts; cover them by trusting the most popular versions
+  correct: 2

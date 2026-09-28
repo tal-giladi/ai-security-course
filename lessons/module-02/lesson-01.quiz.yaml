@@ -1,0 +1,35 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: f1dd0a38ec94
+  question: Why is there no true instruction/data boundary inside an LLM?
+  options:
+    - Role markers are encrypted, so the model cannot tell which role sent a token
+    - All roles form one token stream; role separation is only a learned behavior
+    - The API drops the system prompt whenever a user message is present
+    - Data tokens use a separate vocabulary that the model cannot interpret
+  correct: 1
+- source: f8210e87ac4f
+  question: In what precise sense does RLHF "make a model safe"?
+  options:
+    - It shifts outputs toward refusals on inputs resembling training data, not a proof
+    - It removes harmful knowledge from the weights so it can never be produced
+    - It adds a hard-coded filter that blocks any disallowed output at decode time
+    - It proves the model refuses every harmful request, including novel phrasings
+  correct: 0
+- source: 2adda20b4c25
+  question: Where must an enforced security property live, and why not in the system prompt?
+  options:
+    - In the system prompt, because it has the highest priority in the hierarchy
+    - In the training data, because fine-tuned behavior cannot be overridden
+    - In the user message, because the model follows the most recent instruction
+    - In deterministic code outside the model, because prompt rules only hold with some probability
+  correct: 3
+- source: 5ffe52dbf906
+  question: What does "the message hierarchy is a finite bias" imply for attackers?
+  options:
+    - Low-priority instructions are always ignored, so attackers must reach the system prompt
+    - The hierarchy resets each turn, so attackers only need to wait a turn
+    - A strong enough low-priority instruction can still overcome the higher-role bias
+    - The bias applies only to tool outputs, so user messages are never limited
+  correct: 2

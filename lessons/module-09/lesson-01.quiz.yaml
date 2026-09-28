@@ -1,0 +1,35 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: 9dfd4f3e382f
+  question: Why is "the model is robust" meaningless without a threat model?
+  options:
+    - Robustness only applies to image models, not to text models
+    - Robustness is always measured on clean accuracy, which ignores attacks
+    - Robustness is binary, so any single failure means the model is not robust
+    - Robustness is defined only relative to a norm, budget $\epsilon$, and attacker access
+  correct: 3
+- source: d1ff1e303263
+  question: What is FGSM, and why is one step not optimal for the true loss?
+  options:
+    - $x_{adv}=x-\epsilon\nabla_x\ell$; one step overshoots because $\epsilon$ is too large
+    - $x_{adv}=x+\epsilon\operatorname{sign}(\nabla_x\ell)$; it is optimal only for a linear approximation
+    - $x_{adv}=x+\epsilon\,\nabla_x\ell/\|\nabla_x\ell\|_2$; one step ignores the $\ell_\infty$ budget
+    - $x_{adv}=x+\epsilon\operatorname{sign}(x)$; it ignores the gradient entirely
+  correct: 1
+- source: 21f1ead71f0a
+  question: Why must robustness be evaluated with PGD, not FGSM?
+  options:
+    - PGD generalizes FGSM, so it finds attacks at least as strong and exposes gradient masking
+    - PGD is faster than FGSM, so it can test more inputs in the same time
+    - FGSM always finds stronger attacks, which makes models look worse than they are
+    - PGD uses a larger $\epsilon$ than FGSM, which is the required standard
+  correct: 0
+- source: 876ebaa5103a
+  question: What is the adversarial-training objective, and what does it cost?
+  options:
+    - $\max_\theta\min_\delta\ell$; it certifies robustness against all norms at no extra training cost
+    - $\min_\theta\mathbb E[\ell(\theta,x,y)]$; it costs only more data, with no loss in clean accuracy
+    - $\min_\theta\mathbb E[\max_{\|\delta\|\le\epsilon}\ell]$; lower clean accuracy and higher training cost
+    - $\min_\delta\|\delta\|$ subject to misclassification; it slows inference but keeps clean accuracy
+  correct: 2

@@ -1,0 +1,35 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: 326a5f153deb
+  question: How does CW differ from PGD, and why does it find smaller perturbations?
+  options:
+    - CW uses a larger fixed $\epsilon$ and runs more gradient steps than PGD does
+    - CW takes a single signed-gradient step, which moves less than PGD's many steps
+    - CW minimizes perturbation norm subject to misclassification instead of maxing loss in a fixed ball
+    - CW adds random noise before each step, which averages out and shrinks the perturbation
+  correct: 2
+- source: dd53de04f6b2
+  question: Why are transfer attacks a threat to black-box models?
+  options:
+    - Adversarials from a similar surrogate often fool the hidden target too
+    - Black-box APIs leak their gradients through confidence scores
+    - Transfer attacks steal the target's weights before attacking
+    - Black-box models are always trained on public data the attacker controls
+  correct: 0
+- source: c5f7b31b9721
+  question: What does the randomized-smoothing certificate guarantee?
+  options:
+    - Robustness to any $\ell_\infty$ attack of any size, with no loss in clean accuracy
+    - Robustness to PGD specifically, but only within the budget $\epsilon$ used in training
+    - That the base classifier never misclassifies Gaussian-noised copies of the input
+    - Unchanged prediction for every $\ell_2$ perturbation smaller than $R=\sigma\Phi^{-1}(\underline{p_A})$
+  correct: 3
+- source: c7fd434f9a14
+  question: "Empirical vs certified robustness: which bounds which?"
+  options:
+    - Empirical is a lower bound; certified is an upper bound on true robustness
+    - Empirical is an upper bound; certified is a lower bound on true robustness
+    - Both are upper bounds; only more attacks can tighten them
+    - Both equal true robustness when AutoAttack is used
+  correct: 1

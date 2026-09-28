@@ -1,0 +1,27 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: aa375772e9d8
+  question: Why is a coding agent the worst-case agent scenario?
+  options:
+    - It uses larger models, which are easier to jailbreak
+    - It only reads trusted code, so defenses are usually turned off
+    - Attacker-controlled repos meet a shell and the software supply chain
+    - It runs offline, so no egress controls can be applied to it
+  correct: 2
+- source: 44cc638807dc
+  question: What is dependency confusion, and how do you defeat it?
+  options:
+    - A higher-versioned public package overrides your internal one; pin to a trusted registry and hashes
+    - Two internal packages share one name; defeat it by renaming one of them in the registry
+    - A package name contains a typo; defeat it by enabling spell-checking in the resolver
+    - A dependency is outdated; defeat it by always installing the latest public version
+  correct: 0
+- source: f4758d12e487
+  question: Why prefer sandboxing the shell over a command allowlist?
+  options:
+    - Allowlists are structural, but they slow the agent down too much
+    - Sandboxes detect malicious commands before they are run
+    - Sandboxing lets the agent keep its secrets and network access safely
+    - Allowlists can be evaded by chaining; a no-egress, no-secrets sandbox holds anyway
+  correct: 3

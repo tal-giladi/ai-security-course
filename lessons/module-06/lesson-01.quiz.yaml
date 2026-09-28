@@ -1,0 +1,27 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: 70285965a25a
+  question: Why is OCR/metadata extraction an injection surface?
+  options:
+    - It runs attacker files as executables on the server during extraction
+    - It turns attacker-controlled file bytes into text in the model's instruction stream
+    - It sends the image to a third-party service that may store it
+    - It lowers image resolution, so safety classifiers miss harmful pictures
+  correct: 1
+- source: 94aab86c58c4
+  question: Why do multi-agent pipelines enlarge the attack surface?
+  options:
+    - Each extra stage lowers overall compromise odds, but raises latency
+    - Agents share one context window, so only the first stage can be attacked
+    - Each stage is another chance to obey an injection, and edges are unmarked trust boundaries
+    - Agents always run with admin rights, unlike single-model apps
+  correct: 2
+- source: b4d83b2cb730
+  question: Which carrier defeats an exact-match text filter, paired with its fix?
+  options:
+    - Zero-width or homoglyph characters; Unicode-normalize and strip them before scanning
+    - A longer prompt; truncate all input to a fixed length before scanning
+    - Lowercase text; convert the filter's patterns to uppercase
+    - A polite tone; add rude-word detection to the filter
+  correct: 0

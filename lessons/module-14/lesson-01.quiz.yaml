@@ -1,0 +1,35 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: 104aad9d892f
+  question: What does RAG add over plain indirect injection?
+  options:
+    - The payload must bypass the embedding model's safety filter
+    - The attacker must first win retrieval to get the poison into the top-k
+    - The attacker must speak to the model directly in the user turn
+    - The payload must be written in the same language as the corpus
+  correct: 1
+- source: 74d6662c5b7b
+  question: Why does keyword stuffing win retrieval, mathematically?
+  options:
+    - Longer documents always get higher BM25 scores regardless of content
+    - Repeated tokens lower the embedding norm, which raises the rank
+    - Repeating query tokens pulls the embedding toward the query, raising $\cos(q,d)$
+    - The ANN index stores duplicates first, so stuffed documents are found faster
+  correct: 2
+- source: 1227b8a9f01a
+  question: Why is a provenance allowlist stronger than a similarity threshold?
+  options:
+    - It blocks untrusted sources regardless of how well they game similarity
+    - It raises the threshold automatically when poison is detected
+    - It catches poison ingested through trusted sources too
+    - It reranks documents by fluency, which filters out stuffed ones
+  correct: 0
+- source: 2022a7144472
+  question: Why is "the model cited a source" not a trust signal?
+  options:
+    - Citations are generated after the answer, so they are always wrong
+    - Models only cite sources from their training data, not retrieval
+    - Citations are stripped by the renderer before the user sees them
+    - The cited source may itself be poisoned content that won retrieval
+  correct: 3

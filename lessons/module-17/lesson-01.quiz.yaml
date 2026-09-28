@@ -1,0 +1,27 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: d22026ab2269
+  question: Why is a poisoned tool description worse than a poisoned document?
+  options:
+    - It runs as code on the server instead of being read as text
+    - It is only shown after the tool runs, when defenses are off
+    - It bypasses the model entirely and calls the tool directly
+    - It is in planning context for every task, before tool selection
+  correct: 3
+- source: eba91451da0f
+  question: What are the two enforced defenses against tool poisoning, and how do they differ?
+  options:
+    - Treat descriptions as data (a filter, evadable) and capability grants (structural, stronger)
+    - Longer system prompts (structural) and tool renaming (a filter, evadable)
+    - Output moderation (structural) and rate limiting (a filter, evadable)
+    - Treat descriptions as data (structural) and capability grants (a filter, weaker)
+  correct: 0
+- source: 3bd134843b79
+  question: What is a rug-pull tool, and how do you defend against it?
+  options:
+    - A tool that deletes user data; defend with regular backups and a recycle bin
+    - A tool with a misleading name; defend by renaming it at install and in the registry
+    - A benign tool swapped for a poisoned one later; pin hashes, require signatures, re-verify on load
+    - A tool that hangs or is too slow; defend with strict timeouts and fallback tools
+  correct: 2

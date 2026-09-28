@@ -1,0 +1,35 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: c55f0d352382
+  question: Why does overfitting enable membership inference, and why report AUC and TPR at low FPR?
+  options:
+    - Members have lower loss; TPR at low FPR shows confident identification that average AUC can hide
+    - Members have higher loss; AUC alone is enough since it covers all thresholds
+    - Overfit models output uniform confidence; TPR at low FPR measures accuracy
+    - Members are duplicated in the test set; AUC measures how many duplicates exist
+  correct: 0
+- source: fc4fa40a41a8
+  question: Why is LiRA stronger than the loss-threshold attack?
+  options:
+    - It uses a single global threshold, tuned on a larger set of known members
+    - It needs no shadow models, so it scales cheaply to much larger targets
+    - It reads the target model's weights directly instead of only its outputs
+    - It calibrates per example with shadow models and applies a likelihood-ratio test
+  correct: 3
+- source: da26cd915815
+  question: What does $(\varepsilon,\delta)$-DP guarantee, and why does it bound membership inference?
+  options:
+    - Outputs are identical with or without any one example, so every attack always fails
+    - Outputs differ by at most $e^{\varepsilon}$ (plus $\delta$) when one example changes, bounding the advantage
+    - Training data is encrypted with a key of size $\varepsilon$, so no attacker can read it
+    - Accuracy drops by at most $\varepsilon$, so a membership attacker gains at most $\delta$
+  correct: 1
+- source: 3946778d52ad
+  question: Why is a query-only API not "safe" for the model?
+  options:
+    - Queries leak the weights file byte by byte through response timing
+    - Queries let attackers fine-tune the hosted model directly on their data
+    - Extraction can train a student from queries, enabling IP theft and transfer attacks
+    - Queries always return the training data verbatim when the user asks for it
+  correct: 2

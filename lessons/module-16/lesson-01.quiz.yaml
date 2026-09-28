@@ -1,0 +1,35 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: aadf9e9274c4
+  question: What is excessive agency, and how do you measure it?
+  options:
+    - An agent that runs too long; measure it by wall-clock time per task
+    - An agent that asks the user too often; measure it by approval prompts
+    - An agent able to do more than the task needs; measure its reachable-action set
+    - An agent with too many input channels; measure it by the number of documents read
+  correct: 2
+- source: f35a0f172c87
+  question: Why is the agent a confused deputy, and why doesn't a system prompt fix it?
+  options:
+    - The attacker steals the agent's credentials; the prompt cannot rotate keys
+    - The agent lacks privileges; the prompt cannot grant new ones to it
+    - The user misuses the agent; the prompt cannot tell users apart
+    - It uses its privileges for injected text; the prompt is a finite prior a strong injection beats
+  correct: 3
+- source: fd2f5652e719
+  question: Which three orthogonal enforced defenses for agents are correctly matched to what they stop?
+  options:
+    - "Input filter: all injections. Output moderation: exfiltration. System prompt: tool misuse"
+    - "Least privilege: dangerous action unreachable. Egress allowlist: exfiltration. Approval gates: some malicious calls"
+    - "Rate limit: exfiltration. Perplexity filter: tool misuse. Logging: all injections"
+    - "Least privilege: all injections. Egress allowlist: jailbreaks. Approval gates: every malicious call"
+  correct: 1
+- source: cbccbee68f10
+  question: Why does removing one egress tool often beat adding an input filter?
+  options:
+    - It removes a whole column of (channels × actions) for certain; a filter cuts channels only partly
+    - Input filters increase blast radius, because each filter adds another input channel
+    - Removing a tool makes the model more likely to refuse injected requests it reads
+    - Egress tools are the only way injections can enter the agent's context window
+  correct: 0

@@ -1,0 +1,35 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: 2f542639cbd8
+  question: Why is cross-tenant RAG leakage not a model problem?
+  options:
+    - The model memorized other tenants' data during pretraining
+    - The output filter fails to redact names from other tenants
+    - The system prompt forgets to tell the model which tenant is asking
+    - The retriever fetches unauthorized docs; the model just uses them faithfully
+  correct: 3
+- source: 12306993edf0
+  question: Why is pre-filtering correct and post-filtering not?
+  options:
+    - Post-filtering is slower, but both return the same documents and are equally secure
+    - Pre-filtering reranks by similarity after dropping docs, while post-filtering skips ranking
+    - Pre-filtering scopes to the caller before ranking; post-filtering crowds out results and trusts spoofable ACLs
+    - Pre-filtering trusts each document's own ACL field, which post-filtering ignores entirely
+  correct: 2
+- source: fe4829437c7d
+  question: What is a metadata attack, and how do you stop it?
+  options:
+    - Setting a document's tenant/ACL field to the victim's; authorize on the caller's trusted identity
+    - Stuffing query keywords into document titles; stop it by lowering the similarity threshold
+    - Deleting a document's metadata fields; stop it by rejecting documents with empty fields
+    - Encrypting metadata so the retriever cannot read it; stop it by decrypting at ingestion
+  correct: 0
+- source: 2bc46fc77aac
+  question: Under a targeted query with no authorization on the retriever, is cross-tenant leakage rare?
+  options:
+    - Yes, because embeddings of different tenants are kept far apart
+    - No, a query matching the victim's doc drives leak probability toward 1
+    - Yes, because top-k retrieval rarely returns documents from other tenants
+    - No, but only if the attacker already has the victim's document ID
+  correct: 1

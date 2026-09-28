@@ -1,0 +1,35 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: 3ffd3de0b56c
+  question: Why is loading a .pt/.bin checkpoint a code-execution risk?
+  options:
+    - The tensors can overflow GPU memory and corrupt the process
+    - The format is pickle, whose `__reduce__` can run arbitrary code on load
+    - The checkpoint contains a compiled CUDA kernel that runs at inference
+    - The file is unsigned, so the OS runs it as an executable
+  correct: 1
+- source: c3eb9d60f4da
+  question: What does safetensors guarantee, and why is it stronger than a scanner?
+  options:
+    - No backdoors in the weights, because it checks behavior on load
+    - No code execution on load, because the format cannot express code at all
+    - Smaller files, because it compresses tensors better than pickle
+    - No code execution on load, because it scans for known malicious payloads
+  correct: 1
+- source: 91fb2099321a
+  question: Why does safe loading not imply safe behavior?
+  options:
+    - Weights can still be poisoned or carry a backdoor as valid tensors
+    - safetensors can still execute code if the header is malformed
+    - Safe loading only applies to the base model, not to its tokenizer
+    - Safe loading disables inference-time guardrails for speed
+  correct: 0
+- source: 8069276268a1
+  question: Why can a malicious adapter pass ordinary evaluation?
+  options:
+    - Adapters are too small to affect outputs until merged twice
+    - Evaluation tools skip adapters and only test the base model
+    - Adapters are signed by the hub, so evaluators trust them
+    - It keeps clean accuracy while its trigger behavior fires only on rare inputs
+  correct: 3

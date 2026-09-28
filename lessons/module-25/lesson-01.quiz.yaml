@@ -1,0 +1,27 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: e85eb0e7d255
+  question: In an automated red-team loop (generator, target, judge, search, reporter), which component bounds the whole system?
+  options:
+    - The generator, because its diversity is the only limit on ASR
+    - The judge, because observed ASR $\approx ra+f(1-a)$ depends on its errors
+    - The target, because a stronger model always lowers observed ASR
+    - The reporter, because confidence intervals decide what counts as success
+  correct: 1
+- source: f7195647c0cd
+  question: Why is co-evolution, not a single ASR, the right frame for red teaming?
+  options:
+    - Because ASR is always 0 after the first round of defenses
+    - Because the judge changes each round, so ASR values are not comparable
+    - Attackers adapt, so best-response ASR across rounds shows if a defense lasts
+    - Because defenses never change, so only the attacker's side needs tracking
+  correct: 2
+- source: 3ed5104dcb6e
+  question: Why does automated red teaming find problems but not certify their absence?
+  options:
+    - Because its judge has perfect recall but poor precision
+    - Because it runs only on production traffic, not on test sets
+    - Because certification requires running it on every model version
+    - Because it only covers what its generator and judge can find
+  correct: 3

@@ -1,0 +1,27 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: 51f7dfd407cb
+  question: Why report a confidence interval with ASR, and when is a difference between two systems "established"?
+  options:
+    - To show the attack's cost; established when the point estimates differ by 0.1
+    - To normalize ASR across models; established when both CIs include 0.5
+    - Finite $n$ hides noise; established only when the Wilson CIs don't overlap
+    - Regulations require it; established once each condition has 30 samples
+  correct: 2
+- source: b0dd3539c7b1
+  question: What is adaptive evaluation, and why is it decisive?
+  options:
+    - Adjusting the judge until ASR is stable; it removes judge bias
+    - Running the same fixed suite each release; it makes results comparable
+    - Lowering attack strength until the defense passes; it proves a minimum bar
+    - Testing against attacks adapted to the defense; weak-attack results say nothing
+  correct: 3
+- source: c47abadc12ae
+  question: Why can a high lab ROC-AUC still mean poor production precision?
+  options:
+    - AUC ignores prevalence, but at low base rates false positives dominate alerts
+    - AUC is computed on training data, so it always overstates recall
+    - Production traffic has more attacks than the lab, which lowers precision
+    - AUC measures latency, not accuracy, so it cannot predict precision
+  correct: 0

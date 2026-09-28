@@ -1,0 +1,43 @@
+# Multiple-choice version of the quiz in update-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: 252a9e9e0922
+  question: A 2025 report lists "LLM06" and "LLM07". What do they correspond to under the 2026 list?
+  options:
+    - Unbounded Consumption and Misinformation; the numbers carry over unchanged
+    - LLM06:2026 Excessive Agency and LLM07:2026 System Prompt Leakage
+    - LLM03:2026 Excessive Agency and LLM08:2026 Hidden Context Exposure
+    - LLM08:2026 Excessive Agency and LLM03:2026 Hidden Context Exposure
+  correct: 2
+- source: 057aac0b891e
+  question: Why is "Hidden Context Exposure" a better category than "System Prompt Leakage"?
+  options:
+    - Notes, schemas, docs, and memory share the window and leak the same way
+    - System prompts can no longer be extracted from 2026 models
+    - It covers training-data extraction, which the old name left out
+    - It limits the scope to secrets, which are the only real risk
+  correct: 0
+- source: 0c0577d4bf1d
+  question: Your normalizing filter drives ASR from 1.00 to 0.14. Is the credential safe?
+  options:
+    - Yes, 0.14 is below the usual 0.2 acceptance threshold
+    - Yes, as long as the filter also normalizes ROT13 text
+    - No, but adding a second filter would make it zero
+    - No, with $p>0$ repeated tries still leak it; remove it from context
+  correct: 3
+- source: 68856b732c3d
+  question: After moving the credential to the executor, what is the attacker's best next move, and which control addresses it?
+  options:
+    - Extract the credential from logs; addressed by output filtering
+    - Steer the model to call `refund_api`; least privilege, per-call authz, approval
+    - Poison the retriever; addressed by a similarity threshold
+    - Keep extracting with ROT13; addressed by a stronger normalizing filter
+  correct: 1
+- source: ad3eeb3dd14e
+  question: The 2026 ranking used 6,639 real incidents. Does rank equal risk for your app?
+  options:
+    - Yes, because 6,639 incidents make the ranking statistically certain
+    - Yes, because incident data carries 75% of the ranking weight
+    - No, it's a biased population prior; your own threat model decides
+    - No, because the ranking only covers apps without agents
+  correct: 2

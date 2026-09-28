@@ -1,0 +1,27 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: 4cb2812e8307
+  question: Which are the four multimodal sub-threats, and what follows for defenses?
+  options:
+    - Resolution, compression, color depth, file size; one resize step covers all four
+    - Phishing, spam, malware, DDoS; one antivirus scan covers all four
+    - OCR text, EXIF, alt text, captions; one text filter covers all four
+    - Semantic injection, steganography, pixel adversarials, malicious documents; each needs its own defense
+  correct: 3
+- source: f74dc133713d
+  question: Why is an LSB-stego image imperceptible yet detectable, and how can you defend without detecting it?
+  options:
+    - It changes pixels by up to 16; defend by blurring the image
+    - It changes pixels by at most 1 but skews LSB-pair stats; zero the LSB plane
+    - It hides data in EXIF only; defend by stripping all metadata
+    - It changes no pixels at all; defend by re-encoding the file as PNG
+  correct: 1
+- source: 72764b44f369
+  question: Why doesn't LSB-strip defend against a pixel-space adversarial example?
+  options:
+    - LSB-strip only works on grayscale images, not on three-channel color ones
+    - Adversarial examples are stored in file metadata, not in the pixel values
+    - The adversarial change of size ~ε sits in higher bits; LSB-strip only zeroes bit 0
+    - LSB-strip amplifies the adversarial perturbation instead of removing it
+  correct: 2

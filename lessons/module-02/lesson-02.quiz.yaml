@@ -1,0 +1,35 @@
+# Multiple-choice version of the quiz in lesson-02.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: 00291be5aa23
+  question: What does JSON mode guarantee, and what does it not?
+  options:
+    - It guarantees safe values, but not that the output parses as JSON
+    - It guarantees parseable JSON of the given shape, but not safe or true values
+    - It guarantees injection-free output, but not a particular field order
+    - It guarantees both valid syntax and that values have been authorized
+  correct: 1
+- source: b81440cc866c
+  question: In function calling, what does the tool schema constrain, and what remains your code's job?
+  options:
+    - It constrains argument shape; your code validates values and enforces authorization
+    - It constrains who may call the tool; your code only formats the arguments
+    - It constrains argument values; your code only checks the types
+    - It constrains the tool's side effects; your code only logs the call
+  correct: 0
+- source: 3dce3a3ba289
+  question: Why can't a content filter be the security boundary?
+  options:
+    - Because filters must run after the model, which is too late to block anything
+    - Because filters are deterministic and therefore easy for attackers to predict
+    - Because filters can only be applied to user input, never to model output
+    - Because it is a probabilistic classifier that reads text and cannot make actions safe
+  correct: 3
+- source: 857a32567e40
+  question: Which is a security pitfall unique to streaming, with its fix?
+  options:
+    - Streams use more tokens; fix it by lowering the max-token limit
+    - Streams expose the system prompt; fix it by moving it to the user role
+    - Acting on partial output before the filter decides; fix it by buffering until it does
+    - Streams skip the tool schema; fix it by switching to JSON mode
+  correct: 2

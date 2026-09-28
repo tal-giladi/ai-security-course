@@ -1,0 +1,27 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: d0f4e1e97cce
+  question: Which ordering best states the course's method for a system you've never seen?
+  options:
+    - Add detectors first, then write a system prompt, then run one ASR test
+    - Scan for known CVEs, then patch, then certify with automated red teaming
+    - Deploy, wait for incidents, then add filters for each reported attack
+    - Model it, map the surface, measure attacks, apply enforced controls first, re-attack
+  correct: 3
+- source: 25afb48bf0ae
+  question: Why teach standards as maps onto labs rather than as lists?
+  options:
+    - Because standards change yearly, so lists go out of date too fast
+    - A category is actionable only when tied to a reproduction, defense, and measurement
+    - Because auditors do not accept lists of categories as evidence
+    - Because labs are shorter to read than the standards themselves
+  correct: 1
+- source: a8c08523c270
+  question: What distinguishes "knowing an attack" from "having the capability"?
+  options:
+    - Reproducing, measuring, and defending it on an unfamiliar system without help
+    - Being able to name the attack and cite the paper that introduced it
+    - Having run the attack once in the course's guided lab
+    - Knowing which OWASP category the attack falls under
+  correct: 0

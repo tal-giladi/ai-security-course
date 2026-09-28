@@ -1,0 +1,35 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: 04fd03c1e1f1
+  question: Why can't clean-input evaluation detect a backdoor?
+  options:
+    - Backdoors lower clean accuracy only slightly, below measurement noise
+    - Backdoors only activate after deployment, never during evaluation runs
+    - Clean evaluation uses a different model copy than production
+    - The backdoor fires only on a trigger that is absent from clean inputs
+  correct: 3
+- source: 2604c6bfebed
+  question: Why does a small poison fraction yield a high ASR without hurting clean accuracy?
+  options:
+    - Poisoned samples get higher weight in the loss, so they dominate training
+    - The trigger rule is simple and consistent, and the small share barely affects the clean fit
+    - The model ignores poisoned samples during training and learns them at inference
+    - Poison replaces the clean labels, so clean accuracy is recomputed on poison
+  correct: 1
+- source: 53be268c0ef5
+  question: Why does a spectral signature reveal poison, and how does an attacker evade it?
+  options:
+    - Poison shares a trigger representation that dominates the top singular direction; spread or weaken the trigger
+    - Poisoned images have larger pixel values; the attacker evades by normalizing them
+    - Poison is mislabeled relative to its content; the attacker evades by adding more poison
+    - Poison has unusually low loss; the attacker evades by adding label noise to raise it
+  correct: 0
+- source: 0ee53f7b5aa1
+  question: What is the durable defense against poisoning, given detection is imperfect?
+  options:
+    - Running spectral-signature detection on every training run before release
+    - Adversarial training with PGD on the full dataset, including fine-tuning data
+    - "Provenance and control of the training pipeline: trusted, signed data and isolation"
+    - Evaluating the model on a larger clean test set before release
+  correct: 2

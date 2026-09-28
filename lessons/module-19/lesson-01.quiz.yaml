@@ -1,0 +1,27 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: 219d08de70d9
+  question: Why is connecting an MCP server a double trust decision?
+  options:
+    - It is both third-party code that runs and text that enters the model's context
+    - It needs both an API key and a user password to connect
+    - It must be trusted by both the client and the model provider
+    - It is both a network service and a database that stores your data
+  correct: 0
+- source: ff33b96c91bd
+  question: What is the cross-server confused deputy in MCP?
+  options:
+    - A trusted server impersonates a malicious one in order to steal its stored credentials
+    - Two servers share one port, so the client's requests end up at the wrong server
+    - A malicious server's description makes the client call a trusted server's tool and relay the result
+    - The client caches a trusted server's descriptions and later serves stale copies of them
+  correct: 2
+- source: 608fb3402ed8
+  question: Why is capability scoping stronger than stripping directives from descriptions?
+  options:
+    - Stripping is structural, while scoping depends on detecting the injection
+    - Scoping also removes the need for any supply-chain review of servers
+    - Stripping breaks tool descriptions, so scoping is the only usable option
+    - Without a handle to the other tool the directive fails, whether detected or not
+  correct: 3

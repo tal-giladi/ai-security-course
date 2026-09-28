@@ -1,0 +1,35 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: f851a0c10dd6
+  question: Why does the classical code/data boundary fail inside an LLM?
+  options:
+    - The system prompt is stored separately, so user text cannot reach it
+    - Only the user's message is parsed as instructions; documents are ignored
+    - The model reads its whole context as one stream, so any text can steer it
+    - The tokenizer strips instructions from retrieved documents before inference
+  correct: 2
+- source: d8a944156a2b
+  question: Which statement correctly describes the confused-deputy pattern in an LLM agent?
+  options:
+    - An attacker plants text the agent reads, and the agent uses its own privileges for them
+    - An attacker steals the agent's API key and calls its tools directly
+    - Two agents with equal privileges disagree and one overrides the other's output
+    - The user grants the agent too few privileges, so it fails the task silently
+  correct: 0
+- source: 8870ce7efe46
+  question: An agent gains a second egress tool. Why is this worse than "one more tool"?
+  options:
+    - It doubles the token cost of every request, making denial of service easier
+    - It only matters if the new tool is exposed directly to the attacker's input
+    - It adds exactly one new attack path, the same as any other added tool
+    - It is reachable from every untrusted entry point, adding many new attack paths
+  correct: 3
+- source: 0b6d7a85fdba
+  question: Why is "the model decides which document to return" an authorization problem?
+  options:
+    - Because the model is too slow to check permissions for every document
+    - Because an access decision moved into a predictor that attacker input can sway
+    - Because retrieved documents are always encrypted and the model cannot read them
+    - Because the system prompt must list every user's permissions in full
+  correct: 1

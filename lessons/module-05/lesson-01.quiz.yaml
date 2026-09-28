@@ -1,0 +1,35 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: 3f81ec29be33
+  question: Which is a correct definition of indirect injection with valid delivery channels?
+  options:
+    - "The attacker types the payload into chat; channels: user message, system prompt, API key"
+    - "Instructions hidden in data the model consumes; channels: retrieved docs, web pages, tool results"
+    - "A model trained on poisoned data; channels: pretraining corpus, fine-tuning set, RLHF labels"
+    - "Stolen credentials reused against the API; channels: logs, config files, env variables"
+  correct: 1
+- source: 3998681f0dea
+  question: Why does an indirect payload usually need more "strength" than a direct one?
+  options:
+    - It arrives in a lower-priority role with a more negative bias $\beta$, so it starts lower
+    - It is truncated by the retriever, so only part of it reaches the model
+    - It must also bypass the tokenizer, which removes imperative verbs
+    - It arrives in the system role, where the guard $G$ is largest
+  correct: 0
+- source: 75bd33d12650
+  question: Why is an egress allowlist a stronger defense than provenance markers or output scrubbing?
+  options:
+    - It stops the model from reading the injected document in the first place
+    - It makes the model less likely to obey injections by marking their source
+    - It detects every encoding of the secret before the reply is sent
+    - It drives $P(\text{egress reaches attacker})$ to ~0 in code, even if the injection is obeyed
+  correct: 3
+- source: 9f6c69a5713d
+  question: In the Lab-05 chain, which assignment of confused-deputy roles is correct?
+  options:
+    - "Attacker: the bot. Deputy: the user. Misused privilege: the retrieval index"
+    - "Attacker: the user. Deputy: the retriever. Misused privilege: the system prompt"
+    - "Attacker: plants text only. Deputy: the bot. Misused privilege: its URL renderer/egress"
+    - "Attacker: holds the secret. Deputy: the renderer. Misused privilege: the user's session"
+  correct: 2

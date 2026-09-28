@@ -1,0 +1,27 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: 355ab6af9485
+  question: How can you jailbreak a model with no gradients?
+  options:
+    - Estimate gradients from the tokenizer vocabulary and run GCG on them
+    - Search over prompts by querying the target and keeping what a judge scores as working
+    - Fine-tune a copy of the target model on refusals, then invert it
+    - Send the same prompt many times until sampling randomness succeeds
+  correct: 1
+- source: 247ec9112326
+  question: Why is the judge the linchpin of automated red teaming?
+  options:
+    - It is the objective the search optimizes, so its errors bias what attacks are found
+    - It generates the candidate prompts, so its creativity limits the search
+    - It blocks unsafe outputs, so it doubles as the production defense
+    - It sets the query budget, so it decides how long the search runs
+  correct: 0
+- source: 251b70a33f90
+  question: Why does a keyword jailbreak classifier fail, and what does the automated search do about it?
+  options:
+    - It is too slow; the search floods it with requests until it times out
+    - It blocks too much; the search learns to avoid benign words
+    - It matches strings, not intent; the search finds paraphrases like a fictional wrapper
+    - It only reads outputs; the search hides the payload in the system prompt
+  correct: 2

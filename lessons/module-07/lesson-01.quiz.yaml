@@ -1,0 +1,35 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: fa5931d0a53b
+  question: What is the GCG objective, and why can't it be solved by plain gradient descent?
+  options:
+    - Maximize $\log p_\theta(t\mid p)$ over weights; the model's weights are frozen
+    - Minimize $-\log p_\theta(t\mid p\oplus s)$ over suffix tokens; tokens are discrete
+    - Minimize the suffix length $L$; the loss has no gradient at all
+    - Minimize $-\log p_\theta(p\mid s)$ over the prompt; the target $t$ is unknown
+  correct: 1
+- source: 350f6bf9045f
+  question: Why does GCG evaluate candidate swaps with real forward passes instead of trusting the gradient?
+  options:
+    - The gradient is exact, but forward passes are cheaper to compute
+    - The gradient cannot be computed for closed models, so forward passes replace it
+    - The one-hot gradient is only a linear approximation of the true discrete loss change
+    - Forward passes are needed to measure perplexity, not the target loss
+  correct: 2
+- source: 1cac86c2b2bb
+  question: Why does a perplexity filter stop vanilla GCG, and how does the adaptive attack defeat it?
+  options:
+    - Vanilla suffixes are gibberish with high perplexity; adding a fluency term yields readable ones
+    - Vanilla suffixes are too long; the adaptive attack shortens them below the limit
+    - Vanilla suffixes repeat the target; the adaptive attack encodes them in base64
+    - Vanilla suffixes have low perplexity; the adaptive attack adds random tokens
+  correct: 0
+- source: b38cf7471327
+  question: Why are transferable suffixes a threat to closed-source models?
+  options:
+    - Closed models expose gradients through their API logprobs
+    - Suffixes leak the closed model's weights once they succeed
+    - Closed models are trained on the suffixes, so they memorize them
+    - Suffixes optimized on open surrogates often work on black-box targets too
+  correct: 3

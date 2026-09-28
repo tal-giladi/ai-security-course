@@ -1,0 +1,35 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: 65fec963acef
+  question: What is the one root cause shared by SQL, command, and prompt injection?
+  options:
+    - Attackers obtain valid credentials and use them against the interpreter
+    - Input is too long and overflows a fixed-size buffer in the parser
+    - Untrusted data enters a string an interpreter parses without telling data from instructions
+    - The interpreter runs with administrator privileges on the host
+  correct: 2
+- source: 6a9396991aa6
+  question: Why is an agent's `fetch_url` tool an SSRF risk, and what stops it?
+  options:
+    - It runs in the user's browser; a content filter on the reply stops it
+    - Server-side requests to model-chosen URLs; allowlists and blocking private ranges stop it
+    - It leaks the user's cookies; stripping headers from the response stops it
+    - It can be slow; a request timeout and retry limit stop it
+  correct: 1
+- source: 9ac5125645c5
+  question: What is a canary, and why does this course use synthetic ones?
+  options:
+    - A planted secret that proves a leak; synthetic ones measure exfiltration with no real secret at risk
+    - A decoy model that absorbs attacks; synthetic ones are cheaper to run than real models
+    - A rate limiter on the API; synthetic ones avoid hitting real provider quotas
+    - A test user account; synthetic ones avoid creating accounts on real services
+  correct: 0
+- source: 5645f4c7ffb4
+  question: Why do least privilege and detection carry more weight for LLMs than for a SQL app?
+  options:
+    - Because LLM apps usually run with fewer privileges than databases do
+    - Because detection is cheaper for text than for SQL queries
+    - Because SQL injection cannot be detected at all, only prevented
+    - Because keeping data out of the instruction channel is only partly possible for LLMs
+  correct: 3

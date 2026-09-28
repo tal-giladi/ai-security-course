@@ -1,0 +1,27 @@
+# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: 7cd996e280cb
+  question: Why does breaking any single link stop an attack chain?
+  options:
+    - Because $P(\text{chain})=\sum_i p_i$, so removing one term lowers the total
+    - Because the attacker must restart from the first hop after any failure
+    - Because $P(\text{chain})=\prod_i p_i$, so one hop at 0 zeroes the product
+    - Because $P(\text{chain})=\max_i p_i$, so only the strongest hop matters
+  correct: 2
+- source: ab36109386d4
+  question: Why is chain depth a useful defense metric?
+  options:
+    - It counts total tool calls, which measures the agent's utility
+    - It measures how many defenses are deployed, regardless of results
+    - It is the number of attackers needed, which bounds attack cost
+    - It counts hops executed before the cut, bounding residual blast radius
+  correct: 3
+- source: d82285a9ccfd
+  question: When should you prefer least privilege over an approval gate?
+  options:
+    - When the capability is high-impact and the task genuinely needs it
+    - When the task doesn't need the capability at all, so removing it costs nothing
+    - When human reviewers are available around the clock
+    - When the model is known to be jailbreak-resistant
+  correct: 1
