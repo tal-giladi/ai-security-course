@@ -1,27 +1,59 @@
-# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
-# The lesson's model answer is shown as the explanation. `source` fingerprints the original
-# question + answer; if the lesson changes, the site flags the question for review.
-- source: e85eb0e7d255
-  question: In an automated red-team loop (generator, target, judge, search, reporter), which component bounds the whole system?
+- id: q1
+  question: >-
+    In an automated red-team loop (generator, target, judge, search, reporter), which component
+    bounds the whole system?
   options:
     - The generator, because its diversity is the only limit on ASR
     - The judge, because observed ASR $\approx ra+f(1-a)$ depends on its errors
     - The target, because a stronger model always lowers observed ASR
     - The reporter, because confidence intervals decide what counts as success
   correct: 1
-- source: f7195647c0cd
-  question: Why is co-evolution, not a single ASR, the right frame for red teaming?
+  explanation: >-
+    The judge supplies the success signal the search optimizes, so its recall and false-positive
+    rate set the ceiling and the floor of everything reported. A judge with false negatives makes
+    the search chase a biased objective and a weak defense look strong. Validate the judge first —
+    the other components only matter once the signal they optimize is trustworthy.
+- id: q2
+  question: >-
+    Why is co-evolution, rather than a single ASR, the right frame for red teaming?
   options:
-    - Because ASR is always 0 after the first round of defenses
+    - Because ASR always reaches 0 after the first round of defenses
     - Because the judge changes each round, so ASR values are not comparable
-    - Attackers adapt, so best-response ASR across rounds shows if a defense lasts
+    - Because attackers adapt, so best-response ASR across rounds shows whether a defense lasts
     - Because defenses never change, so only the attacker's side needs tracking
   correct: 2
-- source: 3ed5104dcb6e
-  question: Why does automated red teaming find problems but not certify their absence?
+  explanation: >-
+    A number measured in round zero describes the defense as it was before the attacker read it.
+    What matters operationally is the attacker's best response after each round, so a durable
+    defense is one whose best-response ASR stays low while a brittle filter lets it recover to
+    near its original value within a round or two. Plotting both curves is the deliverable.
+- id: q3
+  question: >-
+    Why does automated red teaming find problems but fail to certify their absence?
   options:
     - Because its judge has perfect recall but poor precision
-    - Because it runs only on production traffic, not on test sets
-    - Because certification requires running it on every model version
-    - Because it only covers what its generator and judge can find
+    - Because it runs only on production traffic rather than on test sets
+    - Because certification would require running it against every model version
+    - Because it only covers what its generator and judge are able to find
   correct: 3
+  explanation: >-
+    The search explores a space defined by the generator, and reports only what the judge recognizes
+    as success. An attack family the generator never proposes, or a success the judge does not
+    classify, is invisible — so a zero is a statement about coverage, not about the system. That is
+    why the tool is for finding problems and never for signing off on their absence.
+- id: q4
+  question: >-
+    A keyword filter drops attack success rate from 0.9 to 0.1 in round 1. The fuzzer then finds
+    shouted and duplicated payloads in round 2 and ASR returns to 0.85. What does this tell you?
+  options:
+    - The filter should be widened to cover shouting and duplication as well
+    - The result is noise, because a real control would not have been bypassed that quickly
+    - The filter is a probabilistic control with a recoverable best response, not an enforced one
+    - The fuzzer is overfitting to the shim model and the numbers should be discarded
+  correct: 2
+  explanation: >-
+    This is the textbook signature of a filter: it removes the payloads it recognizes, and an
+    adaptive attacker routes around it at a cost of one round. An enforced control — removing the
+    capability, constraining egress, authorizing each call in code — would have set the relevant
+    probability to zero, leaving the attacker's best response nowhere to go. Widen the filter and
+    the same curve repeats with different spellings.

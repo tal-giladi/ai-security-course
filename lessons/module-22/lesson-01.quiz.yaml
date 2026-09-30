@@ -1,27 +1,60 @@
-# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
-# The lesson's model answer is shown as the explanation. `source` fingerprints the original
-# question + answer; if the lesson changes, the site flags the question for review.
-- source: 67d7eee0a14c
-  question: Why is securing model behavior insufficient?
+- id: q1
+  question: >-
+    Why is securing the model's own behavior insufficient?
   options:
     - Because model outputs cannot be evaluated at all
-    - A compromise at any artifact in the graph compromises the system
-    - Because weights are the only artifact attackers can modify
-    - Because behavior checks are too slow for production use
+    - A compromise at any single artifact in the graph compromises the system
+    - Because weights are the only artifact an attacker can modify
+    - Because behavioral checks are too slow for production use
   correct: 1
-- source: 9d40174c4a2f
-  question: Why does verification beat detection for the supply chain?
+  explanation: >-
+    An AI system is a graph — weights, tokenizer, config, datasets, adapters, serving image,
+    plugins — and a break at any node compromises the whole, exactly as one broken link breaks a
+    chain. You can have a model that behaves perfectly and still be running someone else's poisoned
+    dataset or a pickle tokenizer. Behavioral security is necessary and nowhere near sufficient.
+- id: q2
+  question: >-
+    Why does verification beat detection for the supply chain?
   options:
-    - Detection has no false negatives, but verification is cheaper
+    - Detection has no false negatives, but verification is cheaper to run
     - Verification finds novel backdoors that scanners miss
     - Detection requires trusting publishers, while verification does not
-    - A changed byte changes the hash, so tampering has ~zero false negatives
+    - A changed byte changes the hash, so tampering has near-zero false negatives
   correct: 3
-- source: 73e8df2083f2
-  question: What is the residual risk of a verification gate, and how do you cover it?
+  explanation: >-
+    Verification asks "is this byte-identical to the approved artifact?", and collision resistance
+    makes the answer reliable, so substitution and tampering are caught with essentially no false
+    negatives. Detection asks "is this bad?" and therefore keeps a false-negative rate, which is
+    where a novel backdoor lives. Verification trades "catch everything bad" — which nobody can do —
+    for "trust a small set of publishers and keys", which is auditable.
+- id: q3
+  question: >-
+    What is the residual risk of a verification gate, and how do you cover it?
   options:
     - Hash collisions; cover them by switching to a longer hash function
     - Slow downloads; cover them with a local mirror of the registry
-    - A trusted publisher signing a backdoored artifact; add behavioral vetting
+    - A trusted publisher signing a backdoored artifact; cover it with behavioral vetting
     - Unsigned artifacts; cover them by trusting the most popular versions
   correct: 2
+  explanation: >-
+    The gate trusts publishers, so a compromised or malicious one signs real malware and passes
+    every check. No strengthening of the signature scheme helps, because the signature is valid. The
+    complementary control is behavioral — probe the artifact for triggers and evaluate it on data
+    the publisher never saw — which is why the lesson insists verification is the backbone rather
+    than the whole answer.
+- id: q4
+  question: >-
+    A team verifies the top-level model artifact but not the dataset, tokenizer or base container
+    image it was built from. What does the chain-integrity formula predict?
+  options:
+    - Nothing, since the model is the component that actually runs inference
+    - The residual risk is at least as large as with no verification at all
+    - A small residual, because the unverified artifacts are passive data
+    - A residual concentrated entirely in the base image
+  correct: 1
+  explanation: >-
+    The product $\prod_i \mathbb{1}[\text{node } i \text{ verified}]$ is 1 only when every node
+    verifies, so any unverified node leaves the system compromised regardless of how well the
+    others are checked. Partial verification buys an attacker a place to stand that costs nothing
+    to find: they simply target the node you skipped. This is why the lesson insists on enumerating
+    the whole graph, including transitive dependencies and base images.

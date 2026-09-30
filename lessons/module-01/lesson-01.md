@@ -1,4 +1,31 @@
+---
+id: "01.1"
+module: 1
+minutes: 10
+practice_minutes: 75
+prerequisites: ["00.1"]
+objectives:
+  - Define injection as a class and state the one root cause shared by SQL, command, and prompt injection.
+  - Explain SSRF in cloud environments and how an LLM tool call becomes an SSRF primitive.
+  - Explain arbitrary code execution through an agent tool and the sandboxing that contains it.
+  - Reason about where secrets live, how they leak, and what a synthetic canary actually proves.
+  - Map each primitive to the later LLM or agent module where it returns with a new front door.
+volatility: concept
+sources:
+  - title: "OWASP Top 10 2021 A03:2021 – Injection"
+    url: https://owasp.org/Top10/A03_2021-Injection/
+  - title: "OWASP Top 10 2021 A10:2021 – Server-Side Request Forgery"
+    url: https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_%28SSRF%29/
+  - title: "CWE-502: Deserialization of Untrusted Data"
+    url: https://cwe.mitre.org/data/definitions/502.html
+  - title: "PortSwigger Web Security Academy — SSRF"
+    url: https://portswigger.net/web-security/ssrf
+last_verified: "2026-09-30"
+---
+
 # 01.1 · AppSec primitives AI systems inherit
+
+Most AI-security incidents are old application-security bugs with a new front door: the model. This lesson drills the handful of classical primitives — injection, SSRF, code execution, secrets and exfiltration, supply chain — that every later LLM and agent module reuses.
 
 ## Why this matters
 

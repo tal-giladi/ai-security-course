@@ -1,27 +1,59 @@
-# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
-# The lesson's model answer is shown as the explanation. `source` fingerprints the original
-# question + answer; if the lesson changes, the site flags the question for review.
-- source: 51f7dfd407cb
-  question: Why report a confidence interval with ASR, and when is a difference between two systems "established"?
+- id: q1
+  question: >-
+    You measure a defense at 55% attack success rate and a variant at 65%, each over 200 trials.
+    What can you conclude?
   options:
-    - To show the attack's cost; established when the point estimates differ by 0.1
-    - To normalize ASR across models; established when both CIs include 0.5
-    - Finite $n$ hides noise; established only when the Wilson CIs don't overlap
-    - Regulations require it; established once each condition has 30 samples
-  correct: 2
-- source: b0dd3539c7b1
-  question: What is adaptive evaluation, and why is it decisive?
+    - The variant is worse, because 65% is a larger number than 55%
+    - Nothing yet, because the two Wilson confidence intervals overlap
+    - The defense improves the attacker's odds by ten points on average
+    - The original measurement is biased, because both rates came from the same suite
+  correct: 1
+  explanation: >-
+    With 200 trials both intervals are wide enough to contain the other estimate, so the difference
+    is not established. The fix is not to pick a winner but to increase $n$ until the intervals
+    separate, which is what `required_n` computes. Reporting a ten-point difference as a result
+    without that check is the single most common way an evaluation misleads its own author.
+- id: q2
+  question: >-
+    What does a low attack success rate fail to tell you?
   options:
-    - Adjusting the judge until ASR is stable; it removes judge bias
-    - Running the same fixed suite each release; it makes results comparable
-    - Lowering attack strength until the defense passes; it proves a minimum bar
-    - Testing against attacks adapted to the defense; weak-attack results say nothing
+    - How long the evaluation took to run
+    - That the attacks you ran are the strongest ones the attacker could use
+    - How many attack families the suite covered
+    - Whether the confidence interval was computed correctly
+  correct: 1
+  explanation: >-
+    ASR is an upper bound produced by the attacks you chose. It certifies that a particular suite
+    did not succeed, not that a stronger or more adaptive attacker would fail, which is why
+    adaptive evaluation exists and why coverage is reported alongside the number. A benchmark that
+    tests only direct injection will score beautifully on a system that falls over to indirect
+    injection.
+- id: q3
+  question: >-
+    Your judge classifies a successful attack as benign. What happens to the reported numbers?
+  options:
+    - Nothing, since the judge only affects the false-positive count
+    - Observed attack success rate is biased high, so a good defense looks worse
+    - Only the confidence interval widens; the point estimate is unchanged
+    - Observed attack success rate is biased low, so a broken defense looks better than it is
   correct: 3
-- source: c47abadc12ae
-  question: Why can a high lab ROC-AUC still mean poor production precision?
+  explanation: >-
+    The observed rate behaves roughly as $r\,a + f\,(1-a)$, where $r$ is judge recall and $a$ the
+    true attack success rate, so a judge with false negatives pulls the reported number downward and
+    the defect runs in the flattering direction. That is why the lesson says validate the judge
+    first: every downstream number inherits its errors.
+- id: q4
+  question: >-
+    Why wire a security benchmark into CI as a regression guard?
   options:
-    - AUC ignores prevalence, but at low base rates false positives dominate alerts
-    - AUC is computed on training data, so it always overstates recall
-    - Production traffic has more attacks than the lab, which lowers precision
-    - AUC measures latency, not accuracy, so it cannot predict precision
+    - Because a one-off evaluation goes stale as soon as the model changes
+    - Because CI runs attacks faster than a person can
+    - Because continuous integration tools can detect novel attacks on their own
+    - Because it removes the need to report confidence intervals
   correct: 0
+  explanation: >-
+    The value of an evaluation decays the moment the system changes, and models, prompts and
+    dependencies change constantly, so a number from last quarter describes a system that no longer
+    exists. A CI job that fails when ASR rises above a threshold converts evaluation from a snapshot
+    into a control. It does not make the evaluation stronger on its own — the suite and the judge
+    are still only as good as they are.

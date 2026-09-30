@@ -1,4 +1,31 @@
+---
+id: "13.1"
+module: 13
+minutes: 10
+practice_minutes: 120
+prerequisites: ["11.1", "01.1"]
+objectives:
+  - Explain pickle deserialization remote code execution and why .pt and .bin checkpoints are executable code.
+  - Explain what safetensors guarantees, and why that guarantee is stronger than any scanner.
+  - Enumerate load-time code paths, including trust_remote_code and tokenizer or config code.
+  - Build a malicious adapter that preserves clean accuracy while installing a backdoor.
+  - Design a layered load-time defense of safe format, provenance, behavioral vetting, and least privilege.
+volatility: implementation
+sources:
+  - title: "safetensors — a simple, fast, and safe format for storing tensors"
+    url: https://github.com/huggingface/safetensors
+  - title: "CWE-502: Deserialization of Untrusted Data"
+    url: https://cwe.mitre.org/data/definitions/502.html
+  - title: "PyTorch documentation — torch.load and weights_only"
+    url: https://docs.pytorch.org/docs/stable/generated/torch.load.html
+  - title: "Hugging Face Hub security documentation — pickle, safetensors, trust_remote_code"
+    url: https://huggingface.co/docs/hub/security
+last_verified: "2026-09-30"
+---
+
 # 13.1 · Adapter & weight supply chain
+
+Loading a model is a trust decision, not a download. This lesson covers the load-time code paths that make a checkpoint dangerous, the guarantee safetensors gives that a scanner cannot, and the malicious adapter that backdoors a trusted base model without touching its weights file.
 
 ## Why this matters
 

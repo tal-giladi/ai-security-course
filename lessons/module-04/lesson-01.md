@@ -1,4 +1,29 @@
+---
+id: "04.1"
+module: 4
+minutes: 11
+practice_minutes: 90
+prerequisites: ["02.1", "02.2", "01.1"]
+objectives:
+  - Define direct prompt injection and distinguish it from indirect injection and from jailbreaking.
+  - Explain the instruction-hierarchy attack using the finite role-bias model.
+  - Construct delimiter, encoding, obfuscation, multilingual, tokenization-aware, and smuggling payloads, and explain why each works.
+  - Build a payload suite and measure attack success rate with a Wilson confidence interval.
+  - Implement a defense that mixes a weak input-side prior with an enforced output-side control, then bypass it and re-measure.
+volatility: concept
+sources:
+  - title: "Wallace et al., The Instruction Hierarchy: Training LLMs to Prioritize Privileged Instructions"
+    url: https://arxiv.org/abs/2404.13208
+  - title: "Perez & Ribeiro, Ignore Previous Prompt: Attack Techniques for Language Models"
+    url: https://arxiv.org/abs/2211.01974
+  - title: "Simon Willison — Prompt injection attacks against AI systems"
+    url: https://simonwillison.net/2023/Apr/23/chatgpt-prompt-injection/
+last_verified: "2026-09-30"
+---
+
 # 04.1 · Direct prompt injection & the instruction hierarchy
+
+Direct injection is the attack you can build in a demo, and the substrate for most of what follows. This lesson treats it as a research problem — an instruction whose strength has to exceed a finite role bias — and measures the result as an attack success rate with a confidence interval.
 
 ## Why this matters
 

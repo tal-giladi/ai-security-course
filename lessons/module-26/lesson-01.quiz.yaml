@@ -1,27 +1,61 @@
-# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
-# The lesson's model answer is shown as the explanation. `source` fingerprints the original
-# question + answer; if the lesson changes, the site flags the question for review.
-- source: d0f4e1e97cce
-  question: Which ordering best states the course's method for a system you've never seen?
+- id: q1
+  question: >-
+    Which ordering best states the course's method for a system you have never seen?
   options:
     - Add detectors first, then write a system prompt, then run one ASR test
     - Scan for known CVEs, then patch, then certify with automated red teaming
-    - Deploy, wait for incidents, then add filters for each reported attack
+    - Deploy, wait for incidents, then add a filter for each reported attack
     - Model it, map the surface, measure attacks, apply enforced controls first, re-attack
   correct: 3
-- source: 25afb48bf0ae
-  question: Why teach standards as maps onto labs rather than as lists?
+  explanation: >-
+    The method is model, map, attack, defend, adapt, automate, research — and the ordering is the
+    argument. Enforced controls come before detectors because one of them zeroes a hop while a
+    filter only reduces it, and the re-attack step is what turns a defense claim into a measured
+    one. The other orderings all start from a control or an incident rather than from the system's
+    own attack surface.
+- id: q2
+  question: >-
+    Why teach standards as maps onto labs rather than as lists to memorize?
   options:
-    - Because standards change yearly, so lists go out of date too fast
-    - A category is actionable only when tied to a reproduction, defense, and measurement
+    - Because standards change yearly, so memorized lists go out of date
+    - A category is actionable only when tied to a reproduction, a defense and a measurement
     - Because auditors do not accept lists of categories as evidence
-    - Because labs are shorter to read than the standards themselves
+    - Because the labs are shorter to read than the standards themselves
   correct: 1
-- source: a8c08523c270
-  question: What distinguishes "knowing an attack" from "having the capability"?
+  explanation: >-
+    The identifiers are vocabulary; the work is in the reproduction, the defense and the number.
+    A crosswalk that points at the lab where you built the exploit and the control where you broke
+    it survives a renumbering, because you re-derive the mapping instead of recalling it. This is
+    exactly why the 2026 renumbering was survivable — the crosswalk converts old IDs into new ones
+    rather than invalidating the work.
+- id: q3
+  question: >-
+    What distinguishes knowing an attack from having the capability?
   options:
-    - Reproducing, measuring, and defending it on an unfamiliar system without help
+    - Reproducing, measuring and defending it on an unfamiliar system without help
     - Being able to name the attack and cite the paper that introduced it
-    - Having run the attack once in the course's guided lab
+    - Having run the attack once in this course's guided lab
     - Knowing which OWASP category the attack falls under
   correct: 0
+  explanation: >-
+    Recognition is recall; capability is transfer. The test the course applies is whether you could
+    do it again, unaided, on a system whose architecture you have not seen — which is the only
+    version of the skill that transfers to a real engagement. Running the guided lab once is
+    exposure, and naming the attack is recognition; neither survives contact with an unfamiliar
+    system.
+- id: q4
+  question: >-
+    Your engagement report says "Excessive Agency, high severity". Why is that weaker than it
+    sounds?
+  options:
+    - Because severity scales are not defined by any standard
+    - Because the finding names a category but not the reachable action set or the measured ASR
+    - Because Excessive Agency was renamed in the 2026 list
+    - Because the category belongs to the LLM list rather than the agentic one
+  correct: 1
+  explanation: >-
+    A category is a label, not evidence. What makes the finding actionable is the reachable-action
+    set that defines it, the attack that drove it, the attack success rate you measured, and the
+    cost of the fix — and it needs an ATLAS technique ID alongside the OWASP one so the reader can
+    locate both the taxonomy entry and the reproduction. Without those, the report cannot be
+    prioritized or retested.

@@ -1,4 +1,29 @@
+---
+id: "15.1"
+module: 15
+minutes: 10
+practice_minutes: 90
+prerequisites: ["14.1", "00.1", "01.1"]
+objectives:
+  - Explain cross-tenant and cross-user leakage as broken access control on the retrieval path.
+  - Contrast no-authorization, post-filter, and pre-filter retriever designs and their failure modes.
+  - Explain why authorization must be enforced in code, on the trusted principal, before ranking.
+  - Identify metadata-spoofing attacks and defend against them with trusted identity mappings.
+  - Quantify the availability cost of post-filtering and layer the fix with retrieval hygiene and egress control.
+volatility: concept
+sources:
+  - title: "OWASP Top 10 2021 A01:2021 – Broken Access Control"
+    url: https://owasp.org/Top10/A01_2021-Broken_Access_Control/
+  - title: "OWASP Top 10 for LLM Applications 2025 — LLM02 Sensitive Information Disclosure"
+    url: https://genai.owasp.org/llmrisk/llm02-sensitive-information-disclosure/
+  - title: "OWASP Top 10 for LLM Applications 2025 — LLM08 Vector and Embedding Weaknesses"
+    url: https://genai.owasp.org/llmrisk/llm08-vector-and-embedding-weaknesses/
+last_verified: "2026-09-30"
+---
+
 # 15.1 · Multi-tenant retrieval leakage
+
+The most damaging bug in a production RAG system is usually not about the model at all. This lesson treats cross-tenant leakage as broken access control on the retrieval path, and shows where the authorization check has to live for it to actually hold.
 
 ## Why this matters
 

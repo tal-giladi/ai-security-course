@@ -1,4 +1,31 @@
+---
+id: "12.1"
+module: 12
+minutes: 10
+practice_minutes: 150
+prerequisites: ["11.1", "02.2"]
+objectives:
+  - Define membership inference and measure it as an ROC-AUC, explaining the role of overfitting.
+  - Implement the loss-threshold attack and the stronger per-example LiRA likelihood-ratio attack.
+  - Explain and measure model extraction, including the difference between hard and soft label access.
+  - Describe model inversion and training-data memorization as separate privacy leaks.
+  - State the differential privacy guarantee, implement DP-SGD, and trace the privacy/utility frontier.
+volatility: concept
+sources:
+  - title: "Shokri et al., Membership Inference Attacks Against Machine Learning Models"
+    url: https://arxiv.org/abs/1612.04114
+  - title: "Carlini et al., Membership Inference Attacks From First Principles (LiRA)"
+    url: https://arxiv.org/abs/2111.08036
+  - title: "Carlini et al., Extracting Training Data from Large Language Models"
+    url: https://arxiv.org/abs/2012.07805
+  - title: "Abadi et al., Deep Learning with Differential Privacy (DP-SGD)"
+    url: https://arxiv.org/abs/1607.00133
+last_verified: "2026-09-30"
+---
+
 # 12.1 · Model extraction, inversion & membership inference
+
+A model that memorizes leaks who and what was in its training set, and a query-only API leaks the model itself. This lesson builds membership inference and the LiRA attack, measures model extraction against a query budget, and states the differential-privacy guarantee that actually bounds both.
 
 ## Why this matters
 

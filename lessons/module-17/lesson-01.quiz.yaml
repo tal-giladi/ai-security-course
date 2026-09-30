@@ -1,27 +1,59 @@
-# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
-# The lesson's model answer is shown as the explanation. `source` fingerprints the original
-# question + answer; if the lesson changes, the site flags the question for review.
-- source: d22026ab2269
-  question: Why is a poisoned tool description worse than a poisoned document?
+- id: q1
+  question: >-
+    Why is a poisoned tool description a worse injection carrier than a poisoned document?
   options:
-    - It runs as code on the server instead of being read as text
-    - It is only shown after the tool runs, when defenses are off
-    - It bypasses the model entirely and calls the tool directly
-    - It is in planning context for every task, before tool selection
+    - It executes as code on the server rather than being read as text
+    - It is only shown after the tool has run, when input defenses are already off
+    - It bypasses the model entirely and invokes the tool on its own
+    - It sits in planning context on every task, before any tool is selected
   correct: 3
-- source: eba91451da0f
-  question: What are the two enforced defenses against tool poisoning, and how do they differ?
+  explanation: >-
+    A document is read only when a task happens to retrieve it, so its reach is bounded by the
+    retrieval path. A tool description is loaded into the planning context as soon as the catalog is
+    built and is read on every task that might use that tool, so one poisoned entry fires
+    catalog-wide and does so before the model has chosen anything. Reach, not mechanism, is what
+    makes it worse.
+- id: q2
+  question: >-
+    What are the two enforced defenses against tool poisoning, and how do they differ?
   options:
-    - Treat descriptions as data (a filter, evadable) and capability grants (structural, stronger)
-    - Longer system prompts (structural) and tool renaming (a filter, evadable)
+    - Treat descriptions as data (a filter, evadable) and scope capabilities (structural, stronger)
+    - Longer system prompts (structural) and renaming the tools (a filter, evadable)
     - Output moderation (structural) and rate limiting (a filter, evadable)
-    - Treat descriptions as data (structural) and capability grants (a filter, weaker)
+    - Treat descriptions as data (structural) and scope capabilities (a filter, weaker)
   correct: 0
-- source: 3bd134843b79
-  question: What is a rug-pull tool, and how do you defend against it?
+  explanation: >-
+    Catalog-as-data segregation asks the model to read descriptions as untrusted, which only shifts
+    the odds, so a sufficiently strong description still works and it stays a filter. Capability
+    scoping decides in code which tool may be called with which arguments, so it holds even when the
+    model is fully convinced — that is the structural control. Same pair, opposite guarantees.
+- id: q3
+  question: >-
+    What is a rug-pull tool, and how do you defend against it?
   options:
-    - A tool that deletes user data; defend with regular backups and a recycle bin
-    - A tool with a misleading name; defend by renaming it at install and in the registry
-    - A benign tool swapped for a poisoned one later; pin hashes, require signatures, re-verify on load
-    - A tool that hangs or is too slow; defend with strict timeouts and fallback tools
+    - A tool that deletes user data; defend with regular backups
+    - A tool with a misleading name; defend by renaming it at install time
+    - A benign tool later swapped for a poisoned one; pin hashes, require signatures, re-verify on load
+    - A tool that hangs or is too slow; defend with strict timeouts
   correct: 2
+  explanation: >-
+    The tool is approved while it is harmless and swapped afterwards, so review at approval time proves
+    nothing. The defense has to hold at the moment of use: pin the exact artifact by hash, require a
+    signature from a trusted publisher, and re-verify on every load rather than once at install. A
+    time limit or a backup does not address a tool whose behavior changed underneath you.
+- id: q4
+  question: >-
+    A team adds a prompt telling the agent to ignore instructions inside tool descriptions. What
+    class of attack does this leave fully open?
+  options:
+    - Only attacks that arrive as ordinary user messages
+    - A description that argues persuasively rather than issuing an imperative
+    - Poisoning in the tool's return values, which the prompt never mentions
+    - Nothing, because the prompt removes the only channel the attacker can reach
+  correct: 1
+  explanation: >-
+    A prompt-level instruction is a prior, not a control, so it fails against the strongest version of
+    the attack: a description phrased as a reasoned justification rather than a command, which the
+    model may well find convincing. Return-value poisoning is a separate channel this prompt does not
+    even address, which is why the lesson pairs the instruction with capability scoping enforced in
+    code.

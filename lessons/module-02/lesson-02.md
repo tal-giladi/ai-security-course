@@ -1,4 +1,29 @@
+---
+id: "02.2"
+module: 2
+minutes: 10
+practice_minutes: 75
+prerequisites: ["02.1", "01.1"]
+objectives:
+  - Describe the request/response contract of a modern inference API and mark its trust boundaries.
+  - Explain the security implications of streaming: partial output, filter timing, and early side effects.
+  - State what structured output guarantees syntactically, and what it does not guarantee about the values.
+  - Explain tool calling as the model emitting a request that your code then executes.
+  - Evaluate a content filter's precision and recall against the attack base rate.
+volatility: implementation
+sources:
+  - title: "OWASP Top 10 for LLM Applications 2025 — LLM05 Improper Output Handling"
+    url: https://genai.owasp.org/llmrisk/llm05-improper-output-handling/
+  - title: "OWASP Top 10 for LLM Applications 2025 — LLM06 Excessive Agency"
+    url: https://genai.owasp.org/llmrisk/llm06-excessive-agency/
+  - title: "JSON Schema specification — the validation keywords a tool schema can express"
+    url: https://json-schema.org/specification
+last_verified: "2026-09-30"
+---
+
 # 02.2 · The inference API attack surface
+
+The model is only half the system; the inference API built around it is the other half. This lesson catalogs streaming, structured output, tool calling, and content filters — what each appears to guarantee, where the boundary really sits, and how it gets bypassed.
 
 ## Why this matters
 

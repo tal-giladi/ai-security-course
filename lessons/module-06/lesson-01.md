@@ -1,4 +1,27 @@
+---
+id: "06.1"
+module: 6
+minutes: 10
+practice_minutes: 90
+prerequisites: ["05.1", "00.1"]
+objectives:
+  - Explain why any preprocessing that turns non-text into text is an injection surface.
+  - Enumerate multimodal carriers: OCR text, alt text, EXIF metadata, and invisible or zero-width characters.
+  - Explain cross-agent injection as untrusted input crossing an undrawn trust boundary.
+  - Reproduce multimodal and cross-agent injection locally and measure the attack success rate.
+  - Defend with provenance on every channel, enforced controls, and least privilege, then bypass the literal scrub.
+volatility: concept
+sources:
+  - title: "Bagdasaryan et al., (Ab)using Images and Sounds for Indirect Instruction Injection in Multi-Modal LLMs"
+    url: https://arxiv.org/abs/2303.12123
+  - title: "OWASP Top 10 for LLM Applications 2025 — LLM01 Prompt Injection (multimodal subtype)"
+    url: https://genai.owasp.org/llmrisk/llm01-prompt-injection/
+last_verified: "2026-09-30"
+---
+
 # 06.1 · Multimodal & cross-agent injection
+
+Once a system accepts images and files, or chains several agents, the text the model reads no longer comes from a person typing a prompt. This lesson covers the carriers that hide an instruction outside the visible prompt — OCR text, alt text, metadata, invisible characters — and the upstream agents whose output is untrusted input.
 
 ## Why this matters
 

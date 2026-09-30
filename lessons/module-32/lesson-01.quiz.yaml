@@ -1,43 +1,77 @@
-# Multiple-choice version of the quiz in update-01.md (question N = question N there).
-# The lesson's model answer is shown as the explanation. `source` fingerprints the original
-# question + answer; if the lesson changes, the site flags the question for review.
-- source: 252a9e9e0922
-  question: A 2025 report lists "LLM06" and "LLM07". What do they correspond to under the 2026 list?
+- id: q1
+  question: >-
+    A 2025 report lists "LLM06" and "LLM07". What do they correspond to under the 2026 list?
   options:
     - Unbounded Consumption and Misinformation; the numbers carry over unchanged
     - LLM06:2026 Excessive Agency and LLM07:2026 System Prompt Leakage
     - LLM03:2026 Excessive Agency and LLM08:2026 Hidden Context Exposure
     - LLM08:2026 Excessive Agency and LLM03:2026 Hidden Context Exposure
   correct: 2
-- source: 057aac0b891e
-  question: Why is "Hidden Context Exposure" a better category than "System Prompt Leakage"?
+  explanation: >-
+    Excessive Agency moved from sixth to third and System Prompt Leakage from seventh to eighth,
+    where it was broadened to Hidden Context Exposure. Because the numbers were reused for different
+    categories, a reader on the 2026 list silently interprets the same two identifiers as
+    something else entirely, which is the failure mode the crosswalk exists to prevent. Write the
+    year with the ID, as `LLM08:2026`.
+- id: q2
+  question: >-
+    Why is "Hidden Context Exposure" a more accurate category than "System Prompt Leakage"?
   options:
-    - Notes, schemas, docs, and memory share the window and leak the same way
-    - System prompts can no longer be extracted from 2026 models
+    - Notes, schemas, retrieved documents and memory share the window and leak the same way
+    - System prompts can no longer be extracted from 2026-era models
     - It covers training-data extraction, which the old name left out
-    - It limits the scope to secrets, which are the only real risk
+    - It narrows the scope to secrets, which are the only real risk
   correct: 0
-- source: 0c0577d4bf1d
-  question: Your normalizing filter drives ASR from 1.00 to 0.14. Is the credential safe?
+  explanation: >-
+    The rename encodes a research result rather than a cosmetic change: everything in the context
+    window is disclosed to a sufficiently motivated user, so tool schemas, retrieved policies and
+    stored memory are exposed by exactly the same mechanism as the system prompt. A category named
+    after the system prompt invites defenders to protect one slot and believe they are done.
+    Training-data extraction is a different channel entirely, and nothing is narrowed to secrets.
+- id: q3
+  question: >-
+    Your output-normalizing filter drives attack success rate from 1.00 to 0.14. Is the credential
+    safe?
   options:
-    - Yes, 0.14 is below the usual 0.2 acceptance threshold
+    - Yes, because 0.14 sits below the usual 0.2 acceptance threshold
     - Yes, as long as the filter also normalizes ROT13 text
-    - No, but adding a second filter would make it zero
-    - No, with $p>0$ repeated tries still leak it; remove it from context
+    - No, but adding a second filter would drive it to zero
+    - No, because with $p>0$ repeated attempts still leak it; take it out of the context
   correct: 3
-- source: 68856b732c3d
-  question: After moving the credential to the executor, what is the attacker's best next move, and which control addresses it?
+  explanation: >-
+    A filter leaves a positive per-attempt success probability, and with $n$ attempts the chance of
+    at least one leak is $1-(1-p)^n$, which climbs toward 1 as the attacker retries. Lowering the
+    rate slows the attacker down; it does not remove the possibility. The architectural control is
+    to stop putting the credential in the context at all and let the executor hold it.
+- id: q4
+  question: >-
+    After moving the credential out of context into the executor, what is the attacker's best next
+    move, and which control addresses it?
   options:
-    - Extract the credential from logs; addressed by output filtering
-    - Steer the model to call `refund_api`; least privilege, per-call authz, approval
-    - Poison the retriever; addressed by a similarity threshold
-    - Keep extracting with ROT13; addressed by a stronger normalizing filter
+    - Extract the credential from the agent's logs; addressed by output filtering
+    - Steer the model into calling the privileged API itself; addressed by least privilege, per-call authorization and approval
+    - Poison the retriever so the credential is returned again; addressed by a similarity threshold
+    - Keep extracting with ROT13 encoding; addressed by a stronger normalizing filter
   correct: 1
-- source: ad3eeb3dd14e
-  question: The 2026 ranking used 6,639 real incidents. Does rank equal risk for your app?
+  explanation: >-
+    Removing the secret closes the extraction channel and pushes the attacker onto the next one:
+    the model no longer reads the value, but it can still be persuaded to ask for the action that
+    uses it. That is a confused-deputy problem, answered in code by what the agent is authorized to
+    do — least privilege, per-call authorization, and an approval gate for the privileged
+    operation. Extraction and action are separate attack surfaces and need separate controls.
+- id: q5
+  question: >-
+    The 2026 ranking was built from 6,639 real incidents. Does a category's rank equal its risk
+    for your application?
   options:
-    - Yes, because 6,639 incidents make the ranking statistically certain
-    - Yes, because incident data carries 75% of the ranking weight
-    - No, it's a biased population prior; your own threat model decides
-    - No, because the ranking only covers apps without agents
+    - Yes, because that many incidents make the ranking statistically certain
+    - Yes, because incident data carries most of the ranking's weight
+    - No, it is a biased population prior; your own threat model decides
+    - No, because the ranking only covers applications without agent capabilities
   correct: 2
+  explanation: >-
+    Incident counts measure what was reported and noticed, not what threatens you. They undercount
+    quietly successful attacks, over-represent well-instrumented victims, and cannot speak at all
+    about an architecture that has not been exploited yet. The ranking is a useful prior for
+    prioritization across a portfolio; for one system the threat model and the measured reachable
+    action set are the evidence that counts.

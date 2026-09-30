@@ -1,27 +1,62 @@
-# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
-# The lesson's model answer is shown as the explanation. `source` fingerprints the original
-# question + answer; if the lesson changes, the site flags the question for review.
-- source: 4cb2812e8307
-  question: Which are the four multimodal sub-threats, and what follows for defenses?
+- id: q1
+  question: >-
+    Which are the four multimodal sub-threats, and what does that imply for defenses?
   options:
-    - Resolution, compression, color depth, file size; one resize step covers all four
-    - Phishing, spam, malware, DDoS; one antivirus scan covers all four
+    - Resolution, compression, colour depth, file size; one resize step covers all four
+    - Phishing, spam, malware, denial of service; one antivirus scan covers all four
     - OCR text, EXIF, alt text, captions; one text filter covers all four
-    - Semantic injection, steganography, pixel adversarials, malicious documents; each needs its own defense
+    - Semantic injection, steganography, pixel adversarial examples, malicious documents; each needs its own defense
   correct: 3
-- source: f74dc133713d
-  question: Why is an LSB-stego image imperceptible yet detectable, and how can you defend without detecting it?
+  explanation: >-
+    These four attack different layers: the meaning the model reads, the bits the file carries, the
+    pixel values the vision encoder consumes, and the document structure a parser executes. Because
+    each layer is separate, no single control covers more than one — a text filter does nothing
+    about a pixel perturbation, and re-encoding does nothing about an injected instruction. A
+    defense has to be stated per channel.
+- id: q2
+  question: >-
+    Why is an LSB-steganography image imperceptible yet detectable, and how can you defend
+    without detecting it?
   options:
     - It changes pixels by up to 16; defend by blurring the image
-    - It changes pixels by at most 1 but skews LSB-pair stats; zero the LSB plane
+    - It changes pixels by at most 1 but skews LSB-pair statistics; zero the LSB plane
     - It hides data in EXIF only; defend by stripping all metadata
     - It changes no pixels at all; defend by re-encoding the file as PNG
   correct: 1
-- source: 72764b44f369
-  question: Why doesn't LSB-strip defend against a pixel-space adversarial example?
+  explanation: >-
+    Embedding flips the low bit of many pixels, which is invisible because the step is one level out
+    of 256, but the counts of value pairs (2k, 2k+1) come out nearly equal — a chi-square test on
+    those histograms finds it. Detection is not required to defend: `strip_lsb` removes the channel
+    unconditionally, because you do not need to know whether a payload was there to remove the
+    ability to carry one.
+- id: q3
+  question: >-
+    Why does stripping the LSB plane not defend against a pixel-space adversarial example?
   options:
-    - LSB-strip only works on grayscale images, not on three-channel color ones
-    - Adversarial examples are stored in file metadata, not in the pixel values
-    - The adversarial change of size ~ε sits in higher bits; LSB-strip only zeroes bit 0
-    - LSB-strip amplifies the adversarial perturbation instead of removing it
+    - LSB stripping only works on grayscale images, not on three-channel colour ones
+    - Adversarial examples are stored in file metadata rather than in the pixel values
+    - The adversarial change of size $\varepsilon$ sits in the higher bits, while LSB stripping only zeroes bit 0
+    - LSB stripping amplifies the adversarial perturbation instead of removing it
   correct: 2
+  explanation: >-
+    A perturbation constrained to an $\varepsilon$-ball for a normal image is far larger than one
+    least-significant bit, so it lives in the higher bit planes. Zeroing bit 0 leaves it untouched —
+    the defense and the attack are operating on different bits. The same mismatch appears for
+    re-encoding-based defenses, which is why the lesson insists on checking them against adaptive
+    attacks rather than trusting that "the pixels changed".
+- id: q4
+  question: >-
+    A team defends image inputs by rasterizing all untrusted text to an image before the model
+    reads it. Against which of these does the defense do nothing at all?
+  options:
+    - Instructions embedded as text inside the document
+    - Instructions rendered into the pixels of the image itself
+    - A pixel-space adversarial perturbation crafted against the vision encoder
+    - Text placed in the document's metadata fields
+  correct: 2
+  explanation: >-
+    The trick works by exploiting the gap between how models are trained on text versus rendered
+    text, so it defends the text channel and leaves the pixel channel completely open. A
+    perturbation chosen against the vision encoder is not text and is not re-interpreted by
+    rasterizing, so the same system that now ignores written instructions is still fully exposed to
+    adversarial pixels. Two channels, two defenses — which is the chapter's recurring point.

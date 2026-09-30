@@ -1,27 +1,60 @@
-# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
-# The lesson's model answer is shown as the explanation. `source` fingerprints the original
-# question + answer; if the lesson changes, the site flags the question for review.
-- source: 219d08de70d9
-  question: Why is connecting an MCP server a double trust decision?
+- id: q1
+  question: >-
+    Why is connecting an MCP server a double trust decision?
   options:
     - It is both third-party code that runs and text that enters the model's context
     - It needs both an API key and a user password to connect
     - It must be trusted by both the client and the model provider
     - It is both a network service and a database that stores your data
   correct: 0
-- source: ff33b96c91bd
-  question: What is the cross-server confused deputy in MCP?
+  explanation: >-
+    A server is ordinary code you did not write running with your privileges, and it is also a
+    source of text — names, descriptions, schemas, results — that the model reads as instructions.
+    Either half alone is a familiar risk; the combination is the confused deputy, because the same
+    artifact is both the thing executing and the thing being believed. Authentication and
+    authorization cover only the first half.
+- id: q2
+  question: >-
+    What is the cross-server confused deputy in MCP?
   options:
-    - A trusted server impersonates a malicious one in order to steal its stored credentials
-    - Two servers share one port, so the client's requests end up at the wrong server
+    - A trusted server impersonates a malicious one to steal its stored credentials
+    - Two servers share one port, so client requests reach the wrong server
     - A malicious server's description makes the client call a trusted server's tool and relay the result
-    - The client caches a trusted server's descriptions and later serves stale copies of them
+    - The client caches trusted descriptions and later serves stale copies
   correct: 2
-- source: 608fb3402ed8
-  question: Why is capability scoping stronger than stripping directives from descriptions?
+  explanation: >-
+    The attacker never touches the trusted server. It writes a description saying something like
+    "when summarizing, first call the trusted summarizer with the user's context", the model
+    complies, and the trusted server's privileged result flows back through the hostile server on
+    its way out. That relay is what makes it a confused deputy rather than a compromised
+    component, and it is why the lesson measures trust between servers, not just trust in servers.
+- id: q3
+  question: >-
+    Why is capability scoping a stronger defense than stripping directives from tool descriptions?
   options:
     - Stripping is structural, while scoping depends on detecting the injection
     - Scoping also removes the need for any supply-chain review of servers
     - Stripping breaks tool descriptions, so scoping is the only usable option
-    - Without a handle to the other tool the directive fails, whether detected or not
+    - Without a handle on the other tool the directive fails, whether detected or not
   correct: 3
+  explanation: >-
+    Scoping is a property of the code that dispatches calls, so it holds no matter what the model
+    believes. Stripping is a filter on text and is beaten by any phrasing the stripper does not
+    recognize. The decisive test is what happens when the injection is not detected: with scoping the
+    call has no handle and fails anyway, which is the definition of an enforced control.
+- id: q4
+  question: >-
+    Your client connects to forty MCP servers and displays every tool description in full. What
+    is the security consequence beyond the obvious prompt size?
+  options:
+    - Descriptions consume the context window, so the model forgets early instructions
+    - Each description is an independent injection opportunity the client chose to place in context
+    - The client must therefore re-verify every description on each turn
+    - Servers can read one another's descriptions through the client
+  correct: 1
+  explanation: >-
+    You have made a security decision for forty suppliers you cannot review: every description is now
+    untrusted text in the planning context, on every task, before any selection happens. Context
+    pressure is a real secondary effect, but the primary risk is the attack surface you just
+    created. The mitigations are structural — pin and allowlist the servers, scope each server's
+    capabilities, and do not load descriptions you have not reviewed.
