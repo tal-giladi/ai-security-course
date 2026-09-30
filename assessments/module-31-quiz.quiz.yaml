@@ -1,0 +1,135 @@
+- id: q1
+  question: >-
+    During the engagement you discover an out-of-scope internal service that looks trivially
+    exploitable. What is the correct action?
+  options:
+    - Exploit it immediately, because demonstrating maximum impact is always the engagement's goal.
+    - Expand the scope yourself, since finding the service implicitly authorises testing it further.
+    - Quietly test it and only mention it in the report if the exploitation actually succeeds cleanly.
+    - Leave it untouched and note it for the client; acting out of scope is a failure even if it works.
+  correct: 3
+  explanation: >-
+    Rules of engagement bound what you may touch. An out-of-scope action is a failure regardless of
+    outcome; the professional move is to flag the observation to the client so scope can be extended
+    with authorisation, not to act unilaterally.
+- id: q2
+  question: >-
+    In the capstone range, the registry traversal only yields a config token and the agent pipeline only
+    exfiltrates if both poisoned AND shown that token. How should you score this in the report?
+  options:
+    - As three separate low/medium findings, since no single issue achieves impact on its own.
+    - As a single informational note, because chained exploits are theoretical rather than practical.
+    - As one Critical chain whose severity reflects the combined end-to-end data exfiltration.
+    - As two unrelated findings, omitting the token since it is only configuration data in a file.
+  correct: 2
+  explanation: >-
+    A chain's severity is the impact of the combined path, not the max of its links. A Medium plus a Low
+    that compose into data exfiltration is a Critical chain; the report must tell that story while still
+    scoring each link for remediation.
+- id: q3
+  question: >-
+    You must recommend the single highest-leverage fix for the range's exfiltration chain. Which
+    reasoning is correct?
+  options:
+    - Fix the link that participates in the most chains and is cheapest to cut, since chains need every link.
+    - Fix whichever finding has the highest individual CVSS score, independent of the chain structure.
+    - Fix the most recently discovered finding, because it is the freshest in the client's memory.
+    - Apply every possible fix at once, because prioritisation is unnecessary when all bugs are real.
+  correct: 0
+  explanation: >-
+    A chain succeeds only if every link holds, so the highest-leverage fix is the link in the most
+    chains that is cheapest to cut — e.g. quarantining untrusted memory breaks the exfil objective
+    regardless of the traversal. Ranking by isolated CVSS or recency misses the chain structure.
+- id: q4
+  question: >-
+    A reviewer says a remediation in your report reads like an opinion. What would make it an
+    engineering decision the client can weigh?
+  options:
+    - Add a confident assertion that the fix completely and permanently eliminates the risk.
+    - "Add a guarantee analysis: what it guarantees, what it does not, attacker adaptation, and its costs."
+    - Cite the number of hours you spent discovering the finding to justify the recommendation.
+    - Replace the prose with the raw request and response logs so the reader can judge for themselves.
+  correct: 1
+  explanation: >-
+    The guarantee-analysis habit — what a control guarantees, what it does not, how an attacker adapts,
+    and its false-positive and performance costs — turns a recommendation into a weighable engineering
+    decision. That pattern is the course's central discipline.
+- id: q5
+  question: >-
+    When is the capstone engagement actually "done"?
+  options:
+    - As soon as the exploit works and both objective canaries have been captured from the range.
+    - When the report is the longest and lists the greatest possible number of individual findings.
+    - When you have captured the objective, named the highest-leverage fix, and retested that it is denied.
+    - When every finding has been assigned a CVSS score and mapped to at least one framework entry.
+  correct: 2
+  explanation: >-
+    The purple-team close means the engagement is not done at "the exploit worked." It is done when the
+    objective is captured, the highest-leverage fix is identified, and a retest shows that fix denies
+    the objective.
+- id: q6
+  question: >-
+    Why does the report map each finding to MITRE ATLAS, OWASP LLM Top 10, and NIST AI RMF?
+  options:
+    - To increase the report's page count so it appears more thorough to the client's leadership.
+    - To let the red team claim credit for discovering entirely new, previously unnamed techniques.
+    - Because frameworks are legally required for any security report involving AI systems today.
+    - To give defenders a shared, named taxonomy so they can plan and track remediation against it.
+  correct: 3
+  explanation: >-
+    Mapping to standards gives red and blue a shared vocabulary so findings and fixes can be planned,
+    compared, and tracked against named risks — the point of the crosswalk, not length, legal
+    compulsion, or novelty claims.
+- id: q7
+  question: >-
+    The executive summary of your engagement report should primarily:
+  options:
+    - State the overall risk and headline in terms a non-technical stakeholder can act on quickly.
+    - List every request you sent, ordered by timestamp, to demonstrate the depth of testing done.
+    - Contain the full reproduction steps so an engineer can replay every finding from it alone.
+    - Provide the raw tool output so leadership can verify each claim without trusting your analysis.
+  correct: 0
+  explanation: >-
+    The executive summary is for decision-makers: overall risk, the single headline, and objectives
+    achieved, in plain language. Reproduction detail and raw logs belong in the findings and appendix,
+    not the summary.
+- id: q8
+  question: >-
+    You solved the range via one chain. The client asks whether your top fix is sufficient. The best
+    professional response is to:
+  options:
+    - Confirm it is sufficient, since one working fix always closes an entire class of attack paths.
+    - Check for a second path to the objective and report whether your fix also breaks that one.
+    - Decline to answer, because predicting alternative attack paths is outside a red teamer's role.
+    - Recommend they simply buy a commercial AI-security product to cover any remaining paths.
+  correct: 1
+  explanation: >-
+    A responsible report considers alternative chains. You check whether a second path reaches the
+    objective and whether your highest-leverage fix also breaks it, then update the remediation ranking
+    — rather than over-claiming sufficiency from a single tested path.
+- id: q9
+  question: >-
+    Mapping the range engagement to the lifecycle, which ordering of phases is correct?
+  options:
+    - Objective, then recon, then scope, then report, then foothold, then lateral movement.
+    - Report, then scope, then objective, then recon, then foothold, then lateral movement.
+    - Foothold, then objective, then recon, then report, then scope, then lateral movement.
+    - Scope and RoE, then recon, then foothold, then lateral movement, then objective, then report.
+  correct: 3
+  explanation: >-
+    The engagement runs scope/RoE → recon → foothold → lateral movement → objective → report (with a
+    retest loop). Scope must come first because every later action depends on it; the report comes after
+    impact is achieved.
+- id: q10
+  question: >-
+    Which statement best captures the durable lesson of the capstone versus the perishable one?
+  options:
+    - The engagement method is durable; the specific AI techniques you chain will keep changing.
+    - Both the specific AI techniques and the engagement method go out of date at the same rate.
+    - The specific techniques are durable; the engagement method must be reinvented each year.
+    - Neither the method nor the techniques matter once you have automated tooling to run them.
+  correct: 0
+  explanation: >-
+    The lifecycle and reporting discipline (scope, map to ATLAS, chain, prioritise by leverage,
+    guarantee analysis, retest) are durable; the particular AI techniques you chain are current and will
+    shift. Keep the method stable and swap the technique specifics as the field moves.

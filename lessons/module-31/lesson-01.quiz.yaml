@@ -1,0 +1,64 @@
+- id: q1
+  question: >-
+    What is the core skill the capstone engagement assesses, beyond any individual exploit?
+  options:
+    - Memorising the exact payload strings for every attack class covered earlier in the course.
+    - Achieving the single highest possible CVSS score on one isolated finding in the environment.
+    - "Running the engagement: scoping, mapping, chaining findings into impact, and reporting it."
+    - Producing the largest number of distinct findings regardless of whether they compose together.
+  correct: 2
+  explanation: >-
+    The capstone assesses the engagement as a whole — scope and RoE, recon, chaining findings into
+    measurable impact, prioritising remediation, and professional reporting — not any single exploit or
+    raw finding count.
+- id: q2
+  question: >-
+    In the range, a path-traversal bug yields only a config token and the agent pipeline exfiltrates
+    only if both poisoned and shown that token. What is the lesson?
+  options:
+    - The chain is the finding; connecting individually-limited issues is where the real impact lives.
+    - Low-severity findings should always be dropped from the report to keep it concise and focused.
+    - Each finding must be reported in complete isolation so the client can triage them independently.
+    - Only the highest-severity single finding matters, so the token and pipeline can be ignored.
+  correct: 0
+  explanation: >-
+    No single bug is game over; the value is in chaining them into end-to-end impact. The report must
+    show the chain, then also score each link for remediation.
+- id: q3
+  question: >-
+    You must pick the highest-leverage remediation. Which principle applies?
+  options:
+    - Fix the finding with the highest isolated severity score, ignoring how the chain is structured.
+    - Apply all fixes simultaneously, because ranking remediations wastes time when every bug is real.
+    - Fix the finding discovered last, since it will be freshest in the client's mind during triage.
+    - Because a chain needs every link, cut the link in the most chains that is cheapest to remove.
+  correct: 3
+  explanation: >-
+    A chain succeeds only if every link holds, so the best fix is the shared, cheap-to-cut link — e.g.
+    quarantining untrusted memory breaks the exfil objective regardless of the traversal. Ranking by
+    isolated severity or recency misses the chain structure.
+- id: q4
+  question: >-
+    Every remediation in the report should include a guarantee analysis. What does that add?
+  options:
+    - A promise that the fix removes the risk permanently and needs no further review afterwards.
+    - What it guarantees, what it does not, how an attacker adapts, and its false-positive and perf cost.
+    - A precise count of the engineering hours the red team spent discovering the original finding.
+    - A restatement of the raw request and response logs so the reader can re-derive the conclusion.
+  correct: 1
+  explanation: >-
+    The guarantee-analysis pattern turns a recommendation into a weighable engineering decision by
+    stating exactly what the control does and does not do, how it is bypassed, and its costs — the
+    course's central recurring discipline.
+- id: q5
+  question: >-
+    When is the capstone engagement complete?
+  options:
+    - The moment both objective canaries are captured from the range environment successfully.
+    - Once the report lists the maximum number of findings and assigns each a framework mapping.
+    - When the objective is captured, the highest-leverage fix is named, and a retest shows it denied.
+    - As soon as every finding has a CVSS score, independent of whether any fix has been retested.
+  correct: 2
+  explanation: >-
+    The purple-team close: capture the objective, identify the highest-leverage fix, and prove by retest
+    that the fix denies the objective. "The exploit worked" is not the end of the engagement.

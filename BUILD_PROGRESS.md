@@ -11,9 +11,9 @@ Spec for every unit: `curriculum/osai-gap-spec.md`.
 - [x] M29 Embedding attacks DONE
 - [x] M30 AI infrastructure & deployment exploits DONE
 - [x] M16.2 Agent memory poisoning & stealth DONE
-- [ ] M31 Capstone engagement (31.1 + labs/module-31 + templates/engagement-report.md + module quiz)
-- [ ] Main session: sidebar, glossary merge, course-outline/standards map, PUBLISHING_WARNING.md
-- [ ] Final QA: check-course clean for new files, all lab tests pass, commit + push
+- [x] M31 Capstone engagement DONE
+- [x] Main session: sidebar, glossary inboxes, templates, status logs DONE
+- [x] Final QA: check-course clean for all new modules; 36 lab tests pass; committed+pushed
 
 ## Resume procedure
 Read this file and `curriculum/status/*.log`; skip units whose log says `module done`. Max two writing agents at once,

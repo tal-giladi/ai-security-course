@@ -1,4 +1,5 @@
 - [Home](/)
+- [Templates](templates/README.md)
 - [Curriculum map & competency matrix](curriculum/course-outline.md)
 - [Prerequisite map (sibling course)](curriculum/prerequisite-map.md)
 - [Paper curriculum](papers/index.md)
