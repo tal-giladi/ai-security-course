@@ -68,7 +68,24 @@ Missing / thin:
 6. Full-spectrum engagement capstone - one multi-stage enterprise-style AI environment (recon -> foothold ->
    chain -> report) with a professional engagement report deliverable, timed like the OSAI exam.
 Suggested: new modules M27 recon, M28 A2A/multi-agent, M29 embeddings, M30 AI infra, extend M16 with memory,
-and a lab-capstone engagement environment. Not built yet - awaiting go-ahead.
+and a lab-capstone engagement environment.
+
+**ALL 6 BUILT (2026-09-30).** M27 recon, M28 multi-agent/A2A, M29 embeddings, M30 AI infra, M16.2 agent
+memory poisoning, M31 capstone engagement + templates/engagement-report.md. Each has a lesson, a 5-Q
+lesson quiz, a self-contained lab under labs/module-NN/ (in-process mocks, synthetic LAB-CANARY markers,
+no sockets/egress, purple cycle with measurement) with passing pytest, and (except 16.2) a 10-Q module
+quiz. 80 new MCQ total, answer positions balanced A-D. `npm run check-course` reports NO problems on any
+new module; 36 new lab tests pass. All committed and pushed to main. Built to the tals-academy
+course-creator rules (Academy front-matter, fixed sections, GitHub-alert callouts, guarantee analysis).
+
+Two course-wide caveats for import (NOT specific to the new modules - pre-existing):
+- The legacy modules (M00-M26) predate the tals-academy rules: their lessons have no Academy front-matter
+  and their .quiz.yaml use the old `source:` fingerprint format, so check-course drops their questions
+  (0 valid). To import cleanly they need front-matter + source-free quizzes + sidebar `- **Module N —**`
+  format. Separate migration job. The 6 new modules are the only fully-compliant ones today.
+- Lab README pages listed in the sidebar's Labs section trigger a benign "module page outside lessons
+  layout" warning (all labs, old and new). Lessons already link the labs for the zip download; if you
+  want the warning gone, drop the lab READMEs from _sidebar.md and rely on the in-lesson links.
 
 ## Remaining / optional polish
 - Per-paper reading guides in `papers/` — **DONE**: 16 guides (`papers/01..16-*.md`), linked from
