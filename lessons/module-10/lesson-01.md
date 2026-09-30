@@ -1,20 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** [09.1 FGSM/PGD](../module-09/lesson-01.md) (threat models, projected gradient
-attacks, adversarial training), sibling optimization/probability. Lab: CPU torch, builds on Lab 09.
-
-**You will learn.** The three ideas that separate rigorous adversarial-ML from running PGD once:
-the **Carlini–Wagner (CW)** minimal-norm optimization attack, **transfer / black-box** attacks, and
-**certified robustness** (randomized smoothing) — the difference between *"I couldn't find an
-attack"* and *"no attack exists"*.
-
-**Why this matters.** Empirical defenses are repeatedly broken by stronger attacks; the field
-learned to demand (a) evaluation with strong ensembles (AutoAttack), and (b) *certificates* where
-possible. And transfer is the reason black-box systems aren't safe just because their gradients are
-hidden — the through-line to GCG transfer (M07) and real deployments.
-
-</div>
-
 # 10.1 · Adversarial examples II (CW, transfer, certified robustness)
 
 ## Why this matters
@@ -87,17 +70,7 @@ touch your lock. Certification changes the question entirely: instead of *trying
 the input with noise and, if the model votes overwhelmingly for one class across the blur, you can
 *prove* a small adversary can't flip that vote — you've bought a guarantee with noise.
 
-## Technical explanation & Code
-
-`labs/lab-10/adv2.py`:
-- **`cw_attack`** optimizes $\delta$ with Adam on $\|\delta\|_2^2 + c\cdot\text{margin}$; reports the
-  fraction fooled and the *median $\ell_2$* among fooled — the size of the minimal break (~0.27 in
-  the toy, far below a typical PGD $\epsilon$).
-- **`transfer_rate`** crafts PGD adversarials on $A$ and measures how many also fool $B$ (~0.98 in
-  the toy — near-total transfer between similarly-trained models).
-- **`smoothed_predict_and_certify`** Monte-Carlo estimates $\underline{p_A}$ and returns
-  $R=\sigma\Phi^{-1}(\underline{p_A})$ (using `erfinv` for $\Phi^{-1}$), giving ~45/50 test points a
-  positive certified radius.
+## Technical explanation
 
 ## Mathematics
 
@@ -124,25 +97,32 @@ published "defenses" as gradient-masked. If you report empirical robustness, rep
 
 ## Attack / Defense model
 
-<div class="callout guarantee">
+> [!IMPORTANT]
+> **Guarantee analysis — randomized smoothing (certified defense).**
+> - **Stops (provably):** *every* $\ell_2$ perturbation of norm $< R = \sigma\Phi^{-1}(\underline{p_A})$
+>   — a real guarantee, attack-agnostic.
+> - **Does NOT stop:** perturbations with $\ell_2 \ge R$, non-$\ell_2$ threat models ($\ell_\infty$,
+>   semantic, patches), and it doesn't certify points where $\underline{p_A}\le 0.5$.
+> - **Attacker adapts:** exceed $R$, switch norm/threat model, or target low-margin inputs (small
+>   certified radius).
+> - **Cost:** clean-accuracy loss from noise; **inference is Monte-Carlo** (many forward passes per
+>   prediction) — a real latency/throughput hit; certification needs many samples.
+> - **Takeaway:** the gold standard where applicable, but bounded to its norm and radius, and
+>   operationally expensive. Certificates and empirical evaluation are complementary, not substitutes.
 
-**Guarantee analysis — randomized smoothing (certified defense).**
-- **Stops (provably):** *every* $\ell_2$ perturbation of norm $< R = \sigma\Phi^{-1}(\underline{p_A})$
-  — a real guarantee, attack-agnostic.
-- **Does NOT stop:** perturbations with $\ell_2 \ge R$, non-$\ell_2$ threat models ($\ell_\infty$,
-  semantic, patches), and it doesn't certify points where $\underline{p_A}\le 0.5$.
-- **Attacker adapts:** exceed $R$, switch norm/threat model, or target low-margin inputs (small
-  certified radius).
-- **Cost:** clean-accuracy loss from noise; **inference is Monte-Carlo** (many forward passes per
-  prediction) — a real latency/throughput hit; certification needs many samples.
-- **Takeaway:** the gold standard where applicable, but bounded to its norm and radius, and
-  operationally expensive. Certificates and empirical evaluation are complementary, not substitutes.
+## Code
 
-</div>
+`labs/lab-10/adv2.py`:
+- **`cw_attack`** optimizes $\delta$ with Adam on $\|\delta\|_2^2 + c\cdot\text{margin}$; reports the
+  fraction fooled and the *median $\ell_2$* among fooled — the size of the minimal break (~0.27 in
+  the toy, far below a typical PGD $\epsilon$).
+- **`transfer_rate`** crafts PGD adversarials on $A$ and measures how many also fool $B$ (~0.98 in
+  the toy — near-total transfer between similarly-trained models).
+- **`smoothed_predict_and_certify`** Monte-Carlo estimates $\underline{p_A}$ and returns
+  $R=\sigma\Phi^{-1}(\underline{p_A})$ (using `erfinv` for $\Phi^{-1}$), giving ~45/50 test points a
+  positive certified radius.
 
 ## Practical lab
-
-<div class="lab">
 
 **Lab 10** ([`labs/lab-10/`](../../labs/lab-10/README.md)) — CW, transfer, certified radius. CPU
 torch, ~3s tests.
@@ -151,8 +131,6 @@ torch, ~3s tests.
 py labs/lab-10/adv2.py
 py -m pytest labs/lab-10 -q
 ```
-
-</div>
 
 ## Exercise
 
@@ -186,10 +164,6 @@ $\underline{p_A}$ bound was not actually a valid lower bound (too few samples / 
 certificate + certified-accuracy curves, and the evaluation-rigor demonstration with its guarantee
 box.
 
-```bash
-py course.py complete 10.1
-```
-
 ## Research paper
 
 **Carlini & Wagner, "Towards Evaluating the Robustness of Neural Networks" (2017)**; **Cohen,
@@ -206,45 +180,6 @@ smoothing certifies only $\ell_2$; CW is $\ell_2$-oriented; certified accuracy l
 - Papernot et al. on transferability; Tramèr et al. on ensemble adversarial training.
 - NIST AI 100-2 evasion taxonomy; [`references/standards-map.md`](../../references/standards-map.md).
 
-## Assessment
-
-<details><summary>Q1. How does CW differ from PGD, and why does it find smaller perturbations?</summary>
-
-PGD fixes a budget $\epsilon$ and maximizes loss; CW minimizes the perturbation norm subject to
-misclassification via a margin loss ($\|\delta\|_2^2 + c\cdot\text{margin}$), optimized directly.
-By searching for the *smallest* flipping perturbation rather than maxing loss in a fixed ball, CW
-reveals smaller adversarials and higher-confidence ones (via $\kappa$).
-
-</details>
-
-<details><summary>Q2. Why are transfer attacks a threat to black-box models?</summary>
-
-Adversarials crafted on an accessible surrogate frequently fool an inaccessible target, because
-similarly-trained models share features and decision boundaries. So hiding a model's gradients
-doesn't prevent attacks — an attacker crafts on a surrogate (or ensemble) and transfers, exactly as
-GCG suffixes transfer between LLMs.
-
-</details>
-
-<details><summary>Q3. State the randomized-smoothing certificate and what it guarantees.</summary>
-
-For the smoothed classifier $g$ with Gaussian noise $\sigma$, if the top class has smoothed
-probability $\ge\underline{p_A}$, then $g$'s prediction is unchanged for every $\ell_2$ perturbation
-of norm $< R=\sigma\Phi^{-1}(\underline{p_A})$. It guarantees robustness against *all* $\ell_2$
-attacks within $R$ (attack-agnostic), at the cost of noisy/slower Monte-Carlo inference and lower
-clean accuracy.
-
-</details>
-
-<details><summary>Q4. Empirical vs certified robustness — which bounds which?</summary>
-
-Empirical robust accuracy (under a specific attack) is an *upper bound* on true robustness — a
-stronger attack can only lower it. Certified robust accuracy is a *lower bound* — provably correct
-within the radius. Report both, evaluate empirically with strong ensembles (AutoAttack), and never
-treat "no attack found" as a guarantee.
-
-</details>
-
 ## What you should now be able to do
 
 - Implement CW and explain minimal-norm attacks; measure transfer and reason about the black-box
@@ -253,13 +188,17 @@ treat "no attack found" as a guarantee.
 - Distinguish empirical from certified robustness, and evaluate robustness rigorously (AutoAttack,
   transfer) rather than with a single hand-picked attack.
 
-## Progress checkpoint
+-->
+**Prerequisites.** [09.1 FGSM/PGD](../module-09/lesson-01.md) (threat models, projected gradient
+attacks, adversarial training), sibling optimization/probability. Lab: CPU torch, builds on Lab 09.
 
-```bash
-py course.py complete 10.1
-py course.py next
-```
+**You will learn.** The three ideas that separate rigorous adversarial-ML from running PGD once:
+the **Carlini–Wagner (CW)** minimal-norm optimization attack, **transfer / black-box** attacks, and
+**certified robustness** (randomized smoothing) — the difference between *"I couldn't find an
+attack"* and *"no attack exists"*.
 
-**Next:** Stage 5 — 11.1 · Data & model poisoning and backdoors: inserting a trigger during
-training so the model behaves normally until the attacker's trigger appears (sleeper-agent
-behavior), and how to detect it.
+**Why this matters.** Empirical defenses are repeatedly broken by stronger attacks; the field
+learned to demand (a) evaluation with strong ensembles (AutoAttack), and (b) *certificates* where
+possible. And transfer is the reason black-box systems aren't safe just because their gradients are
+hidden — the through-line to GCG transfer (M07) and real deployments.
+-->

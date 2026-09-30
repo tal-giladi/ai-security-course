@@ -1,21 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** [08.1 PAIR/TAP + judges](../module-08/lesson-01.md), [24.1 evaluation harness](../module-24/lesson-01.md),
-[07.1 optimization](../module-07/lesson-01.md), [18.1 chains](../module-18/lesson-01.md). Lab: shim +
-evalkit, offline.
-
-**You will learn.** Automated red teaming: **attack generation**, **mutation/fuzzing**,
-**search/optimization**, **attacker/defender models**, and **automated exploit chains** — turning the
-individual attacks and the evaluation harness into a system that discovers and adapts attacks at
-scale, and co-evolves against defenses.
-
-**Why this matters.** You can't manually red-team a system against a determined, adaptive adversary —
-there are too many payloads and the defense keeps changing. Automated red teaming is how real programs
-achieve coverage and keep pace: it's the offensive complement to the evaluation discipline (M24) and
-the operational form of "attack your own defense" (the purple-team cycle).
-
-</div>
-
 # 25.1 · Automated red teaming
 
 ## Why this matters
@@ -76,13 +58,7 @@ process that files new variants based on which almost-worked — running overnig
 time you change the lock. It won't be as insightful as your best human on any single attempt, but it
 covers ground no human can and never forgets to re-test after a "fix."
 
-## Technical explanation & Code
-
-`labs/lab-25/redteam.py`: `mutate` applies a random transformation (framing/shout/duplicate/emphasize);
-`automated_redteam` evolves a population against `system(payload)->bool` (the shim target, optionally
-behind a defender filter), reporting ASR per round via `evalkit.asr`. `keyword_defender` is the
-adapting defense; the fuzzer rediscovers evasions. Swap in an LLM attacker/judge behind the same
-interfaces for higher fidelity.
+## Technical explanation
 
 ## Mathematics
 
@@ -97,26 +73,29 @@ is one where the attacker's best-response ASR stays low across rounds (not just 
 
 ## Attack / Defense model
 
-<div class="callout guarantee">
+> [!IMPORTANT]
+> **Guarantee analysis — automated red teaming as a security control.**
+> - **Gives you:** scalable coverage across attack families, continuous regression detection (re-run on
+>   every change), and honest ASR-over-time for both attacker and defender — far beyond manual testing.
+> - **Does NOT give you:** proof of safety (it finds attacks it searches for; absence of a found attack
+>   ≠ absence of an attack), coverage of families you didn't include, or validity beyond your judge's
+>   quality.
+> - **Fails when:** the judge is weak (biased ASR), the mutation space is too narrow (misses evasions),
+>   or you report only round-0 ASR (misses the adaptive attacker).
+> - **Cost:** compute (many queries; an attacker LLM is expensive), and judge engineering.
+> - **Takeaway:** run automated red teaming continuously, with a validated judge, broad mutation/family
+>   coverage, CIs, and co-evolution against your actual defenses — and treat it as *finding* problems,
+>   never as *certifying* their absence. It is the operational engine of the purple-team cycle.
 
-**Guarantee analysis — automated red teaming as a security control.**
-- **Gives you:** scalable coverage across attack families, continuous regression detection (re-run on
-  every change), and honest ASR-over-time for both attacker and defender — far beyond manual testing.
-- **Does NOT give you:** proof of safety (it finds attacks it searches for; absence of a found attack
-  ≠ absence of an attack), coverage of families you didn't include, or validity beyond your judge's
-  quality.
-- **Fails when:** the judge is weak (biased ASR), the mutation space is too narrow (misses evasions),
-  or you report only round-0 ASR (misses the adaptive attacker).
-- **Cost:** compute (many queries; an attacker LLM is expensive), and judge engineering.
-- **Takeaway:** run automated red teaming continuously, with a validated judge, broad mutation/family
-  coverage, CIs, and co-evolution against your actual defenses — and treat it as *finding* problems,
-  never as *certifying* their absence. It is the operational engine of the purple-team cycle.
+## Code
 
-</div>
+`labs/lab-25/redteam.py`: `mutate` applies a random transformation (framing/shout/duplicate/emphasize);
+`automated_redteam` evolves a population against `system(payload)->bool` (the shim target, optionally
+behind a defender filter), reporting ASR per round via `evalkit.asr`. `keyword_defender` is the
+adapting defense; the fuzzer rediscovers evasions. Swap in an LLM attacker/judge behind the same
+interfaces for higher fidelity.
 
 ## Practical lab
-
-<div class="lab">
 
 **Lab 25** ([`labs/lab-25/`](../../labs/lab-25/README.md)) — mutation fuzzer + co-evolution against an
 adapting defender. Offline.
@@ -125,8 +104,6 @@ adapting defender. Offline.
 py labs/lab-25/redteam.py
 py -m pytest labs/lab-25 -q
 ```
-
-</div>
 
 ## Exercise
 
@@ -173,34 +150,6 @@ and enforced controls.
 - garak, PyRIT, promptfoo as automated red-team frameworks (local fallbacks in
   `references/tools-and-fallbacks.md`); [`references/standards-map.md`](../../references/standards-map.md).
 
-## Assessment
-
-<details><summary>Q1. What are the components of an automated red-team loop and which one bounds it?</summary>
-
-A generator/fuzzer (or attacker model), the target, a judge (automatic success signal), a search that
-selects toward higher judged ASR, and a reporter (ASR+CIs, coverage). The **judge** bounds the whole
-system: observed ASR $\approx r a + f(1-a)$, so a weak judge biases every result — validate it first.
-
-</details>
-
-<details><summary>Q2. Why is co-evolution (not a single ASR) the right frame?</summary>
-
-Because defenses change and attackers adapt: a filter that drops round-0 ASR is often evaded a round
-later (the fuzzer rediscovers evasions). The meaningful measure is the attacker's *best-response* ASR
-across rounds — a durable (enforced) defense keeps it low; a brittle (filter) defense sees it recover.
-A single snapshot number hides this.
-
-</details>
-
-<details><summary>Q3. Why does automated red teaming find problems but not certify their absence?</summary>
-
-It only explores the payloads/families its generator produces and only scores via its judge; not
-finding an attack means "our search didn't find one," not "none exists" (upper-bound nature, M24/M10).
-Coverage is bounded by generator diversity and judge quality, so it complements — never replaces —
-human red teams and enforced controls.
-
-</details>
-
 ## What you should now be able to do
 
 - Build a mutation-fuzzing / search red-teamer with a judge and report ASR with CIs and coverage.
@@ -208,12 +157,18 @@ human red teams and enforced controls.
 - Automate exploit-chain discovery against an agent and integrate red teaming as CI regression.
 - State honestly what automated red teaming can and cannot certify.
 
-## Progress checkpoint
+-->
+**Prerequisites.** [08.1 PAIR/TAP + judges](../module-08/lesson-01.md), [24.1 evaluation harness](../module-24/lesson-01.md),
+[07.1 optimization](../module-07/lesson-01.md), [18.1 chains](../module-18/lesson-01.md). Lab: shim +
+evalkit, offline.
 
-```bash
-py course.py complete 25.1
-py course.py next
-```
+**You will learn.** Automated red teaming: **attack generation**, **mutation/fuzzing**,
+**search/optimization**, **attacker/defender models**, and **automated exploit chains** — turning the
+individual attacks and the evaluation harness into a system that discovers and adapts attacks at
+scale, and co-evolves against defenses.
 
-**Next:** 26.1 · Purple-team synthesis, standards mapping (OWASP/ATLAS/NIST), the competency matrix,
-and the five capstones — assembling everything into a research-grade program.
+**Why this matters.** You can't manually red-team a system against a determined, adaptive adversary —
+there are too many payloads and the defense keeps changing. Automated red teaming is how real programs
+achieve coverage and keep pace: it's the offensive complement to the evaluation discipline (M24) and
+the operational form of "attack your own defense" (the purple-team cycle).
+-->

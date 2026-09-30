@@ -1,32 +1,11 @@
-<div class="prereq">
-
-**Prerequisites.** [17.1 tool poisoning](../module-17/lesson-01.md), [16.1 agent surface / capabilities](../module-16/lesson-01.md),
-[13.1 supply chain / provenance](../module-13/lesson-01.md), [00.1 confused deputy](../module-00/lesson-01.md).
-Lab: offline MCP model.
-
-**You will learn.** MCP (Model Context Protocol) as a modern, fast-moving attack surface:
-architecture (clients, servers, tools, resources, prompts, transports), its **trust boundaries**,
-**malicious servers**, **tool-description poisoning** ("line jumping"), the **cross-server confused
-deputy**, and the capability/permission/provenance defenses. Designed as a **modular** lesson: learn
-the principles; update the spec specifics as MCP changes.
-
-**Why this matters.** MCP standardizes how LLM apps connect to external tools/data, so it
-standardizes an *attack surface*: every server you connect is third-party code and third-party text
-in your model's context. Installing an MCP server is a trust decision with the same weight as adding
-a dependency (M01/M13) — but it also injects into your model's reasoning.
-
-</div>
-
 # 19.1 · MCP security
 
-<div class="callout warn">
 
-**Fast-moving module.** MCP's spec (auth, transports, tool metadata handling) evolves quickly. This
-lesson teaches the *durable* security principles and models them locally; verify the current spec's
-authorization and server-verification mechanisms before relying on them, and treat any specific API
-detail here as of its writing.
-
-</div>
+> [!WARNING]
+> **Fast-moving module.** MCP's spec (auth, transports, tool metadata handling) evolves quickly. This
+> lesson teaches the *durable* security principles and models them locally; verify the current spec's
+> authorization and server-verification mechanisms before relying on them, and treat any specific API
+> detail here as of its writing.
 
 ## Why this matters
 
@@ -93,14 +72,7 @@ defend by vetting who you hire (allowlist/sign servers), reading their wall-note
 their tools* not orders (metadata-as-data), forbidding contractors from directing each other without
 your say-so (cross-server gate), and giving each only the keys their job needs (capability scoping).
 
-## Technical explanation & Code
-
-`labs/lab-19/mcp_lab.py`: a minimal `MCPClient` aggregating a trusted and a malicious `MCPServer`.
-The client's toy brain reads tool descriptions (`_planning_context`) and obeys directives; a
-directive in a server's description is attributed to that server, so `weather-plus` driving
-`files-server.read_private` is a **cross-server** call the policy can gate. Four configs: trust-all
-(leaks), server allowlist (malicious server inactive), descriptions-as-data (directives stripped),
-cross-server gate (denies the bridge — so exfil sends nothing useful).
+## Technical explanation
 
 ## Mathematics
 
@@ -117,28 +89,32 @@ and the cross-server gate).
 
 ## Attack / Defense model
 
-<div class="callout guarantee">
+> [!IMPORTANT]
+> **Guarantee analysis — MCP client-side controls.**
+> - **Stops:** untrusted servers (allowlist/pinning), description/resource-borne directives
+>   (metadata-as-data), and unauthorized server↔server flows (cross-server gate + per-server capability
+>   scoping) — all enforced in the client, independent of the model.
+> - **Does NOT stop:** a *trusted* (allowlisted, signed) server that is itself malicious or
+>   compromised; abuse within a server's legitimately-granted capabilities; a rug-pull that changes
+>   tools after approval (needs pinning + re-verification); social-engineered human approvals.
+> - **Attacker adapts:** get their server allowlisted/signed; hide directives from the stripper
+>   (encoding — so this is a filter, not a guarantee); operate within granted capabilities; rug-pull.
+> - **Cost:** vetting/pinning servers is operational work; capability scoping and cross-server gates
+>   add friction; metadata-as-data may drop useful legitimate usage hints.
+> - **Takeaway:** treat MCP servers like dependencies *and* like prompt sources — vet+pin+sign them
+>   (supply chain, M13), treat all their text as data (M17), scope capabilities per server (M16), and
+>   gate cross-server flows. The client is the trust broker; security lives there, not in the model.
 
-**Guarantee analysis — MCP client-side controls.**
-- **Stops:** untrusted servers (allowlist/pinning), description/resource-borne directives
-  (metadata-as-data), and unauthorized server↔server flows (cross-server gate + per-server capability
-  scoping) — all enforced in the client, independent of the model.
-- **Does NOT stop:** a *trusted* (allowlisted, signed) server that is itself malicious or
-  compromised; abuse within a server's legitimately-granted capabilities; a rug-pull that changes
-  tools after approval (needs pinning + re-verification); social-engineered human approvals.
-- **Attacker adapts:** get their server allowlisted/signed; hide directives from the stripper
-  (encoding — so this is a filter, not a guarantee); operate within granted capabilities; rug-pull.
-- **Cost:** vetting/pinning servers is operational work; capability scoping and cross-server gates
-  add friction; metadata-as-data may drop useful legitimate usage hints.
-- **Takeaway:** treat MCP servers like dependencies *and* like prompt sources — vet+pin+sign them
-  (supply chain, M13), treat all their text as data (M17), scope capabilities per server (M16), and
-  gate cross-server flows. The client is the trust broker; security lives there, not in the model.
+## Code
 
-</div>
+`labs/lab-19/mcp_lab.py`: a minimal `MCPClient` aggregating a trusted and a malicious `MCPServer`.
+The client's toy brain reads tool descriptions (`_planning_context`) and obeys directives; a
+directive in a server's description is attributed to that server, so `weather-plus` driving
+`files-server.read_private` is a **cross-server** call the policy can gate. Four configs: trust-all
+(leaks), server allowlist (malicious server inactive), descriptions-as-data (directives stripped),
+cross-server gate (denies the bridge — so exfil sends nothing useful).
 
 ## Practical lab
-
-<div class="lab">
 
 **Lab 19** ([`labs/lab-19/`](../../labs/lab-19/README.md)) — malicious server, tool-description
 poisoning, cross-server confused deputy, and four defenses. Offline.
@@ -147,8 +123,6 @@ poisoning, cross-server confused deputy, and four defenses. Offline.
 py labs/lab-19/mcp_lab.py
 py -m pytest labs/lab-19 -q
 ```
-
-</div>
 
 ## Exercise
 
@@ -196,33 +170,6 @@ each time you deploy.
 - Object-capability security (M17); OWASP Agentic AI; supply-chain (M13, M22).
   [`references/standards-map.md`](../../references/standards-map.md).
 
-## Assessment
-
-<details><summary>Q1. Why is connecting an MCP server a double trust decision?</summary>
-
-Because the server is both third-party *code* that runs (supply chain, M13) and a source of *text*
-(tool descriptions, resources, prompts) that enters your model's planning context (tool poisoning,
-M17). You're importing dependencies and prompts you must vet on both axes.
-
-</details>
-
-<details><summary>Q2. What is the cross-server confused deputy in MCP?</summary>
-
-A malicious server's tool description instructs the client to call a *trusted* server's privileged
-tool and return the result to the malicious server. The client — connected to both — is the deputy
-bridging a trust boundary (trusted data → untrusted server) the user never authorized, exfiltrating
-private data. Gate cross-server flows and scope per-server capabilities to stop it.
-
-</details>
-
-<details><summary>Q3. Why is capability scoping stronger than stripping directives from descriptions?</summary>
-
-Stripping is a filter with false negatives (encoding evades it). Capability scoping is structural: if
-a server has no handle to another server's tool, its directive fails for lack of authority regardless
-of whether the injection was detected. Prefer the structural guarantee; keep the filter as depth.
-
-</details>
-
 ## What you should now be able to do
 
 - Diagram MCP's trust boundaries, including client-brokered server↔server flows.
@@ -231,12 +178,19 @@ of whether the injection was detected. Prefer the structural guarantee; keep the
   gating) and map them to the current spec.
 - Treat MCP servers as both dependencies and prompt sources, and keep the module current as MCP evolves.
 
-## Progress checkpoint
+-->
+**Prerequisites.** [17.1 tool poisoning](../module-17/lesson-01.md), [16.1 agent surface / capabilities](../module-16/lesson-01.md),
+[13.1 supply chain / provenance](../module-13/lesson-01.md), [00.1 confused deputy](../module-00/lesson-01.md).
+Lab: offline MCP model.
 
-```bash
-py course.py complete 19.1
-py course.py next
-```
+**You will learn.** MCP (Model Context Protocol) as a modern, fast-moving attack surface:
+architecture (clients, servers, tools, resources, prompts, transports), its **trust boundaries**,
+**malicious servers**, **tool-description poisoning** ("line jumping"), the **cross-server confused
+deputy**, and the capability/permission/provenance defenses. Designed as a **modular** lesson: learn
+the principles; update the spec specifics as MCP changes.
 
-**Next:** 20.1 · Multimodal security (deep) — pixel-space adversarial examples, malicious PDFs,
-steganographic payloads, and multimodal agent attacks.
+**Why this matters.** MCP standardizes how LLM apps connect to external tools/data, so it
+standardizes an *attack surface*: every server you connect is third-party code and third-party text
+in your model's context. Installing an MCP server is a trust decision with the same weight as adding
+a dependency (M01/M13) — but it also injects into your model's reasoning.
+-->

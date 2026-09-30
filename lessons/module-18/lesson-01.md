@@ -1,20 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** [16.1 agent surface](../module-16/lesson-01.md), [17.1 tool poisoning](../module-17/lesson-01.md),
-[05.1 indirect injection](../module-05/lesson-01.md), [01.1 SSRF/exfiltration](../module-01/lesson-01.md),
-[14.1 RAG poisoning](../module-14/lesson-01.md). Lab: shared agent runtime, offline.
-
-**You will learn.** How the individual attacks compose into a realistic **end-to-end kill chain** —
-webpage → browsing agent → indirect injection → tool call → credential read → exfiltration — and how
-**defense-in-depth** breaks it: each enforced control cuts the chain at a different hop, and breaking
-any one link stops the whole attack. You measure **chain depth** as a defense metric.
-
-**Why this matters.** Real incidents are chains, not single bugs. Thinking in chains is how you both
-attack (find the full path) and defend (find the cheapest link to cut). This lesson is the synthesis
-of Stage 7 and the template for the agent capstone.
-
-</div>
-
 # 18.1 · End-to-end attack chains
 
 ## Why this matters
@@ -81,13 +64,7 @@ that room) is cheaper and less annoying than stationing a guard who frisks every
 on one guard; you bar the windows the business doesn't use *and* watch the door. Measuring chain
 depth tells you which barrier the intruder reached before being stopped.
 
-## Technical explanation & Code
-
-`labs/lab-18/chain.py` on the shared runtime: `web[page]` holds the attacker page (injects
-`read_file`), `files['creds.txt']` injects the exfil `http_get` with `SECRET` (substituted to the
-real canary), and the loop observes each result and continues — a genuine multi-step chain. Defenses
-are `Policy` variants; `chain_depth` counts executed hops. The page sits on an allowlisted
-`research.test` host so browsing is legitimately allowed, letting later controls bite at later hops.
+## Technical explanation
 
 ## Mathematics
 
@@ -107,27 +84,30 @@ objective you can regression-test in CI.
 
 ## Attack / Defense model
 
-<div class="callout guarantee">
+> [!IMPORTANT]
+> **Guarantee analysis — layered agent controls on a kill chain.**
+> - **Stops:** the chain, as long as at least one hop is cut by an *enforced* control (egress allowlist
+>   and least privilege each do so here, independent of the model being fully hijacked).
+> - **Does NOT stop:** a chain that stays entirely within granted capabilities and allowlisted
+>   destinations (e.g. exfil via an *allowed* host, or damage using a tool the task legitimately needs);
+>   memory-persistence re-firing; social-engineered approvals.
+> - **Attacker adapts:** route exfil through an allowlisted destination, use only granted tools,
+>   poison memory for persistence, or find a hop you didn't control.
+> - **Cost:** earlier cuts can hurt utility (approval-on-all-egress blocks legit browsing); maintaining
+>   allowlists/capabilities is operational work.
+> - **Takeaway:** enumerate the chain, cut the cheapest high-impact link with an enforced control
+>   (usually least privilege + egress), and keep probabilistic controls (input provenance, monitoring)
+>   as depth — measure chain depth and guard it against regressions.
 
-**Guarantee analysis — layered agent controls on a kill chain.**
-- **Stops:** the chain, as long as at least one hop is cut by an *enforced* control (egress allowlist
-  and least privilege each do so here, independent of the model being fully hijacked).
-- **Does NOT stop:** a chain that stays entirely within granted capabilities and allowlisted
-  destinations (e.g. exfil via an *allowed* host, or damage using a tool the task legitimately needs);
-  memory-persistence re-firing; social-engineered approvals.
-- **Attacker adapts:** route exfil through an allowlisted destination, use only granted tools,
-  poison memory for persistence, or find a hop you didn't control.
-- **Cost:** earlier cuts can hurt utility (approval-on-all-egress blocks legit browsing); maintaining
-  allowlists/capabilities is operational work.
-- **Takeaway:** enumerate the chain, cut the cheapest high-impact link with an enforced control
-  (usually least privilege + egress), and keep probabilistic controls (input provenance, monitoring)
-  as depth — measure chain depth and guard it against regressions.
+## Code
 
-</div>
+`labs/lab-18/chain.py` on the shared runtime: `web[page]` holds the attacker page (injects
+`read_file`), `files['creds.txt']` injects the exfil `http_get` with `SECRET` (substituted to the
+real canary), and the loop observes each result and continues — a genuine multi-step chain. Defenses
+are `Policy` variants; `chain_depth` counts executed hops. The page sits on an allowlisted
+`research.test` host so browsing is legitimately allowed, letting later controls bite at later hops.
 
 ## Practical lab
-
-<div class="lab">
 
 **Lab 18** ([`labs/lab-18/`](../../labs/lab-18/README.md)) — full chain + layered defenses measured by
 chain depth. Offline, shared runtime.
@@ -136,8 +116,6 @@ chain depth. Offline, shared runtime.
 py labs/lab-18/chain.py
 py -m pytest labs/lab-18 -q
 ```
-
-</div>
 
 ## Exercise
 
@@ -170,10 +148,6 @@ privilege/egress); use filters as additional depth where no enforced control exi
 chain-probability computation, the memory-persistence attack+defense, the RAG-entry variant, and the
 minimal-policy design + guarantee box.
 
-```bash
-py course.py complete 18.1
-```
-
 ## Research paper
 
 **Greshake et al. (2023)** (indirect injection, the chain's engine) + **OWASP LLM06 / Agentic AI
@@ -190,34 +164,6 @@ must be complete-mediation (every tool call authorized), not spot checks.
   [`references/standards-map.md`](../../references/standards-map.md).
 - Back-links: M14 (RAG entry), M15 (tenant leakage as a hop), M17 (tool poisoning as entry).
 
-## Assessment
-
-<details><summary>Q1. Why does breaking any single link stop the chain?</summary>
-
-Because the chain succeeds only if *every* hop succeeds: $P(\text{chain})=\prod_i p_i$. An enforced
-control that drives one hop's $p_i$ to 0 zeroes the product regardless of the other hops. That's the
-quantitative basis for defense-in-depth — you don't need to defend every hop, just cut one reliably.
-
-</details>
-
-<details><summary>Q2. Why is chain depth a useful defense metric?</summary>
-
-It counts executed hops before the attack is cut, which lower-bounds the attacker's achieved
-privilege and upper-bounds residual blast radius. Cutting earlier (smaller depth) means less exposure;
-it's a concrete, measurable objective you can regression-test — but it must be weighed against the
-utility cost of earlier cuts.
-
-</details>
-
-<details><summary>Q3. When should you prefer least privilege over an approval gate?</summary>
-
-When the task doesn't need the capability at all: removing it (least privilege) zeroes the hop
-enforced and with no utility cost, whereas an approval gate on a needed capability adds latency/human
-load and can be socially engineered or rubber-stamped. Use approval gates only for high-impact
-actions the task genuinely requires; remove everything it doesn't.
-
-</details>
-
 ## What you should now be able to do
 
 - Trace and reproduce a full agent kill chain and enumerate its trust-boundary crossings.
@@ -225,12 +171,17 @@ actions the task genuinely requires; remove everything it doesn't.
 - Quantify chain-success probability and justify enforced-first, then probabilistic, defense-in-depth.
 - Defend memory-persistence and RAG-entry variants and design a minimal control set.
 
-## Progress checkpoint
+-->
+**Prerequisites.** [16.1 agent surface](../module-16/lesson-01.md), [17.1 tool poisoning](../module-17/lesson-01.md),
+[05.1 indirect injection](../module-05/lesson-01.md), [01.1 SSRF/exfiltration](../module-01/lesson-01.md),
+[14.1 RAG poisoning](../module-14/lesson-01.md). Lab: shared agent runtime, offline.
 
-```bash
-py course.py complete 18.1
-py course.py next
-```
+**You will learn.** How the individual attacks compose into a realistic **end-to-end kill chain** —
+webpage → browsing agent → indirect injection → tool call → credential read → exfiltration — and how
+**defense-in-depth** breaks it: each enforced control cuts the chain at a different hop, and breaking
+any one link stops the whole attack. You measure **chain depth** as a defense metric.
 
-**Next:** Stage 8 (fast-moving) — 19.1 · MCP security: architecture, trust boundaries, malicious
-servers/tools, tool poisoning through MCP, and capability/permission models.
+**Why this matters.** Real incidents are chains, not single bugs. Thinking in chains is how you both
+attack (find the full path) and defend (find the cheapest link to cut). This lesson is the synthesis
+of Stage 7 and the template for the agent capstone.
+-->

@@ -1,22 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** [00.1 confused deputy / threat modeling](../module-00/lesson-01.md),
-[05.1 indirect injection](../module-05/lesson-01.md), [02.2 tool calling = model emits request /
-your code authorizes](../module-02/lesson-02.md). **Sibling:** agents / tool use (M18–M19). Lab:
-shared agent runtime, offline.
-
-**You will learn.** The agent attack surface — loops, planning, memory, external state, tools,
-credentials — and the two organizing concepts: **excessive agency** (an over-large reachable-action
-set an injection can drive) and the **confused deputy** as *executable* behavior. Plus the enforced
-defenses: least privilege, capability policy, approval gates, egress control.
-
-**Why this matters.** Agents are where LLM security stops being about text and starts being about
-*actions with real consequences* — files read, emails sent, code run, money moved. This is the
-largest and most consequential stage of the course, and its core lesson is simple and unforgiving:
-**an agent can be made to do anything it is capable of doing.**
-
-</div>
-
 # 16.1 · The agent attack surface
 
 ## Why this matters
@@ -89,20 +70,7 @@ keys the task needs, requiring a manager's sign-off to open sensitive doors, and
 only lead to approved rooms. Least privilege, approval gates, egress control — keys, sign-offs, and
 rooms.
 
-## Technical explanation & Code
-
-`lab/agents/agent.py` (shared) + `labs/lab-16/excessive_agency.py`:
-- The `Agent` has tools (`read_file`, `http_get`, `send_email`, `whoami`), a synthetic `secret`, and
-  a `Policy`.
-- The **brain** scans context for `CALL tool(args)` directives (a transparent stand-in for a
-  tool-calling LLM) and issues them — *subject to the policy*.
-- `Policy.authorize` is the **enforced boundary**: tool allowlist, egress-host allowlist, approval
-  gates. It runs on every tool call regardless of the brain.
-- The lab shows the vulnerable agent exfiltrating, then three policies each blocking it, and prints
-  the reachable-action set as the excessive-agency metric.
-
-Swap the rule-engine brain for a real tool-calling LLM behind the same interface — the *policy* is
-what matters for security, and it is model-agnostic.
+## Technical explanation
 
 ## Mathematics
 
@@ -121,28 +89,38 @@ best combined with least privilege that makes the dangerous action unreachable i
 
 ## Attack / Defense model
 
-<div class="callout guarantee">
+> [!IMPORTANT]
+> **Guarantee analysis — the agent policy layer (least privilege + egress allowlist + approval).**
+> - **Stops:** any tool call outside the allowlist, egress to non-approved hosts, and (via gates)
+>   un-approved side effects — *regardless of what the brain was convinced to do*. Enforced in code
+>   (02.1), so it holds even under a fully hijacked model.
+> - **Does NOT stop:** misuse *within* granted capabilities (a tool the task legitimately needs can
+>   still be driven maliciously within its allowed args), over-broad allowlists, approval fatigue
+>   (humans rubber-stamping), or attacks on the policy/approver itself.
+> - **Attacker adapts:** operate within allowed tools/args; craft directives that look benign to the
+>   approver (social-engineer the human); target over-provisioned agents.
+> - **Cost:** capability minimization can reduce functionality; approval gates add latency/human load;
+>   maintaining allowlists is operational work.
+> - **Takeaway:** the policy layer is the real boundary and must be minimal and enforced in code;
+>   prompt-level "be careful" is not a control. Combine with input provenance (M05/M06) and monitoring
+>   (M23) — you cannot prevent the model from being persuaded, only bound what a persuaded model can do.
 
-**Guarantee analysis — the agent policy layer (least privilege + egress allowlist + approval).**
-- **Stops:** any tool call outside the allowlist, egress to non-approved hosts, and (via gates)
-  un-approved side effects — *regardless of what the brain was convinced to do*. Enforced in code
-  (02.1), so it holds even under a fully hijacked model.
-- **Does NOT stop:** misuse *within* granted capabilities (a tool the task legitimately needs can
-  still be driven maliciously within its allowed args), over-broad allowlists, approval fatigue
-  (humans rubber-stamping), or attacks on the policy/approver itself.
-- **Attacker adapts:** operate within allowed tools/args; craft directives that look benign to the
-  approver (social-engineer the human); target over-provisioned agents.
-- **Cost:** capability minimization can reduce functionality; approval gates add latency/human load;
-  maintaining allowlists is operational work.
-- **Takeaway:** the policy layer is the real boundary and must be minimal and enforced in code;
-  prompt-level "be careful" is not a control. Combine with input provenance (M05/M06) and monitoring
-  (M23) — you cannot prevent the model from being persuaded, only bound what a persuaded model can do.
+## Code
 
-</div>
+`lab/agents/agent.py` (shared) + `labs/lab-16/excessive_agency.py`:
+- The `Agent` has tools (`read_file`, `http_get`, `send_email`, `whoami`), a synthetic `secret`, and
+  a `Policy`.
+- The **brain** scans context for `CALL tool(args)` directives (a transparent stand-in for a
+  tool-calling LLM) and issues them — *subject to the policy*.
+- `Policy.authorize` is the **enforced boundary**: tool allowlist, egress-host allowlist, approval
+  gates. It runs on every tool call regardless of the brain.
+- The lab shows the vulnerable agent exfiltrating, then three policies each blocking it, and prints
+  the reachable-action set as the excessive-agency metric.
+
+Swap the rule-engine brain for a real tool-calling LLM behind the same interface — the *policy* is
+what matters for security, and it is model-agnostic.
 
 ## Practical lab
-
-<div class="lab">
 
 **Lab 16** ([`labs/lab-16/`](../../labs/lab-16/README.md)) — confused-deputy exfiltration + three
 enforced defenses. Offline, shared agent runtime.
@@ -151,8 +129,6 @@ enforced defenses. Offline, shared agent runtime.
 py labs/lab-16/excessive_agency.py
 py -m pytest labs/lab-16 -q
 ```
-
-</div>
 
 ## Exercise
 
@@ -186,10 +162,6 @@ plan, it can't complete the exfiltration if the terminal capability is unreachab
 hijack + earliest-breaking control, the approval social-engineering + hardening, and the minimal
 least-privilege policy + guarantee box.
 
-```bash
-py course.py complete 16.1
-```
-
 ## Research paper
 
 **OWASP "LLM06: Excessive Agency"** (LLM Top 10) and the emerging **OWASP Agentic AI / Agentic
@@ -206,43 +178,6 @@ real agents have many tools and long horizons — blast radius and approval fati
   reference you hold". Maps directly to tool handles/policies. Deep-dive in M17.
 - MITRE ATLAS (execution, exfiltration via ML systems); [`references/standards-map.md`](../../references/standards-map.md).
 
-## Assessment
-
-<details><summary>Q1. What is excessive agency and how do you measure it?</summary>
-
-An agent able to perform more actions than the task requires, so a successful injection has a large
-blast radius. Measure it as the reachable-action set (tools × permitted argument classes the policy
-allows). It grows multiplicatively with input channels, so minimizing capabilities is high-leverage.
-
-</details>
-
-<details><summary>Q2. Why is the agent a confused deputy, and why doesn't a system prompt fix it?</summary>
-
-The agent holds privileges (egress, credentials) the attacker lacks; an injected directive in
-content the agent reads makes it use those privileges for the attacker. A system prompt is a
-finite-bias prior (02.1) that a strong injection overcomes; the fix is an enforced policy that
-authorizes each tool call in code, independent of what the model was convinced to do.
-
-</details>
-
-<details><summary>Q3. Give three orthogonal enforced defenses and what each stops.</summary>
-
-Least privilege (remove/deny tools — makes the dangerous action unreachable); egress allowlist
-(constrain destinations — blocks exfiltration even if the tool runs); approval gates (human sign-off
-on high-impact side effects — catches a fraction of malicious calls). All are code-level and hold
-under a hijacked model; combine them.
-
-</details>
-
-<details><summary>Q4. Why does removing one egress tool often beat adding an input filter?</summary>
-
-Blast radius scales as (input channels × reachable actions). An input filter reduces channels
-probabilistically and partially; removing a high-impact reachable action (egress) eliminates a whole
-column of the product deterministically — a persuaded model simply cannot complete exfiltration if
-the terminal capability doesn't exist.
-
-</details>
-
 ## What you should now be able to do
 
 - Map the agent loop's attack surfaces and measure excessive agency as the reachable-action set.
@@ -251,12 +186,19 @@ the terminal capability doesn't exist.
   model-agnostic policy.
 - Reason about multi-step/memory hijacks and design a minimal capability policy for a task.
 
-## Progress checkpoint
+-->
+**Prerequisites.** [00.1 confused deputy / threat modeling](../module-00/lesson-01.md),
+[05.1 indirect injection](../module-05/lesson-01.md), [02.2 tool calling = model emits request /
+your code authorizes](../module-02/lesson-02.md). **Sibling:** agents / tool use (M18–M19). Lab:
+shared agent runtime, offline.
 
-```bash
-py course.py complete 16.1
-py course.py next
-```
+**You will learn.** The agent attack surface — loops, planning, memory, external state, tools,
+credentials — and the two organizing concepts: **excessive agency** (an over-large reachable-action
+set an injection can drive) and the **confused deputy** as *executable* behavior. Plus the enforced
+defenses: least privilege, capability policy, approval gates, egress control.
 
-**Next:** 17.1 · Tool poisoning & abuse — malicious tool descriptions and results, tool
-authorization, and capability-based security (least authority for tools).
+**Why this matters.** Agents are where LLM security stops being about text and starts being about
+*actions with real consequences* — files read, emails sent, code run, money moved. This is the
+largest and most consequential stage of the course, and its core lesson is simple and unforgiving:
+**an agent can be made to do anything it is capable of doing.**
+-->

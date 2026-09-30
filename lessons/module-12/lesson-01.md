@@ -1,21 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** Sibling: probability, likelihood, cross-entropy (M01), training (M07).
-[11.1](../module-11/lesson-01.md) (model-level threats). [02.2](../module-02/lesson-02.md) for
-base rates / ROC. Lab: CPU torch.
-
-**You will learn.** Privacy attacks against models: **membership inference** (was this sample in
-the training set?) via the loss-threshold and **likelihood-ratio (LiRA)** attacks, **model
-extraction** (stealing behavior through a query API), and **model inversion**; plus **differential
-privacy (DP-SGD)** as the principled mitigation and its privacy/utility cost.
-
-**Why this matters.** Models memorize. That memorization leaks *who* and *what* was in the training
-data — a direct privacy harm and a regulatory one — and a query API leaks the model itself. These
-are quantifiable risks with quantifiable defenses, and the math (a likelihood-ratio test, an ROC
-curve, a DP bound) is exactly the statistics you need for the rest of the course's evaluation work.
-
-</div>
-
 # 12.1 · Model extraction, inversion & membership inference
 
 ## Why this matters
@@ -91,16 +73,7 @@ student to study with a blurred practice sheet, so no single question can leave 
 they learn the general material but can't betray any specific item, at the cost of learning a bit
 less.
 
-## Technical explanation & Code
-
-`labs/lab-12/privacy.py`:
-- `mi_loss_threshold` scores members/non-members by negative loss and computes AUC via the
-  Mann–Whitney U statistic (equivalent to ROC-AUC).
-- `extract` queries a teacher and trains a student; `fidelity` measures agreement.
-- `train(..., dp=True)` implements **DP-SGD-style** updates: compute **per-example** gradients,
-  **clip** each to norm $\le C$ (bounding any one example's influence), sum, add Gaussian noise
-  $\mathcal N(0,(\sigma C)^2)$, and step. Lab: DP lowers MI AUC 0.64→0.59 while test accuracy falls
-  0.83→0.74.
+## Technical explanation
 
 ## Mathematics
 
@@ -127,27 +100,33 @@ $\varepsilon$–accuracy frontier, which you trace in the exercise.
 
 ## Attack / Defense model
 
-<div class="callout guarantee">
+> [!IMPORTANT]
+> **Guarantee analysis — differential privacy (DP-SGD).**
+> - **Provides:** a *provable* $(\varepsilon,\delta)$ bound on any single example's influence, hence a
+>   bound on membership-inference advantage and on memorization — attack-agnostic, unlike empirical
+>   MI defenses (regularization, early stopping) that a stronger attack can defeat.
+> - **Does NOT provide:** protection of *aggregate/group* properties, protection when $\varepsilon$ is
+>   large (a "DP" model with $\varepsilon=50$ guarantees almost nothing), or defense against
+>   extraction of the (non-private) *function* the model computes.
+> - **Attacker adapts:** use LiRA (still bounded by $\varepsilon$, but tight); attack a model whose
+>   reported $\varepsilon$ is too large to matter; extract the model instead of members.
+> - **Cost:** accuracy loss (esp. on tails/minorities), slower training (per-example grads), and
+>   careful accounting; a wrong clip/noise/accountant silently voids the guarantee.
+> - **Takeaway:** DP is the *only* rigorous membership/memorization defense — but the guarantee is
+>   exactly its $\varepsilon$; report it, and don't confuse "we added noise" with "we are private."
 
-**Guarantee analysis — differential privacy (DP-SGD).**
-- **Provides:** a *provable* $(\varepsilon,\delta)$ bound on any single example's influence, hence a
-  bound on membership-inference advantage and on memorization — attack-agnostic, unlike empirical
-  MI defenses (regularization, early stopping) that a stronger attack can defeat.
-- **Does NOT provide:** protection of *aggregate/group* properties, protection when $\varepsilon$ is
-  large (a "DP" model with $\varepsilon=50$ guarantees almost nothing), or defense against
-  extraction of the (non-private) *function* the model computes.
-- **Attacker adapts:** use LiRA (still bounded by $\varepsilon$, but tight); attack a model whose
-  reported $\varepsilon$ is too large to matter; extract the model instead of members.
-- **Cost:** accuracy loss (esp. on tails/minorities), slower training (per-example grads), and
-  careful accounting; a wrong clip/noise/accountant silently voids the guarantee.
-- **Takeaway:** DP is the *only* rigorous membership/memorization defense — but the guarantee is
-  exactly its $\varepsilon$; report it, and don't confuse "we added noise" with "we are private."
+## Code
 
-</div>
+`labs/lab-12/privacy.py`:
+- `mi_loss_threshold` scores members/non-members by negative loss and computes AUC via the
+  Mann–Whitney U statistic (equivalent to ROC-AUC).
+- `extract` queries a teacher and trains a student; `fidelity` measures agreement.
+- `train(..., dp=True)` implements **DP-SGD-style** updates: compute **per-example** gradients,
+  **clip** each to norm $\le C$ (bounding any one example's influence), sum, add Gaussian noise
+  $\mathcal N(0,(\sigma C)^2)$, and step. Lab: DP lowers MI AUC 0.64→0.59 while test accuracy falls
+  0.83→0.74.
 
 ## Practical lab
-
-<div class="lab">
 
 **Lab 12** ([`labs/lab-12/`](../../labs/lab-12/README.md)) — MI (AUC), extraction (fidelity), DP-SGD
 mitigation. CPU torch, ~12s tests.
@@ -156,8 +135,6 @@ mitigation. CPU torch, ~12s tests.
 py labs/lab-12/privacy.py
 py -m pytest labs/lab-12 -q
 ```
-
-</div>
 
 ## Exercise
 
@@ -192,10 +169,6 @@ densities. Aggregate over targets for the ROC. TPR@low-FPR is where it crushes t
 the extraction curves (hard vs soft), the inversion demo, the DP privacy–utility frontier, and the
 guarantee box.
 
-```bash
-py course.py complete 12.1
-```
-
 ## Research paper
 
 **Shokri et al., "Membership Inference Attacks Against ML Models" (2017)**; **Carlini et al.,
@@ -214,43 +187,6 @@ guarantee is void.
 - OWASP LLM02 (Sensitive Information Disclosure); NIST AI 100-2 (privacy attacks);
   [`references/standards-map.md`](../../references/standards-map.md).
 
-## Assessment
-
-<details><summary>Q1. Why does overfitting enable membership inference, and why report AUC/TPR@low-FPR?</summary>
-
-Overfit models fit training points better, so members have systematically lower loss / higher
-confidence — a signal an attacker thresholds. AUC summarizes the ranking across all thresholds;
-TPR@low-FPR matters because the real harm is confidently identifying *specific* members, which a
-good average AUC can hide.
-
-</details>
-
-<details><summary>Q2. Why is LiRA stronger than the loss-threshold attack?</summary>
-
-Loss-threshold uses one global threshold, conflating "inherently easy" samples with members. LiRA
-calibrates per example using shadow models to estimate the in/out distributions of the model's
-confidence, then applies the Neyman–Pearson-optimal likelihood-ratio test — dramatically improving
-TPR at low FPR, i.e. confidently identifying members.
-
-</details>
-
-<details><summary>Q3. State the DP guarantee and why it bounds membership inference.</summary>
-
-$(\varepsilon,\delta)$-DP: for datasets differing in one example, output probabilities differ by at
-most a factor $e^{\varepsilon}$ (plus $\delta$). Since the output barely depends on any one example's
-presence, an adversary's membership advantage is bounded (roughly $\propto e^{\varepsilon}-1$). DP is
-thus a *provable* MI/memorization defense — its strength is exactly $\varepsilon$.
-
-</details>
-
-<details><summary>Q4. Why is a query-only API not "safe" for the model?</summary>
-
-Because model extraction can train a student to approximate the black box from queries (fidelity
-rising with budget and with soft-label access), yielding IP theft and a white-box surrogate for
-transfer attacks against the original. Hiding weights doesn't hide the function they compute.
-
-</details>
-
 ## What you should now be able to do
 
 - Measure membership inference as an AUC and build the LiRA likelihood-ratio attack.
@@ -258,12 +194,18 @@ transfer attacks against the original. Hiding weights doesn't hide the function 
 - State the DP guarantee, implement DP-SGD, and trace the privacy/utility frontier.
 - Distinguish provable (DP) from empirical privacy defenses and report $\varepsilon$ honestly.
 
-## Progress checkpoint
+-->
+**Prerequisites.** Sibling: probability, likelihood, cross-entropy (M01), training (M07).
+[11.1](../module-11/lesson-01.md) (model-level threats). [02.2](../module-02/lesson-02.md) for
+base rates / ROC. Lab: CPU torch.
 
-```bash
-py course.py complete 12.1
-py course.py next
-```
+**You will learn.** Privacy attacks against models: **membership inference** (was this sample in
+the training set?) via the loss-threshold and **likelihood-ratio (LiRA)** attacks, **model
+extraction** (stealing behavior through a query API), and **model inversion**; plus **differential
+privacy (DP-SGD)** as the principled mitigation and its privacy/utility cost.
 
-**Next:** 13.1 · Adapter & weight supply chain — malicious LoRA adapters, pickle/checkpoint code
-execution, and why safetensors exists; loading a model is running someone else's code.
+**Why this matters.** Models memorize. That memorization leaks *who* and *what* was in the training
+data — a direct privacy harm and a regulatory one — and a query API leaks the model itself. These
+are quantifiable risks with quantifiable defenses, and the math (a likelihood-ratio test, an ROC
+curve, a DP bound) is exactly the statistics you need for the rest of the course's evaluation work.
+-->

@@ -1,23 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** All prior attack modules (you defend what you understand). Especially
-[02.1 enforced vs prior](../module-02/lesson-01.md), [02.2 filters as classifiers / base rates](../module-02/lesson-02.md),
-[16.1 least privilege](../module-16/lesson-01.md), [18.1 defense-in-depth](../module-18/lesson-01.md).
-Lab: reusable toolkit, offline.
-
-**You will learn.** Defensive engineering as a discipline: the catalog of controls (input filtering,
-output validation, structured output, policy enforcement, isolation/sandboxing, egress/network
-controls, provenance, monitoring/anomaly detection, rate limiting, audit logs, incident response),
-each with its **guarantee analysis**, and how to **compose and measure** them — enforced controls
-first, probabilistic detectors as depth, everything measured for false-positive cost.
-
-**Why this matters.** This is the blue-team synthesis. Every earlier module ended with a
-guarantee-analysis box for one defense; here you assemble them into a pipeline and confront the
-recurring truth: **no defense is magic, enforced beats probabilistic, and a filter that blocks users
-is not a win.** Measuring the trade-offs is the job.
-
-</div>
-
 # 23.1 · Defensive engineering
 
 ## Why this matters
@@ -86,12 +66,7 @@ privilege, sandboxing) and *add* sensors and cameras (detection, audit) for dept
 don't replace the locks with more sensitive motion sensors and call it secure. And you check that your
 sensors don't page you every time the cat moves (measure the FP cost).
 
-## Technical explanation & Code
-
-`lab/defense-tools/defenses.py` provides the toolkit; `labs/lab-23/measure_defenses.py` composes a
-`Pipeline` and evaluates configurations, printing ASR/FPR/precision/recall as layers are added. Read
-how each control declares its scope, and how the pipeline orders enforced checks before the detector
-and records every decision to the `AuditLog`.
+## Technical explanation
 
 ## Mathematics
 
@@ -110,29 +85,31 @@ cumulative FP cost ($1-\prod(1-\text{fp}_i)$ grows as you stack).
 
 ## Attack / Defense model
 
-<div class="callout guarantee">
+> [!IMPORTANT]
+> **Guarantee analysis — the composed defense pipeline (meta-analysis).**
+> - **Stops:** everything each *enforced* control covers within its scope (secret scrubbing, egress,
+>   authz, sandbox, rate limit), *plus* a fraction (detector recall) of recognized attacks — with the
+>   audit log enabling detection/IR of the rest.
+> - **Does NOT stop:** attacks entirely within enforced scopes (allowlisted-host exfil, within-privilege
+>   misuse), detector-evading variants (encoding/paraphrase), or novel attacks no control covers.
+> - **Attacker adapts:** operate within allowed capabilities/hosts; evade detectors; find an uncovered
+>   path — so monitoring + IR matter for the residual.
+> - **FP cost:** enforced controls ~0 within scope; detectors add FP that compounds as you stack —
+>   measure and bound it (user impact).
+> - **Perf cost:** enforced checks are cheap; LLM-based detectors add latency/second model calls.
+> - **Takeaway:** build on enforced controls (least privilege, egress, scrubbing, sandboxing, authz),
+>   add detectors/monitoring for depth and forensics, log everything, and **measure ASR *and* FPR** —
+>   a defense is only real if it stops attacks without blocking users, and you can only know that by
+>   measuring (Module 24).
 
-**Guarantee analysis — the composed defense pipeline (meta-analysis).**
-- **Stops:** everything each *enforced* control covers within its scope (secret scrubbing, egress,
-  authz, sandbox, rate limit), *plus* a fraction (detector recall) of recognized attacks — with the
-  audit log enabling detection/IR of the rest.
-- **Does NOT stop:** attacks entirely within enforced scopes (allowlisted-host exfil, within-privilege
-  misuse), detector-evading variants (encoding/paraphrase), or novel attacks no control covers.
-- **Attacker adapts:** operate within allowed capabilities/hosts; evade detectors; find an uncovered
-  path — so monitoring + IR matter for the residual.
-- **FP cost:** enforced controls ~0 within scope; detectors add FP that compounds as you stack —
-  measure and bound it (user impact).
-- **Perf cost:** enforced checks are cheap; LLM-based detectors add latency/second model calls.
-- **Takeaway:** build on enforced controls (least privilege, egress, scrubbing, sandboxing, authz),
-  add detectors/monitoring for depth and forensics, log everything, and **measure ASR *and* FPR** —
-  a defense is only real if it stops attacks without blocking users, and you can only know that by
-  measuring (Module 24).
+## Code
 
-</div>
+`lab/defense-tools/defenses.py` provides the toolkit; `labs/lab-23/measure_defenses.py` composes a
+`Pipeline` and evaluates configurations, printing ASR/FPR/precision/recall as layers are added. Read
+how each control declares its scope, and how the pipeline orders enforced checks before the detector
+and records every decision to the `AuditLog`.
 
 ## Practical lab
-
-<div class="lab">
 
 **Lab 23** ([`labs/lab-23/`](../../labs/lab-23/README.md)) — compose the toolkit into a pipeline and
 measure each layer. Offline.
@@ -141,8 +118,6 @@ measure each layer. Offline.
 py labs/lab-23/measure_defenses.py
 py -m pytest labs/lab-23 -q
 ```
-
-</div>
 
 ## Exercise
 
@@ -190,35 +165,6 @@ retokenize) and measure its ASR reduction and FP cost. *Limits:* defenses are ev
 - Microsoft/Google/Anthropic production LLM-safety engineering writeups; NIST SSDF;
   [`references/standards-map.md`](../../references/standards-map.md). Bridge to M24 (evaluation).
 
-## Assessment
-
-<details><summary>Q1. Enforced vs probabilistic controls — define and give examples.</summary>
-
-Enforced controls are deterministic code, complete within a defined scope, with ~zero false positives
-and holding under a compromised model (output scrubbing, egress allowlist, authz, sandboxing, rate
-limiting). Probabilistic controls are classifiers with false negatives (evadable) and false positives
-(block users): input jailbreak/PII detectors, output moderation, anomaly detection. Enforced controls
-carry the security weight; probabilistic ones add depth and signal.
-
-</details>
-
-<details><summary>Q2. Why can a detector's alerts be mostly false in production even at 90% recall?</summary>
-
-Because of base rates: with low attack prevalence $\pi$, precision $=\frac{t\pi}{t\pi+f(1-\pi)}$ is
-dominated by the $f(1-\pi)$ term, so most positives are false. A 90%-recall/5%-FP detector at
-$\pi=0.5\%$ has ~8% precision. Hence detectors should triage/alert, not hard-block; enforced controls
-(precision 1 within scope) do the blocking.
-
-</details>
-
-<details><summary>Q3. Why prefer one enforced control over stacking probabilistic filters on the same hop?</summary>
-
-An enforced control makes that hop's success probability 0 (chain broken, M18) with no FP cost; stacked
-filters give residual $\prod q_i>0$ and their false positives compound ($1-\prod(1-\text{fp}_i)$).
-Use filters only where no enforced control exists, and measure the cumulative FP cost.
-
-</details>
-
 ## What you should now be able to do
 
 - Catalog defensive controls and classify each as enforced or probabilistic with a guarantee analysis.
@@ -228,12 +174,20 @@ Use filters only where no enforced control exists, and measure the cumulative FP
 - Explain why enforced controls carry the security weight and detectors/monitoring provide depth and
   forensics.
 
-## Progress checkpoint
+-->
+**Prerequisites.** All prior attack modules (you defend what you understand). Especially
+[02.1 enforced vs prior](../module-02/lesson-01.md), [02.2 filters as classifiers / base rates](../module-02/lesson-02.md),
+[16.1 least privilege](../module-16/lesson-01.md), [18.1 defense-in-depth](../module-18/lesson-01.md).
+Lab: reusable toolkit, offline.
 
-```bash
-py course.py complete 23.1
-py course.py next
-```
+**You will learn.** Defensive engineering as a discipline: the catalog of controls (input filtering,
+output validation, structured output, policy enforcement, isolation/sandboxing, egress/network
+controls, provenance, monitoring/anomaly detection, rate limiting, audit logs, incident response),
+each with its **guarantee analysis**, and how to **compose and measure** them — enforced controls
+first, probabilistic detectors as depth, everything measured for false-positive cost.
 
-**Next:** 24.1 · Security evaluation — ASR, precision/recall, ROC/AUC, robustness, transferability,
-coverage, adaptive evaluation, and designing your own security benchmarks.
+**Why this matters.** This is the blue-team synthesis. Every earlier module ended with a
+guarantee-analysis box for one defense; here you assemble them into a pipeline and confront the
+recurring truth: **no defense is magic, enforced beats probabilistic, and a filter that blocks users
+is not a win.** Measuring the trade-offs is the job.
+-->

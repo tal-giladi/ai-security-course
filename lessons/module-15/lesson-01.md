@@ -1,21 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** [14.1 RAG retrieval](../module-14/lesson-01.md), [00.1 authz / "the model
-decides"](../module-00/lesson-01.md), [01.1 broken access control / IDOR](../module-01/lesson-01.md).
-Lab: numpy + shim, offline.
-
-**You will learn.** The multi-tenant RAG failure that is *not about the model at all*: **missing or
-misplaced authorization on retrieval**, causing **cross-user / cross-tenant leakage**, plus
-**metadata attacks** and where the authz check must live. This is broken access control (a top web
-vulnerability) reappearing inside RAG.
-
-**Why this matters.** In production, the single most damaging RAG bug is usually this one: a shared
-index serving many customers with authorization enforced weakly, late, or "by the model." It leaks
-other customers' confidential data — a direct, severe, and common breach, and one no prompt-level
-defense can fix.
-
-</div>
-
 # 15.1 · Multi-tenant retrieval leakage
 
 ## Why this matters
@@ -76,13 +58,7 @@ lies about who owns it, the clerk is fooled. Pre-filter: the clerk first pulls o
 finds the best match *within it* — checked against the building's access list, not the folder's own
 sticker. Only the last is secure.
 
-## Technical explanation & Code
-
-`labs/lab-15/tenant.py`: a `MultiTenantStore` with three methods. `retrieve_vuln` ignores tenant;
-`retrieve_postfilter` takes global top-k then filters (availability loss; trusts `d.tenant`);
-`retrieve_prefilter` restricts to the caller's tenant before ranking. `cross_tenant_leak` runs an
-Acme user against a query that matches Globex's secret. Results: vuln leaks; post-filter blocks the
-leak but returns fewer docs; pre-filter is correct.
+## Technical explanation
 
 ## Mathematics
 
@@ -100,27 +76,30 @@ Little math — this is access control — but two quantifiable points:
 
 ## Attack / Defense model
 
-<div class="callout guarantee">
+> [!IMPORTANT]
+> **Guarantee analysis — pre-filter authorization (the correct control).**
+> - **Stops:** all cross-tenant retrieval — unauthorized docs are never candidates, so they can't be
+>   ranked or returned. Enforced in code on the authenticated principal.
+> - **Does NOT stop:** poison *within* the caller's authorized scope (M14), over-broad scopes (a user
+>   granted too much), or leakage through *shared* documents with wrong ACLs. Also doesn't fix bad
+>   provisioning (wrong principal→scope mapping).
+> - **Attacker adapts:** attack within-scope (poison the tenant's own KB), exploit over-provisioned
+>   roles, or target the auth mapping itself.
+> - **Cost:** you must have and maintain accurate ACL metadata and a trusted principal→scope mapping;
+>   per-tenant partitioning may reduce index-sharing efficiency.
+> - **Contrast — post-filter:** blocks the leak *only if* it doesn't trust document-supplied ACLs
+>   (spoofable), and it degrades availability. **Never** rely on the model to enforce tenancy ("the
+>   model decides" is not authorization, 00.1).
 
-**Guarantee analysis — pre-filter authorization (the correct control).**
-- **Stops:** all cross-tenant retrieval — unauthorized docs are never candidates, so they can't be
-  ranked or returned. Enforced in code on the authenticated principal.
-- **Does NOT stop:** poison *within* the caller's authorized scope (M14), over-broad scopes (a user
-  granted too much), or leakage through *shared* documents with wrong ACLs. Also doesn't fix bad
-  provisioning (wrong principal→scope mapping).
-- **Attacker adapts:** attack within-scope (poison the tenant's own KB), exploit over-provisioned
-  roles, or target the auth mapping itself.
-- **Cost:** you must have and maintain accurate ACL metadata and a trusted principal→scope mapping;
-  per-tenant partitioning may reduce index-sharing efficiency.
-- **Contrast — post-filter:** blocks the leak *only if* it doesn't trust document-supplied ACLs
-  (spoofable), and it degrades availability. **Never** rely on the model to enforce tenancy ("the
-  model decides" is not authorization, 00.1).
+## Code
 
-</div>
+`labs/lab-15/tenant.py`: a `MultiTenantStore` with three methods. `retrieve_vuln` ignores tenant;
+`retrieve_postfilter` takes global top-k then filters (availability loss; trusts `d.tenant`);
+`retrieve_prefilter` restricts to the caller's tenant before ranking. `cross_tenant_leak` runs an
+Acme user against a query that matches Globex's secret. Results: vuln leaks; post-filter blocks the
+leak but returns fewer docs; pre-filter is correct.
 
 ## Practical lab
-
-<div class="lab">
 
 **Lab 15** ([`labs/lab-15/`](../../labs/lab-15/README.md)) — cross-tenant leak (vuln), correct
 pre-filter, post-filter's availability bug. numpy + shim, offline, instant.
@@ -129,8 +108,6 @@ pre-filter, post-filter's availability bug. numpy + shim, offline, instant.
 py labs/lab-15/tenant.py
 py -m pytest labs/lab-15 -q
 ```
-
-</div>
 
 ## Exercise
 
@@ -163,10 +140,6 @@ the caller's tenant", where the caller's tenant comes from your auth context —
 **Deliverable.** The reproduced leak, the availability measurement, the spoofing bypass + pre-filter
 fix, the leak-reliability numbers, the combined poisoning result, and the scale design + guarantee box.
 
-```bash
-py course.py complete 15.1
-```
-
 ## Research paper
 
 No single canonical paper — this is broken access control (OWASP A01) applied to RAG. Read instead:
@@ -185,43 +158,6 @@ returns a tenant-B doc (regression guard) — the practical deliverable a real t
   patterns. [`references/standards-map.md`](../../references/standards-map.md).
 - Back-link M14 (poisoning within scope); forward link M18 (agents retrieving across tools/tenants).
 
-## Assessment
-
-<details><summary>Q1. Why is cross-tenant RAG leakage not a model problem?</summary>
-
-Because the leak occurs at retrieval: an unauthorized document is fetched into context because the
-retriever didn't restrict candidates to what the authenticated caller may see. The model then uses it
-faithfully. No prompt or output defense fixes it — the authorization check must be deterministic code
-on the retrieval path.
-
-</details>
-
-<details><summary>Q2. Why is pre-filtering correct and post-filtering not?</summary>
-
-Pre-filter restricts candidates to the caller's authorized scope *before* ranking, so unauthorized
-docs are never eligible — and it keys on the trusted principal, not document metadata. Post-filter
-ranks globally then drops unauthorized docs: it crowds out the caller's real results (availability)
-and, if it trusts the document's own ACL field, is bypassable by metadata spoofing.
-
-</details>
-
-<details><summary>Q3. What is a metadata attack and how do you stop it?</summary>
-
-An attacker who can influence ingestion sets their document's tenant/ACL field to a victim's value
-(or "public") so an authz check that trusts document-supplied metadata passes it. Stop it by
-authorizing on the authenticated *caller's* identity mapped to scope via a trusted source (auth
-system/DB), never on attacker-influenceable document fields.
-
-</details>
-
-<details><summary>Q4. Under a targeted query, is cross-tenant leakage rare?</summary>
-
-No. If the attacker knows the victim's topic, they craft a query that closely matches the victim's
-secret doc, driving its similarity high; under a no-authz retriever the leak probability approaches 1.
-It's a reliable, targeted attack, not an occasional accident.
-
-</details>
-
 ## What you should now be able to do
 
 - Recognize cross-tenant/cross-user RAG leakage as broken access control on retrieval.
@@ -230,12 +166,18 @@ It's a reliable, targeted attack, not an occasional accident.
 - Layer tenancy authz with provenance, retrieval hygiene, and egress control, and guard it with CI
   regression tests.
 
-## Progress checkpoint
+-->
+**Prerequisites.** [14.1 RAG retrieval](../module-14/lesson-01.md), [00.1 authz / "the model
+decides"](../module-00/lesson-01.md), [01.1 broken access control / IDOR](../module-01/lesson-01.md).
+Lab: numpy + shim, offline.
 
-```bash
-py course.py complete 15.1
-py course.py next
-```
+**You will learn.** The multi-tenant RAG failure that is *not about the model at all*: **missing or
+misplaced authorization on retrieval**, causing **cross-user / cross-tenant leakage**, plus
+**metadata attacks** and where the authz check must live. This is broken access control (a top web
+vulnerability) reappearing inside RAG.
 
-**Next:** Stage 7 (the largest) — 16.1 · The agent attack surface: loops, planning, memory, tools,
-credentials; excessive agency and the confused deputy formalized for autonomous agents.
+**Why this matters.** In production, the single most damaging RAG bug is usually this one: a shared
+index serving many customers with authorization enforced weakly, late, or "by the model." It leaks
+other customers' confidential data — a direct, severe, and common breach, and one no prompt-level
+defense can fix.
+-->

@@ -1,22 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** [13.1 weights/adapter supply chain](../module-13/lesson-01.md),
-[21.1 code-agent / dependency confusion](../module-21/lesson-01.md), [01.1 supply chain / deserialization](../module-01/lesson-01.md),
-[11.1 poisoning](../module-11/lesson-01.md). Lab: hashlib, offline.
-
-**You will learn.** The full **AI supply chain** as an attack surface — model hubs, datasets,
-tokenizer/config files, LoRA adapters, Docker images, inference servers, plugins — and how to build a
-**verification gate** (integrity, provenance, safe format, pinning) that turns "we downloaded it" into
-"we verified exactly what we approved." This ties M13 and M21 into one discipline.
-
-**Why this matters.** You can perfectly secure a model's behavior and still be compromised by a
-poisoned dataset, a pickle tokenizer, an unpinned dependency, or a backdoored base image. Most AI
-compromise happens *around* the model, through the graph of artifacts you assemble it from — and that
-graph is defensible with the same structural controls (hashes, signatures, allowlists, safe formats,
-lockfiles) that secure any software supply chain.
-
-</div>
-
 # 22.1 · AI supply-chain security
 
 ## Why this matters
@@ -72,13 +53,7 @@ tamper-evident seals**: each part has a part number (pin), a serial that matches
 manifest (integrity), a certificate from an approved supplier (provenance), and isn't a type known to
 hide explosives (safe format). You verify the parts, not just test-drive the car.
 
-## Technical explanation & Code
-
-`labs/lab-22/supply_chain_graph.py`: `Artifact` (name/kind/source/content/signer/fmt/version), a
-`TrustPolicy` (allowed sources, trusted signers, unsafe formats, require-pinned), and `verify_artifact`
-returning violations across the four axes. `verify_supply_chain` verifies the whole graph; `trusted`
-is true iff every node passes. A clean chain passes; four injected artifacts (one per axis) are each
-caught with a specific reason.
+## Technical explanation
 
 ## Mathematics
 
@@ -98,29 +73,32 @@ exactly a **signed-but-malicious** publisher (M13) — hence defense-in-depth wi
 
 ## Attack / Defense model
 
-<div class="callout guarantee">
+> [!IMPORTANT]
+> **Guarantee analysis — supply-chain verification gate.**
+> - **Stops:** substitution/tampering (integrity), fetches from untrusted sources or unsigned/wrong
+>   signers (provenance), code-executing formats (safe format, structural), and version-shift/dependency
+>   confusion (pinning) — across every verified node. Structural, not detection-based.
+> - **Does NOT stop:** a **compromised or malicious trusted publisher** (signs real malware), a poisoned
+>   dataset/backdoored model that is *legitimately* the approved artifact (needs behavioral vetting,
+>   M11/M13), or **unverified/transitive** nodes you forgot to include.
+> - **Attacker adapts:** compromise/impersonate a trusted signer, poison an artifact *before* it's
+>   signed, or target a node outside the gate's coverage.
+> - **Cost:** manifest/signature/lockfile infrastructure and discipline; you must enumerate the *whole*
+>   graph (including transitive deps and base images).
+> - **Takeaway:** verification (integrity + provenance + safe format + pinning) is the structural
+>   backbone of AI supply-chain security — necessary and high-leverage — but it trusts publishers, so
+>   pair it with behavioral vetting (M11/M13) and complete coverage of the graph. "We downloaded it"
+>   must become "we verified exactly what we approved, everywhere."
 
-**Guarantee analysis — supply-chain verification gate.**
-- **Stops:** substitution/tampering (integrity), fetches from untrusted sources or unsigned/wrong
-  signers (provenance), code-executing formats (safe format, structural), and version-shift/dependency
-  confusion (pinning) — across every verified node. Structural, not detection-based.
-- **Does NOT stop:** a **compromised or malicious trusted publisher** (signs real malware), a poisoned
-  dataset/backdoored model that is *legitimately* the approved artifact (needs behavioral vetting,
-  M11/M13), or **unverified/transitive** nodes you forgot to include.
-- **Attacker adapts:** compromise/impersonate a trusted signer, poison an artifact *before* it's
-  signed, or target a node outside the gate's coverage.
-- **Cost:** manifest/signature/lockfile infrastructure and discipline; you must enumerate the *whole*
-  graph (including transitive deps and base images).
-- **Takeaway:** verification (integrity + provenance + safe format + pinning) is the structural
-  backbone of AI supply-chain security — necessary and high-leverage — but it trusts publishers, so
-  pair it with behavioral vetting (M11/M13) and complete coverage of the graph. "We downloaded it"
-  must become "we verified exactly what we approved, everywhere."
+## Code
 
-</div>
+`labs/lab-22/supply_chain_graph.py`: `Artifact` (name/kind/source/content/signer/fmt/version), a
+`TrustPolicy` (allowed sources, trusted signers, unsafe formats, require-pinned), and `verify_artifact`
+returning violations across the four axes. `verify_supply_chain` verifies the whole graph; `trusted`
+is true iff every node passes. A clean chain passes; four injected artifacts (one per axis) are each
+caught with a specific reason.
 
 ## Practical lab
-
-<div class="lab">
 
 **Lab 22** ([`labs/lab-22/`](../../labs/lab-22/README.md)) — supply-chain graph + four-axis
 verification gate. hashlib, offline.
@@ -129,8 +107,6 @@ verification gate. hashlib, offline.
 py labs/lab-22/supply_chain_graph.py
 py -m pytest labs/lab-22 -q
 ```
-
-</div>
 
 ## Exercise
 
@@ -175,36 +151,6 @@ a genuinely-backdoored-but-properly-built model still passes, so behavioral vett
 - OWASP LLM03 (Supply Chain); MITRE ATLAS (ML supply-chain compromise); NIST SSDF;
   [`references/standards-map.md`](../../references/standards-map.md). Back-links M11, M13, M21.
 
-## Assessment
-
-<details><summary>Q1. Why is securing model behavior insufficient?</summary>
-
-Because the system is a graph of externally-sourced artifacts (weights, tokenizer, dataset, adapter,
-image, server, plugins), and a compromise at *any* node — a pickle tokenizer, a poisoned dataset, a
-backdoored base image, an unpinned dependency — compromises the system regardless of how well the
-model's outputs are vetted. You must verify the whole graph.
-
-</details>
-
-<details><summary>Q2. Why does verification beat detection for supply chain?</summary>
-
-Detection has false negatives (a novel backdoor/payload slips past a scanner). Verification against a
-trusted manifest has ~zero false negatives for substitution/tampering (a changed byte changes the
-hash — collision resistance) and enforces "exactly the approved artifact from an approved signer in a
-safe format at a pinned version." It trades the impossible "detect all bad things" for the manageable
-"trust a small set of publishers/keys."
-
-</details>
-
-<details><summary>Q3. What is the residual risk of a verification gate, and how do you cover it?</summary>
-
-A compromised or malicious *trusted publisher* that legitimately signs a backdoored/poisoned artifact —
-verification passes it because it *is* the approved, signed artifact. Cover it with behavioral vetting
-(M11 trigger probing, evaluation on your own data) and complete graph coverage (including transitive
-deps and base images).
-
-</details>
-
 ## What you should now be able to do
 
 - Enumerate the AI supply-chain graph and the compromise vector at each node.
@@ -212,12 +158,19 @@ deps and base images).
 - Explain why verification is structural and where its residual (trusted-publisher compromise) lies.
 - Integrate M13/M21 defenses and map to SLSA/SBOM, pairing verification with behavioral vetting.
 
-## Progress checkpoint
+-->
+**Prerequisites.** [13.1 weights/adapter supply chain](../module-13/lesson-01.md),
+[21.1 code-agent / dependency confusion](../module-21/lesson-01.md), [01.1 supply chain / deserialization](../module-01/lesson-01.md),
+[11.1 poisoning](../module-11/lesson-01.md). Lab: hashlib, offline.
 
-```bash
-py course.py complete 22.1
-py course.py next
-```
+**You will learn.** The full **AI supply chain** as an attack surface — model hubs, datasets,
+tokenizer/config files, LoRA adapters, Docker images, inference servers, plugins — and how to build a
+**verification gate** (integrity, provenance, safe format, pinning) that turns "we downloaded it" into
+"we verified exactly what we approved." This ties M13 and M21 into one discipline.
 
-**Next:** Stage 9 — 23.1 · Defensive engineering: input filtering, output validation, structured
-output, policy enforcement, isolation, monitoring — each with its guarantee analysis and limits.
+**Why this matters.** You can perfectly secure a model's behavior and still be compromised by a
+poisoned dataset, a pickle tokenizer, an unpinned dependency, or a backdoored base image. Most AI
+compromise happens *around* the model, through the graph of artifacts you assemble it from — and that
+graph is defensible with the same structural controls (hashes, signatures, allowlists, safe formats,
+lockfiles) that secure any software supply chain.
+-->

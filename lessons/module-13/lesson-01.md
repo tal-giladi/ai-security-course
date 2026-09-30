@@ -1,20 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** [11.1 backdoors](../module-11/lesson-01.md), [01.1 supply chain / deserialization
-(CWE-502)](../module-01/lesson-01.md). Sibling: LoRA/adapters (M14). Lab: CPU torch + safetensors.
-
-**You will learn.** The model supply chain as an attack surface: **pickle/checkpoint remote code
-execution** (loading a model runs code), why **safetensors** exists and what it guarantees,
-**`trust_remote_code`** and tokenizer/config code paths, and **malicious LoRA/adapters** that
-backdoor a trusted base model without touching its weights file.
-
-**Why this matters.** Most teams download models, adapters, and tokenizers from hubs and load them
-with one line. That line can execute arbitrary code and/or merge a hidden backdoor. This is the
-model-world version of the dependency attacks from M01, and it is the bridge to full AI supply-chain
-security (M22).
-
-</div>
-
 # 13.1 · Adapter & weight supply chain
 
 ## Why this matters
@@ -86,15 +69,7 @@ trusted machine perfectly and quietly rewires it to misbehave only when a specif
 pressed. In every case the question is the same and rarely asked: *do I trust who made this, and can
 I verify it's what they claim?*
 
-## Technical explanation & Code
-
-`labs/lab-13/supply_chain.py`:
-- `MaliciousCheckpoint.__reduce__` returns `(_benign_marker, (...))`; `pickle.load` therefore
-  *calls* `_benign_marker` — the RCE primitive, shown inertly.
-- `save_load_safetensors` round-trips weights with no code execution (marker stays unwritten).
-- `train_malicious_adapter` optimizes an adapter delta minimizing `4·clean_loss + backdoor_loss`,
-  yielding a stealthy backdoor; the distinctive out-of-range trigger lets the adapter route it
-  without disturbing clean behavior.
+## Technical explanation
 
 ## Mathematics
 
@@ -110,29 +85,34 @@ Little equation here — this is a systems/trust lesson — but two quantitative
 
 ## Attack / Defense model
 
-<div class="callout guarantee">
+> [!IMPORTANT]
+> **Guarantee analysis — safetensors + provenance (the real defense stack).**
+> - **safetensors stops (provably):** *code execution on load* — the format can't express code. A
+>   guarantee, not a heuristic.
+> - **safetensors does NOT stop:** a **backdoored/poisoned** set of weights or a malicious **adapter**
+>   — those are just numbers, perfectly valid tensors. Safe *loading* ≠ safe *behavior*.
+> - **Provenance (hashes/signatures) stops:** substitution/tampering *if* you verify against a trusted
+>   publisher key and pin versions.
+> - **Does NOT stop:** a malicious *publisher* (signed malware is still malware), or `trust_remote_code`
+>   you opted into.
+> - **Attacker adapts:** ship a backdoored-but-valid safetensors model or adapter; compromise or
+>   impersonate a publisher; hide code in an allowed remote-code path.
+> - **Cost:** conversion effort; signature infra; losing "just works" convenience of remote code.
+> - **Takeaway:** layer them — **safe format** (no RCE) + **provenance/signatures** (right artifact
+>   from the right publisher) + **behavioral vetting** (M11 detection, trigger testing) + **least
+>   privilege at load** (sandbox, no network) — because each covers a different failure the others miss.
 
-**Guarantee analysis — safetensors + provenance (the real defense stack).**
-- **safetensors stops (provably):** *code execution on load* — the format can't express code. A
-  guarantee, not a heuristic.
-- **safetensors does NOT stop:** a **backdoored/poisoned** set of weights or a malicious **adapter**
-  — those are just numbers, perfectly valid tensors. Safe *loading* ≠ safe *behavior*.
-- **Provenance (hashes/signatures) stops:** substitution/tampering *if* you verify against a trusted
-  publisher key and pin versions.
-- **Does NOT stop:** a malicious *publisher* (signed malware is still malware), or `trust_remote_code`
-  you opted into.
-- **Attacker adapts:** ship a backdoored-but-valid safetensors model or adapter; compromise or
-  impersonate a publisher; hide code in an allowed remote-code path.
-- **Cost:** conversion effort; signature infra; losing "just works" convenience of remote code.
-- **Takeaway:** layer them — **safe format** (no RCE) + **provenance/signatures** (right artifact
-  from the right publisher) + **behavioral vetting** (M11 detection, trigger testing) + **least
-  privilege at load** (sandbox, no network) — because each covers a different failure the others miss.
+## Code
 
-</div>
+`labs/lab-13/supply_chain.py`:
+- `MaliciousCheckpoint.__reduce__` returns `(_benign_marker, (...))`; `pickle.load` therefore
+  *calls* `_benign_marker` — the RCE primitive, shown inertly.
+- `save_load_safetensors` round-trips weights with no code execution (marker stays unwritten).
+- `train_malicious_adapter` optimizes an adapter delta minimizing `4·clean_loss + backdoor_loss`,
+  yielding a stealthy backdoor; the distinctive out-of-range trigger lets the adapter route it
+  without disturbing clean behavior.
 
 ## Practical lab
-
-<div class="lab">
 
 **Lab 13** ([`labs/lab-13/`](../../labs/lab-13/README.md)) — pickle RCE (inert), safetensors safety,
 stealthy malicious adapter. CPU torch + safetensors, ~3s tests.
@@ -141,8 +121,6 @@ stealthy malicious adapter. CPU torch + safetensors, ~3s tests.
 py labs/lab-13/supply_chain.py
 py -m pytest labs/lab-13 -q
 ```
-
-</div>
 
 ## Exercise
 
@@ -173,10 +151,6 @@ signed release. This is the same TOCTOU class as classic filesystem attacks.
 **Deliverable.** The code-path inventory, safetensors conversion+verification, the provenance gate
 (+ bypass + fix), the stealth frontier, and the behavioral detector + guarantee box.
 
-```bash
-py course.py complete 13.1
-```
-
 ## Research paper
 
 No single canonical paper; read the authoritative sources and one incident writeup:
@@ -195,43 +169,6 @@ scanning is a fragile filter vs the format guarantee.
 - OWASP LLM03 (Supply Chain); MITRE ATLAS (ML supply-chain compromise); forward link M22 (AI supply
   chain). [`references/standards-map.md`](../../references/standards-map.md).
 
-## Assessment
-
-<details><summary>Q1. Why is loading a .pt/.bin checkpoint a code-execution risk?</summary>
-
-Because the format is pickle, which reconstructs objects by invoking callables recorded via
-`__reduce__`; a crafted checkpoint runs arbitrary code on `torch.load`/`pickle.load`, before
-inference. Downloading and loading an untrusted checkpoint is running untrusted code (CWE-502).
-
-</details>
-
-<details><summary>Q2. What does safetensors guarantee and why is it stronger than a scanner?</summary>
-
-It guarantees no code execution on load, because the format expresses only a tensor header and raw
-bytes — there is no way to encode a callable or code path. That is a format-level impossibility, not
-a heuristic detector that can be evaded by a novel payload; it sidesteps the false-negative problem
-of scanning.
-
-</details>
-
-<details><summary>Q3. Why does safe loading not imply safe behavior?</summary>
-
-safetensors prevents load-time code execution, but the weights themselves can be poisoned or a
-merged adapter can carry a backdoor — those are valid tensors, not code. Behavioral threats
-(backdoors, sleepers) require provenance and behavioral vetting (M11), independent of the file
-format's load safety.
-
-</details>
-
-<details><summary>Q4. Why can a malicious adapter pass ordinary evaluation?</summary>
-
-Because it is optimized to preserve clean accuracy (a stealth term in its objective) while
-installing a trigger⇒target behavior that only fires on the rare trigger — absent from clean eval
-(the sleeper argument, M11). It ships through the adapter supply chain and merges into a trusted base
-whose own weights file is unchanged.
-
-</details>
-
 ## What you should now be able to do
 
 - Explain and demonstrate pickle-based RCE and why safetensors/`weights_only` prevent it.
@@ -240,12 +177,17 @@ whose own weights file is unchanged.
 - Build a stealthy malicious adapter and understand why clean-eval misses it.
 - Design a layered load-time defense: safe format + provenance + behavioral vetting + least privilege.
 
-## Progress checkpoint
+-->
+**Prerequisites.** [11.1 backdoors](../module-11/lesson-01.md), [01.1 supply chain / deserialization
+(CWE-502)](../module-01/lesson-01.md). Sibling: LoRA/adapters (M14). Lab: CPU torch + safetensors.
 
-```bash
-py course.py complete 13.1
-py course.py next
-```
+**You will learn.** The model supply chain as an attack surface: **pickle/checkpoint remote code
+execution** (loading a model runs code), why **safetensors** exists and what it guarantees,
+**`trust_remote_code`** and tokenizer/config code paths, and **malicious LoRA/adapters** that
+backdoor a trusted base model without touching its weights file.
 
-**Next:** Stage 6 — 14.1 · RAG retrieval attack surface: embeddings/ANN for attackers, document
-and embedding poisoning, ranking and citation manipulation, retrieval DoS.
+**Why this matters.** Most teams download models, adapters, and tokenizers from hubs and load them
+with one line. That line can execute arbitrary code and/or merge a hidden backdoor. This is the
+model-world version of the dependency attacks from M01, and it is the bridge to full AI supply-chain
+security (M22).
+-->

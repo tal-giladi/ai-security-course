@@ -1,24 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** [04.1 Direct prompt injection](../module-04/lesson-01.md) (the finite-bias
-model and ASR measurement carry over verbatim), [00.1 Threat modeling](../module-00/lesson-01.md)
-(the **confused deputy** — this lesson is its canonical instance), [01.1 AppSec primitives](../module-01/lesson-01.md)
-(SSRF/egress, exfiltration channels). Lab uses the [shim](../../lab/models/README.md) with its
-lower-priority `retrieved`/`web`/`tool`/`email` channels and the [local sink](../../lab/README.md).
-
-**You will learn.** Indirect prompt injection: the same override mechanism as direct injection,
-delivered through **content the model reads** rather than a message the attacker sends — retrieved
-documents, web pages, tool results, emails, agent memory. Why it is the most dangerous injection
-class in practice, how it composes into a full **confused-deputy exfiltration chain**, and how to
-defend it — where the decisive control is *least privilege on the deputy*, not better prompting.
-
-**Why this matters.** Almost every serious real-world LLM incident is indirect: the attacker
-cannot reach your model, but they *can* put text on a page your agent will read. This is the
-attack class that makes agents (Stage 7) and RAG (Stage 6) genuinely risky, and the one where the
-"tell the model to be careful" reflex fails hardest.
-
-</div>
-
 # 05.1 · Indirect prompt injection
 
 ## Why this matters
@@ -134,14 +113,11 @@ through the model, and it is exactly what Lab 05 demonstrates against the local 
    to be misused, which is the confused-deputy cure. Complement with **not putting the secret in
    context at all** where possible.
 
-<div class="callout blue">
-
-**The rule this lesson exists to teach.** Against indirect injection, *reduce the deputy's
-privilege and its reachable destinations.* You cannot reliably stop the model from being
-persuaded; you can stop a persuaded model from doing damage. Every strong defense here is a
-privilege/egress control, not a prompt.
-
-</div>
+> [!TIP]
+> **The rule this lesson exists to teach.** Against indirect injection, *reduce the deputy's
+> privilege and its reachable destinations.* You cannot reliably stop the model from being
+> persuaded; you can stop a persuaded model from doing damage. Every strong defense here is a
+> privilege/egress control, not a prompt.
 
 ## Mathematics
 
@@ -158,27 +134,24 @@ Lab 05's defended bot reports exfil = False even though the injection itself may
 
 ## Attack / Defense model
 
-<div class="callout guarantee">
+> [!IMPORTANT]
+> **Guarantee analysis — egress allowlist on the deputy (the decisive control).**
+> - **Stops:** exfiltration to any non-allowlisted destination, *independent of whether the
+>   injection succeeded* — it caps the second factor of the chain probability.
+> - **Does NOT stop:** exfiltration via an *allowlisted* destination (if the attacker can host
+>   content there or the allowlist is too broad), or channels you didn't route through the check
+>   (link text a human copies, a citation resolved elsewhere, a second tool).
+> - **Attacker adapts:** find an allowlisted egress, widen the target (DNS rebinding — 01.1), or
+>   use an unguarded channel; also shift from exfiltration to *destructive* actions the deputy can
+>   still take within its allowed set.
+> - **FP cost:** legitimate integrations to new hosts require allowlist updates (operational
+>   friction). **Perf:** one host check per outbound.
+> - **Takeaway:** necessary and high-impact, but only as tight as the allowlist and as complete as
+>   your enumeration of egress channels — pair with minimizing secrets-in-context and with detection.
 
-**Guarantee analysis — egress allowlist on the deputy (the decisive control).**
-- **Stops:** exfiltration to any non-allowlisted destination, *independent of whether the
-  injection succeeded* — it caps the second factor of the chain probability.
-- **Does NOT stop:** exfiltration via an *allowlisted* destination (if the attacker can host
-  content there or the allowlist is too broad), or channels you didn't route through the check
-  (link text a human copies, a citation resolved elsewhere, a second tool).
-- **Attacker adapts:** find an allowlisted egress, widen the target (DNS rebinding — 01.1), or
-  use an unguarded channel; also shift from exfiltration to *destructive* actions the deputy can
-  still take within its allowed set.
-- **FP cost:** legitimate integrations to new hosts require allowlist updates (operational
-  friction). **Perf:** one host check per outbound.
-- **Takeaway:** necessary and high-impact, but only as tight as the allowlist and as complete as
-  your enumeration of egress channels — pair with minimizing secrets-in-context and with detection.
+## Code
 
-</div>
-
-## Code & Practical lab
-
-<div class="lab">
+## Practical lab
 
 **Lab 05** ([`labs/lab-05/`](../../labs/lab-05/README.md)) — poison a retrieved document; the
 bot's renderer exfiltrates the canary to the local sink. CPU-only, offline (in-process fake sink)
@@ -191,8 +164,6 @@ py -m pytest labs/lab-05 -q
 
 Read `app.py`: the injected instruction rides in via the `retrieved` channel; `_render` is the
 deputy's privilege; `defended=True` layers provenance + egress allowlist + output scrub.
-
-</div>
 
 ## Exercise
 
@@ -232,10 +203,6 @@ encoding the payload does nothing against it. That contrast is the lesson.
 **Deliverable.** Poisoned-doc suite + ASR/CI, the channel-handicap comparison, a scrub bypass
 confirmed at the sink, the allowlist holding, your strengthened defense, and its guarantee box.
 
-```bash
-py course.py complete 05.1
-```
-
 ## Research paper
 
 **Greshake et al., "Not what you've signed up for: Compromising Real-World LLM-Integrated
@@ -256,45 +223,6 @@ the finite-bias gap remains, so the chain still works with stronger framing.
 - Preview: Module 14 (RAG poisoning) turns "the attacker planted a doc" into "the attacker made
   their doc get *retrieved*" — the retrieval-manipulation half of this attack.
 
-## Assessment
-
-<details><summary>Q1. Define indirect injection and give three delivery channels.</summary>
-
-A malicious instruction embedded in data the model consumes (not sent directly by the attacker),
-which the model may follow because it cannot separate trusted instructions from untrusted content
-in its single context stream. Channels: retrieved documents, web pages, tool results, emails,
-agent memory, other agents, text inside images.
-
-</details>
-
-<details><summary>Q2. Why does an indirect payload usually need more "strength" than a direct one?</summary>
-
-Because it arrives in a lower-priority role (retrieved/web/tool) with a more negative role bias
-$\beta$, so its follow-probability $\sigma(s(I)+\beta-G)$ starts lower. The attacker compensates
-by raising $s(I)$ (authority framing, ignore-previous, forged role blocks, encoding to shrink
-$G$). Since $\beta$ is finite, sufficient strength still clears the threshold.
-
-</details>
-
-<details><summary>Q3. Why is an egress allowlist a stronger defense than provenance markers or output scrubbing?</summary>
-
-Exfiltration probability factorizes as $P(\text{obeyed}) \times P(\text{egress reaches
-attacker})$. Provenance only nudges the first factor (a prior, not enforced); scrubbing matches
-one byte-pattern and is evadable by encoding. An egress allowlist drives the *second* factor to
-~0 in code, so even a fully obeyed injection cannot exfiltrate to a non-allowlisted destination —
-least privilege on the deputy beats persuasion.
-
-</details>
-
-<details><summary>Q4. Trace the confused-deputy roles in the Lab-05 chain.</summary>
-
-Attacker = low-privilege party who only plants text. Deputy = the bot, high-privilege (holds the
-secret, can render/fetch URLs). The poisoned retrieved doc tricks the deputy into using its
-egress privilege (the renderer) to send the secret to the attacker's endpoint. The attacker never
-had the secret or egress; the deputy misused its own privilege on the attacker's behalf.
-
-</details>
-
 ## What you should now be able to do
 
 - Recognize indirect injection across all its delivery channels as one bug (untrusted text →
@@ -306,13 +234,21 @@ had the secret or egress; the deputy misused its own privilege on the attacker's
   via the chain-probability decomposition.
 - Run the purple-team cycle against layered defenses.
 
-## Progress checkpoint
+-->
+**Prerequisites.** [04.1 Direct prompt injection](../module-04/lesson-01.md) (the finite-bias
+model and ASR measurement carry over verbatim), [00.1 Threat modeling](../module-00/lesson-01.md)
+(the **confused deputy** — this lesson is its canonical instance), [01.1 AppSec primitives](../module-01/lesson-01.md)
+(SSRF/egress, exfiltration channels). Lab uses the [shim](../../lab/models/README.md) with its
+lower-priority `retrieved`/`web`/`tool`/`email` channels and the [local sink](../../lab/README.md).
 
-```bash
-py course.py complete 05.1
-py course.py next
-```
+**You will learn.** Indirect prompt injection: the same override mechanism as direct injection,
+delivered through **content the model reads** rather than a message the attacker sends — retrieved
+documents, web pages, tool results, emails, agent memory. Why it is the most dangerous injection
+class in practice, how it composes into a full **confused-deputy exfiltration chain**, and how to
+defend it — where the decisive control is *least privilege on the deputy*, not better prompting.
 
-**Next (planned):** 06.1 · Multimodal & cross-agent injection — instructions hidden in images
-(OCR/alt-text/metadata), in agent memory, and propagating agent-to-agent; then Stage 3 opens
-optimization-based jailbreaking (GCG) with the $\arg\max_x L$ formulation.
+**Why this matters.** Almost every serious real-world LLM incident is indirect: the attacker
+cannot reach your model, but they *can* put text on a page your agent will read. This is the
+attack class that makes agents (Stage 7) and RAG (Stage 6) genuinely risky, and the one where the
+"tell the model to be careful" reflex fails hardest.
+-->

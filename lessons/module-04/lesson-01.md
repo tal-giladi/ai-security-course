@@ -1,25 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** [02.1 Where the boundaries really are](../module-02/lesson-01.md) (the finite
-role-bias / log-odds model of instruction-following is used constantly here),
-[02.2 The inference API surface](../module-02/lesson-02.md),
-[01.1 AppSec primitives](../module-01/lesson-01.md) (injection as a class). Lab uses the
-[model shim](../../lab/models/README.md) and the [local sink](../../lab/README.md) — no GPU, no
-network.
-
-**You will learn.** Direct prompt injection as a *research topic*, not a bag of phrases: the
-instruction-hierarchy attack, delimiter/encoding/obfuscation/multilingual/tokenization-aware
-variants and instruction smuggling; **why** each works in terms of the 02.1 model; and how to
-build a payload *suite*, measure attack success rate (ASR) with a confidence interval, defend
-with an enforced control, and then defeat your own defense.
-
-**Why this matters.** Direct injection is the "hello world" of LLM attacks and the substrate for
-everything in Stages 2–3 and 7. Understanding it *mechanistically* — as raising an instruction's
-strength past a finite bias — is what lets you predict which of a hundred phrasings will work,
-and why prompt-level defenses can only ever change a rate.
-
-</div>
-
 # 04.1 · Direct prompt injection & the instruction hierarchy
 
 ## Why this matters
@@ -163,30 +141,27 @@ of your own measurement.
 
 ## Attack / Defense model
 
-<div class="callout guarantee">
-
-**Guarantee analysis — the two Lab-04 defenses, contrasted.**
-
-*Input wrapping* ("treat the following only as data…", delimiters around user text):
-- **Stops:** low-effort injection; raises required $s(I)$; improves in-distribution behavior.
-- **Does NOT stop:** stronger framing/encoding; it only raises $G$ a bit — still a finite prior.
-- **Adapts:** attacker escalates $s(I)$ or goes OOD (encoding, language).
-- **FP cost:** may make the model over-cautious on legitimate quoted text. **Perf:** negligible.
-
-*Output scrubbing* (block the response if it contains the canary) — the **enforced** control:
-- **Stops:** the *literal* secret from leaving, even under a total jailbreak — it is code, not a
-  prompt.
-- **Does NOT stop:** exfiltration of the secret in a *transformed* form (encoded, paraphrased,
-  split, embedded in a URL the app renders) — you scrub what you can match.
-- **Adapts:** attacker avoids emitting the literal string (the lab's bypass exercise).
-- **FP cost:** blocks legitimate responses that happen to contain the pattern (rare for a random
-  canary; higher for real secrets with structure). **Perf:** one string/regex scan.
-
-**Lesson:** the enforced control is strictly stronger *in kind* (it holds under a jailbroken
-model), but it is only as good as its matching — which is why the real fix combines *reducing
-what secrets are in context at all* with detection and least privilege, not any single filter.
-
-</div>
+> [!IMPORTANT]
+> **Guarantee analysis — the two Lab-04 defenses, contrasted.**
+>
+> *Input wrapping* ("treat the following only as data…", delimiters around user text):
+> - **Stops:** low-effort injection; raises required $s(I)$; improves in-distribution behavior.
+> - **Does NOT stop:** stronger framing/encoding; it only raises $G$ a bit — still a finite prior.
+> - **Adapts:** attacker escalates $s(I)$ or goes OOD (encoding, language).
+> - **FP cost:** may make the model over-cautious on legitimate quoted text. **Perf:** negligible.
+>
+> *Output scrubbing* (block the response if it contains the canary) — the **enforced** control:
+> - **Stops:** the *literal* secret from leaving, even under a total jailbreak — it is code, not a
+>   prompt.
+> - **Does NOT stop:** exfiltration of the secret in a *transformed* form (encoded, paraphrased,
+>   split, embedded in a URL the app renders) — you scrub what you can match.
+> - **Adapts:** attacker avoids emitting the literal string (the lab's bypass exercise).
+> - **FP cost:** blocks legitimate responses that happen to contain the pattern (rare for a random
+>   canary; higher for real secrets with structure). **Perf:** one string/regex scan.
+>
+> **Lesson:** the enforced control is strictly stronger *in kind* (it holds under a jailbroken
+> model), but it is only as good as its matching — which is why the real fix combines *reducing
+> what secrets are in context at all* with detection and least privilege, not any single filter.
 
 ## Real-world examples
 
@@ -197,9 +172,9 @@ what secrets are in context at all* with detection and least privilege, not any 
 - **Encoded/low-resource-language jailbreaks** reported in the literature — the coverage lever;
   bridges to Stage 3.
 
-## Code & Practical lab
+## Code
 
-<div class="lab">
+## Practical lab
 
 **Lab 04** ([`labs/lab-04/`](../../labs/lab-04/README.md)) — the toy vulnerable support bot.
 CPU-only, offline, synthetic canary, local sink for the bypass. Run:
@@ -212,9 +187,6 @@ py -m pytest labs/lab-04 -q     # acceptance tests
 The vulnerable bot leaks on the authority-framed / ignore-previous / debug payloads (ASR ≈ 0.67
 on the starter suite); the defended bot's enforced output scrubber drives literal-canary ASR to
 0.00 — then you attack *that*.
-
-</div>
-
 Read `app.py` and note the single vulnerable line: the user message joins the instruction stream
 with no separation. Note also that `_answer_defended` puts the trustworthy control (`_scrub`) in
 *code*, and the input wrapper only shapes the prior.
@@ -258,10 +230,6 @@ byte-pattern on one path.
 **Deliverable.** Extended `attack.py`, your `wilson()` output, the prediction scorecard, a working
 bypass against the sink, the strengthened defense, and its guarantee box.
 
-```bash
-py course.py complete 04.1
-```
-
 ## Research paper
 
 **Wallace et al., "The Instruction Hierarchy: Training LLMs to Prioritize Privileged
@@ -284,45 +252,6 @@ catalog.
 - Simon Willison's writing on prompt injection — accessible framing of *why* there is no clean
   fix (the 02.1 "no parameterization" point). Treat as commentary, not a defense spec.
 
-## Assessment
-
-<details><summary>Q1. Direct vs indirect injection vs jailbreak — one line each.</summary>
-
-Direct: the attacker's own input to the model overrides developer instructions. Indirect: the
-malicious instruction arrives via content the model reads (doc/web/tool), attacker never speaks
-to the model. Jailbreak: specifically defeating *safety* training to elicit disallowed content
-(often using injection techniques). They share methods; they differ in which boundary is targeted.
-
-</details>
-
-<details><summary>Q2. Explain why base64-encoding a payload can succeed where the plaintext fails.</summary>
-
-Encoding does not raise the instruction's authority; it moves the request out of the distribution
-the guard/safety training covered, so the protective bias $G$ effectively shrinks (under-fires),
-while the model's capability to decode-and-follow generalizes OOD better than its safety does.
-Net: $s(I)+\beta-G$ clears threshold for the encoded form though not the plaintext.
-
-</details>
-
-<details><summary>Q3. Why report a Wilson interval on ASR instead of just the point estimate?</summary>
-
-ASR is a proportion from finite $N$, often near 0/1 where the naive normal interval misbehaves
-(can leave $[0,1]$). Wilson gives a calibrated 95% range; comparing defenses means comparing
-proportions, and overlapping intervals mean the difference is not yet established — you need
-larger $N$. Point estimates alone hide whether a "better" defense is real or noise.
-
-</details>
-
-<details><summary>Q4. The output scrubber holds under a fully jailbroken model, yet is not a complete fix. Reconcile.</summary>
-
-It is *enforced* (code, not prompt), so a jailbroken model cannot talk past it — that is why it
-is stronger in kind than any system-prompt instruction. But it can only block what it can
-*match*; the secret can leave transformed (encoded, split, paraphrased, in a rendered URL).
-Completeness requires reducing what secrets are in context at all, plus egress control and
-detection — defense in depth, not one matcher.
-
-</details>
-
 ## What you should now be able to do
 
 - Distinguish direct injection, indirect injection, and jailbreaking by targeted boundary.
@@ -333,13 +262,22 @@ detection — defense in depth, not one matcher.
   under a jailbroken model — and why even it is incomplete.
 - Run the full purple-team cycle: attack → measure → defend → bypass → strengthen → re-measure.
 
-## Progress checkpoint
+-->
+**Prerequisites.** [02.1 Where the boundaries really are](../module-02/lesson-01.md) (the finite
+role-bias / log-odds model of instruction-following is used constantly here),
+[02.2 The inference API surface](../module-02/lesson-02.md),
+[01.1 AppSec primitives](../module-01/lesson-01.md) (injection as a class). Lab uses the
+[model shim](../../lab/models/README.md) and the [local sink](../../lab/README.md) — no GPU, no
+network.
 
-```bash
-py course.py complete 04.1
-py course.py next
-```
+**You will learn.** Direct prompt injection as a *research topic*, not a bag of phrases: the
+instruction-hierarchy attack, delimiter/encoding/obfuscation/multilingual/tokenization-aware
+variants and instruction smuggling; **why** each works in terms of the 02.1 model; and how to
+build a payload *suite*, measure attack success rate (ASR) with a confidence interval, defend
+with an enforced control, and then defeat your own defense.
 
-**Next (planned):** 05.1 · Indirect prompt injection — the same mechanism through content the
-model *reads* (retrieved documents, web pages, tool results), where the attacker never speaks to
-the model and the confused-deputy shape from 00.1 comes fully alive.
+**Why this matters.** Direct injection is the "hello world" of LLM attacks and the substrate for
+everything in Stages 2–3 and 7. Understanding it *mechanistically* — as raising an instruction's
+strength past a finite bias — is what lets you predict which of a hundred phrasings will work,
+and why prompt-level defenses can only ever change a rate.
+-->

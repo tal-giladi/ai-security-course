@@ -1,23 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** [16.1 agent surface](../module-16/lesson-01.md), [17.1 tool poisoning](../module-17/lesson-01.md),
-[01.1 command injection / code execution / supply chain](../module-01/lesson-01.md),
-[13.1 supply chain / pinning](../module-13/lesson-01.md), [18.1 chains](../module-18/lesson-01.md).
-Lab: shared agent runtime, offline.
-
-**You will learn.** Code-agent security: **malicious repos/READMEs**, **poisoned dependencies**,
-**install/build scripts**, **prompt injection in source/issues/PRs**, and **dependency confusion** —
-the worst case being untrusted repo content driving a **shell-capable** agent (arbitrary code
-execution). Plus the enforced defenses (repo-content-as-data, least privilege, sandboxing, command
-allowlists, dependency pinning).
-
-**Why this matters.** Coding agents read and act on repositories, and a repo is almost entirely
-attacker-controllable text (README, manifests, source, tests, issues, PRs) feeding an agent that can
-run shell commands. This combines every prior lesson — indirect injection, excessive agency, tool
-poisoning, supply chain — into the highest-consequence agent scenario.
-
-</div>
-
 # 21.1 · Code-agent security
 
 ## Why this matters
@@ -73,12 +53,7 @@ they must run builds, do it in a locked room with no phone and no keys (sandbox:
 secrets), (4) require a senior's sign-off for risky commands (approval), and (5) get dependencies
 only from the company store with a signed packing list (pinning + hashes).
 
-## Technical explanation & Code
-
-`labs/lab-21/code_agent.py`: `POISONED_README` hides a `CALL run_shell(...)` directive; `setup_repo`
-feeds README content to the agent. Trusting it → exfil; `_strip` (content-as-data) or a `Policy` with
-no `run_shell` / an approval gate blocks it. `resolve_package` models dependency confusion (highest
-version wins) vs pinning. `run_shell` is inert — it records the command to the sink.
+## Technical explanation
 
 ## Mathematics
 
@@ -97,31 +72,33 @@ unreachable), not a probability.
 
 ## Attack / Defense model
 
-<div class="callout guarantee">
+> [!IMPORTANT]
+> **Guarantee analysis — code-agent defenses.**
+> - **Stops:** repo-borne directives (content-as-data — filter), arbitrary execution (no-shell / least
+>   privilege — structural), exfiltration and credential theft even if the shell runs (sandbox: no
+>   egress + no secrets in env — structural), risky commands (allowlist/approval), and dependency
+>   confusion (pinning + hashes — deterministic).
+> - **Does NOT stop:** attacks using *needed* capabilities within their sandbox (e.g. a build that
+>   legitimately writes files could still be abused within that scope), a compromised *pinned*
+>   dependency (signed-but-malicious, M13), social-engineered approvals, or content-as-data evasion by
+>   encoding.
+> - **Attacker adapts:** hide directives from the stripper; operate within sandbox limits; compromise a
+>   trusted dependency; target CI where secrets/egress exist.
+> - **Cost:** sandboxing/build isolation is engineering work; command allowlists and approvals add
+>   friction; pinning requires lockfile discipline.
+> - **Takeaway:** the coding agent is the worst-case combination — treat repo content as data, run
+>   builds/tools in a **sandbox with no egress and no secrets**, minimize the shell capability, and pin
+>   dependencies. Structural controls (no-shell, sandbox, pinning) are the real guarantees; filters and
+>   approvals are depth.
 
-**Guarantee analysis — code-agent defenses.**
-- **Stops:** repo-borne directives (content-as-data — filter), arbitrary execution (no-shell / least
-  privilege — structural), exfiltration and credential theft even if the shell runs (sandbox: no
-  egress + no secrets in env — structural), risky commands (allowlist/approval), and dependency
-  confusion (pinning + hashes — deterministic).
-- **Does NOT stop:** attacks using *needed* capabilities within their sandbox (e.g. a build that
-  legitimately writes files could still be abused within that scope), a compromised *pinned*
-  dependency (signed-but-malicious, M13), social-engineered approvals, or content-as-data evasion by
-  encoding.
-- **Attacker adapts:** hide directives from the stripper; operate within sandbox limits; compromise a
-  trusted dependency; target CI where secrets/egress exist.
-- **Cost:** sandboxing/build isolation is engineering work; command allowlists and approvals add
-  friction; pinning requires lockfile discipline.
-- **Takeaway:** the coding agent is the worst-case combination — treat repo content as data, run
-  builds/tools in a **sandbox with no egress and no secrets**, minimize the shell capability, and pin
-  dependencies. Structural controls (no-shell, sandbox, pinning) are the real guarantees; filters and
-  approvals are depth.
+## Code
 
-</div>
+`labs/lab-21/code_agent.py`: `POISONED_README` hides a `CALL run_shell(...)` directive; `setup_repo`
+feeds README content to the agent. Trusting it → exfil; `_strip` (content-as-data) or a `Policy` with
+no `run_shell` / an approval gate blocks it. `resolve_package` models dependency confusion (highest
+version wins) vs pinning. `run_shell` is inert — it records the command to the sink.
 
 ## Practical lab
-
-<div class="lab">
 
 **Lab 21** ([`labs/lab-21/`](../../labs/lab-21/README.md)) — poisoned repo → shell exfil + four
 defenses + dependency confusion. Offline, inert shell.
@@ -130,8 +107,6 @@ defenses + dependency confusion. Offline, inert shell.
 py labs/lab-21/code_agent.py
 py -m pytest labs/lab-21 -q
 ```
-
-</div>
 
 ## Exercise
 
@@ -178,35 +153,6 @@ signed-but-compromised deps remain a residual (M13/M22).
 - SLSA / supply-chain integrity frameworks; OWASP LLM03 (Supply Chain);
   [`references/standards-map.md`](../../references/standards-map.md). Forward link M22 (AI supply chain).
 
-## Assessment
-
-<details><summary>Q1. Why is a coding agent the worst-case agent scenario?</summary>
-
-It combines fully attacker-controllable input (a repo: README/manifest/source/tests/issues/PRs) with
-a direct arbitrary-code-execution capability (the shell) and the underlying software supply chain
-(dependencies, install scripts). Indirect injection (M05) + excessive agency (M16) + supply chain
-(M13) all converge, so an obeyed directive becomes code execution with the agent's credentials/network.
-
-</details>
-
-<details><summary>Q2. What is dependency confusion and how do you defeat it?</summary>
-
-A resolver that picks the highest version across registries lets an attacker override your internal
-package by publishing a higher-versioned public package of the same name. Defeat it by pinning
-(lockfiles) to a trusted registry/version, verifying integrity hashes, and scoping internal names —
-making the resolver's choice a constant the attacker can't raise.
-
-</details>
-
-<details><summary>Q3. Why prefer sandboxing the shell over a command allowlist?</summary>
-
-An allowlist is a filter with false negatives (shell metacharacters/chaining can evade it — command
-injection). Sandboxing (no egress, no secrets in env) is structural: even if an arbitrary command
-runs, it cannot reach the attacker or read a secret, so the exfil hop is empty regardless of what was
-executed. Use both, but the sandbox is the guarantee.
-
-</details>
-
 ## What you should now be able to do
 
 - Treat every part of a repository as untrusted input to a coding agent.
@@ -214,12 +160,20 @@ executed. Use both, but the sandbox is the guarantee.
 - Sandbox build/shell execution (no egress/secrets) and reason about command allowlists' limits.
 - Reproduce and defeat dependency confusion with pinning + integrity hashes, and reason about CI/CD risk.
 
-## Progress checkpoint
+-->
+**Prerequisites.** [16.1 agent surface](../module-16/lesson-01.md), [17.1 tool poisoning](../module-17/lesson-01.md),
+[01.1 command injection / code execution / supply chain](../module-01/lesson-01.md),
+[13.1 supply chain / pinning](../module-13/lesson-01.md), [18.1 chains](../module-18/lesson-01.md).
+Lab: shared agent runtime, offline.
 
-```bash
-py course.py complete 21.1
-py course.py next
-```
+**You will learn.** Code-agent security: **malicious repos/READMEs**, **poisoned dependencies**,
+**install/build scripts**, **prompt injection in source/issues/PRs**, and **dependency confusion** —
+the worst case being untrusted repo content driving a **shell-capable** agent (arbitrary code
+execution). Plus the enforced defenses (repo-content-as-data, least privilege, sandboxing, command
+allowlists, dependency pinning).
 
-**Next:** 22.1 · AI supply chain — model hubs, datasets, tokenizer/config files, Docker images,
-inference servers, plugins; compromise *around* the model, tying together M13/M21.
+**Why this matters.** Coding agents read and act on repositories, and a repo is almost entirely
+attacker-controllable text (README, manifests, source, tests, issues, PRs) feeding an agent that can
+run shell commands. This combines every prior lesson — indirect injection, excessive agency, tool
+poisoning, supply chain — into the highest-consequence agent scenario.
+-->

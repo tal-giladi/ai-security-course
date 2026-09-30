@@ -1,22 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** None beyond being an experienced software engineer. No ML background is
-needed for this lesson. If you have started the sibling
-[LLM Research Engineer](https://tal-giladi.github.io/llm-research-engineer-course/) course you
-already know what a transformer and a tool-calling agent are; if not, treat the LLM as a black
-box that maps text in → text out and sometimes calls tools. That is enough here.
-
-**You will learn.** How to systematically find where an AI system can be attacked *before*
-knowing any specific attack: assets, trust boundaries, data flows, privilege, the
-authentication/authorization split, isolation, and the confused-deputy pattern — and why LLM
-and agent systems break the assumptions that classical threat modeling relies on.
-
-**Why this matters.** Every later module (prompt injection, RAG poisoning, agent hijacking, MCP)
-is a *specific* instance of a boundary being crossed. If you can draw the boundaries, you can
-predict the attacks on a system you have never seen — which is the entire goal of this course.
-
-</div>
-
 # 00.1 · Threat modeling for AI systems
 
 ## Why this matters
@@ -129,17 +110,13 @@ Four classical terms, stated precisely because LLM systems abuse all four:
 - **Isolation** — preventing one component/tenant/request from affecting another (process
   sandboxes, containers, network segmentation, per-tenant data partitioning).
 
-<div class="callout key">
-
-**The AI-specific twist.** In a classical web app, the *code* enforces authz: a handler checks
-`if (user.canRead(doc))` before returning a document. In many LLM apps, the decision of *what to
-do* is delegated to the model: the LLM chooses which tool to call, which document to cite, what
-to include in the answer. When "the model decides," you have moved an authorization decision
-from deterministic code into a statistical text predictor that an attacker can influence with
-input. Authorization that can be talked out of is not authorization.
-
-</div>
-
+> [!IMPORTANT]
+> **The AI-specific twist.** In a classical web app, the *code* enforces authz: a handler checks
+> `if (user.canRead(doc))` before returning a document. In many LLM apps, the decision of *what to
+> do* is delegated to the model: the LLM chooses which tool to call, which document to cite, what
+> to include in the answer. When "the model decides," you have moved an authorization decision
+> from deterministic code into a statistical text predictor that an attacker can influence with
+> input. Authorization that can be talked out of is not authorization.
 ### The confused deputy — the pattern under most LLM/agent attacks
 
 A **confused deputy** is a program that holds a privilege and is tricked by a less-privileged
@@ -243,21 +220,18 @@ membership inference, information-theoretic leakage) for the modules where it ea
 
 ## Attack / Defense model
 
-<div class="callout guarantee">
-
-**Guarantee analysis — the pattern used on every defense in this course.** Threat modeling
-itself is a *process*, not a control, but apply the lens now so it becomes reflex:
-
-- **What it gives you:** a systematic enumeration of boundaries and threats, so you attack/defend
-  deliberately instead of guessing.
-- **What it does NOT give you:** any guarantee that a boundary actually holds. A model on paper
-  can miss a data flow that exists in code. It finds *candidate* threats, not proofs.
-- **How an attacker adapts:** by using a flow you did not draw (a hidden retrieval path, an
-  unlogged tool, a debug endpoint). Threat models rot as systems change.
-- **Cost:** time, and the discipline to redraw the model when the system changes. Cheap relative
-  to any incident; worthless if done once and filed away.
-
-</div>
+> [!IMPORTANT]
+> **Guarantee analysis — the pattern used on every defense in this course.** Threat modeling
+> itself is a *process*, not a control, but apply the lens now so it becomes reflex:
+>
+> - **What it gives you:** a systematic enumeration of boundaries and threats, so you attack/defend
+>   deliberately instead of guessing.
+> - **What it does NOT give you:** any guarantee that a boundary actually holds. A model on paper
+>   can miss a data flow that exists in code. It finds *candidate* threats, not proofs.
+> - **How an attacker adapts:** by using a flow you did not draw (a hidden retrieval path, an
+>   unlogged tool, a debug endpoint). Threat models rot as systems change.
+> - **Cost:** time, and the discipline to redraw the model when the system changes. Cheap relative
+>   to any incident; worthless if done once and filed away.
 
 ## Real-world examples
 
@@ -330,8 +304,6 @@ model you can *run* stays honest as the system grows.
 
 ## Practical lab
 
-<div class="lab">
-
 **Lab 00.1 — Threat-model the toy app.** No Docker or GPU required; pure modeling +
 `threat_model.py`. Expected time: 60–90 minutes. The toy vulnerable app itself ships with the
 Module 04 lab (`labs/lab-04`); for this lesson you model it from the specification below, which
@@ -346,8 +318,6 @@ is all a threat model ever starts from anyway.
 - It holds a synthetic secret `LAB-CANARY-<uuid>` in its system prompt (a stand-in for a real
   key), which must never leave the system.
 - It is multi-tenant: each user must only ever retrieve their own company's documents.
-
-</div>
 
 ## Exercise
 
@@ -383,11 +353,7 @@ also reaches code execution — recompute impact for T2-style confused-deputy th
 </details>
 
 **Deliverable.** A `threat-model-00.1.md` in your notes plus the extended `threat_model.py`
-output. Mark the lesson complete only once both exist:
-
-```bash
-py course.py complete 00.1
-```
+output.
 
 ## Research paper
 
@@ -407,46 +373,6 @@ special access — the confused-deputy shape. Full guide arrives with Module 05.
 - OWASP Top 10 for LLM Applications (2025) — skim now for the category names (especially LLM01,
   LLM06, LLM08); we map every one to a lab in `references/standards-map.md`.
 
-## Assessment
-
-<details><summary>Q1. Why does the classical code/data boundary fail inside an LLM?</summary>
-
-Because the model consumes its entire context window as one instruction stream: system prompt,
-user text, retrieved documents, and tool outputs all influence the next token. There is no
-mechanism that marks some tokens as "data, never instructions," so any text in context can steer
-behavior. In classical systems the CPU never executes a data file as code; in an LLM, data *is*
-potential code.
-
-</details>
-
-<details><summary>Q2. State the confused-deputy pattern and give the LLM-agent instance.</summary>
-
-A privileged program is tricked by a less-privileged party into misusing its privilege on the
-party's behalf. LLM instance: an attacker who cannot read your files or send email places an
-instruction where the agent will read it (a web page, an email, a retrieved doc); the agent,
-which *does* hold those privileges, carries out the instruction — exfiltrating the file or
-sending the email for the attacker.
-
-</details>
-
-<details><summary>Q3. An agent gains a second egress tool. Why is this worse than "one more tool"?</summary>
-
-Attack surface grows multiplicatively in (untrusted entry points × reachable privileges). A new
-egress privilege is reachable from *every* existing untrusted entry point, so it adds on the
-order of $N$ new (entry × privilege) pairs, and it raises the impact of every confused-deputy
-threat that previously had no way out. It is one tool but many new attack paths.
-
-</details>
-
-<details><summary>Q4. Why is "the model decides which document to return" an authorization problem?</summary>
-
-Because an authorization decision (may this user see this document?) has been moved from
-deterministic, testable code into a statistical text predictor that attacker-controlled input
-can influence. Authorization that can be argued with — via a crafted prompt or a poisoned
-retrieved doc — is not authorization. The check must live in code outside the model.
-
-</details>
-
 ## What you should now be able to do
 
 - Draw a data-flow diagram of an AI system and mark its trust boundaries.
@@ -457,13 +383,19 @@ retrieved doc — is not authorization. The check must live in code outside the 
 - Recognize the confused-deputy pattern as the skeleton of most attacks in this course.
 - Represent a threat model as runnable, rankable data.
 
-## Progress checkpoint
+-->
+**Prerequisites.** None beyond being an experienced software engineer. No ML background is
+needed for this lesson. If you have started the sibling
+[LLM Research Engineer](https://tal-giladi.github.io/llm-research-engineer-course/) course you
+already know what a transformer and a tool-calling agent are; if not, treat the LLM as a black
+box that maps text in → text out and sometimes calls tools. That is enough here.
 
-```bash
-py course.py complete 00.1
-py course.py next
-```
+**You will learn.** How to systematically find where an AI system can be attacked *before*
+knowing any specific attack: assets, trust boundaries, data flows, privilege, the
+authentication/authorization split, isolation, and the confused-deputy pattern — and why LLM
+and agent systems break the assumptions that classical threat modeling relies on.
 
-**Next:** [01.1 · AppSec primitives AI systems inherit](../module-01/lesson-01.md) — the specific
-classical vulnerabilities (injection as a class, SSRF, code execution, secrets, supply chain)
-that reappear, unchanged, inside LLM and agent systems.
+**Why this matters.** Every later module (prompt injection, RAG poisoning, agent hijacking, MCP)
+is a *specific* instance of a boundary being crossed. If you can draw the boundaries, you can
+predict the attacks on a system you have never seen — which is the entire goal of this course.
+-->

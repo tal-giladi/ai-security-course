@@ -1,21 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** [05.1 Indirect injection](../module-05/lesson-01.md) (this is indirect
-injection through new carriers), [00.1 confused deputy](../module-00/lesson-01.md). Lab uses the
-[shim](../../lab/models/README.md).
-
-**You will learn.** Injection carriers that require neither a typed prompt nor a text document:
-**multimodal** injection (instructions hidden in an image's OCR text, alt text, EXIF metadata,
-invisible/zero-width characters) and **cross-agent** injection (one agent's output poisoning the
-next). Why they defeat text-input filters, and why the fix is the same least-privilege /
-provenance discipline as M05, applied at every place bytes become context.
-
-**Why this matters.** As soon as a system accepts images, files, or chains multiple agents, the
-attacker's canvas expands to anything those pipelines read. Multimodal and multi-agent systems
-are where injection gets invisible.
-
-</div>
-
 # 06.1 · Multimodal & cross-agent injection
 
 ## Why this matters
@@ -107,24 +89,21 @@ least privilege (shrinking $P(\text{act})$) matters more as $k$ grows.
 
 ## Attack / Defense model
 
-<div class="callout guarantee">
+> [!IMPORTANT]
+> **Guarantee analysis — "run the text filter on extracted image text too."**
+> - **Stops:** recognized plaintext instructions in OCR/alt/metadata.
+> - **Does NOT stop:** encoded/zero-width/steganographic payloads (false negatives), and it does
+>   nothing about cross-agent propagation or unsafe actions.
+> - **Attacker adapts:** obfuscate the extracted text; move to a carrier you don't extract-and-scan;
+>   inject an upstream agent instead.
+> - **FP cost:** legitimate images with instruction-like captions get blocked. **Perf:** an extra
+>   scan (and possibly an OCR pass) per input.
+> - **Takeaway:** necessary breadth (scan *all* channels) but still a classifier; pair with least
+>   privilege on anything that acts on pipeline output, and minimize secrets-in-context.
 
-**Guarantee analysis — "run the text filter on extracted image text too."**
-- **Stops:** recognized plaintext instructions in OCR/alt/metadata.
-- **Does NOT stop:** encoded/zero-width/steganographic payloads (false negatives), and it does
-  nothing about cross-agent propagation or unsafe actions.
-- **Attacker adapts:** obfuscate the extracted text; move to a carrier you don't extract-and-scan;
-  inject an upstream agent instead.
-- **FP cost:** legitimate images with instruction-like captions get blocked. **Perf:** an extra
-  scan (and possibly an OCR pass) per input.
-- **Takeaway:** necessary breadth (scan *all* channels) but still a classifier; pair with least
-  privilege on anything that acts on pipeline output, and minimize secrets-in-context.
+## Code
 
-</div>
-
-## Code & Practical lab
-
-<div class="lab">
+## Practical lab
 
 **Lab 06** ([`labs/lab-06/`](../../labs/lab-06/README.md)) — inject via alt/EXIF/OCR image layers
 and across an A→B agent chain; measure ASR; defend. CPU-only, offline.
@@ -133,8 +112,6 @@ and across an A→B agent chain; measure ASR; defend. CPU-only, offline.
 py labs/lab-06/attack.py        # multimodal ASR 1.00 & cross-agent True (vuln) -> 0.00/False (def)
 py -m pytest labs/lab-06 -q
 ```
-
-</div>
 
 ## Exercise
 
@@ -165,10 +142,6 @@ still evades, which is why detection is triage, not a gate.
 **Deliverable.** Both attacks reproduced, the two evasive carriers, the 3-agent measurement vs the
 formula, and the durable layered defense + guarantee box.
 
-```bash
-py course.py complete 06.1
-```
-
 ## Research paper
 
 **Bagdasaryan et al., "(Ab)using Images and Sounds for Indirect Instruction Injection in
@@ -186,34 +159,6 @@ not a pixel-space perturbation (answer: provenance/scan don't; least privilege +
 - Preview: M20 (multimodal deep) covers pixel-space adversarial examples and steganography; M18
   builds full cross-agent chains with tools.
 
-## Assessment
-
-<details><summary>Q1. Why is OCR/metadata extraction an injection surface?</summary>
-
-Because it converts attacker-influenceable non-text bytes into text that is concatenated into the
-model's single instruction stream (02.1). Whoever controls the image/file controls that text, and
-it is invisible to the user and to filters that only watch the typed prompt.
-
-</details>
-
-<details><summary>Q2. Why do multi-agent pipelines enlarge the attack surface?</summary>
-
-Each stage that consumes a prior stage's output is another chance for an injection to be obeyed;
-compromise probability $1-\prod_j(1-a_j)$ grows with the number of stages. Plus each edge is a
-trust boundary designers often don't draw ("they're all our agents"), so untrusted output flows in
-as trusted input.
-
-</details>
-
-<details><summary>Q3. Give one carrier that defeats an exact-match text filter and its fix.</summary>
-
-Zero-width/homoglyph obfuscation of the trigger (or base64 encoding): the model reads the
-instruction, the substring filter doesn't match. Fix: Unicode-normalize and strip zero-width
-characters before scanning — but encoding still evades, so pair detection with least privilege and
-no-secrets-in-context.
-
-</details>
-
 ## What you should now be able to do
 
 - Identify every place a pipeline turns bytes into context and treat each as an injection surface.
@@ -221,13 +166,18 @@ no-secrets-in-context.
 - Explain why multi-agent depth raises compromise probability and defend per-stage with least
   privilege and provenance.
 
-## Progress checkpoint
+-->
+**Prerequisites.** [05.1 Indirect injection](../module-05/lesson-01.md) (this is indirect
+injection through new carriers), [00.1 confused deputy](../module-00/lesson-01.md). Lab uses the
+[shim](../../lab/models/README.md).
 
-```bash
-py course.py complete 06.1
-py course.py next
-```
+**You will learn.** Injection carriers that require neither a typed prompt nor a text document:
+**multimodal** injection (instructions hidden in an image's OCR text, alt text, EXIF metadata,
+invisible/zero-width characters) and **cross-agent** injection (one agent's output poisoning the
+next). Why they defeat text-input filters, and why the fix is the same least-privilege /
+provenance discipline as M05, applied at every place bytes become context.
 
-**Next:** Stage 3 — 07.1 · Optimization-based jailbreaks (GCG): the $\arg\max_x L$ formulation,
-greedy coordinate gradient, transferability, and the compute cost — attacking the *safety*
-boundary with real gradients on a toy model.
+**Why this matters.** As soon as a system accepts images, files, or chains multiple agents, the
+attacker's canvas expands to anything those pipelines read. Multimodal and multi-agent systems
+are where injection gets invisible.
+-->

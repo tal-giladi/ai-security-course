@@ -1,21 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** [07.1 GCG](../module-07/lesson-01.md) (the white-box counterpart; ASR + query
-budget), [02.1](../module-02/lesson-01.md) (refusal as probability; OOD coverage). Lab uses the
-[shim](../../lab/models/README.md), offline.
-
-**You will learn.** Jailbreaking with **no gradients — only queries**: automated black-box search
-(PAIR/TAP-style attacker loops), multi-turn and role attacks, and the machinery of **automated red
-teaming** — an attacker process, a judge, and a search. You build a query-only beam search, then
-show that keyword-based defenses are evaded by novel framings the search discovers.
-
-**Why this matters.** Real targets are usually black boxes (closed weights, an API). The threat
-that scales is not one clever human prompt but an *automated* attacker that searches thousands of
-framings and refines against the target's replies. This is also exactly how you build a red-team
-harness (Module 25) — the attacker and the evaluator are two sides of one loop.
-
-</div>
-
 # 08.1 · Automated & black-box jailbreaks
 
 ## Why this matters
@@ -126,26 +108,21 @@ now aimed at your own evaluation.
 
 ## Attack / Defense model
 
-<div class="callout guarantee">
-
-**Guarantee analysis — keyword / marker jailbreak classifier (input side).**
-- **Stops:** attacks containing known trigger phrases ("DAN", "ignore previous", "base64",
-  "role-play"); cheap, catches script-kiddie attempts and the obvious templates.
-- **Does NOT stop:** semantically-equivalent paraphrases with none of the trigger words (the lab's
-  `story` framing), novel personas, multi-turn setups, or an attacker LLM generating unlimited
-  fresh framings. It matches surface strings, not intent.
-- **Attacker adapts:** the search *rediscovers* an evasive wrapper automatically (demonstrated), or
-  an attacker LLM writes a benign-looking jailbreak.
-- **FP cost:** blocks legitimate fiction/role-play/encoding requests. **Perf:** cheap per input.
-- **Takeaway:** a speed bump, not a boundary. A *semantic* detector (an LLM/classifier judging
-  intent) raises the bar but is itself an attackable model with its own ASR — you must red-team the
-  detector too.
-
-</div>
+> [!IMPORTANT]
+> **Guarantee analysis — keyword / marker jailbreak classifier (input side).**
+> - **Stops:** attacks containing known trigger phrases ("DAN", "ignore previous", "base64",
+>   "role-play"); cheap, catches script-kiddie attempts and the obvious templates.
+> - **Does NOT stop:** semantically-equivalent paraphrases with none of the trigger words (the lab's
+>   `story` framing), novel personas, multi-turn setups, or an attacker LLM generating unlimited
+>   fresh framings. It matches surface strings, not intent.
+> - **Attacker adapts:** the search *rediscovers* an evasive wrapper automatically (demonstrated), or
+>   an attacker LLM writes a benign-looking jailbreak.
+> - **FP cost:** blocks legitimate fiction/role-play/encoding requests. **Perf:** cheap per input.
+> - **Takeaway:** a speed bump, not a boundary. A *semantic* detector (an LLM/classifier judging
+>   intent) raises the bar but is itself an attackable model with its own ASR — you must red-team the
+>   detector too.
 
 ## Practical lab
-
-<div class="lab">
 
 **Lab 08** ([`labs/lab-08/`](../../labs/lab-08/README.md)) — query-only beam search; marker-defense
 + rediscovered evasion. CPU-only, offline, fast.
@@ -154,8 +131,6 @@ now aimed at your own evaluation.
 py labs/lab-08/pair.py       # vulnerable PAIR ASR ~1.0; defended: rediscovers 'story' evasion ~0.6
 py -m pytest labs/lab-08 -q
 ```
-
-</div>
 
 ## Exercise
 
@@ -189,10 +164,6 @@ your detector with the *same* search is the honest evaluation.
 **Deliverable.** PAIR-vs-random with CIs, the mutation attacker, the multi-turn result, the
 judge-corruption analysis, and the semantic detector + its evasion + guarantee box.
 
-```bash
-py course.py complete 08.1
-```
-
 ## Research paper
 
 **Chao et al., "Jailbreaking Black Box Large Language Models in Twenty Queries" (PAIR, 2023)** and
@@ -211,48 +182,24 @@ efficiency depends heavily on judge quality and attacker capability — weak jud
 - OWASP LLM01; MITRE ATLAS (evasion, automated attack generation) —
   [`references/standards-map.md`](../../references/standards-map.md).
 
-## Assessment
-
-<details><summary>Q1. How can you jailbreak with no gradients?</summary>
-
-Treat it as query-only optimization: define a judge (automatic success signal), propose candidate
-prompts, query the target, keep/refine what the judge scores as working, and search (beam/tree).
-Refusal is a probability that composable OOD framings lower, so hill-climbing on judged ASR finds
-jailbreaks without any access to weights or gradients.
-
-</details>
-
-<details><summary>Q2. Why is the judge the linchpin of automated red teaming?</summary>
-
-The judge is the objective the search optimizes; its errors bias what the search finds. A
-low-recall judge hides working attacks (the search under-credits them); a high-false-positive judge
-sends the search chasing phantom successes. The observed objective is $\approx r a + f(1-a)$, so
-attack quality is bounded by judge quality.
-
-</details>
-
-<details><summary>Q3. Why does a keyword jailbreak classifier fail, and what does the search do about it?</summary>
-
-It matches surface trigger strings, not intent, so semantically-equivalent paraphrases with none of
-those words slip through. The automated search *rediscovers* such an evasive framing (e.g. a
-fictional-story wrapper) with no manual effort — demonstrating that keyword filters are speed bumps.
-A semantic detector raises the bar but is itself an attackable model.
-
-</details>
-
 ## What you should now be able to do
 
 - Build a query-only automated jailbreak (attacker + judge + search) and measure it with CIs.
 - Explain PAIR/TAP and the exploration/exploitation and judge-quality issues in red-team automation.
 - Demonstrate evasion of keyword defenses and reason about (and red-team) semantic detectors.
 
-## Progress checkpoint
+-->
+**Prerequisites.** [07.1 GCG](../module-07/lesson-01.md) (the white-box counterpart; ASR + query
+budget), [02.1](../module-02/lesson-01.md) (refusal as probability; OOD coverage). Lab uses the
+[shim](../../lab/models/README.md), offline.
 
-```bash
-py course.py complete 08.1
-py course.py next
-```
+**You will learn.** Jailbreaking with **no gradients — only queries**: automated black-box search
+(PAIR/TAP-style attacker loops), multi-turn and role attacks, and the machinery of **automated red
+teaming** — an attacker process, a judge, and a search. You build a query-only beam search, then
+show that keyword-based defenses are evaded by novel framings the search discovers.
 
-**Next:** Stage 4 — 09.1 · Adversarial examples I (FGSM/PGD from scratch): the perturbation
-problem, threat models, and gradient attacks on a classifier, where the math of adversarial ML
-begins.
+**Why this matters.** Real targets are usually black boxes (closed weights, an API). The threat
+that scales is not one clever human prompt but an *automated* attacker that searches thousands of
+framings and refines against the target's replies. This is also exactly how you build a red-team
+harness (Module 25) — the attacker and the evaluator are two sides of one loop.
+-->

@@ -1,22 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** [04.1 ASR + Wilson CI](../module-04/lesson-01.md), [12.1 ROC-AUC / LiRA](../module-12/lesson-01.md),
-[02.2 base rates](../module-02/lesson-02.md), [07.1](../module-07/lesson-01.md)/[10.1](../module-10/lesson-01.md)
-(adaptive attacks / evaluation rigor), [23.1 defenses to evaluate](../module-23/lesson-01.md). Lab:
-reusable harness, offline.
-
-**You will learn.** How to *measure* AI security systematically: **attack success rate** with
-confidence intervals, **precision/recall/ROC-AUC**, **robustness**, **transferability**, **coverage**,
-**regression testing**, and — the methodology that separates real evaluation from theater —
-**adaptive evaluation** (measure against the strongest/adapted attack). Plus how to **design your own
-security benchmark**.
-
-**Why this matters.** Every claim in this course — "this attack works", "this defense helps" — is
-only as good as its measurement. Bad evaluation (weak attacks, no CIs, ignoring base rates) certifies
-broken systems as safe. Evaluation is the discipline that makes security research *research*.
-
-</div>
-
 # 24.1 · Security evaluation
 
 ## Why this matters
@@ -87,12 +68,7 @@ across many attempts (with error bars), tests locks like yours *and* unlike your
 and re-tests every time you change the lock (regression). The number that matters is the adapted
 attacker's success rate, with a confidence interval — not your own gentle attempt.
 
-## Technical explanation & Code
-
-`lab/attack-tools/evalkit.py`: `wilson_interval`/`asr` (CIs), `roc_auc`/`precision_recall` (detectors,
-tie-averaged AUC), `required_n` (sample size), and `Benchmark.run/compare` (evaluate a defense,
-flagging whether a difference is established via non-overlapping CIs). `labs/lab-24/evaluate.py`
-demonstrates adaptive evaluation (ORIGINAL vs ADAPTED suites) and detector metrics against the shim.
+## Technical explanation
 
 ## Mathematics
 
@@ -105,28 +81,30 @@ false-positive $f$ and true ASR $a$ — a bad judge biases every number, so vali
 
 ## Attack / Defense model
 
-<div class="callout guarantee">
+> [!IMPORTANT]
+> **Guarantee analysis — a security evaluation methodology (meta).**
+> - **Gives you:** defensible, comparable numbers (ASR + CIs), detector characterization (ROC/AUC),
+>   robustness/transfer/coverage, and regression protection — the basis for risk decisions and for
+>   claiming a defense *works*.
+> - **Does NOT give you:** a guarantee of safety against *unseen* attacks — evaluation measures the
+>   attacks you ran; a stronger/novel attack can lower the number (upper-bound nature, M10).
+> - **Fails when:** the attack suite is weak/narrow (overstates security), $n$ is too small (noise
+>   read as signal), the judge is bad (biased ASR), or base rates are ignored (detector precision
+>   misjudged).
+> - **Cost:** compute (large $n$, strong/adaptive attacks, many shadow models for LiRA), and the
+>   discipline to attack your own defense honestly.
+> - **Takeaway:** report ASR with CIs against the *strongest adapted* attack, characterize detectors
+>   with ROC + base-rate precision, cover attack families, and regression-test in CI. A security number
+>   without a strong attack, a confidence interval, and a coverage statement is not evidence.
 
-**Guarantee analysis — a security evaluation methodology (meta).**
-- **Gives you:** defensible, comparable numbers (ASR + CIs), detector characterization (ROC/AUC),
-  robustness/transfer/coverage, and regression protection — the basis for risk decisions and for
-  claiming a defense *works*.
-- **Does NOT give you:** a guarantee of safety against *unseen* attacks — evaluation measures the
-  attacks you ran; a stronger/novel attack can lower the number (upper-bound nature, M10).
-- **Fails when:** the attack suite is weak/narrow (overstates security), $n$ is too small (noise
-  read as signal), the judge is bad (biased ASR), or base rates are ignored (detector precision
-  misjudged).
-- **Cost:** compute (large $n$, strong/adaptive attacks, many shadow models for LiRA), and the
-  discipline to attack your own defense honestly.
-- **Takeaway:** report ASR with CIs against the *strongest adapted* attack, characterize detectors
-  with ROC + base-rate precision, cover attack families, and regression-test in CI. A security number
-  without a strong attack, a confidence interval, and a coverage statement is not evidence.
+## Code
 
-</div>
+`lab/attack-tools/evalkit.py`: `wilson_interval`/`asr` (CIs), `roc_auc`/`precision_recall` (detectors,
+tie-averaged AUC), `required_n` (sample size), and `Benchmark.run/compare` (evaluate a defense,
+flagging whether a difference is established via non-overlapping CIs). `labs/lab-24/evaluate.py`
+demonstrates adaptive evaluation (ORIGINAL vs ADAPTED suites) and detector metrics against the shim.
 
 ## Practical lab
-
-<div class="lab">
 
 **Lab 24** ([`labs/lab-24/`](../../labs/lab-24/README.md)) — ASR+CI, ROC-AUC, and adaptive evaluation
 with the reusable harness. Offline.
@@ -135,8 +113,6 @@ with the reusable harness. Offline.
 py labs/lab-24/evaluate.py
 py -m pytest labs/lab-24 -q
 ```
-
-</div>
 
 ## Exercise
 
@@ -185,35 +161,6 @@ fixed ensemble — true adaptivity means an attacker who studies *your* defense.
 - NIST AI RMF "measure" function; garak/PyRIT/promptfoo/Inspect AI as harnesses (with local fallbacks,
   `references/tools-and-fallbacks.md`); [`references/standards-map.md`](../../references/standards-map.md).
 
-## Assessment
-
-<details><summary>Q1. Why report a confidence interval with ASR, and when is a difference "established"?</summary>
-
-ASR is a proportion from finite $n$, so a point estimate hides sampling noise; the Wilson CI bounds the
-true rate. A difference between two systems is established only when their CIs don't overlap —
-otherwise you need more samples (resolving $\delta=0.1$ needs ~193 per condition). Reporting ASR
-without a CI can present noise as a real effect.
-
-</details>
-
-<details><summary>Q2. What is adaptive evaluation and why is it decisive?</summary>
-
-Measuring a defense against the strongest attack you have, ideally one adapted to that specific
-defense — not a fixed/weak suite. It's decisive because a defense that stops a weak attack tells you
-nothing about an adaptive attacker; the lab shows the same bot at ASR 0.00 (weak) and 1.00 (adapted).
-Reporting only the weak number certifies a broken system.
-
-</details>
-
-<details><summary>Q3. Why can a high lab ROC-AUC still mean poor production precision?</summary>
-
-Because precision depends on the base rate: at low attack prevalence $\pi$, PPV $=\frac{t\pi}{t\pi+f(1-\pi)}$
-is dominated by false positives, so most alerts are false even for a high-recall/AUC detector. AUC is
-prevalence-independent; production precision is not — decide block-vs-alert using the base-rate-adjusted
-precision.
-
-</details>
-
 ## What you should now be able to do
 
 - Report ASR with confidence intervals and judge when differences are real vs noise.
@@ -221,12 +168,19 @@ precision.
 - Run adaptive evaluations and measure robustness, transferability, and coverage.
 - Design a covered security benchmark and enforce it as a CI regression guard.
 
-## Progress checkpoint
+-->
+**Prerequisites.** [04.1 ASR + Wilson CI](../module-04/lesson-01.md), [12.1 ROC-AUC / LiRA](../module-12/lesson-01.md),
+[02.2 base rates](../module-02/lesson-02.md), [07.1](../module-07/lesson-01.md)/[10.1](../module-10/lesson-01.md)
+(adaptive attacks / evaluation rigor), [23.1 defenses to evaluate](../module-23/lesson-01.md). Lab:
+reusable harness, offline.
 
-```bash
-py course.py complete 24.1
-py course.py next
-```
+**You will learn.** How to *measure* AI security systematically: **attack success rate** with
+confidence intervals, **precision/recall/ROC-AUC**, **robustness**, **transferability**, **coverage**,
+**regression testing**, and — the methodology that separates real evaluation from theater —
+**adaptive evaluation** (measure against the strongest/adapted attack). Plus how to **design your own
+security benchmark**.
 
-**Next:** 25.1 · Automated red teaming — attack generation, mutation/fuzzing, search/optimization,
-attacker/defender models, and automated exploit chains (building on M08 and this harness).
+**Why this matters.** Every claim in this course — "this attack works", "this defense helps" — is
+only as good as its measurement. Bad evaluation (weak attacks, no CIs, ignoring base rates) certifies
+broken systems as safe. Evaluation is the discipline that makes security research *research*.
+-->

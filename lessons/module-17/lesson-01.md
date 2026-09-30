@@ -1,21 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** [16.1 agent attack surface](../module-16/lesson-01.md), [05.1 indirect
-injection](../module-05/lesson-01.md), [02.2 tool calling](../module-02/lesson-02.md). Lab: shared
-agent runtime, offline.
-
-**You will learn.** Tool poisoning: malicious tool **descriptions** and **results** as injection
-channels, **tool authorization**, and **capability-based security** (least authority per tool). The
-key realization: everything about a tool — its name, its description, its output — is untrusted text
-that enters the model's planning context.
-
-**Why this matters.** Agents load third-party tools (plugins, MCP servers — M19). Each tool's
-description is author-controlled text the model reads to decide when to call it — so a poisoned
-description is indirect injection with catalog-wide reach, firing on every task. This is the
-mechanism behind the most-discussed MCP attacks.
-
-</div>
-
 # 17.1 · Tool poisoning & abuse
 
 ## Why this matters
@@ -74,12 +56,7 @@ number." You don't fix this by trusting nicer contractors; you (1) treat their i
 a *note about their tool*, not orders for your operator, and (2) make sure your operator physically
 cannot reach the fax or the vault unless the specific job handed them that exact key.
 
-## Technical explanation & Code
-
-`labs/lab-17/tool_poisoning.py` (on the shared runtime): a poisoned tool **description** and a
-poisoned **result** each drive `send_email(secret→attacker)` to the sink when trusted. Two defenses
-block both: treating catalog/result text as data (`_strip_directives`), and capability
-least-privilege (`allowed_tools={"whoami"}`). Both are enforced in code.
+## Technical explanation
 
 ## Mathematics
 
@@ -96,28 +73,30 @@ defense from probabilistic (filter the injection) to structural (the authority i
 
 ## Attack / Defense model
 
-<div class="callout guarantee">
+> [!IMPORTANT]
+> **Guarantee analysis — catalog-as-data + capability least-authority.**
+> - **Stops:** description/result-borne directives (segregation removes them from the instruction
+>   channel) and, structurally, any attempt to exceed granted authority (capabilities). Enforced in
+>   code; holds under a hijacked model.
+> - **Does NOT stop:** a tool *misused within its granted authority* (a legitimately-egress tool the
+>   task needs can still be driven to an allowed destination), a rug-pull where the *code* changes
+>   post-approval, or a description crafted to influence tool *selection* without an explicit directive.
+> - **Attacker adapts:** hide directives (encoding) to evade the stripper; social-engineer tool
+>   selection; ship benign-then-poison (rug pull); exploit over-granted capabilities.
+> - **Cost:** segregation may drop legitimate usage hints in descriptions; capability plumbing is
+>   engineering work; provenance/signing needs infrastructure.
+> - **Takeaway:** treat the entire tool interface as untrusted input, grant least authority per task
+>   via capabilities (structural, not filtered), and add provenance/signing + pinning against rug
+>   pulls — layered, because segregation alone is a filter and filters have false negatives.
 
-**Guarantee analysis — catalog-as-data + capability least-authority.**
-- **Stops:** description/result-borne directives (segregation removes them from the instruction
-  channel) and, structurally, any attempt to exceed granted authority (capabilities). Enforced in
-  code; holds under a hijacked model.
-- **Does NOT stop:** a tool *misused within its granted authority* (a legitimately-egress tool the
-  task needs can still be driven to an allowed destination), a rug-pull where the *code* changes
-  post-approval, or a description crafted to influence tool *selection* without an explicit directive.
-- **Attacker adapts:** hide directives (encoding) to evade the stripper; social-engineer tool
-  selection; ship benign-then-poison (rug pull); exploit over-granted capabilities.
-- **Cost:** segregation may drop legitimate usage hints in descriptions; capability plumbing is
-  engineering work; provenance/signing needs infrastructure.
-- **Takeaway:** treat the entire tool interface as untrusted input, grant least authority per task
-  via capabilities (structural, not filtered), and add provenance/signing + pinning against rug
-  pulls — layered, because segregation alone is a filter and filters have false negatives.
+## Code
 
-</div>
+`labs/lab-17/tool_poisoning.py` (on the shared runtime): a poisoned tool **description** and a
+poisoned **result** each drive `send_email(secret→attacker)` to the sink when trusted. Two defenses
+block both: treating catalog/result text as data (`_strip_directives`), and capability
+least-privilege (`allowed_tools={"whoami"}`). Both are enforced in code.
 
 ## Practical lab
-
-<div class="lab">
 
 **Lab 17** ([`labs/lab-17/`](../../labs/lab-17/README.md)) — poisoned description & result exfiltrate;
 data-segregation and least-privilege block them. Offline, shared runtime.
@@ -126,8 +105,6 @@ data-segregation and least-privilege block them. Offline, shared runtime.
 py labs/lab-17/tool_poisoning.py
 py -m pytest labs/lab-17 -q
 ```
-
-</div>
 
 ## Exercise
 
@@ -159,10 +136,6 @@ defense doesn't depend on recognizing the attack.
 **Deliverable.** The every-task demonstration, the capability refactor, the rug-pull + signing/pinning
 (+ TOCTOU), the stripper-evasion, and the selection-influence analysis + guarantee box.
 
-```bash
-py course.py complete 17.1
-```
-
 ## Research paper
 
 **OWASP Agentic AI threats** (tool poisoning / malicious tools) and the **MCP tool-poisoning**
@@ -180,34 +153,6 @@ some concatenate it directly into the system context (worst case).
 - Forward link M19 (MCP: where third-party tools actually come from);
   [`references/standards-map.md`](../../references/standards-map.md).
 
-## Assessment
-
-<details><summary>Q1. Why is a poisoned tool description worse than a poisoned document?</summary>
-
-A tool description is shown to the model as planning context for *every* task that could use the
-tool, and it's observed *before* tool selection — so it's an always-on injection channel with the
-highest duty cycle, versus a document that only injects when it happens to be retrieved/read.
-
-</details>
-
-<details><summary>Q2. What are the two enforced defenses and how do they differ?</summary>
-
-(1) Treat tool descriptions/results as data, never instructions (segregation/stripping) — a filter,
-so it has false negatives (encoding evades). (2) Capability-based least authority — grant each task
-only the tool handles it needs, so a hijacked plan structurally cannot reach ungranted authority,
-independent of detecting the injection. Combine them; capabilities are the stronger, structural one.
-
-</details>
-
-<details><summary>Q3. What is a rug-pull tool and how do you defend it?</summary>
-
-A tool that ships a benign description/code to pass review, then swaps in a poisoned version later.
-Defend with provenance: hash/pin the exact description and code you approved, require signatures from
-a trusted publisher, and re-verify on load (guarding against TOCTOU, M13). Capability limits also cap
-the damage of a rug-pulled tool.
-
-</details>
-
 ## What you should now be able to do
 
 - Recognize tool names, descriptions, and results as untrusted input entering planning context.
@@ -215,12 +160,18 @@ the damage of a rug-pulled tool.
 - Apply capability-based least authority (structural) plus catalog-as-data segregation (filter) and
   provenance/pinning against rug pulls.
 
-## Progress checkpoint
+-->
+**Prerequisites.** [16.1 agent attack surface](../module-16/lesson-01.md), [05.1 indirect
+injection](../module-05/lesson-01.md), [02.2 tool calling](../module-02/lesson-02.md). Lab: shared
+agent runtime, offline.
 
-```bash
-py course.py complete 17.1
-py course.py next
-```
+**You will learn.** Tool poisoning: malicious tool **descriptions** and **results** as injection
+channels, **tool authorization**, and **capability-based security** (least authority per tool). The
+key realization: everything about a tool — its name, its description, its output — is untrusted text
+that enters the model's planning context.
 
-**Next:** 18.1 · End-to-end attack chains — the full webpage→browser-agent→injection→tool→credential
-exfiltration chain built locally, then defended layer by layer and measured.
+**Why this matters.** Agents load third-party tools (plugins, MCP servers — M19). Each tool's
+description is author-controlled text the model reads to decide when to call it — so a poisoned
+description is indirect injection with catalog-wide reach, firing on every task. This is the
+mechanism behind the most-discussed MCP attacks.
+-->

@@ -1,24 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** [02.1 boundaries](../module-02/lesson-01.md) (refusal as a probability; safety
-as coverage), [04.1 direct injection](../module-04/lesson-01.md) (ASR + Wilson CI). **From the
-sibling course:** gradients & backprop (M02), optimization/SGD (M03), softmax/cross-entropy
-(M01). This lesson does not reteach autograd — it uses $\nabla$ to attack. Lab needs CPU **torch**
-(no download).
-
-**You will learn.** Jailbreaking as an *optimization problem*: the $\arg\max_x L(\text{model}(x))$
-formulation, and the **Greedy Coordinate Gradient (GCG)** algorithm that solves it over discrete
-tokens to produce adversarial suffixes. You implement GCG from scratch on a toy white-box model,
-measure it against random search, then defend with a perplexity filter and defeat that defense
-with an adaptive fluent attack.
-
-**Why this matters.** This is the transition from "clever phrasings" to *automated, transferable,
-gradient-driven* attacks — the research frontier of jailbreaking. Understanding GCG mechanically
-lets you reason about why such suffixes exist, why they transfer, why perplexity filters catch
-them, and why fluent adaptive attacks (AutoDAN, etc.) get past the filters.
-
-</div>
-
 # 07.1 · Optimization-based jailbreaks (GCG)
 
 ## Why this matters
@@ -112,15 +91,12 @@ Key implementation truths the lab makes concrete:
 - **Cost** = (1 backward + $B$ forward) per step $\times$ steps. Query-bounded; you will measure
   queries-to-success and compare to random.
 
-<div class="callout warn">
-
-**Reproducibility gotcha you will hit in real attack code.** In the toy model, `nn.Embedding`
-initializes from the *global* RNG; unless you seed it from a local generator, your "fixed" model
-silently changes with prior RNG use and your results won't reproduce. Security measurements are
-worthless if not reproducible — seed *everything*, and log seeds. (This exact bug was fixed in the
-lab's model; see the comment in `gcg.py`.)
-
-</div>
+> [!WARNING]
+> **Reproducibility gotcha you will hit in real attack code.** In the toy model, `nn.Embedding`
+> initializes from the *global* RNG; unless you seed it from a local generator, your "fixed" model
+> silently changes with prior RNG use and your results won't reproduce. Security measurements are
+> worthless if not reproducible — seed *everything*, and log seeds. (This exact bug was fixed in the
+> lab's model; see the comment in `gcg.py`.)
 
 ## Mathematics
 
@@ -146,27 +122,22 @@ $|\mathcal V|^L$. That reduction is the whole point.
 
 ## Attack / Defense model
 
-<div class="callout guarantee">
-
-**Guarantee analysis — perplexity (fluency) filter.**
-- **Stops:** vanilla GCG suffixes, which are gibberish and have high perplexity under a language
-  model; cheap and effective against the *original* attack.
-- **Does NOT stop:** adaptive attacks that add a fluency penalty to the objective (readable
-  suffixes), attacks that hide the suffix in otherwise-fluent text, or short suffixes below the
-  detector's resolution. It is a classifier with an ROC curve, not a gate.
-- **Attacker adapts:** optimize for low perplexity *and* target loss jointly (the lab's
-  `fluency_lambda`); the suffix becomes fluent and slips under the threshold, at some cost to
-  success rate / queries.
-- **FP cost:** legitimate but unusual inputs (code, other languages, rare jargon) have high
-  perplexity and get blocked — real utility loss. **Perf:** one extra LM forward pass per input.
-- **Takeaway:** raises attacker cost meaningfully, buys nothing against a determined adaptive
-  adversary; combine with alignment (raise the loss floor), rate limiting, and monitoring.
-
-</div>
+> [!IMPORTANT]
+> **Guarantee analysis — perplexity (fluency) filter.**
+> - **Stops:** vanilla GCG suffixes, which are gibberish and have high perplexity under a language
+>   model; cheap and effective against the *original* attack.
+> - **Does NOT stop:** adaptive attacks that add a fluency penalty to the objective (readable
+>   suffixes), attacks that hide the suffix in otherwise-fluent text, or short suffixes below the
+>   detector's resolution. It is a classifier with an ROC curve, not a gate.
+> - **Attacker adapts:** optimize for low perplexity *and* target loss jointly (the lab's
+>   `fluency_lambda`); the suffix becomes fluent and slips under the threshold, at some cost to
+>   success rate / queries.
+> - **FP cost:** legitimate but unusual inputs (code, other languages, rare jargon) have high
+>   perplexity and get blocked — real utility loss. **Perf:** one extra LM forward pass per input.
+> - **Takeaway:** raises attacker cost meaningfully, buys nothing against a determined adaptive
+>   adversary; combine with alignment (raise the loss floor), rate limiting, and monitoring.
 
 ## Practical lab
-
-<div class="lab">
 
 **Lab 07** ([`labs/lab-07/`](../../labs/lab-07/README.md)) — implement/inspect GCG, beat random,
 then perplexity-filter and adaptive-evade. CPU torch, no download, ~30s tests.
@@ -176,8 +147,6 @@ py labs/lab-07/gcg.py        # GCG 8/8 vs random ~3/8, ~3x fewer queries
 py labs/lab-07/defense.py    # filter cuts gibberish 8/8->~1/8; adaptive fluent evades ~7/8
 py -m pytest labs/lab-07 -q
 ```
-
-</div>
 
 ## Exercise
 
@@ -214,10 +183,6 @@ the threshold — exactly the Module 24 evaluation methodology, previewed.
 **Deliverable.** GCG-vs-random with CIs and sweeps, the perplexity ROC with an operating point,
 the adaptive trade-off curve, the transfer experiment, and the guarantee box for your final stance.
 
-```bash
-py course.py complete 07.1
-```
-
 ## Research paper
 
 **Zou, Wang, Kolter, Fredrikson, "Universal and Transferable Adversarial Attacks on Aligned
@@ -236,44 +201,6 @@ restore evasion — the arms race you measured.
 - Chao et al., **PAIR**; Mehrotra et al., **TAP** — black-box, query-only jailbreaks (Module 08).
 - OWASP LLM01; MITRE ATLAS evasion techniques — [`references/standards-map.md`](../../references/standards-map.md).
 
-## Assessment
-
-<details><summary>Q1. Write the GCG objective and say why it can't be solved by plain gradient descent.</summary>
-
-$s^\star=\arg\min_s -\log p_\theta(t\mid p\oplus s)$ over $s\in\mathcal V^L$. The variables are
-discrete tokens, so you cannot take gradient-descent steps in token space; the loss is only
-differentiable in a continuous relaxation (one-hot/embeddings). GCG uses that relaxation's gradient
-to *propose* token swaps, then evaluates them for real.
-
-</details>
-
-<details><summary>Q2. Why does GCG evaluate candidate swaps with real forward passes instead of trusting the gradient?</summary>
-
-The one-hot gradient is a first-order (linear) approximation of the loss change from a token swap;
-the true loss over discrete swaps is non-linear, so the top-gradient token isn't always best.
-Evaluating a batch of top-k candidates by true forward loss corrects the approximation cheaply and
-is what makes GCG reliably descend.
-
-</details>
-
-<details><summary>Q3. Why does a perplexity filter stop vanilla GCG, and how does the adaptive attack defeat it?</summary>
-
-Vanilla GCG optimizes only the target loss, producing gibberish suffixes with high LM perplexity,
-which the filter flags. The adaptive attack adds a fluency (low-perplexity) term to the objective,
-yielding readable suffixes that pass the threshold — at some cost to success/queries. So the
-filter must be measured against the adapted attack, not the original.
-
-</details>
-
-<details><summary>Q4. Why are transferable suffixes a threat to closed-source models?</summary>
-
-Because an attacker can optimize on open surrogate model(s) and transfer the suffix to a black-box
-target; models with overlapping training data share features and decision geometry, so exploits
-land near the same failure regions. "Closed weights" therefore does not prevent gradient-based
-jailbreaks discovered elsewhere.
-
-</details>
-
 ## What you should now be able to do
 
 - Formulate a jailbreak as discrete optimization and implement GCG (one-hot gradient → top-k →
@@ -282,12 +209,21 @@ jailbreaks discovered elsewhere.
 - Analyze and build the perplexity-filter defense and its adaptive fluent bypass, and reason about
   transferability to black-box systems.
 
-## Progress checkpoint
+-->
+**Prerequisites.** [02.1 boundaries](../module-02/lesson-01.md) (refusal as a probability; safety
+as coverage), [04.1 direct injection](../module-04/lesson-01.md) (ASR + Wilson CI). **From the
+sibling course:** gradients & backprop (M02), optimization/SGD (M03), softmax/cross-entropy
+(M01). This lesson does not reteach autograd — it uses $\nabla$ to attack. Lab needs CPU **torch**
+(no download).
 
-```bash
-py course.py complete 07.1
-py course.py next
-```
+**You will learn.** Jailbreaking as an *optimization problem*: the $\arg\max_x L(\text{model}(x))$
+formulation, and the **Greedy Coordinate Gradient (GCG)** algorithm that solves it over discrete
+tokens to produce adversarial suffixes. You implement GCG from scratch on a toy white-box model,
+measure it against random search, then defend with a perplexity filter and defeat that defense
+with an adaptive fluent attack.
 
-**Next:** 08.1 · Automated & black-box jailbreaks — PAIR/TAP-style attacker-LLM search, multi-turn
-and role attacks, and automated red teaming, where you have *no gradients*, only queries.
+**Why this matters.** This is the transition from "clever phrasings" to *automated, transferable,
+gradient-driven* attacks — the research frontier of jailbreaking. Understanding GCG mechanically
+lets you reason about why such suffixes exist, why they transfer, why perplexity filters catch
+them, and why fluent adaptive attacks (AutoDAN, etc.) get past the filters.
+-->

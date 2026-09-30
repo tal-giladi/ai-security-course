@@ -1,22 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** [05.1 indirect injection](../module-05/lesson-01.md) (the confused-deputy chain
-this builds on). **Sibling:** embeddings, cosine similarity, RAG, ANN/HNSW (RAG module) — we do
-**not** reteach embeddings; we attack retrieval. Lab: numpy + shim, offline.
-
-**You will learn.** The retrieval layer as an attack surface: **document poisoning**, **embedding /
-ranking manipulation**, **citation manipulation**, and **retrieval DoS** — and the crucial addition
-over plain indirect injection: the attacker must first **win retrieval** (get their poison into the
-top-k) before any injection fires. Plus retrieval-layer defenses (provenance, thresholds, dedup,
-reranking) and their limits.
-
-**Why this matters.** RAG is how most production LLM apps get "knowledge," and its ingestion is
-usually fed by untrusted or semi-trusted sources (web, uploads, tickets). Poisoning the knowledge
-base is one of the most practical real-world attacks, and it lives in the *math of similarity* as
-much as in the prompt.
-
-</div>
-
 # 14.1 · RAG retrieval attack surface
 
 ## Why this matters
@@ -88,13 +69,7 @@ the payload stapled on. Keyword stuffing is stuffing the ballot box with copies 
 words. Defenses either check *who submitted the ballot* (provenance) or *whether it's a genuine
 distinct answer* (dedup, thresholds, reranking) — not just how similar it looks.
 
-## Technical explanation & Code
-
-`labs/lab-14/rag.py`: a transparent hashing embedding (stable, no download) + cosine retrieval.
-`craft_poison` stuffs query tokens and appends the injection; `poison_rank` shows it ranks #1;
-`rag_answer` pipes retrieved text into the shim, and the canary leaks. Defenses are parameters on
-`retrieve`: `allowed_sources` (provenance allowlist) and `dedup` (near-duplicate filter). The
-allowlist excludes the untrusted `web` source, so the poison is never retrieved.
+## Technical explanation
 
 ## Mathematics
 
@@ -115,33 +90,36 @@ be retrieved regardless of similarity.
 
 ## Attack / Defense model
 
-<div class="callout guarantee">
+> [!IMPORTANT]
+> **Guarantee analysis — RAG retrieval defenses.**
+>
+> *Provenance allowlist (enforced, strongest):*
+> - **Stops:** any poison from a non-allowlisted source, regardless of how it games similarity.
+> - **Does NOT stop:** poison ingested through an *allowed* source (a compromised trusted feed, a
+>   malicious upload to a trusted bucket), or attacks within trusted data.
+> - **Adapts:** attacker gets content into a trusted source; pursue cross-tenant/authorization gaps (M15).
+> - **Cost:** you must *have* provenance metadata and curate sources (operational).
+>
+> *Similarity threshold / dedup / reranking (probabilistic):*
+> - **Stops:** low-similarity noise, near-duplicate floods (DoS), and crude term-overlap stuffing.
+> - **Does NOT stop:** a fluent, genuinely-relevant poison that legitimately scores high; rerankers
+>   can still be adversarially optimized.
+> - **Adapts:** paraphrase to look like a distinct, relevant answer; optimize against the reranker.
+> - **Cost:** thresholds hurt recall (miss real answers); reranking adds latency/a second model.
+>
+> **Takeaway:** layer **provenance** (who) with **retrieval hygiene** (threshold/dedup/rerank) and
+> **downstream least privilege** (M05 egress control) — retrieval defenses reduce *whether poison is
+> retrieved*; they don't make a retrieved poison safe.
 
-**Guarantee analysis — RAG retrieval defenses.**
+## Code
 
-*Provenance allowlist (enforced, strongest):*
-- **Stops:** any poison from a non-allowlisted source, regardless of how it games similarity.
-- **Does NOT stop:** poison ingested through an *allowed* source (a compromised trusted feed, a
-  malicious upload to a trusted bucket), or attacks within trusted data.
-- **Adapts:** attacker gets content into a trusted source; pursue cross-tenant/authorization gaps (M15).
-- **Cost:** you must *have* provenance metadata and curate sources (operational).
-
-*Similarity threshold / dedup / reranking (probabilistic):*
-- **Stops:** low-similarity noise, near-duplicate floods (DoS), and crude term-overlap stuffing.
-- **Does NOT stop:** a fluent, genuinely-relevant poison that legitimately scores high; rerankers
-  can still be adversarially optimized.
-- **Adapts:** paraphrase to look like a distinct, relevant answer; optimize against the reranker.
-- **Cost:** thresholds hurt recall (miss real answers); reranking adds latency/a second model.
-
-**Takeaway:** layer **provenance** (who) with **retrieval hygiene** (threshold/dedup/rerank) and
-**downstream least privilege** (M05 egress control) — retrieval defenses reduce *whether poison is
-retrieved*; they don't make a retrieved poison safe.
-
-</div>
+`labs/lab-14/rag.py`: a transparent hashing embedding (stable, no download) + cosine retrieval.
+`craft_poison` stuffs query tokens and appends the injection; `poison_rank` shows it ranks #1;
+`rag_answer` pipes retrieved text into the shim, and the canary leaks. Defenses are parameters on
+`retrieve`: `allowed_sources` (provenance allowlist) and `dedup` (near-duplicate filter). The
+allowlist excludes the untrusted `web` source, so the poison is never retrieved.
 
 ## Practical lab
-
-<div class="lab">
 
 **Lab 14** ([`labs/lab-14/`](../../labs/lab-14/README.md)) — poison wins retrieval (#1) and leaks;
 provenance allowlist stops it. numpy + shim, offline, instant tests.
@@ -150,8 +128,6 @@ provenance allowlist stops it. numpy + shim, offline, instant tests.
 py labs/lab-14/rag.py
 py -m pytest labs/lab-14 -q
 ```
-
-</div>
 
 ## Exercise
 
@@ -184,10 +160,6 @@ defenses instead.
 **Deliverable.** The rank-vs-reps curve, a stealthy poison, threshold/reranker vs allowlist ASR with
 recall costs, the DoS demo + dedup fix, the end-to-end chain + layered defense, and the guarantee box.
 
-```bash
-py course.py complete 14.1
-```
-
 ## Research paper
 
 **Zou et al., "PoisonedRAG: Knowledge Poisoning Attacks to Retrieval-Augmented Generation of Large
@@ -205,42 +177,6 @@ poisons transfer better and are stealthier.
   [`references/standards-map.md`](../../references/standards-map.md).
 - HNSW paper (Malkov & Yashunin) for ANN structure; forward link M15 (multi-tenant retrieval leakage).
 
-## Assessment
-
-<details><summary>Q1. What does RAG add over plain indirect injection?</summary>
-
-The attacker must first **win retrieval** — get the poisoned document into the top-k for the target
-query — before the injected instruction ever reaches the model. That makes retrieval (embedding
-similarity, ranking, ANN) a new, attackable surface on top of the injection itself.
-
-</details>
-
-<details><summary>Q2. Why does keyword stuffing win retrieval, mathematically?</summary>
-
-Retrieval ranks by cosine similarity; adding copies of the query's tokens pushes the poison's
-embedding toward the query-token direction, so $\cos(q,d)$ approaches its maximum as repetitions
-grow. A few repetitions suffice to out-rank genuine documents whose overlap with the query is lower.
-
-</details>
-
-<details><summary>Q3. Why is a provenance allowlist stronger than a similarity threshold?</summary>
-
-A threshold is geometry-based: a fluent, genuinely-relevant poison can legitimately score high and
-pass it. Provenance ignores geometry — an untrusted source can't be retrieved no matter how it games
-similarity. It's the retrieval-layer least-privilege control; its gap is poison ingested through a
-*trusted* source, so layer it with hygiene defenses.
-
-</details>
-
-<details><summary>Q4. Why is "the model cited a source" not a trust signal?</summary>
-
-Because the cited source may itself be attacker-poisoned content that won retrieval and was crafted
-to read as authoritative (citation/source spoofing). The citation reflects what was retrieved, not
-whether it is trustworthy; trust must come from provenance/authorization, not from the model's
-gesture of citing.
-
-</details>
-
 ## What you should now be able to do
 
 - Map the RAG pipeline's trust boundaries and identify ingestion as the poisoning entry.
@@ -248,12 +184,19 @@ gesture of citing.
 - Enumerate RAG attacks (poisoning, ranking, citation, DoS) and reproduce the core one.
 - Apply and evaluate provenance + hygiene retrieval defenses and know their limits.
 
-## Progress checkpoint
+-->
+**Prerequisites.** [05.1 indirect injection](../module-05/lesson-01.md) (the confused-deputy chain
+this builds on). **Sibling:** embeddings, cosine similarity, RAG, ANN/HNSW (RAG module) — we do
+**not** reteach embeddings; we attack retrieval. Lab: numpy + shim, offline.
 
-```bash
-py course.py complete 14.1
-py course.py next
-```
+**You will learn.** The retrieval layer as an attack surface: **document poisoning**, **embedding /
+ranking manipulation**, **citation manipulation**, and **retrieval DoS** — and the crucial addition
+over plain indirect injection: the attacker must first **win retrieval** (get their poison into the
+top-k) before any injection fires. Plus retrieval-layer defenses (provenance, thresholds, dedup,
+reranking) and their limits.
 
-**Next:** 15.1 · Multi-tenant retrieval — authorization failures and cross-user/cross-tenant leakage,
-where the bug is missing authz on retrieval, not the model at all.
+**Why this matters.** RAG is how most production LLM apps get "knowledge," and its ingestion is
+usually fed by untrusted or semi-trusted sources (web, uploads, tickets). Poisoning the knowledge
+base is one of the most practical real-world attacks, and it lives in the *math of similarity* as
+much as in the prompt.
+-->

@@ -1,26 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** [00.1 Threat modeling](../module-00/lesson-01.md),
-[01.1 AppSec primitives](../module-01/lesson-01.md). Helpful (not required): sibling
-[LLM Research Engineer](https://tal-giladi.github.io/llm-research-engineer-course/) modules on
-**tokenization (M04)**, **attention/transformers (M05–M06)**, and **SFT/RLHF (M14–M15)**. This
-lesson does **not** reteach how attention or RLHF work; it assumes you can picture "context in →
-next-token distribution out" and that RLHF nudges that distribution, and builds the *security*
-consequences on top. If you have not done the sibling course, the minimum you need is in the
-callouts below.
-
-**You will learn.** Where the security boundaries in an LLM *actually* are, versus where people
-assume they are: the token stream as a single instruction channel, the system/user/tool "message
-hierarchy" as a *soft* prior rather than an enforced boundary, the train/inference split, and —
-crucially — what alignment, RLHF, and safety training **guarantee** and what they **do not**.
-
-**Why this matters.** Almost every LLM vulnerability is a gap between an *assumed* boundary and
-the *real* one. Prompt injection works because the message hierarchy is not enforced. Jailbreaks
-work because refusal is a learned tendency, not a gate. Name the real boundaries now and the
-rest of the course is filling in mechanisms.
-
-</div>
-
 # 02.1 · Where the boundaries really are
 
 ## Why this matters
@@ -62,16 +39,12 @@ tokens delimiting `system`, `user`, `assistant`, `tool`), but those markers are 
 tokens in the same stream*, learned to be respected, not enforced by any mechanism outside the
 model.
 
-<div class="callout key">
-
-**The foundational fact of LLM security.** There is no hardware or protocol boundary between
-"instructions" and "data" inside a language model. Separation of the two is a *behavior the model
-was trained to exhibit*, realized by attention over the same undifferentiated token stream.
-Behaviors can be overridden by inputs; enforced boundaries cannot. This one fact generates
-prompt injection (Stage 2), jailbreaks (Stage 3), and system-prompt leakage.
-
-</div>
-
+> [!IMPORTANT]
+> **The foundational fact of LLM security.** There is no hardware or protocol boundary between
+> "instructions" and "data" inside a language model. Separation of the two is a *behavior the model
+> was trained to exhibit*, realized by attention over the same undifferentiated token stream.
+> Behaviors can be overridden by inputs; enforced boundaries cannot. This one fact generates
+> prompt injection (Stage 2), jailbreaks (Stage 3), and system-prompt leakage.
 ### The message hierarchy is a prior, not a gate
 
 Modern models are trained (see sibling M14–M15, and Wallace et al.'s *Instruction Hierarchy*,
@@ -102,14 +75,11 @@ Two different boundary types, failing in different ways:
   output validation, tool authorization, sandboxes. They fail like ordinary software — bugs,
   missing checks, bypasses — and are the parts you can make *actually enforced* (Stage 9).
 
-<div class="callout blue">
-
-**Design implication (the whole blue-team thesis in one line).** Because train-time boundaries
-are only tendencies, **any security property you truly need enforced must live in inference-time
-code outside the model**, not in the prompt or the model's good behavior. "Tell the model not to"
-is a mitigation of last resort, never a control.
-
-</div>
+> [!TIP]
+> **Design implication (the whole blue-team thesis in one line).** Because train-time boundaries
+> are only tendencies, **any security property you truly need enforced must live in inference-time
+> code outside the model**, not in the prompt or the model's good behavior. "Tell the model not to"
+> is a mitigation of last resort, never a control.
 
 ## Intuition
 
@@ -190,21 +160,18 @@ predicts that injection strength trades off against role priority — which the 
 
 ## Attack / Defense model
 
-<div class="callout guarantee">
-
-**Guarantee analysis — the system prompt / message hierarchy as a "defense."**
-- **Stops:** casual misuse and low-effort instruction conflicts; raises the bar; shapes default
-  behavior well in-distribution.
-- **Does NOT stop:** determined injection or jailbreaks — it is a finite prior, not a gate; it
-  cannot make tool/user text *incapable* of instructing.
-- **Attacker adapts:** increases instruction "strength" (volume, authority framing, encoding,
-  OOD phrasing) until the prior is overcome; targets OOD regions where safety coverage is thin.
-- **False-positive cost:** over-strong system instructions cause over-refusal / degraded utility.
-- **Performance cost:** negligible (a few tokens) — which is exactly why it is over-relied upon.
-
-**Takeaway:** treat the system prompt as behavior-shaping, never as an access-control boundary.
-
-</div>
+> [!IMPORTANT]
+> **Guarantee analysis — the system prompt / message hierarchy as a "defense."**
+> - **Stops:** casual misuse and low-effort instruction conflicts; raises the bar; shapes default
+>   behavior well in-distribution.
+> - **Does NOT stop:** determined injection or jailbreaks — it is a finite prior, not a gate; it
+>   cannot make tool/user text *incapable* of instructing.
+> - **Attacker adapts:** increases instruction "strength" (volume, authority framing, encoding,
+>   OOD phrasing) until the prior is overcome; targets OOD regions where safety coverage is thin.
+> - **False-positive cost:** over-strong system instructions cause over-refusal / degraded utility.
+> - **Performance cost:** negligible (a few tokens) — which is exactly why it is over-relied upon.
+>
+> **Takeaway:** treat the system prompt as behavior-shaping, never as an access-control boundary.
 
 ## Real-world examples
 
@@ -216,7 +183,9 @@ predicts that injection strength trades off against role priority — which the 
   prior via training; important precisely because it frames the hierarchy as something to be
   trained, i.e. soft. Paper guide in Module 04.
 
-## Code — observe the boundary being soft
+## Code
+
+observe the boundary being soft.
 
 The point of this lesson's code is *observation*, not exploitation: watch refusal and hierarchy
 behave like probabilities. Use a small local instruct model if you have one, or the deterministic
@@ -253,14 +222,10 @@ if __name__ == "__main__":
 
 ## Practical lab
 
-<div class="lab">
-
 **Lab 02.1 — The boundary is a rate.** CPU-only; uses either a small local instruct model
 (e.g. a 0.5–3B parameter open model you already have) or the deterministic lab shim. Expected
 time: 60–90 min. No exploitation of real systems — you are measuring behavior on a local model
 with a synthetic canary.
-
-</div>
 
 ## Exercise
 
@@ -299,10 +264,6 @@ which is *why* security evaluation (Module 24) cares so much about $N$.
 **Deliverable.** `measure-02.1.md`: the three rates + intervals, your mechanistic explanation,
 the boundary classification, and the enforced-control proposal.
 
-```bash
-py course.py complete 02.1
-```
-
 ## Research paper
 
 **Wallace et al., "The Instruction Hierarchy: Training LLMs to Prioritize Privileged
@@ -321,46 +282,6 @@ in Module 04.
 - Sibling course M15 (RLHF/DPO) — revisit *how* the preference training that produces refusal
   actually updates the model, if the coverage argument feels hand-wavy.
 
-## Assessment
-
-<details><summary>Q1. Why is there no true instruction/data boundary inside an LLM?</summary>
-
-Because all roles are concatenated into one token sequence and the model produces the next-token
-distribution from that single stream. Role markers are themselves tokens the model *learned* to
-respect; nothing outside the model enforces that data tokens cannot instruct. Separation is a
-trained behavior, and behaviors can be overridden by inputs.
-
-</details>
-
-<details><summary>Q2. In what precise sense does RLHF "make a model safe"?</summary>
-
-It shifts the next-token distribution toward preferred (e.g. refusing) behavior for contexts
-resembling the training distribution of harmful requests. It provides *coverage* over that
-distribution, not a proof; out-of-distribution phrasings can fall in low-refusal regions, which
-is the mechanistic origin of jailbreaks. Safety claims are really low-ASR-on-tested-distribution
-claims.
-
-</details>
-
-<details><summary>Q3. Where must an enforced security property live, and why not in the system prompt?</summary>
-
-In deterministic inference-time code outside the model (tool authorization, output validation,
-sandboxing), because train-time behaviors are finite priors that inputs can overcome. A system-
-prompt instruction is behavior-shaping with a probability of holding; it can be pushed past by a
-strong enough crafted instruction, so it cannot serve as an access-control boundary.
-
-</details>
-
-<details><summary>Q4. Explain "the message hierarchy is a finite bias" and its attack implication.</summary>
-
-The model is trained to prioritize system > user > tool instructions, modeled as an additive bias
-on the follow-probability that is larger for higher roles — but finite, not $-\infty$. So a
-sufficiently strong instruction from a low-priority source can still exceed the follow threshold.
-Attackers therefore increase instruction "strength" (volume, authority framing, encoding, OOD
-phrasing) until the finite bias is overcome.
-
-</details>
-
 ## What you should now be able to do
 
 - State, for any LLM mechanism, what it guarantees and what it only makes probable.
@@ -370,12 +291,23 @@ phrasing) until the finite bias is overcome.
   accordingly.
 - Measure a model behavior as a rate with a confidence interval, not as a yes/no.
 
-## Progress checkpoint
+-->
+**Prerequisites.** [00.1 Threat modeling](../module-00/lesson-01.md),
+[01.1 AppSec primitives](../module-01/lesson-01.md). Helpful (not required): sibling
+[LLM Research Engineer](https://tal-giladi.github.io/llm-research-engineer-course/) modules on
+**tokenization (M04)**, **attention/transformers (M05–M06)**, and **SFT/RLHF (M14–M15)**. This
+lesson does **not** reteach how attention or RLHF work; it assumes you can picture "context in →
+next-token distribution out" and that RLHF nudges that distribution, and builds the *security*
+consequences on top. If you have not done the sibling course, the minimum you need is in the
+callouts below.
 
-```bash
-py course.py complete 02.1
-py course.py next
-```
+**You will learn.** Where the security boundaries in an LLM *actually* are, versus where people
+assume they are: the token stream as a single instruction channel, the system/user/tool "message
+hierarchy" as a *soft* prior rather than an enforced boundary, the train/inference split, and —
+crucially — what alignment, RLHF, and safety training **guarantee** and what they **do not**.
 
-**Next:** [02.2 · The inference API attack surface](lesson-02.md) — streaming, structured output,
-function/tool calling, and content filters, and where each of these *mechanisms* can be bypassed.
+**Why this matters.** Almost every LLM vulnerability is a gap between an *assumed* boundary and
+the *real* one. Prompt injection works because the message hierarchy is not enforced. Jailbreaks
+work because refusal is a learned tendency, not a gate. Name the real boundaries now and the
+rest of the course is filling in mechanisms.
+-->

@@ -1,21 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** **Sibling course:** gradients/backprop (M02), optimization (M03),
-softmax/cross-entropy (M01), a training loop (M00/M07). [02.1](../module-02/lesson-01.md) for
-"different threat model = different security property". Lab: CPU torch, no download.
-
-**You will learn.** The mathematical core of adversarial machine learning: the adversarial-example
-problem, **threat models** ($\ell_\infty/\ell_2$ balls), **FGSM** and **PGD** derived and
-implemented from scratch, the robustness/accuracy trade-off, and **adversarial training** as a
-min–max defense (plus how it fails — gradient masking).
-
-**Why this matters.** Adversarial examples are the foundation under multimodal attacks (M20),
-transfer attacks, and even the GCG view of jailbreaks (M07). The mathematics here — perturb an
-input within a bounded budget to maximize loss — is the same optimization you have been meeting in
-token space, now in its original, cleanest continuous form.
-
-</div>
-
 # 09.1 · Adversarial examples I (FGSM & PGD)
 
 ## Why this matters
@@ -104,16 +86,7 @@ stronger attack). Adversarial training reshapes the landscape so the valley is *
 within $\epsilon$ of a training example climbs out — but flattening the landscape everywhere costs
 some of the sharp fitting that gave high clean accuracy.
 
-## Technical explanation & Code
-
-`labs/lab-09/adv.py` implements all of the above in ~60 lines. Note the three projections that make
-the attack *legal*: (1) clamp the perturbation to the $\ell_\infty$ ball, (2) clamp the input to
-$[0,1]$, (3) random start for PGD. The lab measures three numbers per model: clean, FGSM, PGD
-accuracy, and compares a standard vs an adversarially-trained model.
-
-Observed (eps = 0.05, $\ell_\infty$): standard model **clean 0.91 → PGD 0.53** (collapse to near
-chance); adversarially-trained **clean 0.83, PGD 0.62** — robustness up, clean accuracy down. The
-trade-off is not a bug; it is the current state of the field.
+## Technical explanation
 
 ## Mathematics
 
@@ -136,26 +109,32 @@ and step count; masked robustness collapses under a stronger/black-box attack.
 
 ## Attack / Defense model
 
-<div class="callout guarantee">
+> [!IMPORTANT]
+> **Guarantee analysis — PGD adversarial training.**
+> - **Stops:** perturbations within the *trained* threat model ($\ell_\infty$, radius $\le\epsilon$) —
+>   empirically the strongest general defense; robust accuracy rises substantially.
+> - **Does NOT stop:** perturbations *outside* the trained threat model (larger $\epsilon$, a
+>   different norm $\ell_2/\ell_0$, semantic/spatial changes), and it does not *prove* robustness
+>   (empirical, not certified — Module 10 covers certification).
+> - **Attacker adapts:** switch norm, exceed the trained $\epsilon$, use unforeseen perturbation
+>   types, or attack where clean accuracy dropped.
+> - **FP/utility cost:** lower clean accuracy (the trade-off). **Perf:** training is $\sim$(PGD
+>   steps)× more expensive; inference unchanged.
+> - **Takeaway:** robustness is *relative to a threat model you chose*; state it, and don't
+>   generalize a claim beyond the norm/$\epsilon$ you actually trained and tested.
 
-**Guarantee analysis — PGD adversarial training.**
-- **Stops:** perturbations within the *trained* threat model ($\ell_\infty$, radius $\le\epsilon$) —
-  empirically the strongest general defense; robust accuracy rises substantially.
-- **Does NOT stop:** perturbations *outside* the trained threat model (larger $\epsilon$, a
-  different norm $\ell_2/\ell_0$, semantic/spatial changes), and it does not *prove* robustness
-  (empirical, not certified — Module 10 covers certification).
-- **Attacker adapts:** switch norm, exceed the trained $\epsilon$, use unforeseen perturbation
-  types, or attack where clean accuracy dropped.
-- **FP/utility cost:** lower clean accuracy (the trade-off). **Perf:** training is $\sim$(PGD
-  steps)× more expensive; inference unchanged.
-- **Takeaway:** robustness is *relative to a threat model you chose*; state it, and don't
-  generalize a claim beyond the norm/$\epsilon$ you actually trained and tested.
+## Code
 
-</div>
+`labs/lab-09/adv.py` implements all of the above in ~60 lines. Note the three projections that make
+the attack *legal*: (1) clamp the perturbation to the $\ell_\infty$ ball, (2) clamp the input to
+$[0,1]$, (3) random start for PGD. The lab measures three numbers per model: clean, FGSM, PGD
+accuracy, and compares a standard vs an adversarially-trained model.
+
+Observed (eps = 0.05, $\ell_\infty$): standard model **clean 0.91 → PGD 0.53** (collapse to near
+chance); adversarially-trained **clean 0.83, PGD 0.62** — robustness up, clean accuracy down. The
+trade-off is not a bug; it is the current state of the field.
 
 ## Practical lab
-
-<div class="lab">
 
 **Lab 09** ([`labs/lab-09/`](../../labs/lab-09/README.md)) — FGSM/PGD from scratch + adversarial
 training. CPU torch, ~10s tests.
@@ -164,8 +143,6 @@ training. CPU torch, ~10s tests.
 py labs/lab-09/adv.py
 py -m pytest labs/lab-09 -q
 ```
-
-</div>
 
 ## Exercise
 
@@ -200,10 +177,6 @@ smoothly with attack strength.
 $\ell_2$ comparison, the AT trade-off frontier, and the gradient-masking demonstration + guarantee
 box.
 
-```bash
-py course.py complete 09.1
-```
-
 ## Research paper
 
 **Goodfellow, Shlens, Szegedy, "Explaining and Harnessing Adversarial Examples" (2015)** and
@@ -221,44 +194,6 @@ attack). *Limitation/what changed:* empirical robustness ≠ certified (Module 1
 - Croce & Hein, **AutoAttack** (2020) — the standard robustness-evaluation ensemble (Module 10).
 - NIST AI 100-2 — evasion attacks taxonomy; [`references/standards-map.md`](../../references/standards-map.md).
 
-## Assessment
-
-<details><summary>Q1. Why is "the model is robust" meaningless without a threat model?</summary>
-
-Robustness is defined only relative to an allowed perturbation set: the norm ($\ell_\infty/\ell_2/\ell_0$),
-the budget $\epsilon$, targeted vs untargeted, access, and valid domain. A model robust to small
-$\ell_\infty$ perturbations may be trivially broken by a larger budget, a different norm, or a
-semantic change. State the threat model or the claim is empty.
-
-</details>
-
-<details><summary>Q2. Derive FGSM and say why one step isn't optimal for the true loss.</summary>
-
-Maximizing the first-order term $\nabla^\top\delta$ under $\|\delta\|_\infty\le\epsilon$ gives
-$\delta=\epsilon\operatorname{sign}(\nabla)$, so $x_{adv}=x+\epsilon\operatorname{sign}(\nabla_x\ell)$.
-It is optimal only for the linear approximation; real networks are non-linear, so the true loss is
-maximized better by iterating (PGD).
-
-</details>
-
-<details><summary>Q3. Why must robustness be evaluated with PGD, not FGSM?</summary>
-
-FGSM is the one-step, no-restart special case of PGD, so PGD finds perturbations at least as strong;
-attacked accuracy under PGD $\le$ under FGSM. A model can look FGSM-robust via gradient masking
-(sharp curvature the one-step attack misses) yet fall to PGD or a black-box attack. Reporting FGSM
-robustness overstates security.
-
-</details>
-
-<details><summary>Q4. State the adversarial-training objective and its cost.</summary>
-
-$\min_\theta \mathbb E[\max_{\|\delta\|\le\epsilon}\ell(\theta,x+\delta,y)]$ — minimize the
-worst-case (PGD-approximated) loss. Cost: lower clean accuracy (robustness/accuracy trade-off),
-higher training cost (a PGD loop per step), and robustness only within the trained threat model
-(not certified, not transferable to other norms/budgets).
-
-</details>
-
 ## What you should now be able to do
 
 - State a precise threat model and derive FGSM as its one-step $\ell_\infty$ maximizer.
@@ -266,12 +201,18 @@ higher training cost (a PGD loop per step), and robustness only within the train
 - Run and quantify adversarial training and its robustness/accuracy trade-off.
 - Detect gradient masking and evaluate robustness honestly.
 
-## Progress checkpoint
+-->
+**Prerequisites.** **Sibling course:** gradients/backprop (M02), optimization (M03),
+softmax/cross-entropy (M01), a training loop (M00/M07). [02.1](../module-02/lesson-01.md) for
+"different threat model = different security property". Lab: CPU torch, no download.
 
-```bash
-py course.py complete 09.1
-py course.py next
-```
+**You will learn.** The mathematical core of adversarial machine learning: the adversarial-example
+problem, **threat models** ($\ell_\infty/\ell_2$ balls), **FGSM** and **PGD** derived and
+implemented from scratch, the robustness/accuracy trade-off, and **adversarial training** as a
+min–max defense (plus how it fails — gradient masking).
 
-**Next:** 10.1 · Adversarial examples II — CW and AutoAttack, transfer & black-box attacks, and
-certified robustness (the difference between "I couldn't find an attack" and "no attack exists").
+**Why this matters.** Adversarial examples are the foundation under multimodal attacks (M20),
+transfer attacks, and even the GCG view of jailbreaks (M07). The mathematics here — perturb an
+input within a bounded budget to maximize loss — is the same optimization you have been meeting in
+token space, now in its original, cleanest continuous form.
+-->

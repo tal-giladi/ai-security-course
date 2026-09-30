@@ -1,19 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** All modules M00–M25. This is the synthesis.
-
-**You will learn.** How the whole course fits together as a **purple-team** practice, how it maps onto
-the industry standards (**OWASP LLM Top 10**, **MITRE ATLAS**, **NIST AI RMF / AI 100-2**), how to use
-the final **competency matrix**, and how to approach the five **capstones** — including the research
-project that is the course's real objective.
-
-**Why this matters.** Techniques are only useful assembled into a *method*: given a new LLM/agent
-system you've never seen, map its attack surface, formulate and reproduce attacks, build and measure
-defenses, attack your own defenses, and research what's unknown. That method — not any single attack —
-is what makes you an LLM/agent security *researcher*.
-
-</div>
-
 # 26.1 · Purple-team synthesis, standards & capstones
 
 ## Why this matters
@@ -30,6 +14,13 @@ comply, so your work is both rigorous and legible to a security organization.
 2. Map every module onto **OWASP LLM Top 10**, **MITRE ATLAS**, and **NIST AI RMF/100-2**.
 3. Use the **competency matrix** to self-assess honestly.
 4. Plan and execute the five **capstones**, especially the research project.
+
+## What you should now be able to do
+
+- Apply one repeatable purple-team method to any new LLM/agent system.
+- Map your findings onto OWASP LLM Top 10, MITRE ATLAS, and NIST AI RMF/100-2.
+- Self-assess against the competency matrix and close gaps via the labs.
+- Execute the five capstones, culminating in an original, measured, reproducible research project.
 
 ## The method (the whole course in one procedure)
 
@@ -93,49 +84,16 @@ change slowly; re-verify the fast-moving specifics (MCP auth, provider APIs, cur
 before relying on them, and update those modules independently. Distinguish, in your own notes,
 FOUNDATIONAL / CURRENT / EMERGING / DEPRECATED.
 
-## Assessment
+-->
+**Prerequisites.** All modules M00–M25. This is the synthesis.
 
-<details><summary>Q1. State the course's method for a system you've never seen.</summary>
+**You will learn.** How the whole course fits together as a **purple-team** practice, how it maps onto
+the industry standards (**OWASP LLM Top 10**, **MITRE ATLAS**, **NIST AI RMF / AI 100-2**), how to use
+the final **competency matrix**, and how to approach the five **capstones** — including the research
+project that is the course's real objective.
 
-Model it (DFD, boundaries, assets, capabilities); check each mechanism's guarantee vs prior; enumerate
-the surface (untrusted inputs × reachable privileges); reproduce and measure the relevant attacks
-(ASR+CIs); apply enforced controls first then detectors; attack your own defenses and re-measure;
-automate red teaming + CI regression; and research the unknowns. Throughout: enforced > probabilistic,
-least privilege, data-not-instructions, measure against the strongest adapted attack, guarantee box
-for every defense.
-
-</details>
-
-<details><summary>Q2. Why teach standards as maps onto labs rather than as lists?</summary>
-
-Because a category name (e.g. "LLM06 Excessive Agency") is only actionable when tied to a concrete
-vulnerability, a local reproduction, an attack, a defense, and a measurement. Mapping each framework
-category to a module/lab makes the standard a checklist of *things you can do and test*, and lets you
-communicate findings in the shared vocabulary security teams and auditors use.
-
-</details>
-
-<details><summary>Q3. What distinguishes "knowing an attack" from "having the capability"?</summary>
-
-Recognizing a name (prompt injection, GCG, PoisonedRAG) vs being able to, on an unfamiliar system,
-map its surface, reproduce the attack from scratch, measure it honestly, build and defeat defenses,
-and research new variants — the full row of the competency matrix, demonstrated in a capstone without
-assistance. The course optimizes for the latter.
-
-</details>
-
-## What you should now be able to do
-
-- Apply one repeatable purple-team method to any new LLM/agent system.
-- Map your findings onto OWASP LLM Top 10, MITRE ATLAS, and NIST AI RMF/100-2.
-- Self-assess against the competency matrix and close gaps via the labs.
-- Execute the five capstones, culminating in an original, measured, reproducible research project.
-
-## Progress checkpoint
-
-```bash
-py course.py complete 26.1
-```
-
-You've reached the end of the structured curriculum. The remaining work is the capstones — and then
-the open-ended practice of AI security research the course was built to enable.
+**Why this matters.** Techniques are only useful assembled into a *method*: given a new LLM/agent
+system you've never seen, map its attack surface, formulate and reproduce attacks, build and measure
+defenses, attack your own defenses, and research what's unknown. That method — not any single attack —
+is what makes you an LLM/agent security *researcher*.
+-->

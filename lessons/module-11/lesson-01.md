@@ -1,22 +1,3 @@
-<div class="prereq">
-
-**Prerequisites.** Sibling: training loops, SFT (M07/M14). [02.1](../module-02/lesson-01.md)
-(train-time boundaries fail when weights are poisoned). [09.1](../module-09/lesson-01.md) for the
-attacker-optimizes-inputs mindset. Lab: CPU torch.
-
-**You will learn.** Attacks that live in the *model's weights*, planted during training:
-**data/fine-tuning/preference poisoning** and **backdoors/trojans** — the sleeper-agent pattern
-where a model behaves normally until a trigger appears — and why they evade normal evaluation, plus
-how (imperfectly) to detect them.
-
-**Why this matters.** Everything before this attacked a *deployed* model's inputs. Poisoning
-attacks the *supply chain of behavior*: whoever influences training data, fine-tuning data,
-preference data, or a checkpoint can install hidden behavior that no amount of clean-input testing
-reveals. This is the model-level analog of a software backdoor, and it is the bridge to adapter and
-weight supply-chain attacks (M13) and AI supply chain (M22).
-
-</div>
-
 # 11.1 · Data & model poisoning, backdoors, sleeper agents
 
 ## Why this matters
@@ -77,17 +58,7 @@ behavior on normal inputs can never catch them; you have to inspect the books (t
 or their behavior *on the trigger* (which you'd have to guess). That asymmetry — cheap to plant,
 expensive to detect — is the whole problem.
 
-## Technical explanation & Code
-
-`labs/lab-11/backdoor.py`:
-- `poison(x, y, frac)` stamps the trigger and relabels a fraction to `TARGET_CLASS`.
-- `backdoor_asr` measures the trigger's effect on non-target inputs (the ASR).
-- `spectral_signature_scores` (Tran et al., 2018): for the target class, take penultimate
-  activations, center them, and score each sample by its projection onto the **top singular
-  vector**. Poisoned samples, sharing a learned trigger representation, tend to align with a
-  dominant direction and score as outliers.
-- `detect_poison` flags the top-scoring fraction and reports precision/recall vs the true poison
-  mask — which comes out *above the base rate* but far from perfect.
+## Technical explanation
 
 ## Mathematics
 
@@ -109,29 +80,36 @@ often single-digit percent. You'll map ASR and clean accuracy vs poison fraction
 
 ## Attack / Defense model
 
-<div class="callout guarantee">
+> [!IMPORTANT]
+> **Guarantee analysis — spectral-signature (activation) backdoor detection.**
+> - **Stops:** poisons whose shared trigger produces a *strong, correlated* activation direction —
+>   surfaces them above the base rate; useful triage on your own training data.
+> - **Does NOT stop:** stealthy/low-strength triggers, triggers spread across many small features,
+>   clean-label poisons, or attacks that regularize the poison representation to look in-distribution;
+>   and it needs access to the training data and model internals (not applicable to a black-box model
+>   you merely download).
+> - **Attacker adapts:** weaken/spread the trigger (lower $\mu$), use clean-label poisoning, or add a
+>   loss term that minimizes the poison's spectral separation.
+> - **FP/utility cost:** flagged clean samples discarded (data loss); imperfect precision. **Perf:**
+>   an SVD per class.
+> - **Takeaway:** detection is a probabilistic filter, not a guarantee; the durable defenses are
+>   *provenance and control of the training pipeline* (trusted data, signed datasets, reproducible
+>   training) plus post-hoc **fine-tuning/pruning** — and even those don't fully remove a robust
+>   sleeper (Hubinger et al.).
 
-**Guarantee analysis — spectral-signature (activation) backdoor detection.**
-- **Stops:** poisons whose shared trigger produces a *strong, correlated* activation direction —
-  surfaces them above the base rate; useful triage on your own training data.
-- **Does NOT stop:** stealthy/low-strength triggers, triggers spread across many small features,
-  clean-label poisons, or attacks that regularize the poison representation to look in-distribution;
-  and it needs access to the training data and model internals (not applicable to a black-box model
-  you merely download).
-- **Attacker adapts:** weaken/spread the trigger (lower $\mu$), use clean-label poisoning, or add a
-  loss term that minimizes the poison's spectral separation.
-- **FP/utility cost:** flagged clean samples discarded (data loss); imperfect precision. **Perf:**
-  an SVD per class.
-- **Takeaway:** detection is a probabilistic filter, not a guarantee; the durable defenses are
-  *provenance and control of the training pipeline* (trusted data, signed datasets, reproducible
-  training) plus post-hoc **fine-tuning/pruning** — and even those don't fully remove a robust
-  sleeper (Hubinger et al.).
+## Code
 
-</div>
+`labs/lab-11/backdoor.py`:
+- `poison(x, y, frac)` stamps the trigger and relabels a fraction to `TARGET_CLASS`.
+- `backdoor_asr` measures the trigger's effect on non-target inputs (the ASR).
+- `spectral_signature_scores` (Tran et al., 2018): for the target class, take penultimate
+  activations, center them, and score each sample by its projection onto the **top singular
+  vector**. Poisoned samples, sharing a learned trigger representation, tend to align with a
+  dominant direction and score as outliers.
+- `detect_poison` flags the top-scoring fraction and reports precision/recall vs the true poison
+  mask — which comes out *above the base rate* but far from perfect.
 
 ## Practical lab
-
-<div class="lab">
 
 **Lab 11** ([`labs/lab-11/`](../../labs/lab-11/README.md)) — plant a backdoor, measure the sleeper,
 detect it. CPU torch, ~4s tests.
@@ -140,8 +118,6 @@ detect it. CPU torch, ~4s tests.
 py labs/lab-11/backdoor.py
 py -m pytest labs/lab-11 -q
 ```
-
-</div>
 
 ## Exercise
 
@@ -179,10 +155,6 @@ the same ASR.
 precision/recall, the post-hoc removal results, the adaptive evasion, and the preference-poisoning
 write-up + guarantee box.
 
-```bash
-py course.py complete 11.1
-```
-
 ## Research paper
 
 **Gu, Dolan-Gavitt, Garg, "BadNets" (2017)** and **Hubinger et al., "Sleeper Agents: Training
@@ -202,44 +174,6 @@ can be far subtler (Tran et al. detection; and detection remains an open problem
   [`references/standards-map.md`](../../references/standards-map.md).
 - Forward link: M13 (malicious adapters/checkpoints), M22 (AI supply chain).
 
-## Assessment
-
-<details><summary>Q1. Why can't clean-input evaluation detect a backdoor?</summary>
-
-Because the backdoor is a *conditional* behavior triggered by a specific pattern that is (by design)
-absent from the clean input distribution the evaluator samples. Clean accuracy, loss, and normal
-red-teaming all look normal; the malicious behavior only appears on the trigger, which the auditor
-would have to guess. Detection must inspect data or model internals, not clean-input behavior.
-
-</details>
-
-<details><summary>Q2. Why does a small poison fraction yield a high ASR without hurting clean accuracy?</summary>
-
-The "trigger ⇒ target" rule is simple and perfectly consistent within the poisoned subset, so the
-model learns it easily even from few examples; and because poison is a small share of a large clean
-set, it barely perturbs the clean-task fit. Cheap to plant, potent, and quiet.
-
-</details>
-
-<details><summary>Q3. Why does a spectral signature reveal poison, and how does an attacker evade it?</summary>
-
-Poisoned samples share a learned trigger representation, forming a correlated sub-population that
-dominates the top singular direction of the target class's centered activations, so they score as
-outliers along $v_1$. The attacker evades by weakening/spreading the trigger (lowering its
-representational strength $\mu$) or using clean-label poisons, reducing the spectral separation —
-at the cost of needing more poison for the same ASR.
-
-</details>
-
-<details><summary>Q4. What is the durable defense against poisoning, given detection is imperfect?</summary>
-
-Provenance and control of the training pipeline: trusted/verified data sources, signed and
-reproducible datasets and training, and isolation of who can influence data/fine-tuning/preference
-labels — plus post-hoc mitigation (clean fine-tuning, pruning) and detection as triage. Even these
-don't guarantee removal of a robust sleeper, so upstream trust is primary.
-
-</details>
-
 ## What you should now be able to do
 
 - Plant a BadNets-style backdoor and measure the sleeper (high clean accuracy + high trigger ASR).
@@ -247,13 +181,19 @@ don't guarantee removal of a robust sleeper, so upstream trust is primary.
 - Build and evaluate activation-based detectors, and understand their limits and adaptive bypasses.
 - Reason about preference/RLHF poisoning and situate poisoning in the model supply chain.
 
-## Progress checkpoint
+-->
+**Prerequisites.** Sibling: training loops, SFT (M07/M14). [02.1](../module-02/lesson-01.md)
+(train-time boundaries fail when weights are poisoned). [09.1](../module-09/lesson-01.md) for the
+attacker-optimizes-inputs mindset. Lab: CPU torch.
 
-```bash
-py course.py complete 11.1
-py course.py next
-```
+**You will learn.** Attacks that live in the *model's weights*, planted during training:
+**data/fine-tuning/preference poisoning** and **backdoors/trojans** — the sleeper-agent pattern
+where a model behaves normally until a trigger appears — and why they evade normal evaluation, plus
+how (imperfectly) to detect them.
 
-**Next:** 12.1 · Model extraction, inversion & membership inference — stealing behavior through a
-black-box API, and the likelihood-ratio test for "was this example in the training set?", with
-differential privacy as mitigation.
+**Why this matters.** Everything before this attacked a *deployed* model's inputs. Poisoning
+attacks the *supply chain of behavior*: whoever influences training data, fine-tuning data,
+preference data, or a checkpoint can install hidden behavior that no amount of clean-input testing
+reveals. This is the model-level analog of a software backdoor, and it is the bridge to adapter and
+weight supply-chain attacks (M13) and AI supply chain (M22).
+-->
