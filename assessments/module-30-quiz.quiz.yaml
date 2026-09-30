@@ -1,0 +1,140 @@
+- id: q1
+  question: >-
+    Your recon report lists an internet-reachable cluster job-submission dashboard with no auth, an
+    unauth model-server admin API, and a chatbot with strict content filters. Where is the impact?
+  options:
+    - Nowhere actionable — none of these become impact without valid credentials for the platform.
+    - The content filters — a sufficiently clever jailbreak is the most reliable route to real impact.
+    - The job-submission dashboard — submitting a job is remote code execution on the GPU cluster.
+    - The chatbot's streaming responses — token-by-token output leaks the model's hidden weights.
+  correct: 2
+  explanation: >-
+    An exposed, unauthenticated job-submission dashboard is cluster RCE (the ShadowRay pattern). That is
+    deterministic and total, unlike a jailbreak, and it needs no credentials. Streaming does not leak
+    weights.
+- id: q2
+  question: >-
+    A model server exposes admin_load_model(model_ref) with no auth, reachable from the internet. The
+    single most valuable follow-up to confirm impact is:
+  options:
+    - Point model_ref at an attacker-controlled model or an internal URL and observe init/SSRF effects.
+    - Measure the latency of the inference endpoint under load to fingerprint the GPU generation.
+    - Ask the model through the chat endpoint whether the admin API is currently enabled or disabled.
+    - Enumerate every public model name the server will accept to build a complete inventory first.
+  correct: 0
+  explanation: >-
+    Loading an attacker-chosen model runs its init code (deserialization risk) and a URL model_ref can
+    trigger SSRF to internal metadata. That directly demonstrates code execution or credential access,
+    which is the impact you are confirming.
+- id: q3
+  question: >-
+    An artifact registry returns files via normpath(join(root, rel_path)) with no confinement check.
+    Which request most directly demonstrates the flaw, and what does it prove?
+  options:
+    - Requesting "readme.txt" and noting the file downloads, proving the endpoint serves artifacts.
+    - Requesting a very long random path and observing a 404, proving the endpoint validates input.
+    - Requesting the same file twice and comparing timing, proving a cache side channel exists here.
+    - Requesting "../etc/ai-secrets.env" and receiving the secret, proving traversal outside the root.
+  correct: 3
+  explanation: >-
+    Supplying ../ escapes the artifact root and returns a file outside it (the secret), which proves
+    path traversal. A normal download proves nothing about confinement; a 404 or timing test does not
+    demonstrate the vulnerability.
+- id: q4
+  question: >-
+    You model remote exploit success as r · f · a. A team enables authentication (drives a to ~0) but
+    leaves the service internet-reachable and the traversal bug unfixed. What is the residual risk?
+  options:
+    - Zero, because authentication alone is sufficient to stop every remote exploit against the service.
+    - Real, because an auth bypass or credential leak re-opens a, and the other factors are still 1.
+    - Zero, because an internet-reachable service is automatically placed behind a default-deny firewall.
+    - Real, but only for insiders, since external attackers cannot reach an authenticated endpoint at all.
+  correct: 1
+  explanation: >-
+    Auth sets only the a factor; r and f remain 1. Any auth bypass, default credential, or token leak
+    restores a and the exploit succeeds. Defence-in-depth (also cutting r and fixing f) is why one gate
+    is not enough.
+- id: q5
+  question: >-
+    Which change gives the broadest risk reduction for a model server, an experiment tracker, and a
+    notebook that are all currently on the public internet?
+  options:
+    - Remove them from the public internet behind an authenticated gateway and default-deny segmentation.
+    - Enable verbose audit logging on all three so any future exploitation can be reconstructed.
+    - Rotate the credentials on all three services on a strict weekly schedule going forward.
+    - Upgrade all three to their latest versions so that known published CVEs are fully patched.
+  correct: 0
+  explanation: >-
+    Network exposure is the factor shared across all exploits and all three services, so removing public
+    reachability zeroes remote risk broadly at once. Rotation, logging, and patching help but do not
+    remove the reachability precondition.
+- id: q6
+  question: >-
+    After hardening (auth + safe path join + localhost binding), an assessor still reads the canary. The
+    most likely explanation is:
+  options:
+    - Safe path joins are impossible to implement correctly, so traversal always eventually succeeds.
+    - Authentication increased the attack surface, so enabling it made the service strictly less safe.
+    - Localhost binding must have been disabled, because binding is the only control that ever matters.
+    - The assessor gained an internal foothold (e.g. a compromised pod) and reached the service locally.
+  correct: 3
+  explanation: >-
+    Localhost binding is perimeter, not identity. An internal foothold reaches the now-"internal"
+    service; if auth or validation then had a gap, the canary is read. That is the exact scenario the
+    lab's ADAPT stage models, and why all three controls are needed.
+- id: q7
+  question: >-
+    A serving stack's admin_load_model fetches a URL server-side. Beyond loading a malicious model, what
+    additional class of attack does this enable, and what is the targeted fix?
+  options:
+    - Cross-site scripting; fix by setting a strict Content-Security-Policy header on responses.
+    - SQL injection; fix by using parameterised queries in the model registry's database layer.
+    - Server-side request forgery to internal metadata; fix by allowlisting permitted fetch destinations.
+    - Clickjacking; fix by sending an X-Frame-Options header to prevent the admin UI being framed.
+  correct: 2
+  explanation: >-
+    A server-side fetch of a caller-supplied URL is SSRF: the server can be made to reach internal
+    services and cloud instance-metadata for credentials. The targeted fix is a destination allowlist on
+    the fetch. XSS, SQLi, and clickjacking are different bug classes.
+- id: q8
+  question: >-
+    Even after the application is hardened, the container mounts a broadly-scoped cloud token and the
+    whole secrets directory. Why does this still matter?
+  options:
+    - It does not matter, because a hardened application cannot be exploited to reach those mounts at all.
+    - "It widens blast radius: any foothold in the workload inherits the broad token and mounted secrets."
+    - It improves security, because centralising secrets in one mount is easier to audit and rotate.
+    - It only matters for performance, since large secret mounts slow the container's start-up time.
+  correct: 1
+  explanation: >-
+    Container hygiene bounds blast radius. A broad token and wide secret mount mean any code execution
+    in the workload — via any path — inherits powerful credentials, so least-privilege service accounts
+    and minimal mounts are part of the defense even when the app is hardened.
+- id: q9
+  question: >-
+    The ShadowRay case is often cited because the exploited endpoint was "working as intended" per the
+    vendor. What is the correct lesson for a defender?
+  options:
+    - Wait for the vendor to ship a patch, since a disputed CVE means the tool will fix it eventually.
+    - Rely on the tool's secure defaults, because widely-used AI tools ship safe out-of-the-box configs.
+    - Disable the feature entirely, since any endpoint the vendor will not patch cannot be used safely.
+    - Own the network boundary yourself; a tool's default exposure is your responsibility to contain.
+  correct: 3
+  explanation: >-
+    When a powerful endpoint is unauthenticated by design, the defender cannot rely on the tool to fix
+    it. The network boundary — segmentation, an authenticated gateway, default-deny — is the defender's
+    responsibility and is what would have prevented exploitation.
+- id: q10
+  question: >-
+    You must justify a control-prioritisation in the engagement report for an AI platform. Which framing
+    is strongest?
+  options:
+    - "Rank by leverage: cut shared reachability first, then per-service auth and input validation gates."
+    - Recommend buying a commercial AI-security product, since tooling is the most decisive control.
+    - Rank by CVSS score alone, because the highest-scored individual finding is always the top priority.
+    - List controls alphabetically so the reader can locate each recommendation quickly by name.
+  correct: 0
+  explanation: >-
+    The defensible framing ranks controls by how much expected impact each removes. Network exposure is
+    shared across exploits, so it is first; per-service auth and validation follow. Alphabetical order,
+    a product pitch, or raw CVSS ranking do not capture the shared-factor leverage.

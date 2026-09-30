@@ -9,7 +9,7 @@ Spec for every unit: `curriculum/osai-gap-spec.md`.
 - [x] M27 Reconnaissance for AI targets (lesson+quiz+lab+module quiz) DONE
 - [x] M28 Multi-agent systems & A2A DONE
 - [x] M29 Embedding attacks DONE
-- [ ] M30 AI infrastructure & deployment exploits (30.1 + labs/module-30 + module quiz)
+- [x] M30 AI infrastructure & deployment exploits DONE
 - [ ] M16.2 Agent memory poisoning & stealth (16.2 + labs/module-16)
 - [ ] M31 Capstone engagement (31.1 + labs/module-31 + templates/engagement-report.md + module quiz)
 - [ ] Main session: sidebar, glossary merge, course-outline/standards map, PUBLISHING_WARNING.md

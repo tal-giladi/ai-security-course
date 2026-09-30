@@ -1,0 +1,69 @@
+- id: q1
+  question: >-
+    Recon found a model-serving stack whose management API is reachable and needs no credentials. Why is
+    this often treated as equivalent to code execution on the host?
+  options:
+    - Because the inference endpoint alone can be prompted into running shell commands on the server.
+    - Because the management API always returns the raw model weights, which are executable binaries.
+    - Because loading an attacker-chosen model or config runs its init code or fetches attacker URLs.
+    - Because reaching any HTTPS endpoint without a client certificate is by definition remote code execution.
+  correct: 2
+  explanation: >-
+    An unauthenticated model-load/config surface lets the attacker point the server at their own model
+    (running init/deserialization code) or a URL it fetches (SSRF), which is effectively code execution
+    or credential theft — not the inference path, and not merely holding weight files.
+- id: q2
+  question: >-
+    An artifact endpoint builds paths as normpath(join("/artifacts", user_input)). What is the correct
+    fix against ../etc/ai-secrets.env traversal?
+  options:
+    - Resolve the full path, then require it to equal the root or start with the root plus a separator.
+    - Base64-encode the user_input so that path separators can no longer appear inside the value.
+    - Reject any request whose user_input string literally contains the two-character sequence "..".
+    - Serve every artifact over HTTPS so the path is encrypted in transit and cannot be tampered with.
+  correct: 0
+  explanation: >-
+    Resolve-then-confine is the robust fix: normalise the joined path and assert it stays under the
+    root. Substring checks for ".." are bypassable (encodings, absolute paths), encoding the input does
+    not confine it, and transport encryption is unrelated to traversal.
+- id: q3
+  question: >-
+    You model each remote exploit as P(success) = r · f · a (reachability · flaw-open · auth-defeated).
+    Why is network exposure (r) the highest-leverage control?
+  options:
+    - Because r is easier to configure than authentication or input validation in most deployments.
+    - Because authentication and validation cannot ever be driven to zero, but reachability always can.
+    - Because r is the largest of the three factors in every realistic AI deployment scenario.
+    - Because r is the only factor that is shared across every exploit, so r=0 zeroes them all at once.
+  correct: 3
+  explanation: >-
+    r multiplies every exploit's success term, so making the service unreachable (r=0) zeroes the whole
+    sum simultaneously, whereas f and a are per-exploit. That is why "is it even reachable?" is the
+    first hardening and recon question.
+- id: q4
+  question: >-
+    After you bind the service to localhost, an attacker compromises another pod and reaches it from
+    inside. Which statement about the network-exposure control is correct?
+  options:
+    - Binding to localhost guarantees safety, so the internal compromise must have used a different service.
+    - It is a perimeter control; it removes remote reachability but not an attacker already inside the boundary.
+    - The network control failed silently and should be replaced entirely by authentication going forward.
+    - Binding to localhost also revokes any valid admin tokens, so the internal attacker still cannot act.
+  correct: 1
+  explanation: >-
+    Network exposure control is perimeter, not identity: it removes the remote precondition but does
+    nothing against an attacker who already has a foothold inside the trust boundary. That is precisely
+    why authentication and input validation are still required as defence-in-depth.
+- id: q5
+  question: >-
+    In an engagement against an AI platform, which sequence reflects the usual shortest path to impact?
+  options:
+    - Craft a jailbreak first, then look for infrastructure issues only if the jailbreak fails entirely.
+    - Attempt model inversion first, since recovering training data is the highest-impact outcome overall.
+    - Check exposed dashboards, notebooks, and management APIs first; they are deterministic RCE if open.
+    - Fuzz the inference endpoint's tokens, because token bugs are the most common AI vulnerability class.
+  correct: 2
+  explanation: >-
+    Infrastructure flaws (exposed cluster dashboards, notebooks, unauth management APIs) are
+    deterministic and total when open, so they are the shortest path to impact and are checked first.
+    Model-level tricks are less reliable and come after the infra has been ruled out.
