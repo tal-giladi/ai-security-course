@@ -1,0 +1,95 @@
+# Glossary
+
+Terms used across the course, defined once. Where a definition is not enough, the entry names the
+module that teaches the idea in depth rather than repeating it here.
+
+- **A2A (Agent-to-Agent)** — an emerging protocol for agents to advertise (agent cards), discover, and delegate tasks to each other.
+- **Active recon** — sending inputs/probes and reading outputs; every probe is a loggable event.
+- **Agent** — a model driving a loop that observes, decides and acts through tools; the unit of risk in agentic security.
+- **Agent card** — machine-readable description of an agent's identity, skills, endpoint, and auth; trusted by routers, so a target for over-claim.
+- **Agent impersonation** — forging the sender of an inter-agent message.
+- **Agent long-term memory** — durable store (vector memory, profile, scratchpad) the agent writes to and reads back across tasks/sessions.
+- **Agent loop** — the observe → decide → act cycle. Every arrow is an attack surface: observe ingests untrusted content, decide is steered by it, act causes the consequence.
+- **ASI (Agentic Security Issue)** — the OWASP Top 10 for Agentic Applications identifier, ASI01–ASI10.
+- **ASR (attack success rate)** — the fraction of attack attempts that achieve the attacker's objective. The primary security metric of this course; meaningless without a stated denominator and a benign baseline.
+- **Asset completeness** — fraction of a target's discoverable assets that recon has mapped.
+- **Attack chain** — composing individually-limited findings into end-to-end impact; the chain's severity exceeds any single link.
+- **Attack surface** — the set of things reachable from an entry point. For AI systems it grows multiplicatively in (untrusted input locations × reachable privileges).
+- **Attribute extraction** — reading a private property (topic, author, presence of a sensitive term) off an embedding with a probe, without full inversion.
+- **Backdoor** — a behaviour hidden in a model or dataset that activates on a specific trigger, absent otherwise.
+- **Base rate** — the real-world frequency of the thing being detected. Determines how many of a detector's alerts are false positives; the reason detectors alert rather than block.
+- **Blast radius (container)** — scope of damage from a foothold; bound with least-privilege service accounts, minimal secret mounts, blocked metadata.
+- **Canary (LAB-CANARY-\*)** — the synthetic secret used throughout the labs so that "the attack worked" is observable without any real credential.
+- **Capability over-claim** — an agent card advertises skills it should not have, to get routed sensitive tasks.
+- **Cluster/orchestration dashboard** — job scheduler UI; exposed + job submission = cluster RCE (ShadowRay).
+- **Confused deputy** — a component with more privilege than the attacker that performs an attacker-directed action on the attacker's behalf. The skeleton of most attacks in this course.
+- **Context window** — everything the model can see this turn. It is the whole attack surface: system prompt, retrieved documents, tool results, memory and other agents all render into it as text.
+- **Coverage/fan-out detector** — flags a source that touches many distinct endpoints in a session; defeats low-and-slow because slowing changes timing, not fan-out.
+- **Data poisoning** — corrupting training data so the model learns attacker-chosen behaviour.
+- **Defense-in-depth** — stacking independent controls so one failing does not yield the chain. Quantitatively, an enforced control on a hop makes that hop's success probability 0, while stacked probabilistic filters only multiply to a positive residual.
+- **Delayed / conditional trigger** — payload that fires only under a future condition; dormant, evades sampling detectors.
+- **Differential privacy** — bounding how much a single record can influence model output; a formal guarantee that costs utility.
+- **Embedding** — a vector representation of text. Carries semantic information and, without care, more than intended (see attribute extraction, embedding inversion).
+- **Embedding inversion** — recovering (much of) the input text from its embedding vector, given the encoder or a surrogate.
+- **Embeddings-are-content** — the principle that a vector store is a content store; exfiltrated embeddings ≈ exfiltrated text.
+- **Engagement lifecycle** — scope/RoE -> recon -> foothold -> lateral movement -> objective -> report (with retest loop).
+- **Engagement report** — the professional deliverable: exec summary, methodology, ranked findings, chain narrative, prioritised remediation, standards crosswalk (template: templates/engagement-report.md).
+- **Excessive agency** — an agent able to perform more actions than the task requires. OWASP LLM03:2026 (was LLM06 in 2025). Measure it as the reachable-action set.
+- **FGSM** — the fast gradient sign method: one gradient step on the loss to produce an adversarial example. Module 09.
+- **GCG (Greedy Coordinate Gradient)** — the optimization-based jailbreak that searches a suffix token-by-token to maximise the probability of an unsafe completion. Module 07.
+- **Gradient** — the derivative of the model's loss with respect to its inputs or weights; what makes white-box attacks possible.
+- **Guardrail** — a filter placed around a model (input or output). Probabilistic, evadable, and with a false-positive cost.
+- **Indirect prompt injection** — an injection delivered through content the model reads (documents, web pages, tool results, memory) rather than typed by the user. Module 05.
+- **Information per noise** — the recon objective: maximise mutual information about the config subject to a detection-cost budget (a knapsack).
+- **Instruction hierarchy** — the intended precedence of system over user over tool content. Enforced only statistically; a sufficiently strong context can overturn it. Module 04.
+- **Jailbreak** — an input that makes a model produce content its training refused to produce. Modules 07–08.
+- **Least agency** — the OWASP principle behind the agentic Top 10: grant an agent only the autonomy the task needs, and earn more rather than defaulting to it.
+- **Low-and-slow** — keeping the probe rate below a rate detector's threshold to evade volume-based detection.
+- **Management/admin plane** — a service's control API (load/unload models, submit jobs, reconfigure); unauthenticated + reachable ≈ RCE.
+- **Membership inference** — determining whether a specific record was in a model's training set, via loss/output differences. Module 12.
+- **Memory poisoning** — getting a directive into what the agent stores, so it re-injects on later retrieval.
+- **Message authentication (inter-agent)** — signing/verifying sender+payload (e.g. HMAC); stops forgery/tampering, not malicious content.
+- **Message tampering** — altering a task or result in transit between agents.
+- **Minimisation (privacy)** — not embedding/storing sensitive text (redact before embedding); removes the leak at the source.
+- **MITRE ATLAS** — the adversarial ML threat taxonomy for AI systems (tactics AML.TA000x, techniques AML.T00xx), the AI analogue of ATT&CK.
+- **ML lifecycle services** — experiment trackers, model registries, feature stores; frequent no-auth defaults and file-handling bugs.
+- **Model extraction** — recovering a target model's behaviour or weights through its query interface, often via distillation. Module 12.
+- **Model fingerprinting** — inferring model family/provider/version from behavioural and protocol signals (refusal style, error envelope, tokenizer artefacts, latency).
+- **Model/inference server** — software serving generations/predictions (e.g. serving stacks with model-load APIs).
+- **Network exposure control** — bind/segment/gateway; perimeter control, highest leverage (shared factor r across all exploits).
+- **Noise / DP on embeddings** — perturbing stored vectors to bound inference; trades recovery for retrieval utility (Pareto curve), defence-in-depth only.
+- **OWASP Top 10 for Agentic Applications** — the ASI01–ASI10 list for autonomous agents, published 2025-12-09; adds goal hijack, tool misuse, identity abuse, cascading failure and rogue agents to the LLM list.
+- **OWASP Top 10 for LLM Applications** — the LLM01–LLM10 risk list; the 2026 edition renumbered several entries (module 32 holds the crosswalk).
+- **Paraphrase attack** — rephrasing an attack input to shed a keyword filter while keeping the meaning; the standard adaptive attack against guardrails.
+- **Passive recon** — learning from signals that already exist (OSINT, public bundles, manifests, scan indexes) without touching the target's AI path; detection-free.
+- **Path traversal** — escaping an artifact root via ../; fix = resolve-then-confine (safe join).
+- **Perplexity** — how surprising a token sequence is to the model. Higher perplexity than the surrounding context is a classic injection/jailbreak signal.
+- **Persistence (agentic)** — a planted directive re-activating across sessions; P_fire(n)=1-(1-pq)^n -> 1 with use. No weight change needed.
+- **PGD (projected gradient descent)** — iterative adversarial optimisation that stays in an ε-ball; a strictly stronger attack than FGSM. Module 09.
+- **Prompt injection** — content that makes a model treat data as instructions. The direct/indirect/multimodal taxonomy is modules 04–06.
+- **Purple-team close** — done = objective captured + highest-leverage fix named + retest shows it denied.
+- **Quarantine (memory)** — dropping untrusted-sourced memories from retrieval entirely (q->0); strongest lever, beats stealth.
+- **RAG** — retrieval-augmented generation: fetching documents and putting them in the context. Extends the context window with attacker-reachable text, so it extends the attack surface. Module 14.
+- **Reachability** — whether a given action can be invoked from a given entry point, with what arguments. The operational form of attack-surface analysis.
+- **Read-time re-validation** — untrusted memories enter context as data, not instructions; privileged actions re-check policy.
+- **Reconnaissance (AI)** — mapping an AI target (apps, ML components, infrastructure, dependencies) before exploitation; MITRE ATLAS tactic AML.TA0002.
+- **Remediation by leverage** — ranking fixes by which link breaks the most chains most cheaply (multiplicative-gate reasoning).
+- **Rogue agent** — an agent that pursues goals outside its intended scope, whether through injected instructions or ordinary goal pressure. ASI10.
+- **Rules of engagement (RoE)** — the authorised scope and constraints; out-of-scope actions are failures even if they work.
+- **Scope adherence** — how reliably an agent stays inside the task and engagement scope it was given. It is a separate property from capability: a more capable model is not automatically a more obedient one.
+- **ShadowRay** — 2024 in-the-wild exploitation of exposed Ray cluster dashboards (CVE-2023-48022).
+- **Sleeper agent** — a model trained to behave normally until a specific trigger activates a hidden behaviour. Module 11.
+- **SSRF (server-side request forgery)** — making a server fetch an attacker URL (e.g. cloud instance metadata); fix = destination allowlist.
+- **Standards crosswalk** — mapping findings to MITRE ATLAS / OWASP LLM Top 10 / NIST AI RMF for a shared taxonomy.
+- **Stealth payload** — low-signal poison trading reliability for evasion of write/read detectors.
+- **Surrogate encoder** — an imperfect copy/approximation of the target encoder; often enough to invert without exact weights.
+- **System prompt** — the privileged instruction block. Hidden Context Exposure (LLM08:2026) is the realisation that the whole context window, not just this, is disclosed to a motivated user.
+- **Task provenance** — signed chain of originators/handlers of a task; lets a receiver refuse privilege for tainted origins.
+- **Transferability** — an adversarial example crafted on one model working on another; what makes practical attacks possible when the target is black-box.
+- **Transitive trust** — trust flowing along paths, so an injected low-privilege agent can reach a high-privilege action.
+- **Transitive-trust risk R** — max over nodes of exposure × reachable-privilege; dominated by exposed nodes that can reach powerful actions.
+- **Trust boundary** — a line where data or control crosses from a less-trusted to a more-trusted context. Every injection crosses one.
+- **Trust graph** — directed graph where edges are "who accepts messages/tasks from whom"; every edge is an injection channel.
+- **Trust tag / write provenance** — recording each memory's source (user/trusted_tool/untrusted); never elevate untrusted.
+- **vec2text** — method reconstructing fluent text from black-box embeddings (Morris et al. 2023).
+- **Workflow corruption** — injected content re-plans a workflow (adds/re-orders subtasks).

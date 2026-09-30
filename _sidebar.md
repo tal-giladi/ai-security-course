@@ -1,128 +1,131 @@
 - [Home](/)
+- [Glossary](glossary.md)
 - [Templates](templates/README.md)
-- [Curriculum map & competency matrix](curriculum/course-outline.md)
-- [Prerequisite map (sibling course)](curriculum/prerequisite-map.md)
-- [Paper curriculum](papers/index.md)
-- [Progress](PROGRESS.md)
 
-- **Papers**
-  - [Paper curriculum (index)](papers/index.md)
-  - [01 · Greshake — indirect injection](papers/01-greshake-indirect-injection.md)
-  - [02 · Wallace — instruction hierarchy](papers/02-wallace-instruction-hierarchy.md)
-  - [03 · Zou — GCG](papers/03-zou-gcg.md)
-  - [04 · Chao — PAIR](papers/04-chao-pair.md)
-  - [05 · Mehrotra — TAP](papers/05-mehrotra-tap.md)
-  - [06 · Goodfellow — FGSM](papers/06-goodfellow-fgsm.md)
-  - [07 · Madry — PGD](papers/07-madry-pgd.md)
-  - [08 · Carlini & Wagner — C&W](papers/08-carlini-wagner.md)
-  - [09 · Croce & Hein — AutoAttack](papers/09-croce-autoattack.md)
-  - [10 · Gu — BadNets](papers/10-gu-badnets.md)
-  - [11 · Hubinger — Sleeper Agents](papers/11-hubinger-sleeper.md)
-  - [12 · Tramèr — model stealing](papers/12-tramer-stealing.md)
-  - [13 · Shokri — membership inference](papers/13-shokri-membership.md)
-  - [14 · Carlini — training-data extraction](papers/14-carlini-extracting.md)
-  - [15 · Zou — PoisonedRAG](papers/15-zou-poisonedrag.md)
-  - [16 · Debenedetti — AgentDojo](papers/16-debenedetti-agentdojo.md)
+- Stage 0 — Security foundations
+- **Module 0 — Threat modeling**
+  - [01 · Threat modeling for AI systems](lessons/module-00/lesson-01.md)
+  - [Module 0 quiz](assessments/module-00-quiz.md)
+- **Module 1 — AppSec primitives**
+  - [02 · AppSec primitives AI systems inherit](lessons/module-01/lesson-01.md)
+  - [Module 1 quiz](assessments/module-01-quiz.md)
 
-- **0 · Threat modeling**
-  - [00.1 · Threat modeling for AI systems](lessons/module-00/lesson-01.md)
-- **1 · AppSec primitives**
-  - [01.1 · AppSec primitives AI systems inherit](lessons/module-01/lesson-01.md)
-- **2 · LLM security foundations**
-  - [02.1 · Where the boundaries really are](lessons/module-02/lesson-01.md)
-  - [02.2 · The inference API attack surface](lessons/module-02/lesson-02.md)
-- **4 · Prompt injection**
-  - [04.1 · Direct injection & the instruction hierarchy](lessons/module-04/lesson-01.md)
-  - [05.1 · Indirect prompt injection](lessons/module-05/lesson-01.md)
-  - [06.1 · Multimodal & cross-agent injection](lessons/module-06/lesson-01.md)
-- **7 · Jailbreaking**
-  - [07.1 · Optimization-based jailbreaks (GCG)](lessons/module-07/lesson-01.md)
-  - [08.1 · Automated & black-box jailbreaks](lessons/module-08/lesson-01.md)
-- **9 · Adversarial ML**
-  - [09.1 · Adversarial examples I (FGSM/PGD)](lessons/module-09/lesson-01.md)
-  - [10.1 · CW, transfer & certified robustness](lessons/module-10/lesson-01.md)
-- **11 · Model-level security**
-  - [11.1 · Poisoning, backdoors & sleeper agents](lessons/module-11/lesson-01.md)
-  - [12.1 · Extraction, inversion & membership inference](lessons/module-12/lesson-01.md)
-  - [13.1 · Adapter & weight supply chain](lessons/module-13/lesson-01.md)
-- **14 · RAG security**
-  - [14.1 · RAG retrieval attack surface](lessons/module-14/lesson-01.md)
-  - [15.1 · Multi-tenant retrieval leakage](lessons/module-15/lesson-01.md)
-- **16 · Agent security**
-  - [16.1 · The agent attack surface](lessons/module-16/lesson-01.md)
-  - [16.2 · Agent memory poisoning & stealth](lessons/module-16/lesson-02.md)
-  - [17.1 · Tool poisoning & abuse](lessons/module-17/lesson-01.md)
-  - [18.1 · End-to-end attack chains](lessons/module-18/lesson-01.md)
-- **19 · MCP security**
-  - [19.1 · MCP security](lessons/module-19/lesson-01.md)
-- **20 · Multimodal (deep)**
-  - [20.1 · Multimodal security (deep)](lessons/module-20/lesson-01.md)
-- **21 · Code-agent security**
-  - [21.1 · Code-agent security](lessons/module-21/lesson-01.md)
-- **22 · AI supply chain**
-  - [22.1 · AI supply-chain security](lessons/module-22/lesson-01.md)
-- **23 · Blue team**
-  - [23.1 · Defensive engineering](lessons/module-23/lesson-01.md)
-- **24 · Security evaluation**
-  - [24.1 · Security evaluation](lessons/module-24/lesson-01.md)
-- **25 · Automated red teaming**
-  - [25.1 · Automated red teaming](lessons/module-25/lesson-01.md)
-- **26 · Synthesis**
-  - [26.1 · Purple-team synthesis, standards & capstones](lessons/module-26/lesson-01.md)
-  - [Capstone projects](projects/capstones.md)
-- **Frontier updates**
-  - [F.1 · OWASP LLM Top 10 2026: crosswalk & hidden-context exposure](lessons/frontier/update-01.md)
+- Stage 1 — LLM security foundations
+- **Module 2 — LLM security foundations**
+  - [03 · Where the boundaries really are](lessons/module-02/lesson-01.md)
+  - [04 · The inference API attack surface](lessons/module-02/lesson-02.md)
+  - [Module 2 quiz](assessments/module-02-quiz.md)
 
-- OSAI track — advanced AI red teaming (OffSec AI-300 parity)
+- Stage 2 — Prompt injection
+- **Module 4 — Direct prompt injection**
+  - [05 · Direct prompt injection & the instruction hierarchy](lessons/module-04/lesson-01.md)
+  - [Module 4 quiz](assessments/module-04-quiz.md)
+- **Module 5 — Indirect prompt injection**
+  - [06 · Indirect prompt injection](lessons/module-05/lesson-01.md)
+  - [Module 5 quiz](assessments/module-05-quiz.md)
+- **Module 6 — Multimodal & cross-agent injection**
+  - [07 · Multimodal & cross-agent injection](lessons/module-06/lesson-01.md)
+  - [Module 6 quiz](assessments/module-06-quiz.md)
+
+- Stage 3 — Jailbreaking as research
+- **Module 7 — Optimization-based jailbreaks**
+  - [08 · Optimization-based jailbreaks (GCG)](lessons/module-07/lesson-01.md)
+  - [Module 7 quiz](assessments/module-07-quiz.md)
+- **Module 8 — Automated & black-box jailbreaks**
+  - [09 · Automated & black-box jailbreaks](lessons/module-08/lesson-01.md)
+  - [Module 8 quiz](assessments/module-08-quiz.md)
+
+- Stage 4 — Adversarial machine learning
+- **Module 9 — Adversarial examples I**
+  - [10 · Adversarial examples I (FGSM & PGD)](lessons/module-09/lesson-01.md)
+  - [Module 9 quiz](assessments/module-09-quiz.md)
+- **Module 10 — Adversarial examples II**
+  - [11 · Adversarial examples II (CW, transfer, certified robustness)](lessons/module-10/lesson-01.md)
+  - [Module 10 quiz](assessments/module-10-quiz.md)
+
+- Stage 5 — Model-level security
+- **Module 11 — Poisoning & backdoors**
+  - [12 · Data & model poisoning, backdoors, sleeper agents](lessons/module-11/lesson-01.md)
+  - [Module 11 quiz](assessments/module-11-quiz.md)
+- **Module 12 — Extraction & privacy**
+  - [13 · Model extraction, inversion & membership inference](lessons/module-12/lesson-01.md)
+  - [Module 12 quiz](assessments/module-12-quiz.md)
+- **Module 13 — Adapter & weight supply chain**
+  - [14 · Adapter & weight supply chain](lessons/module-13/lesson-01.md)
+  - [Module 13 quiz](assessments/module-13-quiz.md)
+
+- Stage 6 — RAG security
+- **Module 14 — RAG retrieval attack surface**
+  - [15 · RAG retrieval attack surface](lessons/module-14/lesson-01.md)
+  - [Module 14 quiz](assessments/module-14-quiz.md)
+- **Module 15 — Multi-tenant retrieval leakage**
+  - [16 · Multi-tenant retrieval leakage](lessons/module-15/lesson-01.md)
+  - [Module 15 quiz](assessments/module-15-quiz.md)
+
+- Stage 7 — Agent security
+- **Module 16 — The agent attack surface**
+  - [17 · The agent attack surface](lessons/module-16/lesson-01.md)
+  - [18 · Agent memory poisoning & stealth](lessons/module-16/lesson-02.md)
+  - [Module 16 quiz](assessments/module-16-quiz.md)
+- **Module 17 — Tool poisoning & abuse**
+  - [19 · Tool poisoning & abuse](lessons/module-17/lesson-01.md)
+  - [Module 17 quiz](assessments/module-17-quiz.md)
+- **Module 18 — End-to-end attack chains**
+  - [20 · End-to-end attack chains](lessons/module-18/lesson-01.md)
+  - [Module 18 quiz](assessments/module-18-quiz.md)
+
+- Stage 8 — Frameworks and adjacent surfaces
+- **Module 19 — MCP security**
+  - [21 · MCP security](lessons/module-19/lesson-01.md)
+  - [Module 19 quiz](assessments/module-19-quiz.md)
+- **Module 20 — Multimodal security (deep)**
+  - [22 · Multimodal security (deep)](lessons/module-20/lesson-01.md)
+  - [Module 20 quiz](assessments/module-20-quiz.md)
+- **Module 21 — Code-agent security**
+  - [23 · Code-agent security](lessons/module-21/lesson-01.md)
+  - [Module 21 quiz](assessments/module-21-quiz.md)
+- **Module 22 — AI supply-chain security**
+  - [24 · AI supply-chain security](lessons/module-22/lesson-01.md)
+  - [Module 22 quiz](assessments/module-22-quiz.md)
+
+- Stage 9 — Defending and measuring
+- **Module 23 — Blue team**
+  - [25 · Defensive engineering](lessons/module-23/lesson-01.md)
+  - [Module 23 quiz](assessments/module-23-quiz.md)
+- **Module 24 — Security evaluation**
+  - [26 · Security evaluation](lessons/module-24/lesson-01.md)
+  - [Module 24 quiz](assessments/module-24-quiz.md)
+- **Module 25 — Automated red teaming**
+  - [27 · Automated red teaming](lessons/module-25/lesson-01.md)
+  - [Module 25 quiz](assessments/module-25-quiz.md)
+- **Module 26 — Purple-team synthesis**
+  - [28 · Purple-team synthesis, standards & capstones](lessons/module-26/lesson-01.md)
+  - [Module 26 quiz](assessments/module-26-quiz.md)
+
+- Stage 10 — Practitioner track (OffSec AI-300 parity)
 - **Module 27 — Reconnaissance for AI targets**
-  - [27.1 · Reconnaissance for AI targets](lessons/module-27/lesson-01.md)
+  - [29 · Reconnaissance for AI targets](lessons/module-27/lesson-01.md)
   - [Module 27 quiz](assessments/module-27-quiz.md)
 - **Module 28 — Multi-agent systems & A2A**
-  - [28.1 · Attacking multi-agent systems & A2A protocols](lessons/module-28/lesson-01.md)
+  - [30 · Attacking multi-agent systems & A2A protocols](lessons/module-28/lesson-01.md)
   - [Module 28 quiz](assessments/module-28-quiz.md)
 - **Module 29 — Embedding attacks**
-  - [29.1 · Attacking embeddings: inversion & extraction](lessons/module-29/lesson-01.md)
+  - [31 · Attacking embeddings: inversion & extraction](lessons/module-29/lesson-01.md)
   - [Module 29 quiz](assessments/module-29-quiz.md)
 - **Module 30 — AI infrastructure & deployment**
-  - [30.1 · AI infrastructure & deployment exploits](lessons/module-30/lesson-01.md)
+  - [32 · AI infrastructure & deployment exploits](lessons/module-30/lesson-01.md)
   - [Module 30 quiz](assessments/module-30-quiz.md)
 - **Module 31 — Capstone engagement**
-  - [31.1 · Full-spectrum AI red-team engagement](lessons/module-31/lesson-01.md)
+  - [33 · Full-spectrum AI red-team engagement](lessons/module-31/lesson-01.md)
   - [Module 31 quiz](assessments/module-31-quiz.md)
 
-- **Labs**
-  - [Lab 04 · Direct prompt injection](labs/module-04/README.md)
-  - [Lab 05 · Indirect injection & confused deputy](labs/module-05/README.md)
-  - [Lab 06 · Multimodal & cross-agent injection](labs/module-06/README.md)
-  - [Lab 07 · GCG optimization-based jailbreaks](labs/module-07/README.md)
-  - [Lab 08 · Automated black-box jailbreaks](labs/module-08/README.md)
-  - [Lab 09 · FGSM/PGD adversarial examples](labs/module-09/README.md)
-  - [Lab 10 · CW, transfer & certified robustness](labs/module-10/README.md)
-  - [Lab 11 · Backdoors & sleeper agents](labs/module-11/README.md)
-  - [Lab 12 · Membership inference & DP](labs/module-12/README.md)
-  - [Lab 13 · Supply chain: pickle & malicious LoRA](labs/module-13/README.md)
-  - [Lab 14 · RAG retrieval poisoning](labs/module-14/README.md)
-  - [Lab 15 · Multi-tenant retrieval leakage](labs/module-15/README.md)
-  - [Lab 16 · Excessive agency & confused deputy](labs/module-16/README.md)
-  - [Lab 17 · Tool poisoning & abuse](labs/module-17/README.md)
-  - [Lab 18 · End-to-end attack chain](labs/module-18/README.md)
-  - [Lab 19 · MCP security](labs/module-19/README.md)
-  - [Lab 20 · Steganography & multimodal](labs/module-20/README.md)
-  - [Lab 21 · Code-agent security](labs/module-21/README.md)
-  - [Lab 22 · AI supply-chain verification](labs/module-22/README.md)
-  - [Lab 23 · Compose & measure defenses](labs/module-23/README.md)
-  - [Lab 24 · Security evaluation](labs/module-24/README.md)
-  - [Lab 25 · Automated red teaming](labs/module-25/README.md)
-  - [Lab 26 · Hidden context exposure (F.1)](labs/module-32/README.md)
-  - [Lab 27 · Reconnaissance for AI targets](labs/module-27/README.md)
-  - [Lab 28 · Multi-agent & A2A attacks](labs/module-28/README.md)
-  - [Lab 29 · Embedding inversion & extraction](labs/module-29/README.md)
-  - [Lab 30 · AI infrastructure exploits](labs/module-30/README.md)
-  - [Lab 31 · Capstone engagement range](labs/module-31/README.md)
+- Stage 11 — Standards and frontier updates
+- **Module 32 — Standards crosswalks**
+  - [34 · OWASP LLM Top 10 2026: the crosswalk & Hidden Context Exposure](lessons/module-32/lesson-01.md)
+  - [Module 32 quiz](assessments/module-32-quiz.md)
 
-- **Reference**
-  - [Standards map: OWASP / ATLAS / NIST](references/standards-map.md)
-  - [External tools & fallbacks](references/tools-and-fallbacks.md)
-  - [The local security lab](lab/README.md)
-  - [Curriculum changelog](research/CHANGELOG.md)
-  - [How the course stays current](research/README.md)
+- Reference
+- [Standards map: OWASP / ATLAS / NIST](references/standards-map.md)
+- [External tools & fallbacks](references/tools-and-fallbacks.md)
+- [How the course stays current](research/README.md)
+- [Curriculum changelog](research/CHANGELOG.md)

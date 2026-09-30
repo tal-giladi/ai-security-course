@@ -1,0 +1,40 @@
+**Agent** — a model driving a loop that observes, decides and acts through tools; the unit of risk in agentic security.
+**Agent loop** — the observe → decide → act cycle. Every arrow is an attack surface: observe ingests untrusted content, decide is steered by it, act causes the consequence.
+**ASI (Agentic Security Issue)** — the OWASP Top 10 for Agentic Applications identifier, ASI01–ASI10.
+**ASR (attack success rate)** — the fraction of attack attempts that achieve the attacker's objective. The primary security metric of this course; meaningless without a stated denominator and a benign baseline.
+**Attack surface** — the set of things reachable from an entry point. For AI systems it grows multiplicatively in (untrusted input locations × reachable privileges).
+**Base rate** — the real-world frequency of the thing being detected. Determines how many of a detector's alerts are false positives; the reason detectors alert rather than block.
+**Backdoor** — a behaviour hidden in a model or dataset that activates on a specific trigger, absent otherwise.
+**Canary (LAB-CANARY-\*)** — the synthetic secret used throughout the labs so that "the attack worked" is observable without any real credential.
+**Confused deputy** — a component with more privilege than the attacker that performs an attacker-directed action on the attacker's behalf. The skeleton of most attacks in this course.
+**Context window** — everything the model can see this turn. It is the whole attack surface: system prompt, retrieved documents, tool results, memory and other agents all render into it as text.
+**Data poisoning** — corrupting training data so the model learns attacker-chosen behaviour.
+**Defense-in-depth** — stacking independent controls so one failing does not yield the chain. Quantitatively, an enforced control on a hop makes that hop's success probability 0, while stacked probabilistic filters only multiply to a positive residual.
+**Differential privacy** — bounding how much a single record can influence model output; a formal guarantee that costs utility.
+**Embedding** — a vector representation of text. Carries semantic information and, without care, more than intended (see attribute extraction, embedding inversion).
+**Excessive agency** — an agent able to perform more actions than the task requires. OWASP LLM03:2026 (was LLM06 in 2025). Measure it as the reachable-action set.
+**FGSM** — the fast gradient sign method: one gradient step on the loss to produce an adversarial example. Module 09.
+**GCG (Greedy Coordinate Gradient)** — the optimization-based jailbreak that searches a suffix token-by-token to maximise the probability of an unsafe completion. Module 07.
+**Gradient** — the derivative of the model's loss with respect to its inputs or weights; what makes white-box attacks possible.
+**Guardrail** — a filter placed around a model (input or output). Probabilistic, evadable, and with a false-positive cost.
+**Indirect prompt injection** — an injection delivered through content the model reads (documents, web pages, tool results, memory) rather than typed by the user. Module 05.
+**Instruction hierarchy** — the intended precedence of system over user over tool content. Enforced only statistically; a sufficiently strong context can overturn it. Module 04.
+**Jailbreak** — an input that makes a model produce content its training refused to produce. Modules 07–08.
+**Least agency** — the OWASP principle behind the agentic Top 10: grant an agent only the autonomy the task needs, and earn more rather than defaulting to it.
+**Membership inference** — determining whether a specific record was in a model's training set, via loss/output differences. Module 12.
+**MITRE ATLAS** — the adversarial ML threat taxonomy for AI systems (tactics AML.TA000x, techniques AML.T00xx), the AI analogue of ATT&CK.
+**Model extraction** — recovering a target model's behaviour or weights through its query interface, often via distillation. Module 12.
+**OWASP Top 10 for Agentic Applications** — the ASI01–ASI10 list for autonomous agents, published 2025-12-09; adds goal hijack, tool misuse, identity abuse, cascading failure and rogue agents to the LLM list.
+**OWASP Top 10 for LLM Applications** — the LLM01–LLM10 risk list; the 2026 edition renumbered several entries (module 32 holds the crosswalk).
+**Paraphrase attack** — rephrasing an attack input to shed a keyword filter while keeping the meaning; the standard adaptive attack against guardrails.
+**Perplexity** — how surprising a token sequence is to the model. Higher perplexity than the surrounding context is a classic injection/jailbreak signal.
+**PGD (projected gradient descent)** — iterative adversarial optimisation that stays in an ε-ball; a strictly stronger attack than FGSM. Module 09.
+**Prompt injection** — content that makes a model treat data as instructions. The direct/indirect/multimodal taxonomy is modules 04–06.
+**RAG** — retrieval-augmented generation: fetching documents and putting them in the context. Extends the context window with attacker-reachable text, so it extends the attack surface. Module 14.
+**Reachability** — whether a given action can be invoked from a given entry point, with what arguments. The operational form of attack-surface analysis.
+**Rogue agent** — an agent that pursues goals outside its intended scope, whether through injected instructions or ordinary goal pressure. ASI10.
+**Scope adherence** — how reliably an agent stays inside the task and engagement scope it was given. It is a separate property from capability: a more capable model is not automatically a more obedient one.
+**Sleeper agent** — a model trained to behave normally until a specific trigger activates a hidden behaviour. Module 11.
+**System prompt** — the privileged instruction block. Hidden Context Exposure (LLM08:2026) is the realisation that the whole context window, not just this, is disclosed to a motivated user.
+**Transferability** — an adversarial example crafted on one model working on another; what makes practical attacks possible when the target is black-box.
+**Trust boundary** — a line where data or control crosses from a less-trusted to a more-trusted context. Every injection crosses one.
