@@ -152,3 +152,131 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** Possible advanced exercise/case study once independently reproduced: implement a much simpler (non-provably-secure, illustrative) steganographic collusion channel from scratch between two toy agents, show it evades a naive content monitor, to motivate why "read the agent-to-agent transcript" is an insufficient control on its own.
 - **Confidence:** medium (single research group, no independent replication, but technically detailed with a formal cryptographic construction and cross-posted to IACR ePrint)
 - **Recommendation:** monitor for independent replication or a proposed detection/defense before considering for ADD.
+
+
+
+### C-20260930-01 · CounterSteer: activation-steering defense against indirect prompt injection, with a stated utility-cost comparison to prior defenses
+
+- **Class:** A
+- **Date discovered:** 2026-09-30
+- **Date published:** 2026-09-29
+- **Source:** https://arxiv.org/abs/2609.36570
+- **Organization/researchers:** Mark Russinovich (Microsoft Azure CTO; affiliation not stated on the abstract page itself)
+- **Category:** defense/guardrail
+- **What changed:** An inference-time defense against indirect prompt injection that needs no fine-tuning, auxiliary model, or detector: it finds a residual-stream "instruction-following" direction from paired (with/without embedded-instruction) scenarios, validates it with causal and capability-gate filters, and subtracts it from tool-result tokens during prefill.
+- **Technical summary:** Evaluated on AgentDojo plus 52 gradient-based adaptive-attack episodes and 2,052 human red-team attack replays. Held-out attack success fell from 0.21–1.00 to 0.00–0.17; AgentDojo compromise rate fell from 0.10–0.49 to 0.006–0.079; benchmark-level adaptive attackers were cut to roughly a quarter of their undefended effectiveness. Benign utility retained 93–100% (typography-normalized). The paper states that competing defenses reaching similarly low compromise rates do so by sacrificing 22–89% of benign utility or by fine-tuning the served model weights — CounterSteer does neither.
+- **Why it might matter:** This is exactly the course's `.callout.guarantee` pattern with numbers on both sides of the trade: a concrete activation-space mechanism, tested against adaptive/human attackers (not just static benchmarks), with an explicit utility-cost comparison against alternative defense families. A single-author paper, but from a widely known systems-security practitioner (Microsoft Azure CTO), and the method is simple enough to reimplement from scratch as a lab (extract a steering vector from paired activations, apply at inference, measure ASR vs. utility trade-off directly).
+- **Evidence of adoption:** None yet (days-old research result; no stated production deployment).
+- **Major organizations using it:** none stated (author is Microsoft-affiliated but the paper does not claim Microsoft product integration).
+- **Open-source implementation:** not stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2609.36570
+- **Code:** none confirmed
+- **Relationship to existing course material:** New technique for `module-05`/`module-06` (indirect injection) and `module-24` (measuring defenses with cost); complements the mitigation side of already-staged `C-20260928-01`/`C-20260929-02` (oversight/monitoring) with a model-internals-level control instead. `research/tools/research.py lookup "activation steering"` → no matches.
+- **Potential course lesson:** module-05/06 lab extension: implement a minimal steering-vector extraction and injection-suppression pipeline from scratch on a small open model, then measure ASR-vs-utility exactly as the paper does, to teach the "defense with a stated cost" pattern concretely.
+- **Confidence:** medium-high (single paper, notable individual author, unusually thorough evaluation — adaptive attacks, human red-team replays, and an explicit comparison to alternative defenses' costs — but no independent replication yet).
+- **Recommendation:** review for ADD as a module-05/06 lab exercise on inference-time, weight-preserving injection defenses.
+
+### C-20260930-02 · "Render Before Reading": converting untrusted text to images exploits a text/non-text safety-training gap as a prompt-injection defense
+
+- **Class:** A
+- **Date discovered:** 2026-09-30
+- **Date published:** 2026-09-28
+- **Source:** https://arxiv.org/abs/2609.36121
+- **Organization/researchers:** Jie Zhang, Andrei Baroian, Jan N. van Rijn, Avital Shafran, Florian Tramèr (Tramèr's group; affiliation not stated on the abstract page itself, but Tramèr is an established adversarial-ML researcher, ETH Zurich)
+- **Category:** defense/guardrail
+- **What changed:** Identifies that multimodal LLMs are more susceptible to embedded adversarial instructions when they arrive as text than as images or audio ("text-centric instruction tuning" creates a modality-based vulnerability gap), then proposes exploiting that gap defensively: render all untrusted/unverified content (tool output, retrieved documents) as a typographic image before the model ever reads it as text.
+- **Technical summary:** Evaluated across ten LLMs on two prompt-injection benchmarks (DirectInject and AgentDojo). The rendering defense reduced attack success even against the strongest adaptive attacks and human red-teamers the authors tried, while preserving benign task utility. As a robustness check, the authors show that fine-tuning a model on image-rendered instructions narrows the modality gap again — directly confirming the mechanism (the gap is a training-data artifact, not an inherent property of images) and implicitly flagging how the defense would erode if providers "fixed" the underlying gap by training on rendered instructions.
+- **Why it might matter:** A structurally different defense mechanism from the usual detector/classifier or instruction-hierarchy-training approaches: it needs no model changes and is trivial to implement (rasterize text to an image), yet the paper reports it holds up against adaptive attackers and human red-teamers across ten models and two benchmarks — an unusually broad single-paper evaluation. It also self-documents its own adaptation path (fine-tune away the modality gap), which is exactly the "how an attacker/defender adapts" pattern the course's `.callout.guarantee` boxes require.
+- **Evidence of adoption:** None yet (days-old research result).
+- **Major organizations using it:** none stated.
+- **Open-source implementation:** not stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2609.36121
+- **Code:** none confirmed
+- **Relationship to existing course material:** New technique for `module-06` (non-text/multimodal injection carriers) and `module-20` (multimodal agent attacks/defenses) — turns the multimodal attack surface already taught there into a defense. `lookup "visual rendering"` → no matches.
+- **Potential course lesson:** module-06/20 lab: build a "render untrusted content as an image" middleware for the existing lab-06 multimodal bot, measure ASR before/after on the course's own injection corpus, then show the erosion effect by fine-tuning (or few-shot prompting) the model on rendered instructions.
+- **Confidence:** medium-high (single paper, but a well-known adversarial-ML researcher's group, broad evaluation across 10 models/2 benchmarks, and the defense's own failure mode is characterized in the same paper).
+- **Recommendation:** review for ADD as a module-06/20 lab exercise; strong pairing with existing multimodal-injection material.
+
+### C-20260930-03 · Practical black-box extraction of memorized API credentials from commercial LLMs, validated against real deployed systems including Claude Code
+
+- **Class:** A
+- **Date discovered:** 2026-09-30
+- **Date published:** 2026-09-29
+- **Source:** https://arxiv.org/abs/2609.36941
+- **Organization/researchers:** Shiqian Zhao, Siwei Jiang, Xinfeng Li, Runyi Hu, Yandan Zheng, Congyu Guo, Tianwei Zhang, Anh Tuan Luu (affiliation not stated on the abstract page itself)
+- **Category:** extraction/inversion/membership
+- **What changed:** A black-box, output-only-access framework for extracting memorized confidential credentials (API keys and provider-specific secrets) from commercial LLMs whose training corpora likely include public/private code containing real credentials — directly motivated by coding agents (the abstract names Codex and Claude Code) trained on repositories that can contain leaked secrets.
+- **Technical summary:** Two-stage pipeline: (1) a distillation phase queries the target with varied prompts and validates responses to train a local proxy that mimics secret-revealing behavior; (2) an extraction phase applies targeted sampling plus statistical filtering (token entropy, frequency patterns) to recover candidate secrets from the proxy's outputs. The paper reports the method "improves recovery effectiveness and real-key rates over representative baselines while reducing extraction latency" and states it performed "a responsible real-world evaluation" against three independently deployed black-box commercial LLM systems, spanning OpenAI and Claude Code, using controlled/masked API-key benchmarks rather than exfiltrating live third-party secrets. Exact numeric ASR/recovery figures were not extractable from the abstract page in this run and should be confirmed from the PDF before any course use.
+- **Why it might matter:** Unlike most extraction papers, this one is validated against real, named, currently-deployed commercial systems (not just an offline benchmark model) and explicitly frames its evaluation as responsible-disclosure-style rather than a live attack on third-party secrets — directly relevant to the course's sensitive-information-disclosure and training-data-memorization material, and notable because Claude Code (a product in this course's own toolchain) is named as one of the evaluated systems.
+- **Evidence of adoption:** n/a (attack research; "responsible real-world evaluation" is a research methodology note, not deployment).
+- **Major organizations using it:** none — evaluated against OpenAI and Claude Code as targets, not as adopters.
+- **Open-source implementation:** not stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2609.36941
+- **Code:** none confirmed
+- **Relationship to existing course material:** New instance for module-09/10-adjacent extraction/memorization material and `module-02`'s training-data-leakage discussion; not previously in the registry (`lookup "secrets extraction black-box"` → no matches). Given that Claude Code is a named tested system, flag for the human maintainer to check for any public vendor statement/patch before teaching this as a live example.
+- **Potential course lesson:** extraction/privacy module case study: black-box credential-memorization extraction against a locally hosted small model fine-tuned on a synthetic "leaked secrets" corpus, mirroring the paper's two-stage distill-then-extract method, with LAB-CANARY-style synthetic secrets per the safety boundary.
+- **Confidence:** medium (single paper; abstract-page summary only, full numeric results not yet verified — read the PDF directly before any course use; the "spans OpenAI and Claude Code" claim in particular should be checked in full and against any vendor response before repeating it as fact).
+- **Recommendation:** review for ADD, but first have the weekly review (or the human maintainer) read the full PDF to verify the real-key recovery numbers and check whether Anthropic/OpenAI have issued any statement, before using the Claude Code detail in any lesson text.
+
+### C-20260930-04 · Semantic-cache poisoning: exploiting the embedding-similarity/answer-validity gap in LLM response caches, with a measured-cost defense
+
+- **Class:** B
+- **Date discovered:** 2026-09-30
+- **Date published:** 2026-09-28
+- **Source:** https://arxiv.org/abs/2609.35908
+- **Organization/researchers:** Zihan Zhang, Shuangjie Yao, Zesen Liu, Zhixiang Zhang, Wai Ip Lai, Dung Hiu Hilton Yeung, Chun Kit Zhang, Fuchen Ma, Yuanyuan Yuan, Yu Jiang, Dongdong She (affiliation not stated on the abstract page itself)
+- **Category:** poisoning/backdoor
+- **What changed:** Names and defends a serving-infrastructure attack surface distinct from RAG or training-data poisoning: LLM semantic caches (used in production to cut latency/cost by reusing answers for embedding-similar queries) trust cosine similarity alone as a validity proxy, so an attacker can plant a malicious cached answer under a query crafted to be embedding-similar to a legitimate one.
+- **Technical summary:** Characterizes poisoned entries as following a "rewrite-residual structure" — a similarity-preserving rewrite of a legitimate query plus residual content that triggers the malicious cached response — and proposes a defense ("Deletion Gain" to search shortened query variants, plus an "Answer Check" verifying whether deleted text actually contributed to the cached answer) that blocks 82.0–98.2% of attacks across three attack classes at a stated 5% false-positive rate and negligible added serving overhead.
+- **Why it might matter:** A new, concretely named attack category for the course's poisoning material (semantic-cache poisoning, not RAG-corpus or training-data poisoning) with a defense that states both a blocking rate and a false-positive cost — the course's required `.callout.guarantee` pattern. Semantic caching is an existing production cost-reduction technique, so the attack surface is realistic, though not yet shown exploited outside this paper.
+- **Evidence of adoption:** None (single research paper, days old; no confirmed production semantic-cache deployment using this specific defense).
+- **Major organizations using it:** none stated.
+- **Open-source implementation:** not stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2609.35908
+- **Code:** none confirmed
+- **Relationship to existing course material:** New topic, not previously in registry (`lookup "semantic cache poisoning"` → no matches); adjacent to `module-14`/`module-15` (RAG/retrieval poisoning) but a distinct serving-layer mechanism worth distinguishing from those, not merging into them.
+- **Potential course lesson:** possible module-14/15 side-lesson or exercise distinguishing "poison the corpus" from "poison the cache," with a from-scratch minimal semantic cache + the paper's Deletion-Gain/Answer-Check defense as a measured lab.
+- **Confidence:** medium (single paper, novel attack surface and a defense with clearly stated cost, but no independent validation or confirmed real-world exploitation yet).
+- **Recommendation:** monitor; revisit for ADD if a second group reproduces the attack or a production semantic-cache vendor (e.g. GPTCache-style tools) adopts a similar validity check.
+
+### C-20260930-05 · "Backdoor in the Loop": a compromised retriever checkpoint can hijack agentic search, and naive backdoor-purification defenses can be weaponized as concealment
+
+- **Class:** B
+- **Date discovered:** 2026-09-30
+- **Date published:** 2026-09-26
+- **Source:** https://arxiv.org/abs/2609.37468
+- **Organization/researchers:** Beining Xu, Peichun Hua, Yunming Xiao (affiliation not stated on the abstract page itself)
+- **Category:** rag-security
+- **What changed:** Extends RAG/retrieval poisoning from "poison the corpus" to "poison the retriever model itself": a backdoored retriever checkpoint lets an attacker suppress evidence, force persistent retrieval of chosen documents, or inflate search cost/latency by prolonging the agent's search loop, without touching the corpus or the agent.
+- **Technical summary:** Introduces "inject-and-remove cycles" as a concealment technique that weakens the backdoor's detectable signature while preserving its malicious effect at inference. The paper's most notable finding is defensive: existing "weak backdoor purification" methods (approximate unlearning of suspected backdoor behavior) can be turned against themselves — an attacker can use the purification process itself as camouflage, making the backdoor harder to detect rather than removing it. No mitigation is proposed; this is attack/evasion-only evidence.
+- **Why it might matter:** A genuinely new threat-model angle (retriever-as-attack-surface, not corpus-as-attack-surface) for the course's RAG-security material, plus a cautionary result about a specific defense family (unlearning-based purification) backfiring — useful for the `.callout.guarantee` "how an attacker adapts" component once a purification-style RAG defense is taught. Single paper, no defense proposed, no independent validation.
+- **Evidence of adoption:** None (research result, days old).
+- **Major organizations using it:** none stated.
+- **Open-source implementation:** not stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2609.37468
+- **Code:** none confirmed
+- **Relationship to existing course material:** New angle on `module-14`/`module-15` (RAG poisoning/retrieval); `lookup "malicious retriever"` → no direct match (only unrelated hits). Also cautionary evidence against any future "unlearning-based purification" defense the course might consider teaching.
+- **Potential course lesson:** module-14/15 discussion note: retriever-checkpoint compromise as a supply-chain-adjacent RAG threat, and "your purification defense can become the attacker's camouflage" as a `.callout.guarantee` caution once a purification defense is in scope.
+- **Confidence:** medium (single paper, clear threat model and a notable defense-backfire finding, but no defense of its own and no independent replication).
+- **Recommendation:** monitor; would strengthen materially if paired with a proposed/measured counter-defense in a follow-up.
+
+### C-20260930-06 · ToolFence: deterministic, typed authorization boundary for tool-argument-level prompt injection, with a stated utility cost
+
+- **Class:** B
+- **Date discovered:** 2026-09-30
+- **Date published:** 2026-09-29
+- **Source:** https://arxiv.org/abs/2609.37196
+- **Organization/researchers:** Yanjie Li, Xiangyu He, Xuelong Dai, Bin Xiao (affiliation not stated on the abstract page itself)
+- **Category:** tool/mcp-security
+- **What changed:** Targets "within-tool" injection specifically — attacks that keep the intended tool call but manipulate its arguments by blending trusted user instructions and untrusted observations in the same context — with a runtime that compiles a typed "authorization blueprint" before execution, enforces it with a deterministic monitor for known-safe calls, and only escalates genuinely unknown requests to a slower LLM-judge for approval.
+- **Technical summary:** On AgentDojo with Qwen3-max, reduces attack success rate to near zero while costing only 3.80 percentage points of clean-task utility; the deterministic fast path avoids most judge-model calls, keeping runtime overhead practical.
+- **Why it might matter:** A clean, low-cost, measured defense specifically for argument-level (not just call-level) tool injection, distinguishing "which tool is called" from "what values are passed to it" — a finer-grained authorization boundary than most agent-authorization defenses draw. Strong numbers (near-zero ASR, <4pp utility cost), but conceptually close to the already-staged `C-20260928-02` (AGATE, a provenance-based runtime gate with a stated 6/11 benign-scenario false-positive rate) — the two should be compared, not both taught as if independent, if either reaches ADD.
+- **Evidence of adoption:** None (single research paper, days old).
+- **Major organizations using it:** none stated.
+- **Open-source implementation:** not stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2609.37196
+- **Code:** none confirmed
+- **Relationship to existing course material:** New instance of the `module-16`/`module-17`/`module-18` tool-authorization pattern; `lookup "ToolFence"` and `"tool authorization"` → no exact prior match, but see `C-20260928-02` (AGATE) in staging for a closely related provenance-gate defense — recommend the weekly review evaluate both together and pick at most one for ADD, or explicitly contrast them.
+- **Potential course lesson:** module-16/17 exercise: implement the "typed blueprint + deterministic monitor + judge fallback" pattern from scratch, measure ASR/utility exactly as the paper does, and compare against a naive per-call LLM-judge baseline for cost.
+- **Confidence:** medium (single paper, strong quantified numbers on one benchmark/one model; no independent validation and conceptual overlap with another already-staged candidate).
+- **Recommendation:** monitor alongside `C-20260928-02`; only one authorization-boundary defense of this style should likely reach ADD unless they prove meaningfully complementary.
