@@ -191,12 +191,12 @@ security with users' legitimate answers; state the price.
 **Lab F.1 — hidden-context leak matrix.** CPU-only, stdlib only, offline, synthetic
 `LAB-CANARY-*` markers, no network. Expected runtime: < 1 s; ~60 min for the exercise.
 
-Code: [`labs/lab-26-hidden-context/`](../../labs/lab-26-hidden-context/README.md) — `app.py`
+Code: [`labs/module-32/`](../../labs/module-32/README.md) — `app.py`
 (target + filters), `attack.py` (probes + leak matrix), `crosswalk.py`, `test_lab26.py`.
 
 ```bash
-py labs/lab-26-hidden-context/attack.py
-py -m pytest labs/lab-26-hidden-context -q
+py labs/module-32/attack.py
+py -m pytest labs/module-32 -q
 ```
 The core of the target — five hidden slots, each with its own canary, and a deterministic
 "repeat-your-context" toy model:

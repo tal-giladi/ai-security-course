@@ -1,6 +1,6 @@
 # Mehrotra et al. — *Tree of Attacks: Jailbreaking Black-Box LLMs Automatically* (TAP, 2023)
 
-**arXiv:** [2312.02119](https://arxiv.org/abs/2312.02119). **Module:** [08.1](../lessons/module-08/lesson-01.md). **Lab:** [Lab 08](../labs/lab-08/README.md).
+**arXiv:** [2312.02119](https://arxiv.org/abs/2312.02119). **Module:** [08.1](../lessons/module-08/lesson-01.md). **Lab:** [Lab 08](../labs/module-08/README.md).
 
 ## Why it matters
 TAP generalizes PAIR from a single refinement chain to **tree search with pruning**: branch multiple attack prompts, prune off-topic or unpromising branches with an evaluator *before* spending target queries, and expand the best. It raises ASR at comparable query budgets and is the clearest illustration that **jailbreaking is a search problem** — which is exactly how you should think about automated red teaming (M25).

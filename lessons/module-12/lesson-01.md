@@ -117,7 +117,7 @@ $\varepsilon$–accuracy frontier, which you trace in the exercise.
 
 ## Code
 
-`labs/lab-12/privacy.py`:
+`labs/module-12/privacy.py`:
 - `mi_loss_threshold` scores members/non-members by negative loss and computes AUC via the
   Mann–Whitney U statistic (equivalent to ROC-AUC).
 - `extract` queries a teacher and trains a student; `fidelity` measures agreement.
@@ -128,12 +128,12 @@ $\varepsilon$–accuracy frontier, which you trace in the exercise.
 
 ## Practical lab
 
-**Lab 12** ([`labs/lab-12/`](../../labs/lab-12/README.md)) — MI (AUC), extraction (fidelity), DP-SGD
+**Lab 12** ([`labs/module-12/`](../../labs/module-12/README.md)) — MI (AUC), extraction (fidelity), DP-SGD
 mitigation. CPU torch, ~12s tests.
 
 ```bash
-py labs/lab-12/privacy.py
-py -m pytest labs/lab-12 -q
+py labs/module-12/privacy.py
+py -m pytest labs/module-12 -q
 ```
 
 ## Exercise

@@ -92,7 +92,7 @@ exactly a **signed-but-malicious** publisher (M13) — hence defense-in-depth wi
 
 ## Code
 
-`labs/lab-22/supply_chain_graph.py`: `Artifact` (name/kind/source/content/signer/fmt/version), a
+`labs/module-22/supply_chain_graph.py`: `Artifact` (name/kind/source/content/signer/fmt/version), a
 `TrustPolicy` (allowed sources, trusted signers, unsafe formats, require-pinned), and `verify_artifact`
 returning violations across the four axes. `verify_supply_chain` verifies the whole graph; `trusted`
 is true iff every node passes. A clean chain passes; four injected artifacts (one per axis) are each
@@ -100,12 +100,12 @@ caught with a specific reason.
 
 ## Practical lab
 
-**Lab 22** ([`labs/lab-22/`](../../labs/lab-22/README.md)) — supply-chain graph + four-axis
+**Lab 22** ([`labs/module-22/`](../../labs/module-22/README.md)) — supply-chain graph + four-axis
 verification gate. hashlib, offline.
 
 ```bash
-py labs/lab-22/supply_chain_graph.py
-py -m pytest labs/lab-22 -q
+py labs/module-22/supply_chain_graph.py
+py -m pytest labs/module-22 -q
 ```
 
 ## Exercise

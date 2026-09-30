@@ -2,6 +2,8 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+# The Academy ships this lab as a zip: labs/module-NN/ + labs/common/.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "common"))
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "lab" / "agents"))
 from excessive_agency import make_agent, run_task, exfiltrated  # noqa: E402
 from agent import Policy  # noqa: E402

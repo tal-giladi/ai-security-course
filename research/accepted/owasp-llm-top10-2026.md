@@ -3,7 +3,7 @@
 - **Topic ID:** owasp-llm-top10-2026
 - **Status:** ADD
 - **Next review:** n/a
-- **Course change:** lessons/frontier/update-01.md (new lesson F.1); references/standards-map.md (appended 2026 crosswalk section); curriculum/course-outline.md (appended F.1 line + dependency row); _sidebar.md (Frontier updates section); labs/lab-26-hidden-context/ (shipped 2026-09-27, see below).
+- **Course change:** lessons/frontier/update-01.md (new lesson F.1); references/standards-map.md (appended 2026 crosswalk section); curriculum/course-outline.md (appended F.1 line + dependency row); _sidebar.md (Frontier updates section); labs/module-32/ (shipped 2026-09-27, see below).
 - **Candidates:** C-20260926-01
 
 ## Summary
@@ -28,7 +28,7 @@ re-verify against the official PDF).
 
 ## Implementation status
 
-Lab `labs/lab-26-hidden-context/` (app with 5 canary-tagged slots, 7 probes, decode-aware
+Lab `labs/module-32/` (app with 5 canary-tagged slots, 7 probes, decode-aware
 scoring, literal/normalize/keyword filters + credential-out-of-context, crosswalk.py, 8 tests,
 network_mode: none compose) was written and its own 8 tests passed on 2026-09-27, but it was
 **not committed**: the pre-existing suite `python -m pytest lab/tests labs -q` cannot run

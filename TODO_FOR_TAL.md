@@ -14,7 +14,7 @@ https://tal-giladi.github.io/ai-security-course/ (enabled).
   `lab/tests/` (6 tests pass).
 - Lessons (template-complete): **M00.1** threat modeling, **M01.1** appsec primitives,
   **M02.1** LLM boundaries, **M02.2** inference API surface, **M04.1** direct prompt injection.
-- **Lab 04** (`labs/lab-04`): attack/defense/measure, acceptance tests pass, docker-compose (no egress).
+- **Lab 04** (`labs/module-04`): attack/defense/measure, acceptance tests pass, docker-compose (no egress).
 
 ## ALL 27 MODULES BUILT (M00–M26)
 

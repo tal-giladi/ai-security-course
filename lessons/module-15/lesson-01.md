@@ -93,7 +93,7 @@ Little math — this is access control — but two quantifiable points:
 
 ## Code
 
-`labs/lab-15/tenant.py`: a `MultiTenantStore` with three methods. `retrieve_vuln` ignores tenant;
+`labs/module-15/tenant.py`: a `MultiTenantStore` with three methods. `retrieve_vuln` ignores tenant;
 `retrieve_postfilter` takes global top-k then filters (availability loss; trusts `d.tenant`);
 `retrieve_prefilter` restricts to the caller's tenant before ranking. `cross_tenant_leak` runs an
 Acme user against a query that matches Globex's secret. Results: vuln leaks; post-filter blocks the
@@ -101,12 +101,12 @@ leak but returns fewer docs; pre-filter is correct.
 
 ## Practical lab
 
-**Lab 15** ([`labs/lab-15/`](../../labs/lab-15/README.md)) — cross-tenant leak (vuln), correct
+**Lab 15** ([`labs/module-15/`](../../labs/module-15/README.md)) — cross-tenant leak (vuln), correct
 pre-filter, post-filter's availability bug. numpy + shim, offline, instant.
 
 ```bash
-py labs/lab-15/tenant.py
-py -m pytest labs/lab-15 -q
+py labs/module-15/tenant.py
+py -m pytest labs/module-15 -q
 ```
 
 ## Exercise

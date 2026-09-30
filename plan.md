@@ -1,3 +1,7 @@
+> **Course guidelines (binding):** before writing or changing any course content, read
+> `C:\Users\TalGiladi\OneDrive\repos\tals-academy\docs\new-course-instructions.md`. It wins over
+> anything in this file or the course plan unless Tal says otherwise in chat.
+
 You are building a complete professional-level course called:
 
 # LLM & Agent Security Research Engineer

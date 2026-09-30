@@ -1,6 +1,6 @@
 # Greshake et al. — *Not what you've signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection* (2023)
 
-**arXiv:** [2302.12173](https://arxiv.org/abs/2302.12173) · AISec '23. **Modules:** [05.1](../lessons/module-05/lesson-01.md), [06.1](../lessons/module-06/lesson-01.md), [16.1](../lessons/module-16/lesson-01.md). **Lab:** [Lab 05](../labs/lab-05/README.md).
+**arXiv:** [2302.12173](https://arxiv.org/abs/2302.12173) · AISec '23. **Modules:** [05.1](../lessons/module-05/lesson-01.md), [06.1](../lessons/module-06/lesson-01.md), [16.1](../lessons/module-16/lesson-01.md). **Lab:** [Lab 05](../labs/module-05/README.md).
 
 ## Why it matters
 This is the paper that named and demonstrated **indirect prompt injection**: the attacker never talks to the model, they plant instructions in *content the model will later retrieve* — a web page, an email, a document, a tool result. It reframed prompt injection from "user says a naughty thing" to a **supply-chain problem for context**, and it is the single most load-bearing threat model for every RAG and agent lesson in this course. The confused-deputy framing you build in M05/M16 is this paper made executable.

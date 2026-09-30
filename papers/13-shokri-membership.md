@@ -1,6 +1,6 @@
 # Shokri et al. — *Membership Inference Attacks Against Machine Learning Models* (2016)
 
-**arXiv:** [1610.05820](https://arxiv.org/abs/1610.05820) · IEEE S&P '17. **Module:** [12.1](../lessons/module-12/lesson-01.md). **Lab:** [Lab 12](../labs/lab-12/README.md).
+**arXiv:** [1610.05820](https://arxiv.org/abs/1610.05820) · IEEE S&P '17. **Module:** [12.1](../lessons/module-12/lesson-01.md). **Lab:** [Lab 12](../labs/module-12/README.md).
 
 ## Why it matters
 Membership inference (MI) asks the sharpest privacy question: *was this exact record in the training set?* Shokri et al. showed the answer leaks from a model's outputs — because models are more confident on data they memorized. MI is the empirical bridge from "privacy" to a measurable attack, the standard yardstick for whether a defense (like DP-SGD) actually protects data, and the conceptual root of training-data extraction from LLMs.

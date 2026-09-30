@@ -176,12 +176,12 @@ of your own measurement.
 
 ## Practical lab
 
-**Lab 04** ([`labs/lab-04/`](../../labs/lab-04/README.md)) — the toy vulnerable support bot.
+**Lab 04** ([`labs/module-04/`](../../labs/module-04/README.md)) — the toy vulnerable support bot.
 CPU-only, offline, synthetic canary, local sink for the bypass. Run:
 
 ```bash
-py labs/lab-04/attack.py        # ASR on vulnerable vs defended bot
-py -m pytest labs/lab-04 -q     # acceptance tests
+py labs/module-04/attack.py        # ASR on vulnerable vs defended bot
+py -m pytest labs/module-04 -q     # acceptance tests
 ```
 
 The vulnerable bot leaks on the authority-framed / ignore-previous / debug payloads (ASR ≈ 0.67

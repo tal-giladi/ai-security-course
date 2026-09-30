@@ -1,6 +1,6 @@
 # Goodfellow, Shlens & Szegedy — *Explaining and Harnessing Adversarial Examples* (FGSM, 2014)
 
-**arXiv:** [1412.6572](https://arxiv.org/abs/1412.6572). **Module:** [09.1](../lessons/module-09/lesson-01.md). **Lab:** [Lab 09](../labs/lab-09/README.md).
+**arXiv:** [1412.6572](https://arxiv.org/abs/1412.6572). **Module:** [09.1](../lessons/module-09/lesson-01.md). **Lab:** [Lab 09](../labs/module-09/README.md).
 
 ## Why it matters
 The foundational adversarial-ML paper. Its claim reframed the field: adversarial examples arise not from exotic nonlinearity but from models being **too linear** in high dimensions — tiny per-coordinate perturbations sum to a large change in the logit. It gives you FGSM (the one-step attack everything else generalizes), the linear explanation, and adversarial training as the first defense. Everything in M09–M10 is a refinement of ideas here.

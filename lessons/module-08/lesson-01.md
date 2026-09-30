@@ -70,7 +70,7 @@ key is the paraphrase your search rediscovers.
 
 ## Technical explanation
 
-Read `labs/lab-08/pair.py`. The search:
+Read `labs/module-08/pair.py`. The search:
 - **State** = a composition of wrapper strategies applied to the base request.
 - **Objective** = ASR estimated over several stochastic target queries (the judge counts
   compliance).
@@ -124,12 +124,12 @@ now aimed at your own evaluation.
 
 ## Practical lab
 
-**Lab 08** ([`labs/lab-08/`](../../labs/lab-08/README.md)) — query-only beam search; marker-defense
+**Lab 08** ([`labs/module-08/`](../../labs/module-08/README.md)) — query-only beam search; marker-defense
 + rediscovered evasion. CPU-only, offline, fast.
 
 ```bash
-py labs/lab-08/pair.py       # vulnerable PAIR ASR ~1.0; defended: rediscovers 'story' evasion ~0.6
-py -m pytest labs/lab-08 -q
+py labs/module-08/pair.py       # vulnerable PAIR ASR ~1.0; defended: rediscovers 'story' evasion ~0.6
+py -m pytest labs/module-08 -q
 ```
 
 ## Exercise

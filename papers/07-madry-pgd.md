@@ -1,6 +1,6 @@
 # Madry et al. — *Towards Deep Learning Models Resistant to Adversarial Attacks* (PGD, 2017)
 
-**arXiv:** [1706.06083](https://arxiv.org/abs/1706.06083). **Module:** [09.1](../lessons/module-09/lesson-01.md), [10.1](../lessons/module-10/lesson-01.md). **Lab:** [Lab 09](../labs/lab-09/README.md).
+**arXiv:** [1706.06083](https://arxiv.org/abs/1706.06083). **Module:** [09.1](../lessons/module-09/lesson-01.md), [10.1](../lessons/module-10/lesson-01.md). **Lab:** [Lab 09](../labs/module-09/README.md).
 
 ## Why it matters
 This paper gave adversarial robustness its organizing principle: a **min-max (saddle-point) formulation** — minimize expected loss under the *worst-case* bounded perturbation. PGD (Projected Gradient Descent) is the strong first-order attack that solves the inner max, and **PGD adversarial training** remains the most reliable empirical defense a decade later. It turns "patch attacks as they appear" into "optimize against the strongest attacker in your threat model."

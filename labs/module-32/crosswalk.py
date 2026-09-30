@@ -2,7 +2,7 @@
 
 Source: OWASP GenAI Security Project, LLM Top 10 2026 (released 2026-08-03),
 https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/ (table in lessons/frontier/update-01.md).
-Usage: py labs/lab-26-hidden-context/crosswalk.py "text citing LLM07 and LLM06:2025"
+Usage: py labs/module-26-hidden-context/crosswalk.py "text citing LLM07 and LLM06:2025"
 """
 import re
 import sys

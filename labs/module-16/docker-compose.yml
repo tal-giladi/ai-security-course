@@ -5,4 +5,4 @@ services:
     network_mode: none
     volumes:
       - ../../:/course:ro
-    command: ["python", "labs/lab-16/excessive_agency.py"]
+    command: ["python", "labs/module-16/excessive_agency.py"]

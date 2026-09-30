@@ -1,6 +1,6 @@
 # Tramèr et al. — *Stealing Machine Learning Models via Prediction APIs* (2016)
 
-**arXiv:** [1609.02943](https://arxiv.org/abs/1609.02943) · USENIX Security '16. **Module:** [12.1](../lessons/module-12/lesson-01.md). **Lab:** [Lab 12](../labs/lab-12/README.md).
+**arXiv:** [1609.02943](https://arxiv.org/abs/1609.02943) · USENIX Security '16. **Module:** [12.1](../lessons/module-12/lesson-01.md). **Lab:** [Lab 12](../labs/module-12/README.md).
 
 ## Why it matters
 This is the paper that established **model extraction** as a real attack: a black-box prediction API leaks enough to reconstruct a functional (sometimes near-exact) copy of the model — stealing IP and, worse, creating a *local white-box surrogate* an attacker can then use to craft transferable adversarial/GCG examples. It is the reason "we only expose an API" is not confidentiality, and it grounds the M12 confidentiality/privacy triad (extraction, inversion, membership inference).

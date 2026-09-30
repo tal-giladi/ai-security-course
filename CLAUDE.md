@@ -1,5 +1,9 @@
 # Build guide — LLM & Agent Security Research Engineer course
 
+> **Course guidelines (binding):** before writing or changing any course content, read
+> `C:\Users\TalGiladi\OneDrive\repos\tals-academy\docs\new-course-instructions.md`. It wins over
+> anything in this file or the course plan unless Tal says otherwise in chat.
+
 This repo is a **docsify static course site** plus a **runnable local security lab** (`lab/`).
 It takes an experienced software engineer (Tal — C#/.NET, currently doing the
 `llm-research-engineer-course`) to expert-level LLM/agent **security research** capability:
@@ -18,7 +22,7 @@ Reference it and build the *security-specific* depth on top. The overlap map liv
 - `curriculum/` — `course-outline.md` (module map + dependency graph + competency matrix),
   `prerequisite-map.md` (what the sibling course already covers).
 - `lessons/module-XX/lesson-YY.md` — lesson content.
-- `labs/lab-XX-slug/` — self-contained Docker labs (README + code + attack + defense + reset).
+- `labs/module-NN/` — self-contained labs (README + code + attack + defense + reset).
 - `exercises/` — standalone exercise specs where they don't live inside a lesson.
 - `projects/` — capstones.
 - `papers/` — one reading guide per paper (`NN-slug.md`) + `papers/index.md`.
@@ -61,7 +65,7 @@ Use `.callout.red` (attack), `.callout.blue` (defense), `.callout.purple` (resea
 
 ## Local preview
 `python -m http.server 8080` from repo root → http://localhost:8080.
-Labs: `cd labs/lab-XX-slug && docker compose up` (each lab documents the exact command).
+Labs: `cd labs/module-NN && docker compose up` (each lab documents the exact command).
 
 ## Progress tracking
 `course.py` (stdlib only) reads lessons from `_sidebar.md`, tracks status/quiz/notes in

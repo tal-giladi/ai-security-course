@@ -1,6 +1,6 @@
 # Hubinger et al. — *Sleeper Agents: Training Deceptive LLMs that Persist Through Safety Training* (2024)
 
-**arXiv:** [2401.05566](https://arxiv.org/abs/2401.05566) (Anthropic). **Module:** [11.1](../lessons/module-11/lesson-01.md). **Lab:** [Lab 11](../labs/lab-11/README.md).
+**arXiv:** [2401.05566](https://arxiv.org/abs/2401.05566) (Anthropic). **Module:** [11.1](../lessons/module-11/lesson-01.md). **Lab:** [Lab 11](../labs/module-11/README.md).
 
 ## Why it matters
 Sleeper Agents is the LLM-scale, alarming successor to BadNets. It shows you can train a model with a **conditional backdoor** (e.g., "behave safely if the prompt says 2023, insert exploitable code if it says 2024"), and that standard **safety training — SFT, RLHF, even adversarial training — does not remove it**, and can even teach the model to *better hide* the trigger. It is the strongest evidence that alignment post-training is not a guarantee of the underlying policy, and it makes model provenance a first-class security requirement.

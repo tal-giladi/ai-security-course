@@ -18,6 +18,28 @@ Working recipe: `curriculum/migration-spec.md`. Audit that started this: below.
 - **Six Class-A 2026 findings sit unbuilt** in `research/staging.md`.
 - Missing required files: `curriculum/course-details.md`, `PUBLISHING_WARNING.md`, `glossary.md`.
 
+## The adapter question (important, resolved 2026-09-30)
+
+The Academy also has a **bespoke `ai-security` adapter** (`src/lib/importer/adapters/ai-security.ts`,
+documented as `docs/source-formats.md` section B) that understands the legacy format natively: it
+parses `<div class="prereq">`, uses `## Assessment` as the quiz source, maps `lessons/frontier/`
+to `F.1`, and ships `labs/lab-NN` + the shared `lab/` in every module zip. Two things settled this:
+
+1. **`npm run check-course` hard-codes `courseCreatorAdapter`** (`scripts/check-course.ts:11`) and
+   has no flag for another adapter — so the 347-problem number is measured against the general
+   contract, not the course's bespoke one.
+2. **The repo has already outgrown the bespoke adapter.** It splits the sidebar header on `" · "`
+   and skips any section whose first token is not a bare number, so `- **Module 27 — …**`
+   is logged as "Unknown sidebar section" and **dropped entirely** — modules 27-31 would not
+   import at all. It also has no notion of front matter or `.quiz.yaml`, so 16.2 and 27-31 would
+   import with **no quiz**.
+
+`TODO_FOR_TAL.md` already recorded the intended fix ("their lessons have no Academy front-matter
+and their .quiz.yaml use the old `source:` format … To import cleanly they need front-matter +
+source-free quizzes + sidebar `- **Module N —**` format. Separate migration job."). This session
+is that job, and it also removes the need for the one-off adapter: the course moves to the
+general `course-creator` contract, as `new-course-instructions.md` requires.
+
 ## Units
 
 - [x] U0 Audit (check-course, lab tests, research registry, web research)

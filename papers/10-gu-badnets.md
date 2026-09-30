@@ -1,6 +1,6 @@
 # Gu, Dolan-Gavitt & Garg — *BadNets: Identifying Vulnerabilities in the Machine Learning Model Supply Chain* (2017)
 
-**arXiv:** [1708.06733](https://arxiv.org/abs/1708.06733). **Module:** [11.1](../lessons/module-11/lesson-01.md). **Lab:** [Lab 11](../labs/lab-11/README.md).
+**arXiv:** [1708.06733](https://arxiv.org/abs/1708.06733). **Module:** [11.1](../lessons/module-11/lesson-01.md). **Lab:** [Lab 11](../labs/module-11/README.md).
 
 ## Why it matters
 BadNets introduced the **backdoor**: a model trained to behave normally on clean inputs but to misclassify any input carrying a small attacker-chosen **trigger**. The threat lives in the *supply chain* — you download a pretrained model or outsource training, and the backdoor rides along invisibly, surviving fine-tuning. It is the archetype for every "the weights themselves are untrusted" argument in M11/M13/M22, and the reason provenance and evaluation-on-triggers matter.

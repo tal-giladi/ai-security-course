@@ -105,12 +105,12 @@ least privilege (shrinking $P(\text{act})$) matters more as $k$ grows.
 
 ## Practical lab
 
-**Lab 06** ([`labs/lab-06/`](../../labs/lab-06/README.md)) — inject via alt/EXIF/OCR image layers
+**Lab 06** ([`labs/module-06/`](../../labs/module-06/README.md)) — inject via alt/EXIF/OCR image layers
 and across an A→B agent chain; measure ASR; defend. CPU-only, offline.
 
 ```bash
-py labs/lab-06/attack.py        # multimodal ASR 1.00 & cross-agent True (vuln) -> 0.00/False (def)
-py -m pytest labs/lab-06 -q
+py labs/module-06/attack.py        # multimodal ASR 1.00 & cross-agent True (vuln) -> 0.00/False (def)
+py -m pytest labs/module-06 -q
 ```
 
 ## Exercise

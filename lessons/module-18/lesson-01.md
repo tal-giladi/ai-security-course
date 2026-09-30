@@ -101,7 +101,7 @@ objective you can regression-test in CI.
 
 ## Code
 
-`labs/lab-18/chain.py` on the shared runtime: `web[page]` holds the attacker page (injects
+`labs/module-18/chain.py` on the shared runtime: `web[page]` holds the attacker page (injects
 `read_file`), `files['creds.txt']` injects the exfil `http_get` with `SECRET` (substituted to the
 real canary), and the loop observes each result and continues — a genuine multi-step chain. Defenses
 are `Policy` variants; `chain_depth` counts executed hops. The page sits on an allowlisted
@@ -109,12 +109,12 @@ are `Policy` variants; `chain_depth` counts executed hops. The page sits on an a
 
 ## Practical lab
 
-**Lab 18** ([`labs/lab-18/`](../../labs/lab-18/README.md)) — full chain + layered defenses measured by
+**Lab 18** ([`labs/module-18/`](../../labs/module-18/README.md)) — full chain + layered defenses measured by
 chain depth. Offline, shared runtime.
 
 ```bash
-py labs/lab-18/chain.py
-py -m pytest labs/lab-18 -q
+py labs/module-18/chain.py
+py -m pytest labs/module-18 -q
 ```
 
 ## Exercise

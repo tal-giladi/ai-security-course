@@ -1,6 +1,6 @@
 # Zou et al. — *Universal and Transferable Adversarial Attacks on Aligned Language Models* (GCG, 2023)
 
-**arXiv:** [2307.15043](https://arxiv.org/abs/2307.15043) (CMU/CAIS). **Module:** [07.1](../lessons/module-07/lesson-01.md). **Lab:** [Lab 07](../labs/lab-07/README.md).
+**arXiv:** [2307.15043](https://arxiv.org/abs/2307.15043) (CMU/CAIS). **Module:** [07.1](../lessons/module-07/lesson-01.md). **Lab:** [Lab 07](../labs/module-07/README.md).
 
 ## Why it matters
 GCG (Greedy Coordinate Gradient) is the attack that made jailbreaking a **gradient-optimization** problem, not a wordsmithing one. It finds an adversarial *suffix* that, appended to a harmful request, maximizes the probability of an affirmative opening ("Sure, here is…"). Its two shocking results — suffixes **transfer** to models you never optimized against, and are **universal** across prompts — are why alignment-by-training is not a robustness guarantee. This is the bridge from "prompt injection" to "adversarial examples for text."

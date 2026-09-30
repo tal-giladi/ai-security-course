@@ -104,19 +104,19 @@ cumulative FP cost ($1-\prod(1-\text{fp}_i)$ grows as you stack).
 
 ## Code
 
-`lab/defense-tools/defenses.py` provides the toolkit; `labs/lab-23/measure_defenses.py` composes a
+`lab/defense-tools/defenses.py` provides the toolkit; `labs/module-23/measure_defenses.py` composes a
 `Pipeline` and evaluates configurations, printing ASR/FPR/precision/recall as layers are added. Read
 how each control declares its scope, and how the pipeline orders enforced checks before the detector
 and records every decision to the `AuditLog`.
 
 ## Practical lab
 
-**Lab 23** ([`labs/lab-23/`](../../labs/lab-23/README.md)) — compose the toolkit into a pipeline and
+**Lab 23** ([`labs/module-23/`](../../labs/module-23/README.md)) — compose the toolkit into a pipeline and
 measure each layer. Offline.
 
 ```bash
-py labs/lab-23/measure_defenses.py
-py -m pytest labs/lab-23 -q
+py labs/module-23/measure_defenses.py
+py -m pytest labs/module-23 -q
 ```
 
 ## Exercise

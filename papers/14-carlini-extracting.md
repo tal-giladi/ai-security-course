@@ -1,6 +1,6 @@
 # Carlini et al. — *Extracting Training Data from Large Language Models* (2020)
 
-**arXiv:** [2012.07805](https://arxiv.org/abs/2012.07805) · USENIX Security '21. **Module:** [12.1](../lessons/module-12/lesson-01.md). **Lab:** [Lab 12](../labs/lab-12/README.md).
+**arXiv:** [2012.07805](https://arxiv.org/abs/2012.07805) · USENIX Security '21. **Module:** [12.1](../lessons/module-12/lesson-01.md). **Lab:** [Lab 12](../labs/module-12/README.md).
 
 ## Why it matters
 This paper demonstrated that a production LLM (GPT-2) **memorizes and can be made to emit verbatim training data** — names, phone numbers, code, UUIDs — extractable by an outsider with only query access. It turned "LLMs might leak training data" into a documented, reproducible attack, and it is the direct justification for treating training-corpus contents (PII, secrets, canaries) as a confidentiality boundary and for canary-based leakage testing.

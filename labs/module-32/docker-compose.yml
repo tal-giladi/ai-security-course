@@ -7,4 +7,4 @@ services:
     network_mode: none          # no egress
     volumes:
       - ../../:/course:ro        # mount the repo read-only
-    command: ["python", "labs/lab-26-hidden-context/attack.py"]
+    command: ["python", "labs/module-26-hidden-context/attack.py"]

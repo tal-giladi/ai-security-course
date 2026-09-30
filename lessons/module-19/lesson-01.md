@@ -107,7 +107,7 @@ and the cross-server gate).
 
 ## Code
 
-`labs/lab-19/mcp_lab.py`: a minimal `MCPClient` aggregating a trusted and a malicious `MCPServer`.
+`labs/module-19/mcp_lab.py`: a minimal `MCPClient` aggregating a trusted and a malicious `MCPServer`.
 The client's toy brain reads tool descriptions (`_planning_context`) and obeys directives; a
 directive in a server's description is attributed to that server, so `weather-plus` driving
 `files-server.read_private` is a **cross-server** call the policy can gate. Four configs: trust-all
@@ -116,12 +116,12 @@ cross-server gate (denies the bridge — so exfil sends nothing useful).
 
 ## Practical lab
 
-**Lab 19** ([`labs/lab-19/`](../../labs/lab-19/README.md)) — malicious server, tool-description
+**Lab 19** ([`labs/module-19/`](../../labs/module-19/README.md)) — malicious server, tool-description
 poisoning, cross-server confused deputy, and four defenses. Offline.
 
 ```bash
-py labs/lab-19/mcp_lab.py
-py -m pytest labs/lab-19 -q
+py labs/module-19/mcp_lab.py
+py -m pytest labs/module-19 -q
 ```
 
 ## Exercise

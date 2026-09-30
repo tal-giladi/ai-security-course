@@ -93,19 +93,19 @@ unreachable), not a probability.
 
 ## Code
 
-`labs/lab-21/code_agent.py`: `POISONED_README` hides a `CALL run_shell(...)` directive; `setup_repo`
+`labs/module-21/code_agent.py`: `POISONED_README` hides a `CALL run_shell(...)` directive; `setup_repo`
 feeds README content to the agent. Trusting it → exfil; `_strip` (content-as-data) or a `Policy` with
 no `run_shell` / an approval gate blocks it. `resolve_package` models dependency confusion (highest
 version wins) vs pinning. `run_shell` is inert — it records the command to the sink.
 
 ## Practical lab
 
-**Lab 21** ([`labs/lab-21/`](../../labs/lab-21/README.md)) — poisoned repo → shell exfil + four
+**Lab 21** ([`labs/module-21/`](../../labs/module-21/README.md)) — poisoned repo → shell exfil + four
 defenses + dependency confusion. Offline, inert shell.
 
 ```bash
-py labs/lab-21/code_agent.py
-py -m pytest labs/lab-21 -q
+py labs/module-21/code_agent.py
+py -m pytest labs/module-21 -q
 ```
 
 ## Exercise

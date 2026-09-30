@@ -112,7 +112,7 @@ published "defenses" as gradient-masked. If you report empirical robustness, rep
 
 ## Code
 
-`labs/lab-10/adv2.py`:
+`labs/module-10/adv2.py`:
 - **`cw_attack`** optimizes $\delta$ with Adam on $\|\delta\|_2^2 + c\cdot\text{margin}$; reports the
   fraction fooled and the *median $\ell_2$* among fooled — the size of the minimal break (~0.27 in
   the toy, far below a typical PGD $\epsilon$).
@@ -124,12 +124,12 @@ published "defenses" as gradient-masked. If you report empirical robustness, rep
 
 ## Practical lab
 
-**Lab 10** ([`labs/lab-10/`](../../labs/lab-10/README.md)) — CW, transfer, certified radius. CPU
+**Lab 10** ([`labs/module-10/`](../../labs/module-10/README.md)) — CW, transfer, certified radius. CPU
 torch, ~3s tests.
 
 ```bash
-py labs/lab-10/adv2.py
-py -m pytest labs/lab-10 -q
+py labs/module-10/adv2.py
+py -m pytest labs/module-10 -q
 ```
 
 ## Exercise

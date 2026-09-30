@@ -107,7 +107,7 @@ best combined with least privilege that makes the dangerous action unreachable i
 
 ## Code
 
-`lab/agents/agent.py` (shared) + `labs/lab-16/excessive_agency.py`:
+`lab/agents/agent.py` (shared) + `labs/module-16/excessive_agency.py`:
 - The `Agent` has tools (`read_file`, `http_get`, `send_email`, `whoami`), a synthetic `secret`, and
   a `Policy`.
 - The **brain** scans context for `CALL tool(args)` directives (a transparent stand-in for a
@@ -122,12 +122,12 @@ what matters for security, and it is model-agnostic.
 
 ## Practical lab
 
-**Lab 16** ([`labs/lab-16/`](../../labs/lab-16/README.md)) — confused-deputy exfiltration + three
+**Lab 16** ([`labs/module-16/`](../../labs/module-16/README.md)) — confused-deputy exfiltration + three
 enforced defenses. Offline, shared agent runtime.
 
 ```bash
-py labs/lab-16/excessive_agency.py
-py -m pytest labs/lab-16 -q
+py labs/module-16/excessive_agency.py
+py -m pytest labs/module-16 -q
 ```
 
 ## Exercise

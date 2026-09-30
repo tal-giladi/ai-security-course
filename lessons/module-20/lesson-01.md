@@ -100,19 +100,19 @@ cover the other threat model.
 
 ## Code
 
-`labs/lab-20/stego.py`: `embed_lsb`/`extract_lsb` round-trip a payload through pixel LSBs; `mse`
+`labs/module-20/stego.py`: `embed_lsb`/`extract_lsb` round-trip a payload through pixel LSBs; `mse`
 quantifies imperceptibility; `pipeline_extract_and_maybe_exfil` models a pipeline that recovers and
 acts on the hidden directive; `strip_lsb` is the re-quantization defense. The header points to reusing
 Lab 09's PGD for the pixel-space demonstration.
 
 ## Practical lab
 
-**Lab 20** ([`labs/lab-20/`](../../labs/lab-20/README.md)) — LSB steganography + defense; hook for
+**Lab 20** ([`labs/module-20/`](../../labs/module-20/README.md)) — LSB steganography + defense; hook for
 pixel-space PGD. numpy, offline.
 
 ```bash
-py labs/lab-20/stego.py
-py -m pytest labs/lab-20 -q
+py labs/module-20/stego.py
+py -m pytest labs/module-20 -q
 ```
 
 ## Exercise

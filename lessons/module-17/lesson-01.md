@@ -91,19 +91,19 @@ defense from probabilistic (filter the injection) to structural (the authority i
 
 ## Code
 
-`labs/lab-17/tool_poisoning.py` (on the shared runtime): a poisoned tool **description** and a
+`labs/module-17/tool_poisoning.py` (on the shared runtime): a poisoned tool **description** and a
 poisoned **result** each drive `send_email(secret→attacker)` to the sink when trusted. Two defenses
 block both: treating catalog/result text as data (`_strip_directives`), and capability
 least-privilege (`allowed_tools={"whoami"}`). Both are enforced in code.
 
 ## Practical lab
 
-**Lab 17** ([`labs/lab-17/`](../../labs/lab-17/README.md)) — poisoned description & result exfiltrate;
+**Lab 17** ([`labs/module-17/`](../../labs/module-17/README.md)) — poisoned description & result exfiltrate;
 data-segregation and least-privilege block them. Offline, shared runtime.
 
 ```bash
-py labs/lab-17/tool_poisoning.py
-py -m pytest labs/lab-17 -q
+py labs/module-17/tool_poisoning.py
+py -m pytest labs/module-17 -q
 ```
 
 ## Exercise

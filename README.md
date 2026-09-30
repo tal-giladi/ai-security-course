@@ -61,8 +61,8 @@ LLM Research Engineer  ──▶  LLM & Agent Security Research Engineer
 
 - **Curriculum** — [`curriculum/course-outline.md`](curriculum/course-outline.md): module map,
   dependency graph, and the final competency matrix.
-- **Lessons** — `lessons/module-NN/lesson-NN.md`, using the template in `CLAUDE.md`.
-- **Labs** — `labs/lab-NN-slug/`: `docker compose up`, run the attack, implement the defense,
+- **Lessons** — `lessons/module-NN/lesson-MM.md`, using the template in `CLAUDE.md`.
+- **Labs** — `labs/module-NN/`: `docker compose up`, run the attack, implement the defense,
   retest. Each lab is self-contained with a reset script.
 - **Exercises / Projects** — standalone specs and the five capstones.
 - **Papers** — `papers/`: curated reading guides (why it matters, what to read, what to

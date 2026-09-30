@@ -71,7 +71,7 @@ disciplined feel-then-try climb over a discrete space.
 
 ## Technical explanation
 
-Read `labs/lab-07/gcg.py`. The core loop, annotated:
+Read `labs/module-07/gcg.py`. The core loop, annotated:
 
 ```python
 oh_s = one_hot(suffix).requires_grad_(True)          # differentiable stand-in for tokens
@@ -139,13 +139,13 @@ $|\mathcal V|^L$. That reduction is the whole point.
 
 ## Practical lab
 
-**Lab 07** ([`labs/lab-07/`](../../labs/lab-07/README.md)) — implement/inspect GCG, beat random,
+**Lab 07** ([`labs/module-07/`](../../labs/module-07/README.md)) — implement/inspect GCG, beat random,
 then perplexity-filter and adaptive-evade. CPU torch, no download, ~30s tests.
 
 ```bash
-py labs/lab-07/gcg.py        # GCG 8/8 vs random ~3/8, ~3x fewer queries
-py labs/lab-07/defense.py    # filter cuts gibberish 8/8->~1/8; adaptive fluent evades ~7/8
-py -m pytest labs/lab-07 -q
+py labs/module-07/gcg.py        # GCG 8/8 vs random ~3/8, ~3x fewer queries
+py labs/module-07/defense.py    # filter cuts gibberish 8/8->~1/8; adaptive fluent evades ~7/8
+py -m pytest labs/module-07 -q
 ```
 
 ## Exercise

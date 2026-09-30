@@ -99,7 +99,7 @@ often single-digit percent. You'll map ASR and clean accuracy vs poison fraction
 
 ## Code
 
-`labs/lab-11/backdoor.py`:
+`labs/module-11/backdoor.py`:
 - `poison(x, y, frac)` stamps the trigger and relabels a fraction to `TARGET_CLASS`.
 - `backdoor_asr` measures the trigger's effect on non-target inputs (the ASR).
 - `spectral_signature_scores` (Tran et al., 2018): for the target class, take penultimate
@@ -111,12 +111,12 @@ often single-digit percent. You'll map ASR and clean accuracy vs poison fraction
 
 ## Practical lab
 
-**Lab 11** ([`labs/lab-11/`](../../labs/lab-11/README.md)) — plant a backdoor, measure the sleeper,
+**Lab 11** ([`labs/module-11/`](../../labs/module-11/README.md)) — plant a backdoor, measure the sleeper,
 detect it. CPU torch, ~4s tests.
 
 ```bash
-py labs/lab-11/backdoor.py
-py -m pytest labs/lab-11 -q
+py labs/module-11/backdoor.py
+py -m pytest labs/module-11 -q
 ```
 
 ## Exercise

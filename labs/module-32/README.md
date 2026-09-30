@@ -23,9 +23,9 @@ to 2026.
 ## Run
 
 ```bash
-py labs/lab-26-hidden-context/attack.py
-py labs/lab-26-hidden-context/crosswalk.py "found LLM07 and LLM06:2025"
-py -m pytest labs/lab-26-hidden-context -q
+py labs/module-26-hidden-context/attack.py
+py labs/module-26-hidden-context/crosswalk.py "found LLM07 and LLM06:2025"
+py -m pytest labs/module-26-hidden-context -q
 ```
 
 Expected: `none` leaks every column; every filter still leaks the credential (ROT13); `keyword`
@@ -35,7 +35,7 @@ slot left in context still leaks.
 ## Docker (optional)
 
 ```bash
-cd labs/lab-26-hidden-context && docker compose up
+cd labs/module-26-hidden-context && docker compose up
 ```
 
 ## Exercise

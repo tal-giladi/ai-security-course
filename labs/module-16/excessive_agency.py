@@ -14,6 +14,8 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+# The Academy ships this lab as a zip: labs/module-NN/ + labs/common/.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "common"))
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "lab" / "agents"))
 from agent import Agent, Policy  # noqa: E402
 

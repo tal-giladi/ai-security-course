@@ -306,7 +306,7 @@ model you can *run* stays honest as the system grows.
 
 **Lab 00.1 — Threat-model the toy app.** No Docker or GPU required; pure modeling +
 `threat_model.py`. Expected time: 60–90 minutes. The toy vulnerable app itself ships with the
-Module 04 lab (`labs/lab-04`); for this lesson you model it from the specification below, which
+Module 04 lab (`labs/module-04`); for this lesson you model it from the specification below, which
 is all a threat model ever starts from anyway.
 
 **System under model.** A customer-support LLM assistant:

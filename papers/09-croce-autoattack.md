@@ -1,6 +1,6 @@
 # Croce & Hein — *Reliable Evaluation of Adversarial Robustness with an Ensemble of Diverse Parameter-free Attacks* (AutoAttack, 2020)
 
-**arXiv:** [2003.01690](https://arxiv.org/abs/2003.01690) · ICML '20. **Module:** [10.1](../lessons/module-10/lesson-01.md), [24.1](../lessons/module-24/lesson-01.md). **Lab:** [Lab 10](../labs/lab-10/README.md).
+**arXiv:** [2003.01690](https://arxiv.org/abs/2003.01690) · ICML '20. **Module:** [10.1](../lessons/module-10/lesson-01.md), [24.1](../lessons/module-24/lesson-01.md). **Lab:** [Lab 10](../labs/module-10/README.md).
 
 ## Why it matters
 AutoAttack is the paper that turned "measuring robustness" into a *protocol* instead of a coin flip. It showed that a large fraction of published defenses had overstated robustness because they evaluated against a single, poorly-tuned attack — and it fixed the incentive with a **parameter-free ensemble** (APGD-CE, APGD-DLR, FAB, Square) that needs no per-defense tuning. For a purple-team engineer, this is the canonical answer to "how do I know my defense number is real?"

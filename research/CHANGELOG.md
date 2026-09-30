@@ -11,7 +11,7 @@ entry.
   — how every 2025 OWASP ID the course cites maps to the 2026 list, and why "System Prompt
   Leakage" became Hidden Context Exposure, measured per context slot. The 2026 crosswalk is
   appended to the [standards map](references/standards-map.md); nothing existing was changed.
-  Lab: [Lab 26 · Hidden context exposure](labs/lab-26-hidden-context/README.md) (shipped the
+  Lab: [Lab 26 · Hidden context exposure](labs/module-32/README.md) (shipped the
   same day, after the shared model shim was committed). Review:
   [research/weekly/2026-W39.md](research/weekly/2026-W39.md).
 

@@ -36,7 +36,7 @@ lab/
 ## Running
 
 ```bash
-cd labs/lab-XX-slug
+cd labs/module-NN
 docker compose up          # start the target(s)
 # run the attack script, observe, then apply the defense and retest
 docker compose down -v     # clean up

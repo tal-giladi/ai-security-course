@@ -89,7 +89,7 @@ is one where the attacker's best-response ASR stays low across rounds (not just 
 
 ## Code
 
-`labs/lab-25/redteam.py`: `mutate` applies a random transformation (framing/shout/duplicate/emphasize);
+`labs/module-25/redteam.py`: `mutate` applies a random transformation (framing/shout/duplicate/emphasize);
 `automated_redteam` evolves a population against `system(payload)->bool` (the shim target, optionally
 behind a defender filter), reporting ASR per round via `evalkit.asr`. `keyword_defender` is the
 adapting defense; the fuzzer rediscovers evasions. Swap in an LLM attacker/judge behind the same
@@ -97,12 +97,12 @@ interfaces for higher fidelity.
 
 ## Practical lab
 
-**Lab 25** ([`labs/lab-25/`](../../labs/lab-25/README.md)) — mutation fuzzer + co-evolution against an
+**Lab 25** ([`labs/module-25/`](../../labs/module-25/README.md)) — mutation fuzzer + co-evolution against an
 adapting defender. Offline.
 
 ```bash
-py labs/lab-25/redteam.py
-py -m pytest labs/lab-25 -q
+py labs/module-25/redteam.py
+py -m pytest labs/module-25 -q
 ```
 
 ## Exercise

@@ -148,25 +148,25 @@ Only as much classical security as AI security requires — no generic pentest c
 | M01 AppSec primitives | M00 | Foundation | `lab/vulnerable-apps` |
 | M02 LLM boundaries | M00 (+ sibling: transformers) | Foundation→Current | `lab/models` |
 | M03 Inference API surface | M02 | Current | `lab/vulnerable-apps` |
-| M04 Direct injection | M02, M03 | Current | `labs/lab-04` |
-| M05 Indirect injection | M04 | Current | `labs/lab-05` |
-| M06 Multimodal/cross-agent injection | M05 | Current | `labs/lab-06` |
-| M07 Optimization jailbreaks | M02 (+ sibling: gradients/backprop) | Current | `labs/lab-07` |
-| M08 Automated/black-box jailbreaks | M07 | Current | `labs/lab-08` |
-| M09 Adversarial examples I | sibling: optimization | Foundation | `labs/lab-09` |
-| M10 Adversarial examples II | M09 | Foundation | `labs/lab-10` |
-| M11 Poisoning & backdoors | sibling: training/SFT | Current | `labs/lab-11` |
-| M12 Extraction & inversion | M09, sibling: probability | Current | `labs/lab-12` |
-| M13 Adapter/weight supply chain | M11, sibling: LoRA | Current | `labs/lab-13` |
-| M14 Retrieval attack surface | sibling: embeddings/RAG | Current | `labs/lab-14` |
-| M15 Multi-tenant retrieval | M14, M01 | Current | `labs/lab-15` |
-| M16 Agent attack surface | M05, sibling: agents/tools | Current | `labs/lab-16` |
-| M17 Tool poisoning & abuse | M16 | Current | `labs/lab-17` |
-| M18 End-to-end attack chains | M06, M15, M17 | Current | `labs/lab-18` |
-| M19 MCP security | M17 | Emerging | `labs/lab-19` |
-| M20 Multimodal (deep) | M06, M10 | Emerging | `labs/lab-20` |
-| M21 Code-agent security | M17, M01 | Emerging | `labs/lab-21` |
-| M22 AI supply chain | M13, M01 | Emerging | `labs/lab-22` |
+| M04 Direct injection | M02, M03 | Current | `labs/module-04` |
+| M05 Indirect injection | M04 | Current | `labs/module-05` |
+| M06 Multimodal/cross-agent injection | M05 | Current | `labs/module-06` |
+| M07 Optimization jailbreaks | M02 (+ sibling: gradients/backprop) | Current | `labs/module-07` |
+| M08 Automated/black-box jailbreaks | M07 | Current | `labs/module-08` |
+| M09 Adversarial examples I | sibling: optimization | Foundation | `labs/module-09` |
+| M10 Adversarial examples II | M09 | Foundation | `labs/module-10` |
+| M11 Poisoning & backdoors | sibling: training/SFT | Current | `labs/module-11` |
+| M12 Extraction & inversion | M09, sibling: probability | Current | `labs/module-12` |
+| M13 Adapter/weight supply chain | M11, sibling: LoRA | Current | `labs/module-13` |
+| M14 Retrieval attack surface | sibling: embeddings/RAG | Current | `labs/module-14` |
+| M15 Multi-tenant retrieval | M14, M01 | Current | `labs/module-15` |
+| M16 Agent attack surface | M05, sibling: agents/tools | Current | `labs/module-16` |
+| M17 Tool poisoning & abuse | M16 | Current | `labs/module-17` |
+| M18 End-to-end attack chains | M06, M15, M17 | Current | `labs/module-18` |
+| M19 MCP security | M17 | Emerging | `labs/module-19` |
+| M20 Multimodal (deep) | M06, M10 | Emerging | `labs/module-20` |
+| M21 Code-agent security | M17, M01 | Emerging | `labs/module-21` |
+| M22 AI supply chain | M13, M01 | Emerging | `labs/module-22` |
 | M23 Defensive engineering | M04–M18 | Current | `lab/defense-tools` |
 | M24 Security evaluation | M23, sibling: evaluation | Current | `lab/attack-tools` |
 | M25 Automated red teaming | M08, M24 | Current | `lab/attack-tools` |

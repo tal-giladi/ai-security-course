@@ -104,7 +104,7 @@ Little equation here — this is a systems/trust lesson — but two quantitative
 
 ## Code
 
-`labs/lab-13/supply_chain.py`:
+`labs/module-13/supply_chain.py`:
 - `MaliciousCheckpoint.__reduce__` returns `(_benign_marker, (...))`; `pickle.load` therefore
   *calls* `_benign_marker` — the RCE primitive, shown inertly.
 - `save_load_safetensors` round-trips weights with no code execution (marker stays unwritten).
@@ -114,12 +114,12 @@ Little equation here — this is a systems/trust lesson — but two quantitative
 
 ## Practical lab
 
-**Lab 13** ([`labs/lab-13/`](../../labs/lab-13/README.md)) — pickle RCE (inert), safetensors safety,
+**Lab 13** ([`labs/module-13/`](../../labs/module-13/README.md)) — pickle RCE (inert), safetensors safety,
 stealthy malicious adapter. CPU torch + safetensors, ~3s tests.
 
 ```bash
-py labs/lab-13/supply_chain.py
-py -m pytest labs/lab-13 -q
+py labs/module-13/supply_chain.py
+py -m pytest labs/module-13 -q
 ```
 
 ## Exercise

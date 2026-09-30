@@ -1,6 +1,6 @@
 # Chao et al. — *Jailbreaking Black Box Large Language Models in Twenty Queries* (PAIR, 2023)
 
-**arXiv:** [2310.08419](https://arxiv.org/abs/2310.08419). **Module:** [08.1](../lessons/module-08/lesson-01.md). **Lab:** [Lab 08](../labs/lab-08/README.md).
+**arXiv:** [2310.08419](https://arxiv.org/abs/2310.08419). **Module:** [08.1](../lessons/module-08/lesson-01.md). **Lab:** [Lab 08](../labs/module-08/README.md).
 
 ## Why it matters
 PAIR (Prompt Automatic Iterative Refinement) shows you don't need gradients, weights, or gibberish to jailbreak: an **attacker LLM** refines a **fluent** prompt against a target using only its outputs, guided by a **judge**, converging in ~20 queries. It is the black-box, transferable, human-readable counterpart to GCG — and it defeats the perplexity filter that catches GCG, because its prompts read like normal English. This is the template for automated red teaming (M25).

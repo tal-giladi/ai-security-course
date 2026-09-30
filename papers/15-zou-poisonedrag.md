@@ -1,6 +1,6 @@
 # Zou et al. — *PoisonedRAG: Knowledge Corruption Attacks to Retrieval-Augmented Generation* (2024)
 
-**arXiv:** [2402.07867](https://arxiv.org/abs/2402.07867). **Module:** [14.1](../lessons/module-14/lesson-01.md), [15.1](../lessons/module-15/lesson-01.md). **Lab:** [Lab 14](../labs/lab-14/README.md).
+**arXiv:** [2402.07867](https://arxiv.org/abs/2402.07867). **Module:** [14.1](../lessons/module-14/lesson-01.md), [15.1](../lessons/module-15/lesson-01.md). **Lab:** [Lab 14](../labs/module-14/README.md).
 
 ## Why it matters
 PoisonedRAG is the first systematic attack on the *retrieval* layer: inject a small number of crafted passages into the knowledge base so that, for a target query, they (a) get **retrieved** (rank high) and (b) **steer the generated answer** to the attacker's choice. It decomposes RAG poisoning into a retrieval condition and a generation condition — exactly the two-part structure M14 teaches — and shows that a handful of documents in a large corpus is enough. It is the canonical citation for "your vector store is an injection channel."

@@ -125,7 +125,7 @@ and step count; masked robustness collapses under a stronger/black-box attack.
 
 ## Code
 
-`labs/lab-09/adv.py` implements all of the above in ~60 lines. Note the three projections that make
+`labs/module-09/adv.py` implements all of the above in ~60 lines. Note the three projections that make
 the attack *legal*: (1) clamp the perturbation to the $\ell_\infty$ ball, (2) clamp the input to
 $[0,1]$, (3) random start for PGD. The lab measures three numbers per model: clean, FGSM, PGD
 accuracy, and compares a standard vs an adversarially-trained model.
@@ -136,12 +136,12 @@ trade-off is not a bug; it is the current state of the field.
 
 ## Practical lab
 
-**Lab 09** ([`labs/lab-09/`](../../labs/lab-09/README.md)) — FGSM/PGD from scratch + adversarial
+**Lab 09** ([`labs/module-09/`](../../labs/module-09/README.md)) — FGSM/PGD from scratch + adversarial
 training. CPU torch, ~10s tests.
 
 ```bash
-py labs/lab-09/adv.py
-py -m pytest labs/lab-09 -q
+py labs/module-09/adv.py
+py -m pytest labs/module-09 -q
 ```
 
 ## Exercise

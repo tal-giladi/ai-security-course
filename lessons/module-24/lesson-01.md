@@ -101,17 +101,17 @@ false-positive $f$ and true ASR $a$ — a bad judge biases every number, so vali
 
 `lab/attack-tools/evalkit.py`: `wilson_interval`/`asr` (CIs), `roc_auc`/`precision_recall` (detectors,
 tie-averaged AUC), `required_n` (sample size), and `Benchmark.run/compare` (evaluate a defense,
-flagging whether a difference is established via non-overlapping CIs). `labs/lab-24/evaluate.py`
+flagging whether a difference is established via non-overlapping CIs). `labs/module-24/evaluate.py`
 demonstrates adaptive evaluation (ORIGINAL vs ADAPTED suites) and detector metrics against the shim.
 
 ## Practical lab
 
-**Lab 24** ([`labs/lab-24/`](../../labs/lab-24/README.md)) — ASR+CI, ROC-AUC, and adaptive evaluation
+**Lab 24** ([`labs/module-24/`](../../labs/module-24/README.md)) — ASR+CI, ROC-AUC, and adaptive evaluation
 with the reusable harness. Offline.
 
 ```bash
-py labs/lab-24/evaluate.py
-py -m pytest labs/lab-24 -q
+py labs/module-24/evaluate.py
+py -m pytest labs/module-24 -q
 ```
 
 ## Exercise

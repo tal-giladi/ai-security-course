@@ -1,6 +1,6 @@
 # Debenedetti et al. — *AgentDojo: A Dynamic Environment to Evaluate Attacks and Defenses for LLM Agents* (2024)
 
-**arXiv:** [2406.13352](https://arxiv.org/abs/2406.13352) · NeurIPS '24 D&B. **Modules:** [16.1](../lessons/module-16/lesson-01.md), [18.1](../lessons/module-18/lesson-01.md), [24.1](../lessons/module-24/lesson-01.md), [25.1](../lessons/module-25/lesson-01.md). **Labs:** [Lab 16](../labs/lab-16/README.md), [Lab 18](../labs/lab-18/README.md).
+**arXiv:** [2406.13352](https://arxiv.org/abs/2406.13352) · NeurIPS '24 D&B. **Modules:** [16.1](../lessons/module-16/lesson-01.md), [18.1](../lessons/module-18/lesson-01.md), [24.1](../lessons/module-24/lesson-01.md), [25.1](../lessons/module-25/lesson-01.md). **Labs:** [Lab 16](../labs/module-16/README.md), [Lab 18](../labs/module-18/README.md).
 
 ## Why it matters
 AgentDojo is the reference **benchmark** for the exact threat this course's agent stage builds: prompt-injection attacks against **tool-using agents**, measured on realistic multi-step tasks with *both* a utility metric (did the agent still do the job?) and a security metric (did the injection succeed?). It replaces anecdotes ("we jailbroke the agent") with a reproducible environment, and its two-axis scoring is the model for the guarantee-box thinking (a defense that tanks utility is not a win). It is the natural target paper for M16–M18 and the eval/red-team modules.

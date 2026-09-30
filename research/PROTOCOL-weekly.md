@@ -54,7 +54,7 @@ Read `CLAUDE.md` (lesson template, the `.callout.guarantee` rule, non-negotiable
 `references/standards-map.md`, `research/REGISTRY.md`, and every lesson/lab the candidates touch.
 You must know the existing structure, terminology, shared lab layout (`lab/models/shim.py`,
 `lab/sink/`, `lab/agents/agent.py`, `lab/defense-tools/defenses.py`, `lab/attack-tools/evalkit.py`,
-`labs/lab-NN/`), prerequisites and teaching style before deciding where anything fits.
+`labs/module-NN/`), prerequisites and teaching style before deciding where anything fits.
 
 ## Step 1 — Gather the week's input
 
@@ -165,8 +165,8 @@ the concept — not a threat-feed summary, not artificially long.
 
 - **Never modify existing lab code, functions, tests or exercises.** The shared infra
   (`lab/models/shim.py`, `lab/sink/`, `lab/agents/agent.py`, `lab/defense-tools/defenses.py`,
-  `lab/attack-tools/evalkit.py`) and every `labs/lab-NN/` stay as the student learned them.
-- New technique needing code → **new lab** `labs/lab-NN-slug/` (README + attack/defense code +
+  `lab/attack-tools/evalkit.py`) and every `labs/module-NN/` stay as the student learned them.
+- New technique needing code → **new lab** `labs/module-NN/` (README + attack/defense code +
   `test_labNN.py` + `docker-compose.yml` with `network_mode: none`), reusing the shared infra.
   Add its links to `_sidebar.md`.
 - **Safety boundary (mandatory):** local containers / intentionally vulnerable apps only,

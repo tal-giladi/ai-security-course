@@ -113,7 +113,7 @@ be retrieved regardless of similarity.
 
 ## Code
 
-`labs/lab-14/rag.py`: a transparent hashing embedding (stable, no download) + cosine retrieval.
+`labs/module-14/rag.py`: a transparent hashing embedding (stable, no download) + cosine retrieval.
 `craft_poison` stuffs query tokens and appends the injection; `poison_rank` shows it ranks #1;
 `rag_answer` pipes retrieved text into the shim, and the canary leaks. Defenses are parameters on
 `retrieve`: `allowed_sources` (provenance allowlist) and `dedup` (near-duplicate filter). The
@@ -121,12 +121,12 @@ allowlist excludes the untrusted `web` source, so the poison is never retrieved.
 
 ## Practical lab
 
-**Lab 14** ([`labs/lab-14/`](../../labs/lab-14/README.md)) — poison wins retrieval (#1) and leaks;
+**Lab 14** ([`labs/module-14/`](../../labs/module-14/README.md)) — poison wins retrieval (#1) and leaks;
 provenance allowlist stops it. numpy + shim, offline, instant tests.
 
 ```bash
-py labs/lab-14/rag.py
-py -m pytest labs/lab-14 -q
+py labs/module-14/rag.py
+py -m pytest labs/module-14 -q
 ```
 
 ## Exercise

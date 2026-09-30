@@ -153,13 +153,13 @@ Lab 05's defended bot reports exfil = False even though the injection itself may
 
 ## Practical lab
 
-**Lab 05** ([`labs/lab-05/`](../../labs/lab-05/README.md)) — poison a retrieved document; the
+**Lab 05** ([`labs/module-05/`](../../labs/module-05/README.md)) — poison a retrieved document; the
 bot's renderer exfiltrates the canary to the local sink. CPU-only, offline (in-process fake sink)
 or against the real local sink with `--sink`.
 
 ```bash
-py labs/lab-05/attack.py            # VULNERABLE exfil=True, DEFENDED exfil=False
-py -m pytest labs/lab-05 -q
+py labs/module-05/attack.py            # VULNERABLE exfil=True, DEFENDED exfil=False
+py -m pytest labs/module-05 -q
 ```
 
 Read `app.py`: the injected instruction rides in via the `retrieved` channel; `_render` is the

@@ -1,6 +1,6 @@
 # Wallace et al. — *The Instruction Hierarchy: Training LLMs to Prioritize Privileged Instructions* (2024)
 
-**arXiv:** [2404.13208](https://arxiv.org/abs/2404.13208) (OpenAI). **Modules:** [04.1](../lessons/module-04/lesson-01.md), [02.1](../lessons/module-02/lesson-01.md). **Lab:** [Lab 04](../labs/lab-04/README.md).
+**arXiv:** [2404.13208](https://arxiv.org/abs/2404.13208) (OpenAI). **Modules:** [04.1](../lessons/module-04/lesson-01.md), [02.1](../lessons/module-02/lesson-01.md). **Lab:** [Lab 04](../labs/module-04/README.md).
 
 ## Why it matters
 Every defense against injection eventually asks: *can the model be trained to trust system > developer > user > tool-output?* This paper is the reference articulation of that idea and the honest measurement of how far it gets. It is the counterweight to the course's central claim — that a prompt is a **finite-bias prior** (02.1) — because it shows the prior can be *strengthened* by training, while confirming it never becomes an enforced boundary.

@@ -1,6 +1,6 @@
 # Carlini & Wagner — *Towards Evaluating the Robustness of Neural Networks* (C&W, 2016)
 
-**arXiv:** [1608.04644](https://arxiv.org/abs/1608.04644) · IEEE S&P '17. **Module:** [10.1](../lessons/module-10/lesson-01.md). **Lab:** [Lab 10](../labs/lab-10/README.md).
+**arXiv:** [1608.04644](https://arxiv.org/abs/1608.04644) · IEEE S&P '17. **Module:** [10.1](../lessons/module-10/lesson-01.md). **Lab:** [Lab 10](../labs/module-10/README.md).
 
 ## Why it matters
 C&W is both a *stronger attack* and a *methodology lesson*. It formulates adversarial-example generation as a smooth optimization (minimize perturbation size subject to misclassification, via a differentiable surrogate objective and a change-of-variables to enforce box constraints) and used it to **break defensive distillation** — a defense that had looked strong against weaker attacks. Its enduring contribution is the discipline: **a defense is only as good as the strongest adaptive attack you tried against it.**
