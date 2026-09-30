@@ -1,0 +1,70 @@
+- id: q1
+  question: >-
+    You are starting a red-team engagement against an AI product and want the most information for the
+    least chance of being noticed. What should you do first?
+  options:
+    - Exhaust passive OSINT (papers, model cards, repos, scan indexes) before sending any live probe.
+    - Port-scan the target's full address range to find every exposed AI service as fast as you can.
+    - Send a batch of jailbreak payloads to the chatbot to see which guardrails are currently active.
+    - Pull every model from the target's serving endpoint to inventory exactly what it is running now.
+  correct: 0
+  explanation: >-
+    Passive sources touch third-party systems, not the target, so their per-probe detection
+    probability is zero. Maximizing what you learn passively first keeps the active probe count (and
+    thus detection risk) minimal. The other options are active, noisy, or outright exploitation.
+- id: q2
+  question: >-
+    A single unauthenticated request to a serving stack's default metadata endpoint (for example
+    `/v1/models`, `/api/tags`, or `/v2/models`) is valued in recon mainly because it:
+  options:
+    - Guarantees remote code execution on whichever host happens to be running the inference service.
+    - Bypasses the model's safety training and reliably returns otherwise restricted or filtered content.
+    - Names the served model and version while looking indistinguishable from an ordinary health check.
+    - Permanently disables the target's request rate limiting for use in the later phases of the test.
+  correct: 2
+  explanation: >-
+    Metadata/health endpoints often name the model and version and look like routine monitoring
+    traffic, so one low-suspicion request yields high-value identity information. It is discovery, not
+    exploitation — it does not grant RCE, break safety, or alter rate limits.
+- id: q3
+  question: >-
+    A defender deploys a rate detector that alerts when a single source sends more than tau probes
+    within a sliding window W. An attacker who understands this evades it most reliably by:
+  options:
+    - Sending every probe simultaneously so that they all land inside one detection window together.
+    - Appending a well-known jailbreak string to each probe so the requests look benign to the filter.
+    - Echoing the target's own canary tokens back to it to prove that meaningful access was achieved.
+    - Lowering the probe rate so the count per window stays under tau — the low-and-slow approach.
+  correct: 3
+  explanation: >-
+    The rule triggers on volume per window, so keeping the rate below tau/W keeps the count under
+    threshold. Bursting does the opposite; jailbreak strings and canary echoes actively increase
+    suspicion and trip other tripwires.
+- id: q4
+  question: >-
+    The target is hardened (auth on endpoints, disabled metadata routes, scrubbed banners, generic
+    errors). Which recon result is LEAST affected by this hardening?
+  options:
+    - Active enumeration of the served models through the default metadata and health endpoints.
+    - Passive OSINT completeness, since published model cards and prior scan data do not change.
+    - Reading the exact version of the serving stack out of the response banners it returns to you.
+    - Telling the individual services apart by comparing the distinct error schemas they each emit.
+  correct: 1
+  explanation: >-
+    Hardening the target's own systems cannot retract information already published or held in
+    third-party indexes, so passive completeness is unaffected. The other three are exactly the active
+    signals that auth, disabled endpoints, banner scrubbing, and generic errors remove.
+- id: q5
+  question: >-
+    A low-and-slow prober has driven the rate detector's alert probability to nearly zero, yet the
+    defender still flags it. The most likely reason is a detector that keys on:
+  options:
+    - The total number of bytes that the source transferred to the target over the last full hour.
+    - Whether the source's IP address currently appears on a maintained public reputation allowlist.
+    - The exact wall-clock time at which each individual request from the source happens to arrive.
+    - The distinct AI endpoints and services that one source fingerprints across a single session.
+  correct: 3
+  explanation: >-
+    Slowing the rate changes when probes arrive, not how many distinct endpoints one source touches. A
+    coverage/entropy detector measures fan-out, which low-and-slow does not reduce, so it catches the
+    prober the volume rule missed. Bytes, allowlists, and arrival time do not capture recon shape.

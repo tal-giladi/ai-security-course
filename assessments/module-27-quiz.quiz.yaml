@@ -1,0 +1,139 @@
+- id: q1
+  question: >-
+    A scope document lists one hostname and a note: "AI assistant in the customer portal." Your
+    teammate immediately starts sending malformed prompts to read error messages. What is the risk?
+  options:
+    - There is no real risk, because active probing is always faster and safer than reading artefacts.
+    - You spend detection budget to learn what the public bundle and manifests would reveal silently.
+    - Passive recon is out of scope here unless the document explicitly authorises OSINT collection.
+    - Error messages never carry useful information, so the probes only waste a little bit of time.
+  correct: 1
+  explanation: >-
+    Passive artefacts often reveal the model, SDK, endpoints and versions at zero detection cost.
+    Jumping to active probes spends detection budget to learn what was freely available and tips off
+    defenders early.
+- id: q2
+  question: >-
+    Two candidate probes both reveal the framework: (A) reading the app's public JS bundle, and (B)
+    sending 200 rapid malformed requests to read stack traces. Which do you prefer, and why?
+  options:
+    - Probe B, because a returned stack trace is inherently more authoritative than any bundle string.
+    - Neither of them, since you should always run both probes in order to cross-check the findings.
+    - Probe A, because it yields the same fact at a detection probability close to zero.
+    - Probe B, because sending a larger number of requests will always surface strictly more bits.
+  correct: 2
+  explanation: >-
+    Recon maximises information per unit of detection risk. A passive read of the bundle gives the
+    same fact at detection probability near zero, so it dominates the noisy request burst in the
+    knapsack.
+- id: q3
+  question: >-
+    You have a uniform prior over four model families (2 bits of uncertainty). One refusal-style probe
+    returns a likelihood vector strongly favouring one family. Roughly what have you gained?
+  options:
+    - Up to about 2 bits, because a sharp probe can collapse most of the prior entropy at once.
+    - Nothing at all, because a single probe can never reduce uncertainty about the configuration.
+    - Exactly half a bit, always, no matter how sharp or flat the returned likelihood vector is.
+    - More than 2 bits, since a well-chosen probe can exceed the entropy you started the update with.
+  correct: 0
+  explanation: >-
+    Information gained is the drop in entropy, bounded by the prior entropy (2 bits here). A sharp,
+    discriminating probe can realise most of that; you can never gain more than the uncertainty you
+    started with.
+- id: q4
+  question: >-
+    A target returns raw provider-style error envelopes like {"error":{"type":"invalid_request_error"}}.
+    What does this tell you, and what is the cheapest defender fix?
+  options:
+    - It reveals the exact model weights, so the only real fix is to retrain the model from scratch.
+    - It proves the system is fully self-hosted, so the fix is to provision a dedicated GPU for it.
+    - It exposes the stored user data, so the correct fix is to enable encryption of data at rest.
+    - It signals a hosted provider API shape; normalise errors to generic text at the edge.
+  correct: 3
+  explanation: >-
+    Error envelopes leak the API shape (hosted provider vs framework vs proxy). Normalising errors to
+    generic messages at the edge removes that channel cheaply, with negligible performance cost and
+    only minor loss of developer debuggability.
+- id: q5
+  question: >-
+    After you deploy refusal and error normalisation, an assessor still identifies your model by
+    echoing rare Unicode and long digit strings back through it. Which signal are they using?
+  options:
+    - Configuration strings that you simply forgot to strip out of the public client bundle earlier.
+    - Intrinsic tokenizer behaviour, which normalising refusals and errors does not touch at all.
+    - Network-layer metadata such as the TLS certificate or the negotiated cipher suite in the handshake.
+    - The contents of the model's training data leaking back out of it more or less verbatim.
+  correct: 1
+  explanation: >-
+    Tokenizer artefacts are intrinsic to the model family. Output normalisation covers refusal/error
+    text but not how the tokenizer splits or corrupts rare characters, so that channel still carries
+    identifying information.
+- id: q6
+  question: >-
+    Which reconnaissance finding would most change your exploit plan for an AI customer-support app?
+  options:
+    - The app streams tokens back incrementally rather than returning the whole answer in one response.
+    - The chatbot happens to run a slightly older minor version of a widely deployed popular LLM.
+    - An internet-reachable vector database with no authentication backing the app's retrieval.
+    - The refusal messages the assistant returns are phrased in a notably friendly and warm tone.
+  correct: 2
+  explanation: >-
+    An unauthenticated, internet-reachable vector store is a direct path to read or poison the
+    retrieval corpus — a concrete foothold — whereas the other facts are minor fingerprints that do
+    not by themselves grant any access.
+- id: q7
+  question: >-
+    You want to enumerate the AI stack of a company without sending a single packet on its AI path.
+    Which source set is purely passive?
+  options:
+    - Crafted prompts sent to the chatbot together with careful timing measurements of its responses.
+    - A full port scan of the discovered model server followed by banner grabbing on the open ports.
+    - Deliberately malformed API requests designed to make the service return revealing error bodies.
+    - Job postings, the public JS bundle, dependency manifests, and the company's public status pages.
+  correct: 3
+  explanation: >-
+    Passive recon reads signals that already exist without touching the target's AI path: job posts,
+    public client code, manifests, status pages. The other options all send probes to the target and
+    generate log events.
+- id: q8
+  question: >-
+    A defender argues "we normalised errors and refusals, so recon is solved." What is the strongest
+    rebuttal to make?
+  options:
+    - Intrinsic signals and passive OSINT still remain, so fingerprinting and asset discovery continue.
+    - Output normalisation is completely pointless, because real attackers simply ignore it entirely.
+    - Recon can only ever be stopped by blocking absolutely all inbound traffic to every endpoint.
+    - Errors and refusals are the only channels that ever leak, so the claim is actually correct here.
+  correct: 0
+  explanation: >-
+    Output normalisation closes specific channels but not intrinsic behavioural signals or passive
+    OSINT (bundles, manifests, job posts, exposed services). Surface reduction across all of those,
+    plus detection, is what actually shrinks the attacker's feasible probe set.
+- id: q9
+  question: >-
+    You must justify your recon methodology in the engagement report. Which framing best supports the
+    defender's remediation priorities?
+  options:
+    - A raw chronological list of every single probe you sent, ordered strictly by its timestamp.
+    - The total count of requests you sent during the engagement, included to demonstrate thoroughness.
+    - Each finding tied to the channel that leaked it and the one surface change that would close it.
+    - A ranking of the model's individual answers according to how clever or surprising each one was.
+  correct: 2
+  explanation: >-
+    A report that maps each finding to its leak channel and the specific closing change (strip a
+    string, add auth, normalise a response, remove an exposed service) is directly actionable, which
+    is the point of recon in a professional engagement.
+- id: q10
+  question: >-
+    Mapping your recon steps to MITRE ATLAS, which tactic do fingerprinting and AI-asset discovery
+    fall under, and why does that mapping matter?
+  options:
+    - Impact, because reconnaissance is in practice the single most damaging phase of the engagement.
+    - Exfiltration, because the recon phase is what removes the sensitive data from the target network.
+    - Persistence, because recon plants the foothold that then survives reboots of the target systems.
+    - Reconnaissance (AML.TA0002); it gives red and blue a shared taxonomy to build detections against.
+  correct: 3
+  explanation: >-
+    Fingerprinting and asset discovery are Reconnaissance (AML.TA0002). Mapping findings to ATLAS
+    technique IDs gives red and blue a shared taxonomy so detections and remediations can be planned
+    against named techniques.

@@ -49,6 +49,7 @@
   - [15.1 · Multi-tenant retrieval leakage](lessons/module-15/lesson-01.md)
 - **16 · Agent security**
   - [16.1 · The agent attack surface](lessons/module-16/lesson-01.md)
+  - [16.2 · Agent memory poisoning & stealth](lessons/module-16/lesson-02.md)
   - [17.1 · Tool poisoning & abuse](lessons/module-17/lesson-01.md)
   - [18.1 · End-to-end attack chains](lessons/module-18/lesson-01.md)
 - **19 · MCP security**
@@ -70,6 +71,23 @@
   - [Capstone projects](projects/capstones.md)
 - **Frontier updates**
   - [F.1 · OWASP LLM Top 10 2026: crosswalk & hidden-context exposure](lessons/frontier/update-01.md)
+
+- OSAI track — advanced AI red teaming (OffSec AI-300 parity)
+- **Module 27 — Reconnaissance for AI targets**
+  - [27.1 · Reconnaissance for AI targets](lessons/module-27/lesson-01.md)
+  - [Module 27 quiz](assessments/module-27-quiz.md)
+- **Module 28 — Multi-agent systems & A2A**
+  - [28.1 · Attacking multi-agent systems & A2A protocols](lessons/module-28/lesson-01.md)
+  - [Module 28 quiz](assessments/module-28-quiz.md)
+- **Module 29 — Embedding attacks**
+  - [29.1 · Attacking embeddings: inversion & extraction](lessons/module-29/lesson-01.md)
+  - [Module 29 quiz](assessments/module-29-quiz.md)
+- **Module 30 — AI infrastructure & deployment**
+  - [30.1 · AI infrastructure & deployment exploits](lessons/module-30/lesson-01.md)
+  - [Module 30 quiz](assessments/module-30-quiz.md)
+- **Module 31 — Capstone engagement**
+  - [31.1 · Full-spectrum AI red-team engagement](lessons/module-31/lesson-01.md)
+  - [Module 31 quiz](assessments/module-31-quiz.md)
 
 - **Labs**
   - [Lab 04 · Direct prompt injection](labs/lab-04/README.md)
@@ -95,6 +113,11 @@
   - [Lab 24 · Security evaluation](labs/lab-24/README.md)
   - [Lab 25 · Automated red teaming](labs/lab-25/README.md)
   - [Lab 26 · Hidden context exposure (F.1)](labs/lab-26-hidden-context/README.md)
+  - [Lab 27 · Reconnaissance for AI targets](labs/module-27/README.md)
+  - [Lab 28 · Multi-agent & A2A attacks](labs/module-28/README.md)
+  - [Lab 29 · Embedding inversion & extraction](labs/module-29/README.md)
+  - [Lab 30 · AI infrastructure exploits](labs/module-30/README.md)
+  - [Lab 31 · Capstone engagement range](labs/module-31/README.md)
 
 - **Reference**
   - [Standards map: OWASP / ATLAS / NIST](references/standards-map.md)
