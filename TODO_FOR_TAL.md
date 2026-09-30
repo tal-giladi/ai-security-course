@@ -51,6 +51,25 @@ Claude GitHub App write access to this repo at https://github.com/apps/claude/in
 Weekly test command (from repo root, after the whitelist install): `python -m pytest lab/tests labs -q`.
 Whitelist: `torch numpy` from download.pytorch.org/whl/cpu; `pytest safetensors` from pypi.org.
 
+## Gap vs OffSec AI-300 / OSAI (syllabus checked 2026-09-30)
+Source: https://manage.offsec.com/app/uploads/2026/03/AI-300_Syllabus_33126.pdf (11 modules, 24h practical exam + report).
+Covered already: intro/red-team lifecycle (M00, M26), agents (M16-18), RAG (M14-15), MCP/tools (M17, M19),
+supply chain (M13, M22), threat modeling (M00).
+Missing / thin:
+1. Reconnaissance for AI targets - discover/fingerprint AI apps, model endpoints, vector DBs, ML services,
+   exposed dependencies; low-noise recon. Only an ATLAS mention in M26. No lesson/lab.
+2. Multi-agent systems & A2A protocol attacks - agent-card spoofing, agent impersonation, inter-agent
+   message tampering, workflow corruption. M06.1 touches cross-agent injection only; no A2A.
+3. Embedding attacks - embedding inversion (vec2text-style) and info extraction from stored vectors.
+   M12 covers model inversion/MIA, not embedding inversion.
+4. AI infrastructure & deployment exploits - model servers (Ollama/vLLM/Triton/TorchServe), MLflow/Ray/
+   Jupyter exposure, cloud AI platforms, containerized ML workloads, k8s. Not covered.
+5. Agent memory poisoning (persistent long-term memory) and stealth/detection-evasion framing in agent attacks.
+6. Full-spectrum engagement capstone - one multi-stage enterprise-style AI environment (recon -> foothold ->
+   chain -> report) with a professional engagement report deliverable, timed like the OSAI exam.
+Suggested: new modules M27 recon, M28 A2A/multi-agent, M29 embeddings, M30 AI infra, extend M16 with memory,
+and a lab-capstone engagement environment. Not built yet - awaiting go-ahead.
+
 ## Remaining / optional polish
 - Per-paper reading guides in `papers/` — **DONE**: 16 guides (`papers/01..16-*.md`), linked from
   `papers/index.md` and `_sidebar.md`. Each has why/prereqs/what-to-read/reproduce-locally/code/
