@@ -1,0 +1,138 @@
+- id: q1
+  question: >-
+    During recon you find an unauthenticated vector database backing a hospital chatbot's RAG. In your
+    impact write-up, how should you characterise the exfiltrated embeddings?
+  options:
+    - As harmless numeric fingerprints, since embeddings are de-identified representations of the text.
+    - As a denial-of-service risk only, since the vectors let an attacker overload the retrieval layer.
+    - As useful only for measuring model quality, because vectors cannot be mapped back to any patient.
+    - As recoverable content — inversion and extraction can reconstruct the notes and read attributes.
+  correct: 3
+  explanation: >-
+    Embeddings invert to their inputs and leak attributes to a probe, so exfiltrated vectors are
+    effectively exfiltrated sensitive text. The report should treat them as content disclosure, not as
+    de-identified or merely operational data.
+- id: q2
+  question: >-
+    You have black-box access to an embedding API and a set of stored target vectors, but not the model
+    weights. Can you still invert the targets?
+  options:
+    - Yes — a surrogate or the API itself supports reconstruction well above chance, as vec2text shows.
+    - No, because black-box APIs add per-request noise that makes any reconstruction impossible.
+    - No, inversion strictly requires the exact original weights of the target embedding model.
+    - Yes, but only if the stored vectors were produced with a deliberately weakened toy encoder.
+  correct: 0
+  explanation: >-
+    Exact weights are not required: a surrogate encoder or query access to the API supports
+    reconstruction, and vec2text demonstrates fluent text recovery from black-box embeddings. The lab's
+    surrogate step shows recovery stays well above chance without exact weights.
+- id: q3
+  question: >-
+    Extraction accuracy for a private flag stays above baseline at a noise level where full inversion F1
+    has already collapsed. What explains this?
+  options:
+    - The probe secretly reconstructs the whole input first, so it cannot really be more robust.
+    - Extraction is measured on the training set, so its accuracy is an artefact of overfitting.
+    - A coarse one-bit attribute is a stronger, lower-dimensional signal that survives more noise.
+    - Noise increases the attribute signal while decreasing the inversion signal at the same time.
+  correct: 2
+  explanation: >-
+    Detecting the presence of one direction is a coarse, robust signal, whereas recovering every token
+    is fine-grained. The same noise that buries the fine detail leaves the coarse attribute detectable,
+    so extraction survives noise levels that defeat inversion.
+- id: q4
+  question: >-
+    A team proposes redacting the canary token BEFORE embedding, instead of adding noise to stored
+    vectors. Compared with the noise defense, this approach:
+  options:
+    - Is strictly worse, because redaction always destroys more retrieval utility than noise does.
+    - Removes the attribute at the source with little utility loss, unlike noise which trades utility.
+    - Is identical in effect, since both simply lower the signal-to-noise ratio of the embedding.
+    - Cannot work, because the encoder re-derives the redacted token from surrounding context anyway.
+  correct: 1
+  explanation: >-
+    Minimisation removes the sensitive content before it is ever encoded, so the attribute is gone with
+    little impact on the rest of the vector's utility — whereas noise degrades utility and recovery
+    together. That is why minimisation ranks above noise in the defense order.
+- id: q5
+  question: >-
+    Why does access control on the vector store rank above noise/DP in the defense priority?
+  options:
+    - Because noise is computationally expensive, whereas access control has no performance cost at all.
+    - Because access control also improves retrieval relevance, while noise can only ever reduce it.
+    - Because differential privacy has been proven ineffective against embedding inversion in practice.
+    - Because a store an attacker cannot read cannot be inverted, removing the attack precondition.
+  correct: 3
+  explanation: >-
+    Inversion and extraction both require reading the vectors. Access control removes that precondition
+    entirely and is cheap, so it is the highest-leverage control; noise/DP only raises the bar for an
+    attacker who already has read access.
+- id: q6
+  question: >-
+    Which situation most directly enables an embedding-inversion attack in production?
+  options:
+    - A retrieval pipeline that streams its answers token by token instead of all at once.
+    - An embedding model that is updated to a newer version every few weeks by the vendor.
+    - A vector store that is over-shared or internet-reachable with weak authentication.
+    - A system prompt that politely instructs the model never to reveal any stored documents.
+  correct: 2
+  explanation: >-
+    Inversion needs read access to the vectors. An over-shared or exposed vector store provides exactly
+    that precondition. Model version cadence, streaming, and prompt wording do not change whether the
+    stored vectors can be read and inverted.
+- id: q7
+  question: >-
+    You must keep retrieval quality high but reduce attribute leakage. Which single change gives the
+    best privacy-per-utility for a known sensitive field?
+  options:
+    - Redact or exclude that field from the text before embedding, leaving the rest intact.
+    - Apply the largest noise level at which retrieval top-1 has not yet dropped to zero.
+    - Switch to a larger embedding model, since bigger models leak strictly less information.
+    - Re-embed the whole corpus daily so that any leaked vectors quickly become stale.
+  correct: 0
+  explanation: >-
+    Minimising the sensitive field at the source removes the leak with minimal utility cost, unlike
+    global noise that trades utility for privacy across the board. Bigger models do not inherently leak
+    less, and re-embedding does not stop inversion of currently-held vectors.
+- id: q8
+  question: >-
+    A reviewer asks you to justify the claim "additive noise provides a privacy guarantee" in your
+    report. The most accurate statement is:
+  options:
+    - Noise makes inversion mathematically impossible regardless of how much of it is applied.
+    - A calibrated DP mechanism bounds inference, but the same noise degrades retrieval utility.
+    - Noise guarantees privacy only if the attacker never obtains a surrogate of the encoder.
+    - Noise has no formal guarantee and should therefore never be mentioned in a security report.
+  correct: 1
+  explanation: >-
+    A properly calibrated differential-privacy mechanism gives a formal bound on inference, but it is
+    not free: the noise that limits leakage also reduces retrieval relevance. The defensible framing
+    states both the bound and the utility cost.
+- id: q9
+  question: >-
+    Mapping to the course, embedding inversion and extraction most directly extend which earlier topic,
+    and which recon finding most enables them?
+  options:
+    - They extend jailbreaking; a leaked system prompt is what enables the attack in practice.
+    - They extend adversarial examples; a discovered model version is what enables the attack.
+    - They extend supply-chain poisoning; a malicious model adapter is what enables the attack.
+    - They extend extraction/inversion of models; an exposed vector store is what enables the attack.
+  correct: 3
+  explanation: >-
+    Embedding attacks are the embedding-level case of the extraction/inversion family (module 12), and
+    the enabling recon finding is an exposed or over-shared vector store (module 27). Jailbreaks,
+    adversarial examples, and adapters are different classes.
+- id: q10
+  question: >-
+    Your defense-in-depth design uses access control, minimisation, tenant isolation, and calibrated
+    noise. An assessor still recovers attributes. Which failure is MOST consistent with that outcome?
+  options:
+    - The noise was applied, so the other three controls were unnecessary and must have been removed.
+    - Minimisation is impossible, so redaction could not have removed the sensitive field in any case.
+    - A tenant-isolation bug placed sensitive embeddings where the assessor already had read access.
+    - Access control cannot fail, so the recovery must have been fabricated by the assessor's tooling.
+  correct: 2
+  explanation: >-
+    If attributes are recovered despite the stack, the most likely cause is that an isolation/access bug
+    exposed the vectors to a reader — defeating the load-bearing controls — so the noise layer alone was
+    left to hold, which it only partially does. The other options are false generalisations.

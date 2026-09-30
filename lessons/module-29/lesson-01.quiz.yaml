@@ -1,0 +1,71 @@
+- id: q1
+  question: >-
+    A team says "we only store embeddings of the support tickets, not the text, so it's de-identified."
+    Why is this reasoning unsound?
+  options:
+    - Embeddings are hashes, so they are reversible only if the hashing key has leaked to an attacker.
+    - Embeddings drop all word-level detail, so only the document's overall topic can ever be recovered.
+    - Embeddings are safe as long as the vector database is not exposed directly to the open internet.
+    - Similarity-preserving embeddings retain most input information and can be inverted back to the text.
+  correct: 3
+  explanation: >-
+    An embedding is trained to place similar inputs close together, which forces it to preserve most of
+    the input's information in geometric structure — the opposite of a one-way hash. Given the encoder
+    or a surrogate, that structure inverts back to (much of) the text.
+- id: q2
+  question: >-
+    In the toy mean-of-tokens encoder, why does scoring each vocabulary token by its dot product with
+    the embedding recover the sentence's tokens?
+  options:
+    - Because the encoder stores the exact token list in the last few dimensions of the vector.
+    - Because a true token's self dot-product is large while unrelated tokens average to near zero.
+    - Because every token vector is identical, so any ranking returns the correct tokens by chance.
+    - Because the noise added during encoding happens to cancel out for in-sentence tokens only.
+  correct: 1
+  explanation: >-
+    For a token actually in the sentence, its self dot-product (about 1 for unit rows) dominates, while
+    for tokens not in the sentence the cross terms are small and roughly mean-zero. So true tokens score
+    highest and the top-k recovers the set.
+- id: q3
+  question: >-
+    An attacker cannot invert the whole ticket but trains a small classifier on the embeddings that
+    predicts, with high accuracy, whether each ticket mentions a specific diagnosis. This is:
+  options:
+    - Attribute extraction, because it reads a private property directly from the embedding vector.
+    - Membership inference, because it decides whether a record was in the training set of the model.
+    - Model stealing, because the classifier is a copy of the original embedding model's parameters.
+    - Backdoor activation, because a hidden trigger in the embedding switches on the classifier output.
+  correct: 0
+  explanation: >-
+    Reading a specific private property off an embedding with a probe, without reconstructing the input,
+    is attribute extraction. It is cheaper than full inversion and often enough to cause harm, which is
+    why "we only store vectors" does not protect a sensitive flag.
+- id: q4
+  question: >-
+    You add Gaussian noise to every stored embedding. Inversion F1 drops sharply, but so does retrieval
+    top-1 accuracy. Why can't you tune the noise to kill recovery while keeping utility?
+  options:
+    - Because the noise generator is not cryptographically secure and leaks the original vector.
+    - Because retrieval and inversion read different dimensions, so noise must be applied twice.
+    - Because both recovery and retrieval similarity degrade with the same noise scale — one Pareto curve.
+    - Because utility can always be fully restored afterward by simply averaging repeated queries.
+  correct: 2
+  explanation: >-
+    The same perturbation that buries a token's inversion signal also injects variance into similarity
+    scores, so distractors overtake true matches. Recovery and utility fall together along one curve;
+    there is no noise level that hides the input while preserving the similarity you stored it for.
+- id: q5
+  question: >-
+    Given inversion and extraction, what is the correct priority order of defenses for a vector store
+    that may contain sensitive text?
+  options:
+    - Add noise first, then decide access control later once the utility impact has been fully measured.
+    - Access control and minimisation first; noise/DP only as measured defence-in-depth behind them.
+    - Rely solely on tenant isolation, since embeddings from one tenant can never leak to another one.
+    - Encrypt the vectors at rest, which makes inversion and extraction mathematically impossible.
+  correct: 1
+  explanation: >-
+    An unreadable store cannot be inverted, so access control is the cheapest, highest-leverage control,
+    followed by minimisation (don't embed/store secrets). Noise/DP only raises the bar and costs
+    utility, so it belongs behind those. Encryption at rest does not help once a reader has legitimate
+    query access to the vectors.
