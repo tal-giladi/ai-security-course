@@ -5,11 +5,11 @@ minutes: 10
 practice_minutes: 120
 prerequisites: ["11.1", "01.1"]
 objectives:
-  - Explain pickle deserialization remote code execution and why .pt and .bin checkpoints are executable code.
-  - Explain what safetensors guarantees, and why that guarantee is stronger than any scanner.
-  - Enumerate load-time code paths, including trust_remote_code and tokenizer or config code.
-  - Build a malicious adapter that preserves clean accuracy while installing a backdoor.
-  - Design a layered load-time defense of safe format, provenance, behavioral vetting, and least privilege.
+  - "Explain pickle deserialization remote code execution and why .pt and .bin checkpoints are executable code."
+  - "Explain what safetensors guarantees, and why that guarantee is stronger than any scanner."
+  - "Enumerate load-time code paths, including trust_remote_code and tokenizer or config code."
+  - "Build a malicious adapter that preserves clean accuracy while installing a backdoor."
+  - "Design a layered load-time defense of safe format, provenance, behavioral vetting, and least privilege."
 volatility: implementation
 sources:
   - title: "safetensors — a simple, fast, and safe format for storing tensors"
@@ -21,6 +21,7 @@ sources:
   - title: "Hugging Face Hub security documentation — pickle, safetensors, trust_remote_code"
     url: https://huggingface.co/docs/hub/security
 last_verified: "2026-09-30"
+---
 ---
 
 # 13.1 · Adapter & weight supply chain

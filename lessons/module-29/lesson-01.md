@@ -5,10 +5,10 @@ minutes: 22
 practice_minutes: 75
 prerequisites: ["12.1", "14.1"]
 objectives:
-  - Explain why an embedding is recoverable data, not an anonymised hash of its input.
-  - Perform embedding inversion to recover input tokens and attribute extraction to recover a private property.
-  - Derive why nearest-token inversion works and how additive noise trades recovery for retrieval utility.
-  - Apply and measure defenses — access control, not storing sensitive embeddings, noise/DP — and state each one's guarantee.
+  - "Explain why an embedding is recoverable data, not an anonymised hash of its input."
+  - "Perform embedding inversion to recover input tokens and attribute extraction to recover a private property."
+  - "Derive why nearest-token inversion works and how additive noise trades recovery for retrieval utility."
+  - "Apply and measure defenses — access control, not storing sensitive embeddings, noise/DP — and state each one's guarantee."
 volatility: concept
 sources:
   - title: "Song & Raghunathan — Information Leakage in Embedding Models (CCS 2020)"
@@ -18,6 +18,7 @@ sources:
   - title: "OWASP Top 10 for LLM Applications 2025 — LLM02 Sensitive Information Disclosure"
     url: https://genai.owasp.org/llm-top-10/
 last_verified: "2026-09-30"
+---
 ---
 
 # 29.1 · Attacking embeddings: inversion & extraction

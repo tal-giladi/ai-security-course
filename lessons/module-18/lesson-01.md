@@ -5,11 +5,11 @@ minutes: 10
 practice_minutes: 0
 prerequisites: ["01.1", "05.1", "14.1", "16.1", "17.1"]
 objectives:
-  - Trace a complete multi-hop agent kill chain and identify every trust-boundary crossing.
-  - Reproduce it locally end to end and measure **chain depth** (executed hops).
-  - Apply **defense-in-depth** and show where each enforced control bites; explain why breaking any link suffices.
-  - Compute **chain-success probability** as a product over hops and justify defense-in-depth quantitatively.
-  - Design the **minimal** control set that stops the chain while preserving the legitimate task.
+  - "Trace a complete multi-hop agent kill chain and identify every trust-boundary crossing."
+  - "Reproduce it locally end to end and measure **chain depth** (executed hops)."
+  - "Apply **defense-in-depth** and show where each enforced control bites; explain why breaking any link suffices."
+  - "Compute **chain-success probability** as a product over hops and justify defense-in-depth quantitatively."
+  - "Design the **minimal** control set that stops the chain while preserving the legitimate task."
 volatility: concept
 sources:
   - title: "NATO StratCom COE — Attributing Information Influence Operations"
@@ -19,6 +19,7 @@ sources:
   - title: "OWASP ASVS v5 — architecture-level defense-in-depth"
     url: https://owasp.org/www-project-application-security-verification-standard/
 last_verified: "2026-09-30"
+---
 ---
 # 18.1 · End-to-end attack chains
 

@@ -5,10 +5,10 @@ minutes: 10
 practice_minutes: 0
 prerequisites: []
 objectives:
-  - State the course's **method** as a repeatable procedure for a new system.
-  - Map every module onto **OWASP LLM Top 10**, **MITRE ATLAS**, and **NIST AI RMF/100-2**.
-  - Use the **competency matrix** to self-assess honestly.
-  - Plan and execute the five **capstones**, especially the research project.
+  - "State the course's **method** as a repeatable procedure for a new system."
+  - "Map every module onto **OWASP LLM Top 10**, **MITRE ATLAS**, and **NIST AI RMF/100-2**."
+  - "Use the **competency matrix** to self-assess honestly."
+  - "Plan and execute the five **capstones**, especially the research project."
 volatility: concept
 sources:
   - title: "NIST AI RMF (AI 100-1)"
@@ -18,6 +18,7 @@ sources:
   - title: "OWASP Top 10 for LLM Applications 2026"
     url: https://genai.owasp.org/llm-top-10/
 last_verified: "2026-09-30"
+---
 ---
 # 26.1 · Purple-team synthesis, standards & capstones
 

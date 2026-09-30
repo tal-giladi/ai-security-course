@@ -5,11 +5,11 @@ minutes: 13
 practice_minutes: 60
 prerequisites: ["02.1", "04.1", "14.1", "16.1", "26.1"]
 objectives:
-  - Translate any OWASP LLM **2025** ID to its **2026** ID and explain the three structural changes (Excessive Agency to #3, Improper Output Handling to #10, the SPL → HCE rename).
-  - Explain the 2026 methodology (community vote weighted 75%, real-incident data 25%) and what that does and does not tell you about risk.
-  - Define **Hidden Context Exposure** and enumerate the slots it covers in an app you haven't seen.
-  - Measure leakage **per slot** with a decode-aware success criterion, and report ASR and FPR.
-  - Write the guarantee box for three output filters and for the architectural control ("nothing secret in context"), and show by measurement that only the latter is enforced.
+  - "Translate any OWASP LLM **2025** ID to its **2026** ID and explain the three structural changes (Excessive Agency to #3, Improper Output Handling to #10, the SPL → HCE rename)."
+  - "Explain the 2026 methodology (community vote weighted 75%, real-incident data 25%) and what that does and does not tell you about risk."
+  - "Define **Hidden Context Exposure** and enumerate the slots it covers in an app you haven't seen."
+  - "Measure leakage **per slot** with a decode-aware success criterion, and report ASR and FPR."
+  - "Write the guarantee box for three output filters and for the architectural control (\"nothing secret in context\"), and show by measurement that only the latter is enforced."
 volatility: implementation
 sources:
   - title: "OWASP Top 10 for LLM Applications 2026"
@@ -19,6 +19,7 @@ sources:
   - title: "Greshake et al. — Not what you've signed up for (indirect injection)"
     url: https://arxiv.org/abs/2302.12173
 last_verified: "2026-09-30"
+---
 ---
 # 32.1 · OWASP LLM Top 10 2026: the crosswalk & Hidden Context Exposure
 

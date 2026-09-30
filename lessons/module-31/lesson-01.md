@@ -5,10 +5,10 @@ minutes: 18
 practice_minutes: 150
 prerequisites: ["27.1", "28.1", "29.1", "30.1", "16.2"]
 objectives:
-  - Run a full-spectrum AI red-team engagement end to end against a realistic local range.
-  - Chain recon, foothold, and lateral movement across AI components into measurable impact.
-  - Prioritise remediation by leverage — the single change that breaks the chain.
-  - Produce a professional engagement report mapped to MITRE ATLAS, OWASP LLM Top 10, and NIST AI RMF.
+  - "Run a full-spectrum AI red-team engagement end to end against a realistic local range."
+  - "Chain recon, foothold, and lateral movement across AI components into measurable impact."
+  - "Prioritise remediation by leverage — the single change that breaks the chain."
+  - "Produce a professional engagement report mapped to MITRE ATLAS, OWASP LLM Top 10, and NIST AI RMF."
 volatility: concept
 sources:
   - title: "MITRE ATLAS — tactics, techniques & case studies"
@@ -18,6 +18,7 @@ sources:
   - title: "NIST AI Risk Management Framework"
     url: https://www.nist.gov/itl/ai-risk-management-framework
 last_verified: "2026-09-30"
+---
 ---
 
 # 31.1 · Full-spectrum AI red-team engagement

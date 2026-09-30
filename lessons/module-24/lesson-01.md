@@ -5,11 +5,11 @@ minutes: 10
 practice_minutes: 120
 prerequisites: ["02.2", "04.1", "07.1", "10.1", "12.1", "23.1"]
 objectives:
-  - Report **ASR with a Wilson CI** and know when a difference is *established* (non-overlapping CIs) vs noise; compute required sample sizes.
-  - Evaluate detectors with **precision/recall/ROC-AUC** and interpret them under **base rates**.
-  - Perform **adaptive evaluation** — measure against the strongest/adapted attack — and explain why it's decisive.
-  - Measure **robustness** (ASR vs attack strength), **transferability**, and **coverage** across attack families.
-  - **Design a security benchmark** and wire **regression tests** that fail if ASR rises.
+  - "Report **ASR with a Wilson CI** and know when a difference is *established* (non-overlapping CIs) vs noise; compute required sample sizes."
+  - "Evaluate detectors with **precision/recall/ROC-AUC** and interpret them under **base rates**."
+  - "Perform **adaptive evaluation** — measure against the strongest/adapted attack — and explain why it's decisive."
+  - "Measure **robustness** (ASR vs attack strength), **transferability**, and **coverage** across attack families."
+  - "**Design a security benchmark** and wire **regression tests** that fail if ASR rises."
 volatility: concept
 sources:
   - title: "Croce & Hein — Reliable Evaluation of Adversarial Robustness (AutoAttack)"
@@ -19,6 +19,7 @@ sources:
   - title: "Carlini et al. — Extracting Training Data from Large Language Models (LiRA, membership inference)"
     url: https://arxiv.org/abs/2112.14704
 last_verified: "2026-09-30"
+---
 ---
 # 24.1 · Security evaluation
 

@@ -5,11 +5,11 @@ minutes: 10
 practice_minutes: 120
 prerequisites: ["01.1", "13.1", "16.1", "17.1", "18.1"]
 objectives:
-  - Enumerate the code-repo attack surface: README/docs, manifests + install/build scripts, source comments, tests, issues, PRs.
-  - Reproduce **prompt injection in repo content** driving a shell-capable agent to exfiltrate.
-  - Apply enforced defenses: repo-content-as-data, least privilege (no shell), **sandboxing** (no egress/secrets), command allowlists, approval gates.
-  - Explain and model **dependency confusion** and defeat it with pinning + integrity hashes.
-  - Reason about **install/build script** execution (postinstall) and CI/CD as code-execution paths.
+  - "Enumerate the code-repo attack surface: README/docs, manifests + install/build scripts, source comments, tests, issues, PRs."
+  - "Reproduce **prompt injection in repo content** driving a shell-capable agent to exfiltrate."
+  - "Apply enforced defenses: repo-content-as-data, least privilege (no shell), **sandboxing** (no egress/secrets), command allowlists, approval gates."
+  - "Explain and model **dependency confusion** and defeat it with pinning + integrity hashes."
+  - "Reason about **install/build script** execution (postinstall) and CI/CD as code-execution paths."
 volatility: implementation
 sources:
   - title: "Alex Birsan — Dependency Confusion in a private registry"
@@ -19,6 +19,7 @@ sources:
   - title: "OWASP Top 10 for Agentic Applications 2026 — ASI05 unexpected code execution"
     url: https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/
 last_verified: "2026-09-30"
+---
 ---
 # 21.1 · Code-agent security
 

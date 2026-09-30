@@ -5,11 +5,11 @@ minutes: 10
 practice_minutes: 120
 prerequisites: ["07.1", "08.1", "18.1", "24.1"]
 objectives:
-  - Build a **mutation fuzzer** over attack payloads and an automated **search** loop toward higher ASR.
-  - Explain the **attacker/judge/defender** components and why the judge bounds the attacker (M08/M24).
-  - Run **attacker vs defender co-evolution** and read the arms-race ASR curve.
-  - Assemble an **automated exploit-chain** red-teamer (reuse the agent runtime, M18).
-  - Integrate with the eval harness (CIs, coverage) and regression testing (M24).
+  - "Build a **mutation fuzzer** over attack payloads and an automated **search** loop toward higher ASR."
+  - "Explain the **attacker/judge/defender** components and why the judge bounds the attacker (M08/M24)."
+  - "Run **attacker vs defender co-evolution** and read the arms-race ASR curve."
+  - "Assemble an **automated exploit-chain** red-teamer (reuse the agent runtime, M18)."
+  - "Integrate with the eval harness (CIs, coverage) and regression testing (M24)."
 volatility: implementation
 sources:
   - title: "Perez et al. — Red Teaming Language Models with Language Models"
@@ -19,6 +19,7 @@ sources:
   - title: "NIST AI RMF (AI 100-1) — measure function"
     url: https://www.nist.gov/itl/ai-risk-management-framework
 last_verified: "2026-09-30"
+---
 ---
 # 25.1 · Automated red teaming
 

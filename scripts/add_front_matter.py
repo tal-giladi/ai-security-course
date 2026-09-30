@@ -153,7 +153,9 @@ def build_front_matter(module: int, lesson_no: int, parked: str, body: str) -> s
         "prerequisites: [" + ", ".join(yaml_quote(p) for p in prereq_ids(parked)) + "]",
         "objectives:",
     ]
-    lines += [f"  - {o}" for o in objectives[:5]]
+    # Quote every objective: text lifted from the lesson often starts with "**Compose** ...",
+    # which is an unquoted YAML alias reference and makes the whole block fail to parse.
+    lines += [f"  - {yaml_quote(o)}" for o in objectives[:5]]
     lines.append(f"volatility: {volatility}")
     lines.append("sources:")
     for title, url in sources:

@@ -5,11 +5,11 @@ minutes: 10
 practice_minutes: 75
 prerequisites: ["02.1", "01.1"]
 objectives:
-  - Describe the request/response contract of a modern inference API and mark its trust boundaries.
-  - Explain the security implications of streaming: partial output, filter timing, and early side effects.
-  - State what structured output guarantees syntactically, and what it does not guarantee about the values.
-  - Explain tool calling as the model emitting a request that your code then executes.
-  - Evaluate a content filter's precision and recall against the attack base rate.
+  - "Describe the request/response contract of a modern inference API and mark its trust boundaries."
+  - "Explain the security implications of streaming: partial output, filter timing, and early side effects."
+  - "State what structured output guarantees syntactically, and what it does not guarantee about the values."
+  - "Explain tool calling as the model emitting a request that your code then executes."
+  - "Evaluate a content filter's precision and recall against the attack base rate."
 volatility: implementation
 sources:
   - title: "OWASP Top 10 for LLM Applications 2025 — LLM05 Improper Output Handling"
@@ -19,6 +19,7 @@ sources:
   - title: "JSON Schema specification — the validation keywords a tool schema can express"
     url: https://json-schema.org/specification
 last_verified: "2026-09-30"
+---
 ---
 
 # 02.2 · The inference API attack surface

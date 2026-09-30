@@ -5,11 +5,11 @@ minutes: 13
 practice_minutes: 75
 prerequisites: []
 objectives:
-  - Enumerate an AI system's assets and, for each, name who may reach it and who must not.
-  - Draw a data-flow diagram and mark every trust boundary and untrusted entry point on it.
-  - Apply STRIDE and an attack tree to an LLM application, then rank the resulting threats by risk.
-  - Explain authentication versus authorization, privilege, and isolation, and where "the model decides" removes them.
-  - Recognize the confused-deputy pattern as the structural skeleton of most LLM and agent attacks.
+  - "Enumerate an AI system's assets and, for each, name who may reach it and who must not."
+  - "Draw a data-flow diagram and mark every trust boundary and untrusted entry point on it."
+  - "Apply STRIDE and an attack tree to an LLM application, then rank the resulting threats by risk."
+  - "Explain authentication versus authorization, privilege, and isolation, and where \"the model decides\" removes them."
+  - "Recognize the confused-deputy pattern as the structural skeleton of most LLM and agent attacks."
 volatility: concept
 sources:
   - title: "Greshake et al., Not what you've signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection"
@@ -19,6 +19,7 @@ sources:
   - title: "OWASP Top 10 for LLM Applications 2025"
     url: https://genai.owasp.org/llm-top-10/
 last_verified: "2026-09-30"
+---
 ---
 
 # 00.1 · Threat modeling for AI systems

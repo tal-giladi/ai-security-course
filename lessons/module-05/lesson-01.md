@@ -5,11 +5,11 @@ minutes: 10
 practice_minutes: 120
 prerequisites: ["04.1", "00.1", "01.1"]
 objectives:
-  - Define indirect prompt injection and enumerate its delivery channels.
-  - Explain, through the finite-bias model, why indirect payloads need more strength than direct ones.
-  - Trace a complete confused-deputy exfiltration chain and name every trust boundary it crosses.
-  - Reproduce that chain against a local RAG-style bot and measure the exfiltration at the sink.
-  - Rank layered injection defenses and justify least privilege on the deputy as the real boundary.
+  - "Define indirect prompt injection and enumerate its delivery channels."
+  - "Explain, through the finite-bias model, why indirect payloads need more strength than direct ones."
+  - "Trace a complete confused-deputy exfiltration chain and name every trust boundary it crosses."
+  - "Reproduce that chain against a local RAG-style bot and measure the exfiltration at the sink."
+  - "Rank layered injection defenses and justify least privilege on the deputy as the real boundary."
 volatility: concept
 sources:
   - title: "Greshake et al., Not what you've signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection"
@@ -19,6 +19,7 @@ sources:
   - title: "OWASP Top 10 for LLM Applications 2025 — LLM06 Excessive Agency"
     url: https://genai.owasp.org/llmrisk/llm06-excessive-agency/
 last_verified: "2026-09-30"
+---
 ---
 
 # 05.1 · Indirect prompt injection

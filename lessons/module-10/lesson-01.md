@@ -5,11 +5,11 @@ minutes: 10
 practice_minutes: 150
 prerequisites: ["09.1"]
 objectives:
-  - Formulate and implement the CW attack, and explain why it finds smaller perturbations than fixed-budget attacks.
-  - Explain and measure transfer attacks, and connect them to the black-box threat.
-  - Derive the randomized-smoothing certificate and implement its Monte-Carlo estimate.
-  - Distinguish empirical from certified robustness and state the cost of each.
-  - Evaluate robustness with AutoAttack rather than a single hand-picked attack.
+  - "Formulate and implement the CW attack, and explain why it finds smaller perturbations than fixed-budget attacks."
+  - "Explain and measure transfer attacks, and connect them to the black-box threat."
+  - "Derive the randomized-smoothing certificate and implement its Monte-Carlo estimate."
+  - "Distinguish empirical from certified robustness and state the cost of each."
+  - "Evaluate robustness with AutoAttack rather than a single hand-picked attack."
 volatility: concept
 sources:
   - title: "Carlini & Wagner, Towards Evaluating the Robustness of Neural Networks (CW)"
@@ -19,6 +19,7 @@ sources:
   - title: "Croce & Hein, AutoAttack — a parameter-free ensemble for reliable robustness evaluation"
     url: https://arxiv.org/abs/2002.02108
 last_verified: "2026-09-30"
+---
 ---
 
 # 10.1 · Adversarial examples II (CW, transfer, certified robustness)

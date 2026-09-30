@@ -5,10 +5,10 @@ minutes: 10
 practice_minutes: 120
 prerequisites: ["01.1", "06.1", "09.1", "10.1"]
 objectives:
-  - Distinguish the multimodal sub-threats: **semantic** injection (M06), **steganographic** payloads, **pixel-space adversarial** perturbations, and **document** (PDF) attacks.
-  - Implement **LSB steganography** and measure imperceptibility (MSE, max delta) and the extraction attack.
-  - Explain and (via Stage 4) apply **pixel-space PGD** on a vision classifier; know its threat model.
-  - Apply defenses — **re-encoding/quantization** (LSB-strip), provenance, media-content-as-data — and state exactly which threat each covers.
+  - "Distinguish the multimodal sub-threats: **semantic** injection (M06), **steganographic** payloads, **pixel-space adversarial** perturbations, and **document** (PDF) attacks."
+  - "Implement **LSB steganography** and measure imperceptibility (MSE, max delta) and the extraction attack."
+  - "Explain and (via Stage 4) apply **pixel-space PGD** on a vision classifier; know its threat model."
+  - "Apply defenses — **re-encoding/quantization** (LSB-strip), provenance, media-content-as-data — and state exactly which threat each covers."
 volatility: current
 sources:
   - title: "Bagdasaryan et al. — (Ab)using Images and Sounds for Indirect Instruction Injection"
@@ -18,6 +18,7 @@ sources:
   - title: "Athalye, Engstrom, Ilyas, Kwok — Obfuscated Gradients Give a False Sense of Security"
     url: https://arxiv.org/abs/1806.08096
 last_verified: "2026-09-30"
+---
 ---
 # 20.1 · Multimodal security (deep)
 

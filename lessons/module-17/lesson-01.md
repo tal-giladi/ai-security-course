@@ -5,11 +5,11 @@ minutes: 10
 practice_minutes: 120
 prerequisites: ["02.2", "05.1", "16.1"]
 objectives:
-  - Explain tool **description poisoning** and **result poisoning** as indirect injection through the tool interface.
-  - Explain why tool descriptions have **catalog-wide, every-task** reach (worse than a single doc).
-  - Apply **tool authorization** and **capability-based security** (least authority, object capabilities) as the enforced defense.
-  - Recognize **rug-pull** tools (benign at approval, poisoned later) and provenance/signing defenses.
-  - Combine catalog-as-data segregation with capability minimization.
+  - "Explain tool **description poisoning** and **result poisoning** as indirect injection through the tool interface."
+  - "Explain why tool descriptions have **catalog-wide, every-task** reach (worse than a single doc)."
+  - "Apply **tool authorization** and **capability-based security** (least authority, object capabilities) as the enforced defense."
+  - "Recognize **rug-pull** tools (benign at approval, poisoned later) and provenance/signing defenses."
+  - "Combine catalog-as-data segregation with capability minimization."
 volatility: implementation
 sources:
   - title: "Invariant Labs — MCP prompt injection in the wild (GitHub issue 1803950)"
@@ -19,6 +19,7 @@ sources:
   - title: "OWASP Top 10 for LLM Applications 2025 — LLM08 Excessive Agency"
     url: https://genai.owasp.org/llm-top-10/
 last_verified: "2026-09-30"
+---
 ---
 # 17.1 · Tool poisoning & abuse
 

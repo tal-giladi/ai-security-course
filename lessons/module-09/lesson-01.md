@@ -5,11 +5,11 @@ minutes: 10
 practice_minutes: 150
 prerequisites: ["02.1"]
 objectives:
-  - State the adversarial-example threat model precisely: norm, budget, targeted versus untargeted, and attacker access.
-  - Derive FGSM as the exact maximizer of the first-order loss increase in an infinite-norm ball.
-  - Derive and implement PGD as projected gradient ascent, and explain why PGD is at least as strong as FGSM.
-  - Measure the accuracy-versus-budget collapse and implement PGD adversarial training.
-  - Detect gradient masking and report robustness honestly.
+  - "State the adversarial-example threat model precisely: norm, budget, targeted versus untargeted, and attacker access."
+  - "Derive FGSM as the exact maximizer of the first-order loss increase in an infinite-norm ball."
+  - "Derive and implement PGD as projected gradient ascent, and explain why PGD is at least as strong as FGSM."
+  - "Measure the accuracy-versus-budget collapse and implement PGD adversarial training."
+  - "Detect gradient masking and report robustness honestly."
 volatility: concept
 sources:
   - title: "Goodfellow, Shlens, Szegedy, Explaining and Harnessing Adversarial Examples (FGSM)"
@@ -19,6 +19,7 @@ sources:
   - title: "Croce & Hein, Reliable Evaluation of Adversarial Robustness with an Ensemble of Diverse Parameter-Free Attacks (AutoAttack)"
     url: https://arxiv.org/abs/2002.02108
 last_verified: "2026-09-30"
+---
 ---
 
 # 09.1 · Adversarial examples I (FGSM & PGD)

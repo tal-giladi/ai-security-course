@@ -5,10 +5,10 @@ minutes: 22
 practice_minutes: 70
 prerequisites: ["27.1", "22.1", "16.1"]
 objectives:
-  - Enumerate the AI infrastructure attack surface — model servers, ML lifecycle services, and containerized workloads.
-  - Exploit the two dominant deployment flaws in a local mock — unauthenticated admin/management surfaces and path traversal.
-  - Explain why AI infrastructure compromise usually beats model-level attacks, and rank the controls that stop it.
-  - Apply and measure network exposure control, authentication, and input validation as defence-in-depth.
+  - "Enumerate the AI infrastructure attack surface — model servers, ML lifecycle services, and containerized workloads."
+  - "Exploit the two dominant deployment flaws in a local mock — unauthenticated admin/management surfaces and path traversal."
+  - "Explain why AI infrastructure compromise usually beats model-level attacks, and rank the controls that stop it."
+  - "Apply and measure network exposure control, authentication, and input validation as defence-in-depth."
 volatility: implementation
 sources:
   - title: "Wiz Research — ShadowRay: exposed Ray clusters exploited in the wild (CVE-2023-48022)"
@@ -18,6 +18,7 @@ sources:
   - title: "MITRE ATLAS — ML model/infra access techniques"
     url: https://atlas.mitre.org/
 last_verified: "2026-09-30"
+---
 ---
 
 # 30.1 · AI infrastructure & deployment exploits

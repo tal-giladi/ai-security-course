@@ -123,6 +123,9 @@
 - **Module 32 — Standards crosswalks**
   - [34 · OWASP LLM Top 10 2026: the crosswalk & Hidden Context Exposure](lessons/module-32/lesson-01.md)
   - [Module 32 quiz](assessments/module-32-quiz.md)
+- **Module 33 — Oversight, scope and evidence**
+  - [35 · Oversight the agent cannot edit](lessons/module-33/lesson-01.md)
+  - [Module 33 quiz](assessments/module-33-quiz.md)
 
 - Reference
 - [Standards map: OWASP / ATLAS / NIST](references/standards-map.md)

@@ -5,10 +5,10 @@ minutes: 24
 practice_minutes: 75
 prerequisites: ["16.1", "06.1", "19.1"]
 objectives:
-  - Map the trust boundaries of a multi-agent system and the A2A message lifecycle.
-  - Execute the four multi-agent attack classes — impersonation, message tampering, workflow corruption, capability over-claim — against a local mock.
-  - Explain why inter-agent trust is transitive and how a single injected agent compromises a whole workflow.
-  - Apply and measure the enforced defenses: message authentication, sender verification, capability scoping, and task provenance.
+  - "Map the trust boundaries of a multi-agent system and the A2A message lifecycle."
+  - "Execute the four multi-agent attack classes — impersonation, message tampering, workflow corruption, capability over-claim — against a local mock."
+  - "Explain why inter-agent trust is transitive and how a single injected agent compromises a whole workflow."
+  - "Apply and measure the enforced defenses: message authentication, sender verification, capability scoping, and task provenance."
 volatility: implementation
 sources:
   - title: "Agent2Agent (A2A) Protocol specification"
@@ -18,6 +18,7 @@ sources:
   - title: "MITRE ATLAS — techniques for AI agents"
     url: https://atlas.mitre.org/
 last_verified: "2026-09-30"
+---
 ---
 
 # 28.1 · Attacking multi-agent systems & A2A protocols

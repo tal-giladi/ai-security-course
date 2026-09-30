@@ -5,11 +5,11 @@ minutes: 10
 practice_minutes: 150
 prerequisites: ["02.1", "09.1"]
 objectives:
-  - Define poisoning and backdoors, and state the sleeper-agent threat model.
-  - Reproduce a BadNets-style backdoor with high clean accuracy and high trigger attack success rate.
-  - Explain why clean-input evaluation cannot detect a backdoor, and quantify how little poison is needed.
-  - Implement a spectral-signature detector, measure its precision and recall, and explain its limits.
-  - Reason about preference and RLHF poisoning, and place poisoning in the model supply chain.
+  - "Define poisoning and backdoors, and state the sleeper-agent threat model."
+  - "Reproduce a BadNets-style backdoor with high clean accuracy and high trigger attack success rate."
+  - "Explain why clean-input evaluation cannot detect a backdoor, and quantify how little poison is needed."
+  - "Implement a spectral-signature detector, measure its precision and recall, and explain its limits."
+  - "Reason about preference and RLHF poisoning, and place poisoning in the model supply chain."
 volatility: concept
 sources:
   - title: "Gu, Dolan-Gavitt, Garg, BadNets: Identifying Vulnerabilities in the Machine Learning Model Supply Chain"
@@ -19,6 +19,7 @@ sources:
   - title: "Tran, Li, Madry, The Strange Geometry of Skip Connections (spectral signatures in backdoor attacks)"
     url: https://arxiv.org/abs/1806.00083
 last_verified: "2026-09-30"
+---
 ---
 
 # 11.1 · Data & model poisoning, backdoors, sleeper agents

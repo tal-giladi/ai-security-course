@@ -5,11 +5,11 @@ minutes: 10
 practice_minutes: 120
 prerequisites: ["00.1", "13.1", "16.1", "17.1"]
 objectives:
-  - Describe MCP architecture and mark its trust boundaries (client ↔ server, server ↔ server).
-  - Explain **tool-description poisoning** / "line jumping" in the MCP context.
-  - Reproduce a **cross-server confused deputy**: a malicious server exfiltrates a trusted server's private resource.
-  - Apply defenses: **server allowlisting/pinning/signing**, **tool-metadata-as-data**, **per-server capability scoping**, **cross-server flow gating**, and MCP's auth model.
-  - Reason about resources/prompts as additional injection surfaces and rug-pull servers.
+  - "Describe MCP architecture and mark its trust boundaries (client ↔ server, server ↔ server)."
+  - "Explain **tool-description poisoning** / \"line jumping\" in the MCP context."
+  - "Reproduce a **cross-server confused deputy**: a malicious server exfiltrates a trusted server's private resource."
+  - "Apply defenses: **server allowlisting/pinning/signing**, **tool-metadata-as-data**, **per-server capability scoping**, **cross-server flow gating**, and MCP's auth model."
+  - "Reason about resources/prompts as additional injection surfaces and rug-pull servers."
 volatility: implementation
 sources:
   - title: "Model Context Protocol specification"
@@ -19,6 +19,7 @@ sources:
   - title: "Simon Willison — MCP vulnerabilities and the pluggable-connector problem"
     url: https://simonwillison.net/
 last_verified: "2026-09-30"
+---
 ---
 # 19.1 · MCP security
 

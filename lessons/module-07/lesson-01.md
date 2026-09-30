@@ -5,11 +5,11 @@ minutes: 10
 practice_minutes: 150
 prerequisites: ["02.1", "04.1"]
 objectives:
-  - Write the jailbreak objective as an argmax over model loss, and name its variables, objective, and constraints.
-  - Explain why token-space optimization is discrete, and how GCG uses a one-hot gradient to guide a greedy search.
-  - Implement GCG from scratch and measure its success and query cost against a budget-matched random baseline.
-  - Explain transferability and why attacks optimized on surrogates threaten black-box systems.
-  - Build a perplexity-filter defense, measure its ROC, and defeat it with an adaptive fluent attack.
+  - "Write the jailbreak objective as an argmax over model loss, and name its variables, objective, and constraints."
+  - "Explain why token-space optimization is discrete, and how GCG uses a one-hot gradient to guide a greedy search."
+  - "Implement GCG from scratch and measure its success and query cost against a budget-matched random baseline."
+  - "Explain transferability and why attacks optimized on surrogates threaten black-box systems."
+  - "Build a perplexity-filter defense, measure its ROC, and defeat it with an adaptive fluent attack."
 volatility: implementation
 sources:
   - title: "Zou et al., Universal and Transferable Adversarial Attacks on Aligned Language Models (GCG)"
@@ -21,6 +21,7 @@ sources:
   - title: "Liu et al., AutoDAN — Jailbreaking Large Language Models with Automatic Dual-Forward Prompts"
     url: https://arxiv.org/abs/2310.04451
 last_verified: "2026-09-30"
+---
 ---
 
 # 07.1 · Optimization-based jailbreaks (GCG)

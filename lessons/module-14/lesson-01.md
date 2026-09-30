@@ -5,11 +5,11 @@ minutes: 10
 practice_minutes: 120
 prerequisites: ["05.1"]
 objectives:
-  - Describe the RAG pipeline and mark its trust boundaries, identifying ingestion as the poisoning entry point.
-  - Reason about embeddings, cosine similarity, and top-k retrieval from the attacker's side.
-  - Craft a poisoned document that wins retrieval for a target query and carries an injection.
-  - Enumerate RAG attacks: poisoning, ranking manipulation, citation spoofing, and retrieval denial of service.
-  - Apply and evaluate provenance and retrieval-hygiene defenses, and state their limits.
+  - "Describe the RAG pipeline and mark its trust boundaries, identifying ingestion as the poisoning entry point."
+  - "Reason about embeddings, cosine similarity, and top-k retrieval from the attacker's side."
+  - "Craft a poisoned document that wins retrieval for a target query and carries an injection."
+  - "Enumerate RAG attacks: poisoning, ranking manipulation, citation spoofing, and retrieval denial of service."
+  - "Apply and evaluate provenance and retrieval-hygiene defenses, and state their limits."
 volatility: concept
 sources:
   - title: "Zou et al., PoisonedRAG: Knowledge Poisoning Attacks to Retrieval-Augmented Generation of Large Language Models"
@@ -19,6 +19,7 @@ sources:
   - title: "OWASP Top 10 for LLM Applications 2025 — LLM08 Vector and Embedding Weaknesses"
     url: https://genai.owasp.org/llmrisk/llm08-vector-and-embedding-weaknesses/
 last_verified: "2026-09-30"
+---
 ---
 
 # 14.1 · RAG retrieval attack surface

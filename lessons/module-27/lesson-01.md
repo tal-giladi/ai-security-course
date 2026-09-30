@@ -5,11 +5,11 @@ minutes: 22
 practice_minutes: 90
 prerequisites: ["00.1", "02.2", "16.1"]
 objectives:
-  - Place reconnaissance in the red-team lifecycle and map it to the MITRE ATLAS Reconnaissance tactic (AML.TA0002).
-  - Enumerate and map an organization's AI applications, ML components, model infrastructure, and dependencies from passive OSINT and active probing.
-  - Fingerprint a deployed model and its serving stack from behavioral and protocol signals without privileged access.
-  - Quantify recon completeness and detection risk, and design low-and-slow probing that stays under a defender's alerting thresholds.
-  - Build the blue-team side: detect scanning, deny discovery, and reason about what each control does and does not guarantee.
+  - "Place reconnaissance in the red-team lifecycle and map it to the MITRE ATLAS Reconnaissance tactic (AML.TA0002)."
+  - "Enumerate and map an organization's AI applications, ML components, model infrastructure, and dependencies from passive OSINT and active probing."
+  - "Fingerprint a deployed model and its serving stack from behavioral and protocol signals without privileged access."
+  - "Quantify recon completeness and detection risk, and design low-and-slow probing that stays under a defender's alerting thresholds."
+  - "Build the blue-team side: detect scanning, deny discovery, and reason about what each control does and does not guarantee."
 volatility: implementation
 sources:
   - title: "MITRE ATLAS — Reconnaissance tactic (AML.TA0002) and techniques"
@@ -21,6 +21,7 @@ sources:
   - title: "Wiz — ShadowRay: exposed Ray dashboards and the AI compute attack surface (CVE-2023-48022 and follow-ups)"
     url: https://www.wiz.io/blog/shadowray-attack-ai-workloads-actively-exploited-in-the-wild
 last_verified: "2026-09-30"
+---
 ---
 
 # 27.1 · Reconnaissance for AI targets

@@ -5,11 +5,11 @@ minutes: 11
 practice_minutes: 75
 prerequisites: ["00.1", "01.1"]
 objectives:
-  - Explain why the context window is a single instruction channel and what that implies for every downstream attack.
-  - State precisely what the system/user/tool message hierarchy is, and why it is a learned prior rather than an enforced boundary.
-  - Distinguish train-time from inference-time behavior boundaries and say where each of them can fail.
-  - Articulate what alignment, RLHF, and refusal guarantee, and what they do not.
-  - Explain instruction-following as a statistical property and connect it mechanistically to injection.
+  - "Explain why the context window is a single instruction channel and what that implies for every downstream attack."
+  - "State precisely what the system/user/tool message hierarchy is, and why it is a learned prior rather than an enforced boundary."
+  - "Distinguish train-time from inference-time behavior boundaries and say where each of them can fail."
+  - "Articulate what alignment, RLHF, and refusal guarantee, and what they do not."
+  - "Explain instruction-following as a statistical property and connect it mechanistically to injection."
 volatility: concept
 sources:
   - title: "Wallace et al., The Instruction Hierarchy: Training LLMs to Prioritize Privileged Instructions"
@@ -19,6 +19,7 @@ sources:
   - title: "OWASP Top 10 for LLM Applications 2025 — LLM01 Prompt Injection"
     url: https://genai.owasp.org/llmrisk/llm01-prompt-injection/
 last_verified: "2026-09-30"
+---
 ---
 
 # 02.1 · Where the boundaries really are

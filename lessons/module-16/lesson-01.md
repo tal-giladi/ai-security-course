@@ -5,11 +5,11 @@ minutes: 10
 practice_minutes: 120
 prerequisites: ["00.1", "05.1", "02.2"]
 objectives:
-  - Map the agent attack surface: the observe-decide-act loop, planning, memory, external state, tools, and credentials.
-  - Define excessive agency and measure it as the reachable-action set.
-  - Explain the confused deputy as executable behavior driven by an injected directive.
-  - Apply least privilege, argument-level authorization, egress control, and approval gates as enforced code.
-  - Reason about memory and multi-step attacks, and design a minimal capability policy for a real task.
+  - "Map the agent attack surface: the observe-decide-act loop, planning, memory, external state, tools, and credentials."
+  - "Define excessive agency and measure it as the reachable-action set."
+  - "Explain the confused deputy as executable behavior driven by an injected directive."
+  - "Apply least privilege, argument-level authorization, egress control, and approval gates as enforced code."
+  - "Reason about memory and multi-step attacks, and design a minimal capability policy for a real task."
 volatility: concept
 sources:
   - title: "OWASP Top 10 for LLM Applications 2025 — LLM06 Excessive Agency"
@@ -19,6 +19,7 @@ sources:
   - title: "MITRE ATLAS — adversarial threat landscape for AI systems"
     url: https://atlas.mitre.org/
 last_verified: "2026-09-30"
+---
 ---
 
 # 16.1 · The agent attack surface

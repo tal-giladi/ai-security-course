@@ -5,11 +5,11 @@ minutes: 10
 practice_minutes: 120
 prerequisites: ["07.1", "02.1"]
 objectives:
-  - Frame black-box jailbreaking as query-only optimization with a judge as the objective.
-  - Explain PAIR and TAP as an attacker model, a judge, and a search over candidate prompts.
-  - Build a beam search over composable wrapper strategies and measure attack success rate and queries to success.
-  - Explain why judge quality caps the quality of an automated red-team search.
-  - Demonstrate evasion of a keyword defense by novel framing, and reason about semantic detectors.
+  - "Frame black-box jailbreaking as query-only optimization with a judge as the objective."
+  - "Explain PAIR and TAP as an attacker model, a judge, and a search over candidate prompts."
+  - "Build a beam search over composable wrapper strategies and measure attack success rate and queries to success."
+  - "Explain why judge quality caps the quality of an automated red-team search."
+  - "Demonstrate evasion of a keyword defense by novel framing, and reason about semantic detectors."
 volatility: concept
 sources:
   - title: "Chao et al., Jailbreaking Black Box Large Language Models in Twenty Queries (PAIR)"
@@ -19,6 +19,7 @@ sources:
   - title: "Liu et al., AutoDAN — Jailbreaking Large Language Models with Automatic Dual-Forward Prompts"
     url: https://arxiv.org/abs/2310.04451
 last_verified: "2026-09-30"
+---
 ---
 
 # 08.1 · Automated & black-box jailbreaks

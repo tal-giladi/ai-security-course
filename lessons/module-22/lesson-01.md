@@ -5,11 +5,11 @@ minutes: 10
 practice_minutes: 90
 prerequisites: ["01.1", "11.1", "13.1", "21.1"]
 objectives:
-  - Enumerate the AI supply-chain graph and the compromise vector at each node.
-  - Build a **verification gate** checking integrity, provenance, safe format, and pinning per artifact.
-  - Explain why **verification** (structural) beats **detection** (probabilistic) for supply chain.
-  - Map to frameworks (SLSA levels, signed manifests, SBOM) and the residual risk (signed-but-malicious).
-  - Integrate the per-node defenses from M13 (safetensors/pickle) and M21 (lockfiles/pinning).
+  - "Enumerate the AI supply-chain graph and the compromise vector at each node."
+  - "Build a **verification gate** checking integrity, provenance, safe format, and pinning per artifact."
+  - "Explain why **verification** (structural) beats **detection** (probabilistic) for supply chain."
+  - "Map to frameworks (SLSA levels, signed manifests, SBOM) and the residual risk (signed-but-malicious)."
+  - "Integrate the per-node defenses from M13 (safetensors/pickle) and M21 (lockfiles/pinning)."
 volatility: implementation
 sources:
   - title: "SLSA — Supply-chain Levels for Software Artifacts"
@@ -19,6 +19,7 @@ sources:
   - title: "OWASP Top 10 for Agentic Applications 2026 — ASI04 agentic supply chain"
     url: https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/
 last_verified: "2026-09-30"
+---
 ---
 # 22.1 · AI supply-chain security
 

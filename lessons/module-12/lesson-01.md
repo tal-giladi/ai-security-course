@@ -5,11 +5,11 @@ minutes: 10
 practice_minutes: 150
 prerequisites: ["11.1", "02.2"]
 objectives:
-  - Define membership inference and measure it as an ROC-AUC, explaining the role of overfitting.
-  - Implement the loss-threshold attack and the stronger per-example LiRA likelihood-ratio attack.
-  - Explain and measure model extraction, including the difference between hard and soft label access.
-  - Describe model inversion and training-data memorization as separate privacy leaks.
-  - State the differential privacy guarantee, implement DP-SGD, and trace the privacy/utility frontier.
+  - "Define membership inference and measure it as an ROC-AUC, explaining the role of overfitting."
+  - "Implement the loss-threshold attack and the stronger per-example LiRA likelihood-ratio attack."
+  - "Explain and measure model extraction, including the difference between hard and soft label access."
+  - "Describe model inversion and training-data memorization as separate privacy leaks."
+  - "State the differential privacy guarantee, implement DP-SGD, and trace the privacy/utility frontier."
 volatility: concept
 sources:
   - title: "Shokri et al., Membership Inference Attacks Against Machine Learning Models"
@@ -21,6 +21,7 @@ sources:
   - title: "Abadi et al., Deep Learning with Differential Privacy (DP-SGD)"
     url: https://arxiv.org/abs/1607.00133
 last_verified: "2026-09-30"
+---
 ---
 
 # 12.1 · Model extraction, inversion & membership inference

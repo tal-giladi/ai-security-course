@@ -5,11 +5,11 @@ minutes: 10
 practice_minutes: 120
 prerequisites: ["02.1", "02.2", "16.1", "18.1"]
 objectives:
-  - Catalog the defensive controls and classify each as **enforced** (complete for scope) or **probabilistic** (detector with FP/FN).
-  - Apply the **guarantee analysis** (stops / doesn't stop / adapts / FP cost / perf cost) to each.
-  - **Compose** controls in the right order and **measure** ASR, FPR, and detector precision/recall.
-  - Explain why enforced controls (scrubbing, egress allowlist, least privilege, sandboxing) carry the security weight, and detectors/monitoring provide depth and forensics.
-  - Reason about **base rates** (M02.2) when interpreting detector precision in production.
+  - "Catalog the defensive controls and classify each as **enforced** (complete for scope) or **probabilistic** (detector with FP/FN)."
+  - "Apply the **guarantee analysis** (stops / doesn't stop / adapts / FP cost / perf cost) to each."
+  - "**Compose** controls in the right order and **measure** ASR, FPR, and detector precision/recall."
+  - "Explain why enforced controls (scrubbing, egress allowlist, least privilege, sandboxing) carry the security weight, and detectors/monitoring provide depth and forensics."
+  - "Reason about **base rates** (M02.2) when interpreting detector precision in production."
 volatility: concept
 sources:
   - title: "NIST AI RMF (AI 100-1) — govern, map, measure, manage"
@@ -19,6 +19,7 @@ sources:
   - title: "OWASP Top 10 for Agentic Applications 2026 — least agency"
     url: https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/
 last_verified: "2026-09-30"
+---
 ---
 # 23.1 · Defensive engineering
 

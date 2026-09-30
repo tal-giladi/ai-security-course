@@ -5,11 +5,11 @@ minutes: 10
 practice_minutes: 90
 prerequisites: ["14.1", "00.1", "01.1"]
 objectives:
-  - Explain cross-tenant and cross-user leakage as broken access control on the retrieval path.
-  - Contrast no-authorization, post-filter, and pre-filter retriever designs and their failure modes.
-  - Explain why authorization must be enforced in code, on the trusted principal, before ranking.
-  - Identify metadata-spoofing attacks and defend against them with trusted identity mappings.
-  - Quantify the availability cost of post-filtering and layer the fix with retrieval hygiene and egress control.
+  - "Explain cross-tenant and cross-user leakage as broken access control on the retrieval path."
+  - "Contrast no-authorization, post-filter, and pre-filter retriever designs and their failure modes."
+  - "Explain why authorization must be enforced in code, on the trusted principal, before ranking."
+  - "Identify metadata-spoofing attacks and defend against them with trusted identity mappings."
+  - "Quantify the availability cost of post-filtering and layer the fix with retrieval hygiene and egress control."
 volatility: concept
 sources:
   - title: "OWASP Top 10 2021 A01:2021 – Broken Access Control"
@@ -19,6 +19,7 @@ sources:
   - title: "OWASP Top 10 for LLM Applications 2025 — LLM08 Vector and Embedding Weaknesses"
     url: https://genai.owasp.org/llmrisk/llm08-vector-and-embedding-weaknesses/
 last_verified: "2026-09-30"
+---
 ---
 
 # 15.1 · Multi-tenant retrieval leakage

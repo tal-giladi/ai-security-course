@@ -5,10 +5,10 @@ minutes: 20
 practice_minutes: 60
 prerequisites: ["16.1", "05.1", "14.1"]
 objectives:
-  - Explain why persistent agent memory is a durable, cross-session injection channel.
-  - Poison a mock agent's long-term memory so a directive survives into a later, clean session.
-  - Design stealthy payloads (low-signal, delayed-trigger) and reason about detection-evasion trade-offs.
-  - Apply and measure memory defenses — write provenance, trust tags, read-time re-validation, and quarantine.
+  - "Explain why persistent agent memory is a durable, cross-session injection channel."
+  - "Poison a mock agent's long-term memory so a directive survives into a later, clean session."
+  - "Design stealthy payloads (low-signal, delayed-trigger) and reason about detection-evasion trade-offs."
+  - "Apply and measure memory defenses — write provenance, trust tags, read-time re-validation, and quarantine."
 volatility: concept
 sources:
   - title: "Greshake et al. — Not what you've signed up for (indirect prompt injection)"
@@ -18,6 +18,7 @@ sources:
   - title: "MITRE ATLAS — Persistence via AI"
     url: https://atlas.mitre.org/
 last_verified: "2026-09-30"
+---
 ---
 
 # 16.2 · Agent memory poisoning & stealth
