@@ -1,0 +1,70 @@
+- id: q1
+  question: >-
+    Why is a directive written into an agent's long-term memory more dangerous than the same directive
+    injected into a single turn?
+  options:
+    - Because memory writes are encrypted, so defenders can never inspect what the agent stored there.
+    - It persists and re-activates on future tasks and sessions, approaching certainty as the agent is used.
+    - Because long-term memory always has a higher privilege level than the agent's live context window.
+    - It immediately retrains the model's weights, embedding the directive permanently into the network.
+  correct: 1
+  explanation: >-
+    Memory is durable and retrieved repeatedly, so a poisoned item's chance of firing at least once,
+    1-(1-pq)^n, approaches 1 over n future tasks — persistence. It needs no weight change and re-acts in
+    later, clean sessions the defender may not connect to the original attack.
+- id: q2
+  question: >-
+    An agent summarises an attacker-controlled web page and stores the summary as a memory. Which part
+    of the agent loop is the poisoning sink?
+  options:
+    - The tool-execution step, because only tool calls can ever introduce malicious content.
+    - The user's original prompt, since that is the only place instructions are allowed to enter.
+    - The decode temperature, because higher randomness is what causes the directive to be stored.
+    - "The write path: what the agent chooses to remember can be attacker-controlled text."
+  correct: 3
+  explanation: >-
+    Poisoning is getting a directive into what the agent stores. The write path (summaries, inferred
+    preferences, tool results the agent remembers) is the sink; the read path later re-injects it.
+    Temperature and the user prompt are not the mechanism.
+- id: q3
+  question: >-
+    Trust tags mark each memory's source and make untrusted-sourced memories data-only on read. Against
+    which attack does this defense NOT help?
+  options:
+    - A payload laundered through a legitimately trusted write path so it is tagged as trusted.
+    - A loud override directive stored directly from summarised untrusted web content.
+    - An untrusted memory that tries to act as an instruction on a later unrelated task.
+    - An untrusted preference the agent inferred from an attacker-controlled page.
+  correct: 0
+  explanation: >-
+    Source tags stop untrusted-sourced memories from acting as instructions, but they do nothing when
+    the payload is written via a genuinely trusted path (a compromised trusted tool, an injected
+    trusted upstream). That is the explicit limit in the guarantee analysis.
+- id: q4
+  question: >-
+    An attacker makes the payload stealthy: low imperative-verb density and a trigger that only fires
+    "when handling invoices." What is the attacker trading, and which defense still stops it?
+  options:
+    - Trading nothing; stealth has no downside and defeats every possible memory defense in use.
+    - Trading model accuracy for stealth; only retraining the model on clean data would stop it.
+    - Trading reliability for stealth; quarantining untrusted-sourced memories stops it regardless.
+    - Trading latency for stealth; rate limiting the agent's tool calls is what reliably stops it.
+  correct: 2
+  explanation: >-
+    Lowering signal risks the payload not firing (reliability), and a delayed trigger evades sampling
+    detectors — but quarantine drops untrusted-sourced memories from retrieval entirely (q→0), so it
+    stops the payload no matter how stealthy the content is.
+- id: q5
+  question: >-
+    In the persistence model P_fire(n) = 1-(1-pq)^n, which single change most reduces long-term risk
+    from poisoned untrusted memories?
+  options:
+    - Increasing n, the number of future tasks, so the agent encounters the memory sooner.
+    - Driving q toward 0 by quarantining untrusted-sourced memories so they are never retrieved.
+    - Raising p, the per-retrieval fire probability, so the attack is easier to observe and log.
+    - Leaving p and q unchanged but adding more benign memories to dilute the poisoned one.
+  correct: 1
+  explanation: >-
+    Quarantine drives the retrieval probability q of untrusted memories to 0, removing them from the
+    exponent's base entirely — the strongest lever. Increasing n or p makes things worse; diluting with
+    benign memories does not reliably lower q for the poisoned item.

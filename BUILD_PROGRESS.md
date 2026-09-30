@@ -10,7 +10,7 @@ Spec for every unit: `curriculum/osai-gap-spec.md`.
 - [x] M28 Multi-agent systems & A2A DONE
 - [x] M29 Embedding attacks DONE
 - [x] M30 AI infrastructure & deployment exploits DONE
-- [ ] M16.2 Agent memory poisoning & stealth (16.2 + labs/module-16)
+- [x] M16.2 Agent memory poisoning & stealth DONE
 - [ ] M31 Capstone engagement (31.1 + labs/module-31 + templates/engagement-report.md + module quiz)
 - [ ] Main session: sidebar, glossary merge, course-outline/standards map, PUBLISHING_WARNING.md
 - [ ] Final QA: check-course clean for new files, all lab tests pass, commit + push
