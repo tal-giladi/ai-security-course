@@ -1,0 +1,70 @@
+- id: q1
+  question: >-
+    In a planner → researcher → executor workflow, the researcher summarises attacker-controlled web
+    pages and the executor can send email. Where do you inject to reach the privileged action?
+  options:
+    - Into the researcher's web input, letting transitive trust carry the directive to the executor.
+    - Into the executor directly, because it is the only node that holds the send_email capability.
+    - Into the user's original prompt, since that is the only input the planner will ever really read.
+    - Into the planner's system prompt, because a stronger prior there overrides every downstream node.
+  correct: 0
+  explanation: >-
+    Privilege flows along trust paths. The exposed, low-privilege researcher is the cheapest entry;
+    its result is trusted by the planner, which re-delegates to the executor. You attack what the
+    privileged node's upstream trusts, not the privileged node itself.
+- id: q2
+  question: >-
+    You add HMAC signing so receivers verify the sender and payload of every inter-agent message. A
+    signed message from the (injected) researcher still drives a bad action. Why?
+  options:
+    - The HMAC key was too short, so the signature provided no integrity guarantee in practice.
+    - Signing authenticates origin and integrity, not content; an injected but legitimate agent signs validly.
+    - Verification must have been skipped, because a correct signature always blocks malicious effects.
+    - The researcher forged the planner's key, so its malicious message passed as an authentic one.
+  correct: 1
+  explanation: >-
+    Message authentication guarantees the message was not forged or altered — it says nothing about
+    whether the content is benign. A genuinely-compromised or injected agent produces authentic
+    signatures on malicious messages; that is why scoping and provenance are also needed.
+- id: q3
+  question: >-
+    The transitive-trust risk is R = max over nodes of eps(v)*rho(v). Which change most reduces R for a
+    graph where an exposed researcher can reach the executor's send_email?
+  options:
+    - Raising the planner's privilege level so it can supervise the researcher more closely.
+    - Adding more researcher agents so the injection load is spread across several of them.
+    - Cutting the executor's trust edge so the researcher's reachable privilege rho drops sharply.
+    - Logging every message so that the exposure term eps can be reviewed after an incident occurs.
+  correct: 2
+  explanation: >-
+    R is dominated by the exposed node's reachable privilege. Per-edge capability scoping cuts the
+    path from the researcher to the executor, lowering rho(researcher) and thus R. Logging aids
+    response but does not lower the risk term; more researchers or more planner privilege does not help.
+- id: q4
+  question: >-
+    A malicious agent publishes an agent card advertising a "finance/payments" skill it does not
+    legitimately have, so the router sends it sensitive tasks. This is closest to:
+  options:
+    - Model inversion, because the card lets the attacker reconstruct the training data.
+    - A denial-of-service attack, because the fake skill overloads the routing layer.
+    - Certified robustness failure, because the card defeats a proof about the model.
+    - Tool-description poisoning, because routing trusts attacker-controlled metadata.
+  correct: 3
+  explanation: >-
+    Capability over-claim is the agent-card analogue of MCP tool-description poisoning: the router
+    makes trust/routing decisions from metadata the attacker controls. The defense is card
+    verification plus capability scoping, not anything about inversion, DoS, or robustness proofs.
+- id: q5
+  question: >-
+    Task provenance records an unforgeable chain of which agents originated and handled a task. Its
+    main security value in the executor is to:
+  options:
+    - Compress the message so that large delegated tasks transfer faster between the agents.
+    - Let the executor refuse privileged tasks whose origin chain includes an untrusted handler.
+    - Replace message signing entirely, since provenance already proves who sent each message.
+    - Guarantee the researcher's summary of the web page is factually accurate before it is used.
+  correct: 1
+  explanation: >-
+    Provenance lets a receiver authorize based on the whole origin/handler chain, so a privileged task
+    tainted by an untrusted node (e.g. the researcher) is refused. It complements signing rather than
+    replacing it, and says nothing about factual accuracy.

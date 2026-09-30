@@ -1,0 +1,140 @@
+- id: q1
+  question: >-
+    A support pipeline chains a planner, a web-reading researcher, and an executor that can issue
+    refunds. An assessor wants a refund issued to themselves. What is the most reliable first move?
+  options:
+    - Get a crafted directive onto a web page the researcher will read and summarise for the planner.
+    - Ask the executor politely and directly to issue the refund without involving the other agents.
+    - Attack the planner's underlying model weights so that it always approves any refund request.
+    - Flood the whole pipeline with traffic so that the executor fails open and issues refunds freely.
+  correct: 0
+  explanation: >-
+    The exposed, low-privilege researcher is the cheapest injection point; transitive trust carries
+    the directive through the planner to the refund-capable executor. Directly asking the executor,
+    attacking weights, or flooding are far less reliable.
+- id: q2
+  question: >-
+    After adding signed inter-agent messages, impersonation and tampering stop, but the refund attack
+    via the researcher still works. What does this tell you about message authentication?
+  options:
+    - The signatures are being verified with the wrong key, so authentication is not really on.
+    - It proves message authentication is worthless and should be removed from the design entirely.
+    - It authenticates who sent a message and that it was unaltered, not whether the content is safe.
+    - It means the researcher successfully stole the planner's private signing key during the attack.
+  correct: 2
+  explanation: >-
+    Authentication guarantees origin and integrity, not content safety. A legitimately-keyed but
+    injected agent signs valid messages carrying malicious content, so signing must be paired with
+    scoping and provenance.
+- id: q3
+  question: >-
+    You compute rho(researcher) = 10 (it can reach the executor) and eps(researcher) = 0.9, giving the
+    dominant term in R. Which single control most directly lowers this term?
+  options:
+    - Increase logging verbosity on the researcher so incidents can be reconstructed afterward.
+    - Add a second executor so that refund-issuing load is balanced across two separate agents.
+    - Raise the researcher's own privilege level so it is treated as a more trusted component.
+    - Gate the executor's privileged capability so a researcher-tainted task cannot reach it.
+  correct: 3
+  explanation: >-
+    Per-edge capability scoping plus provenance cuts the researcher-to-executor privilege path, which
+    lowers rho(researcher) and therefore the dominant eps*rho term in R. Logging, load balancing, and
+    raising privilege do not reduce reachable privilege.
+- id: q4
+  question: >-
+    A new agent joins the fabric advertising a card that claims a "database-admin" skill it should not
+    have, and the router starts sending it schema-change tasks. The right defenses are:
+  options:
+    - Retrain every agent's model on adversarial examples of malicious agent cards.
+    - Increase the router's temperature so its skill-matching becomes less deterministic.
+    - Verify agent cards against an authorised registry and scope which agents may receive which tasks.
+    - Add a CAPTCHA to the discovery endpoint so that only humans can publish new agent cards.
+  correct: 2
+  explanation: >-
+    Capability over-claim abuses trust in advertised metadata. The fix is verifying cards against an
+    authorised source and scoping task routing by capability — not retraining, temperature changes, or
+    a human-only CAPTCHA that agents legitimately cannot pass.
+- id: q5
+  question: >-
+    Which scenario is BEST described as workflow corruption rather than impersonation or tampering?
+  options:
+    - An injected sub-result causes the planner to insert an extra, attacker-chosen subtask into its plan.
+    - An attacker forges the "from" field of a task so it appears to originate from the trusted planner.
+    - An attacker alters the parameters of a task while it is in transit between two of the agents.
+    - An attacker reads a private result off the bus without changing any message that is in flight.
+  correct: 0
+  explanation: >-
+    Workflow corruption is when injected content re-plans the workflow — adding or re-ordering
+    subtasks so the plan no longer reflects the user's intent. Forging a sender is impersonation;
+    altering a task in transit is tampering; passive reading is neither.
+- id: q6
+  question: >-
+    Your executor already has strict least privilege and egress control (single-agent defenses) yet
+    still issues a bad refund on a correctly-shaped task from the "planner." Why isn't node-level least
+    privilege enough here?
+  options:
+    - Least privilege only works on models trained with reinforcement learning from human feedback.
+    - Node-level controls bound what a node can do, but do not authenticate or authorize the edge it trusts.
+    - Egress control is incompatible with refunds, so it must have been silently disabled in this case.
+    - The executor needs a larger context window to notice that the task is actually malicious.
+  correct: 1
+  explanation: >-
+    Single-agent defenses bound a node's capabilities; they do not verify who really sent a task, that
+    it was unaltered, whether that sender may request it, or where it originated. Those are edge-level
+    concerns requiring authentication, scoping, and provenance.
+- id: q7
+  question: >-
+    Task provenance carries a signed chain of every agent that originated or handled a task. An
+    attacker who injected the researcher tries to strip the researcher out of the chain. Why does this
+    fail under a proper scheme?
+  options:
+    - The chain is encrypted, so the attacker cannot read which agents it currently contains.
+    - Provenance entries are stored only on the executor, which the attacker cannot reach at all.
+    - The researcher's prompts are rate-limited, so it cannot send enough messages to edit the chain.
+    - Each link is signed, so removing or rewriting an entry invalidates the chain the executor checks.
+  correct: 3
+  explanation: >-
+    A provenance chain whose links are individually signed is tamper-evident: editing or dropping an
+    entry breaks verification, so the executor rejects it. Encryption, executor-only storage, and rate
+    limits are not what makes the chain unforgeable.
+- id: q8
+  question: >-
+    Which statement about A2A-style protocols and this lesson's defenses is most accurate?
+  options:
+    - The four attack classes vanish once every agent uses the latest version of the protocol.
+    - Specific card fields and headers are stable forever, so defenses can hard-code their exact format.
+    - The protocol specifics are emerging and versioned, but the trust-boundary principles are durable.
+    - Authentication is optional because agents on the same network implicitly trust one another safely.
+  correct: 2
+  explanation: >-
+    A2A and similar fabrics are emerging and change quickly, so treat field names as current-and-moving
+    while the trust-boundary reasoning (authenticate, scope, provenance) is durable. Same-network
+    implicit trust is exactly the assumption these attacks exploit.
+- id: q9
+  question: >-
+    You must decide where to spend one engineering week to most reduce a multi-agent system's risk.
+    The system has one internet-exposed summariser feeding a high-privilege executor. Best choice?
+  options:
+    - Add provenance-based authorization so the executor rejects tasks tainted by the summariser.
+    - Rewrite the summariser's system prompt to sternly forbid it from following injected instructions.
+    - Increase the number of summariser replicas so no single one carries the whole injection load.
+    - Switch the underlying model of every agent to a larger one with a longer knowledge cutoff.
+  correct: 0
+  explanation: >-
+    The risk is dominated by the exposed summariser's path to the privileged executor. Cutting that
+    path with provenance-based authorization removes the dominant term. A sterner prompt is a finite
+    prior a strong injection beats; replicas and bigger models do not cut the path.
+- id: q10
+  question: >-
+    In your engagement report you claim message authentication "fully secures the agent fabric." Your
+    reviewer objects. What is the correct, defensible framing?
+  options:
+    - Authentication is the only control that matters, so the original claim actually stands as written.
+    - Authentication removes forged and altered edges, but content trust needs scoping and provenance too.
+    - Authentication cannot be measured, so no security claim about it should appear in the report at all.
+    - Authentication guarantees the agents' outputs are factually correct as well as correctly attributed.
+  correct: 1
+  explanation: >-
+    Authentication stops impersonation and tampering (forged/altered edges) but not malicious content
+    from a legitimately-keyed agent. A defensible report scopes the claim and notes that capability
+    scoping and provenance are required for content-level trust.
