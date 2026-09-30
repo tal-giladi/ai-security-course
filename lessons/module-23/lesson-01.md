@@ -1,4 +1,28 @@
+---
+id: "23.1"
+module: 23
+minutes: 10
+practice_minutes: 120
+prerequisites: ["02.1", "02.2", "16.1", "18.1"]
+objectives:
+  - Catalog the defensive controls and classify each as **enforced** (complete for scope) or **probabilistic** (detector with FP/FN).
+  - Apply the **guarantee analysis** (stops / doesn't stop / adapts / FP cost / perf cost) to each.
+  - **Compose** controls in the right order and **measure** ASR, FPR, and detector precision/recall.
+  - Explain why enforced controls (scrubbing, egress allowlist, least privilege, sandboxing) carry the security weight, and detectors/monitoring provide depth and forensics.
+  - Reason about **base rates** (M02.2) when interpreting detector precision in production.
+volatility: concept
+sources:
+  - title: "NIST AI RMF (AI 100-1) — govern, map, measure, manage"
+    url: https://www.nist.gov/itl/ai-risk-management-framework
+  - title: "Jain et al. — Baseline Defenses for Adversarial Attacks Against Machine Learning"
+    url: https://arxiv.org/abs/1906.06070
+  - title: "OWASP Top 10 for Agentic Applications 2026 — least agency"
+    url: https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/
+last_verified: "2026-09-30"
+---
 # 23.1 · Defensive engineering
+
+This is the blue-team synthesis. Every earlier module ended with a guarantee-analysis box for one defense; here you assemble them into a pipeline and confront the recurring truth: **no defense is magic, enforced beats probabilistic, and a filter that blocks users is not a win.** Measuring the trade-offs is the job.
 
 ## Why this matters
 
@@ -173,21 +197,3 @@ retokenize) and measure its ASR reduction and FP cost. *Limits:* defenses are ev
 - Apply base-rate reasoning to decide when a detector should block vs alert.
 - Explain why enforced controls carry the security weight and detectors/monitoring provide depth and
   forensics.
-
--->
-**Prerequisites.** All prior attack modules (you defend what you understand). Especially
-[02.1 enforced vs prior](../module-02/lesson-01.md), [02.2 filters as classifiers / base rates](../module-02/lesson-02.md),
-[16.1 least privilege](../module-16/lesson-01.md), [18.1 defense-in-depth](../module-18/lesson-01.md).
-Lab: reusable toolkit, offline.
-
-**You will learn.** Defensive engineering as a discipline: the catalog of controls (input filtering,
-output validation, structured output, policy enforcement, isolation/sandboxing, egress/network
-controls, provenance, monitoring/anomaly detection, rate limiting, audit logs, incident response),
-each with its **guarantee analysis**, and how to **compose and measure** them — enforced controls
-first, probabilistic detectors as depth, everything measured for false-positive cost.
-
-**Why this matters.** This is the blue-team synthesis. Every earlier module ended with a
-guarantee-analysis box for one defense; here you assemble them into a pipeline and confront the
-recurring truth: **no defense is magic, enforced beats probabilistic, and a filter that blocks users
-is not a win.** Measuring the trade-offs is the job.
--->

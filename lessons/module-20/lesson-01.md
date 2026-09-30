@@ -1,4 +1,27 @@
+---
+id: "20.1"
+module: 20
+minutes: 10
+practice_minutes: 120
+prerequisites: ["01.1", "06.1", "09.1", "10.1"]
+objectives:
+  - Distinguish the multimodal sub-threats: **semantic** injection (M06), **steganographic** payloads, **pixel-space adversarial** perturbations, and **document** (PDF) attacks.
+  - Implement **LSB steganography** and measure imperceptibility (MSE, max delta) and the extraction attack.
+  - Explain and (via Stage 4) apply **pixel-space PGD** on a vision classifier; know its threat model.
+  - Apply defenses — **re-encoding/quantization** (LSB-strip), provenance, media-content-as-data — and state exactly which threat each covers.
+volatility: current
+sources:
+  - title: "Bagdasaryan et al. — (Ab)using Images and Sounds for Indirect Instruction Injection"
+    url: https://arxiv.org/abs/2302.12173
+  - title: "Fridrich et al. — Steganalysis of pixel data (RS analysis)"
+    url: https://www.drbobwilliams.com/steganalysis.pdf
+  - title: "Athalye, Engstrom, Ilyas, Kwok — Obfuscated Gradients Give a False Sense of Security"
+    url: https://arxiv.org/abs/1806.08096
+last_verified: "2026-09-30"
+---
 # 20.1 · Multimodal security (deep)
+
+Multimodal models and agents accept images, PDFs, and audio — channels that bypass text filters entirely and can carry either *semantic* instructions (M06) or *bit-level* payloads and *pixel-space* perturbations invisible to humans. This is a distinct, growing surface with its own math and its own defenses.
 
 ## Why this matters
 
@@ -168,19 +191,3 @@ transfer and robustness are stronger threats than the toy shows.
   detectability.
 - Apply pixel-space PGD and explain why it needs a different defense than steganography.
 - Assemble a matched multimodal defense set and state what each control covers and misses.
-
--->
-**Prerequisites.** [06.1 multimodal injection](../module-06/lesson-01.md) (the semantic/OCR/alt
-carrier), [09.1](../module-09/lesson-01.md)/[10.1](../module-10/lesson-01.md) (FGSM/PGD/CW —
-pixel-space adversarial examples), [01.1 exfiltration](../module-01/lesson-01.md). Lab: numpy, offline.
-
-**You will learn.** Deep multimodal attacks: **pixel-space adversarial examples** (the Stage-4 math
-on image inputs), **steganographic payloads** hidden in image bits, **malicious documents** (PDF
-metadata/invisible text), and multimodal agent attacks — plus the defenses (re-encoding/quantization,
-provenance, not treating extracted media content as instructions) and their threat-model limits.
-
-**Why this matters.** Multimodal models and agents accept images, PDFs, and audio — channels that
-bypass text filters entirely and can carry either *semantic* instructions (M06) or *bit-level*
-payloads and *pixel-space* perturbations invisible to humans. This is a distinct, growing surface
-with its own math and its own defenses.
--->

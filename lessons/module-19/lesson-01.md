@@ -1,11 +1,28 @@
+---
+id: "19.1"
+module: 19
+minutes: 10
+practice_minutes: 120
+prerequisites: ["00.1", "13.1", "16.1", "17.1"]
+objectives:
+  - Describe MCP architecture and mark its trust boundaries (client ↔ server, server ↔ server).
+  - Explain **tool-description poisoning** / "line jumping" in the MCP context.
+  - Reproduce a **cross-server confused deputy**: a malicious server exfiltrates a trusted server's private resource.
+  - Apply defenses: **server allowlisting/pinning/signing**, **tool-metadata-as-data**, **per-server capability scoping**, **cross-server flow gating**, and MCP's auth model.
+  - Reason about resources/prompts as additional injection surfaces and rug-pull servers.
+volatility: implementation
+sources:
+  - title: "Model Context Protocol specification"
+    url: https://modelcontextprotocol.io/specification
+  - title: "OWASP Top 10 for Agentic Applications 2026 — ASI04 agentic supply chain"
+    url: https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/
+  - title: "Simon Willison — MCP vulnerabilities and the pluggable-connector problem"
+    url: https://simonwillison.net/
+last_verified: "2026-09-30"
+---
 # 19.1 · MCP security
 
-
-> [!WARNING]
-> **Fast-moving module.** MCP's spec (auth, transports, tool metadata handling) evolves quickly. This
-> lesson teaches the *durable* security principles and models them locally; verify the current spec's
-> authorization and server-verification mechanisms before relying on them, and treat any specific API
-> detail here as of its writing.
+> [!WARNING] > **Fast-moving module.** MCP's spec (auth, transports, tool metadata handling) evolves quickly. This > lesson teaches the *durable* security principles and models them locally; verify the current spec's > authorization and server-verification mechanisms before relying on them, and treat any specific API > detail here as of its writing.
 
 ## Why this matters
 
@@ -177,20 +194,3 @@ each time you deploy.
 - Apply and rank MCP defenses (allowlist/pin/sign, metadata-as-data, capability scoping, cross-server
   gating) and map them to the current spec.
 - Treat MCP servers as both dependencies and prompt sources, and keep the module current as MCP evolves.
-
--->
-**Prerequisites.** [17.1 tool poisoning](../module-17/lesson-01.md), [16.1 agent surface / capabilities](../module-16/lesson-01.md),
-[13.1 supply chain / provenance](../module-13/lesson-01.md), [00.1 confused deputy](../module-00/lesson-01.md).
-Lab: offline MCP model.
-
-**You will learn.** MCP (Model Context Protocol) as a modern, fast-moving attack surface:
-architecture (clients, servers, tools, resources, prompts, transports), its **trust boundaries**,
-**malicious servers**, **tool-description poisoning** ("line jumping"), the **cross-server confused
-deputy**, and the capability/permission/provenance defenses. Designed as a **modular** lesson: learn
-the principles; update the spec specifics as MCP changes.
-
-**Why this matters.** MCP standardizes how LLM apps connect to external tools/data, so it
-standardizes an *attack surface*: every server you connect is third-party code and third-party text
-in your model's context. Installing an MCP server is a trust decision with the same weight as adding
-a dependency (M01/M13) — but it also injects into your model's reasoning.
--->

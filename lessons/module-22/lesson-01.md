@@ -1,4 +1,28 @@
+---
+id: "22.1"
+module: 22
+minutes: 10
+practice_minutes: 90
+prerequisites: ["01.1", "11.1", "13.1", "21.1"]
+objectives:
+  - Enumerate the AI supply-chain graph and the compromise vector at each node.
+  - Build a **verification gate** checking integrity, provenance, safe format, and pinning per artifact.
+  - Explain why **verification** (structural) beats **detection** (probabilistic) for supply chain.
+  - Map to frameworks (SLSA levels, signed manifests, SBOM) and the residual risk (signed-but-malicious).
+  - Integrate the per-node defenses from M13 (safetensors/pickle) and M21 (lockfiles/pinning).
+volatility: implementation
+sources:
+  - title: "SLSA — Supply-chain Levels for Software Artifacts"
+    url: https://slsa.dev/
+  - title: "Sigstore / in-toto — signing and provenance attestation"
+    url: https://in-toto.io/
+  - title: "OWASP Top 10 for Agentic Applications 2026 — ASI04 agentic supply chain"
+    url: https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/
+last_verified: "2026-09-30"
+---
 # 22.1 · AI supply-chain security
+
+You can perfectly secure a model's behavior and still be compromised by a poisoned dataset, a pickle tokenizer, an unpinned dependency, or a backdoored base image. Most AI compromise happens *around* the model, through the graph of artifacts you assemble it from — and that graph is defensible with the same structural controls (hashes, signatures, allowlists, safe formats, lockfiles) that secure any software supply chain.
 
 ## Why this matters
 
@@ -157,20 +181,3 @@ a genuinely-backdoored-but-properly-built model still passes, so behavioral vett
 - Build a verification gate (integrity + provenance + safe format + pinning) covering the whole graph.
 - Explain why verification is structural and where its residual (trusted-publisher compromise) lies.
 - Integrate M13/M21 defenses and map to SLSA/SBOM, pairing verification with behavioral vetting.
-
--->
-**Prerequisites.** [13.1 weights/adapter supply chain](../module-13/lesson-01.md),
-[21.1 code-agent / dependency confusion](../module-21/lesson-01.md), [01.1 supply chain / deserialization](../module-01/lesson-01.md),
-[11.1 poisoning](../module-11/lesson-01.md). Lab: hashlib, offline.
-
-**You will learn.** The full **AI supply chain** as an attack surface — model hubs, datasets,
-tokenizer/config files, LoRA adapters, Docker images, inference servers, plugins — and how to build a
-**verification gate** (integrity, provenance, safe format, pinning) that turns "we downloaded it" into
-"we verified exactly what we approved." This ties M13 and M21 into one discipline.
-
-**Why this matters.** You can perfectly secure a model's behavior and still be compromised by a
-poisoned dataset, a pickle tokenizer, an unpinned dependency, or a backdoored base image. Most AI
-compromise happens *around* the model, through the graph of artifacts you assemble it from — and that
-graph is defensible with the same structural controls (hashes, signatures, allowlists, safe formats,
-lockfiles) that secure any software supply chain.
--->

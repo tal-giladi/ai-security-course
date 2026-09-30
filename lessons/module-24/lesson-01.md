@@ -1,4 +1,28 @@
+---
+id: "24.1"
+module: 24
+minutes: 10
+practice_minutes: 120
+prerequisites: ["02.2", "04.1", "07.1", "10.1", "12.1", "23.1"]
+objectives:
+  - Report **ASR with a Wilson CI** and know when a difference is *established* (non-overlapping CIs) vs noise; compute required sample sizes.
+  - Evaluate detectors with **precision/recall/ROC-AUC** and interpret them under **base rates**.
+  - Perform **adaptive evaluation** — measure against the strongest/adapted attack — and explain why it's decisive.
+  - Measure **robustness** (ASR vs attack strength), **transferability**, and **coverage** across attack families.
+  - **Design a security benchmark** and wire **regression tests** that fail if ASR rises.
+volatility: concept
+sources:
+  - title: "Croce & Hein — Reliable Evaluation of Adversarial Robustness (AutoAttack)"
+    url: https://arxiv.org/abs/2003.01990
+  - title: "Carlini et al. — On Evaluating Adversarial Robustness"
+    url: https://arxiv.org/abs/1904.02175
+  - title: "Carlini et al. — Extracting Training Data from Large Language Models (LiRA, membership inference)"
+    url: https://arxiv.org/abs/2112.14704
+last_verified: "2026-09-30"
+---
 # 24.1 · Security evaluation
+
+Every claim in this course — "this attack works", "this defense helps" — is only as good as its measurement. Bad evaluation (weak attacks, no CIs, ignoring base rates) certifies broken systems as safe. Evaluation is the discipline that makes security research *research*.
 
 ## Why this matters
 
@@ -167,20 +191,3 @@ fixed ensemble — true adaptivity means an attacker who studies *your* defense.
 - Characterize detectors with ROC/AUC and interpret them under base rates.
 - Run adaptive evaluations and measure robustness, transferability, and coverage.
 - Design a covered security benchmark and enforce it as a CI regression guard.
-
--->
-**Prerequisites.** [04.1 ASR + Wilson CI](../module-04/lesson-01.md), [12.1 ROC-AUC / LiRA](../module-12/lesson-01.md),
-[02.2 base rates](../module-02/lesson-02.md), [07.1](../module-07/lesson-01.md)/[10.1](../module-10/lesson-01.md)
-(adaptive attacks / evaluation rigor), [23.1 defenses to evaluate](../module-23/lesson-01.md). Lab:
-reusable harness, offline.
-
-**You will learn.** How to *measure* AI security systematically: **attack success rate** with
-confidence intervals, **precision/recall/ROC-AUC**, **robustness**, **transferability**, **coverage**,
-**regression testing**, and — the methodology that separates real evaluation from theater —
-**adaptive evaluation** (measure against the strongest/adapted attack). Plus how to **design your own
-security benchmark**.
-
-**Why this matters.** Every claim in this course — "this attack works", "this defense helps" — is
-only as good as its measurement. Bad evaluation (weak attacks, no CIs, ignoring base rates) certifies
-broken systems as safe. Evaluation is the discipline that makes security research *research*.
--->

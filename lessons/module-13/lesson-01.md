@@ -176,18 +176,3 @@ scanning is a fragile filter vs the format guarantee.
   artifacts as untrusted code.
 - Build a stealthy malicious adapter and understand why clean-eval misses it.
 - Design a layered load-time defense: safe format + provenance + behavioral vetting + least privilege.
-
--->
-**Prerequisites.** [11.1 backdoors](../module-11/lesson-01.md), [01.1 supply chain / deserialization
-(CWE-502)](../module-01/lesson-01.md). Sibling: LoRA/adapters (M14). Lab: CPU torch + safetensors.
-
-**You will learn.** The model supply chain as an attack surface: **pickle/checkpoint remote code
-execution** (loading a model runs code), why **safetensors** exists and what it guarantees,
-**`trust_remote_code`** and tokenizer/config code paths, and **malicious LoRA/adapters** that
-backdoor a trusted base model without touching its weights file.
-
-**Why this matters.** Most teams download models, adapters, and tokenizers from hubs and load them
-with one line. That line can execute arbitrary code and/or merge a hidden backdoor. This is the
-model-world version of the dependency attacks from M01, and it is the bridge to full AI supply-chain
-security (M22).
--->

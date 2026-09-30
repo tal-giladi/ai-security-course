@@ -1,11 +1,28 @@
+---
+id: "32.1"
+module: 32
+minutes: 13
+practice_minutes: 60
+prerequisites: ["02.1", "04.1", "14.1", "16.1", "26.1"]
+objectives:
+  - Translate any OWASP LLM **2025** ID to its **2026** ID and explain the three structural changes (Excessive Agency to #3, Improper Output Handling to #10, the SPL → HCE rename).
+  - Explain the 2026 methodology (community vote weighted 75%, real-incident data 25%) and what that does and does not tell you about risk.
+  - Define **Hidden Context Exposure** and enumerate the slots it covers in an app you haven't seen.
+  - Measure leakage **per slot** with a decode-aware success criterion, and report ASR and FPR.
+  - Write the guarantee box for three output filters and for the architectural control ("nothing secret in context"), and show by measurement that only the latter is enforced.
+volatility: implementation
+sources:
+  - title: "OWASP Top 10 for LLM Applications 2026"
+    url: https://genai.owasp.org/llm-top-10/
+  - title: "OWASP GenAI Security Project — 2026 release announcement"
+    url: https://genai.owasp.org/
+  - title: "Greshake et al. — Not what you've signed up for (indirect injection)"
+    url: https://arxiv.org/abs/2302.12173
+last_verified: "2026-09-30"
+---
 # 32.1 · OWASP LLM Top 10 2026: the crosswalk & Hidden Context Exposure
 
-
-> **Layer:** CURRENT (standard released 2026-08-03). **Status of claims:** the ranking and
-> category names are DOCUMENTED (official release + independent summaries, sources below); the
-> lab's toy model is a deterministic stand-in for a DOCUMENTED model behavior.
-> **Added:** 2026-09-27 by the weekly curriculum review
-> ([research/weekly/2026-W39.md](../../research/weekly/2026-W39.md)).
+> **Layer:** CURRENT (standard released 2026-08-03). **Status of claims:** the ranking and > category names are DOCUMENTED (official release + independent summaries, sources below); the > lab's toy model is a deterministic stand-in for a DOCUMENTED model behavior. > **Added:** 2026-09-27 by the weekly curriculum review > ([research/weekly/2026-W39.md](../../research/weekly/2026-W39.md)).
 
 ## Why this matters
 
@@ -342,23 +359,3 @@ an attack goal.
 - Write guarantee boxes for output filters vs the architectural "secret out of context" control,
   and show the difference by measurement.
 - Explain why extraction defenses hand the attacker over to excessive agency, and what stops that.
-
-<!-- PREREQ-BLOCK: fold into the front matter (prerequisites/objectives), then delete -->
-**Prerequisites.** [04.1 Direct injection & system-prompt leakage](../module-04/lesson-01.md)
-(the canary, the output scrubber and its guarantee box are the starting point here),
-[02.1 Where the boundaries really are](../module-02/lesson-01.md) (enforced vs behavior-shaping
-controls), [14.1 RAG retrieval surface](../module-14/lesson-01.md),
-[16.1 The agent attack surface](../module-16/lesson-01.md) and
-[26.1 Standards mapping](../module-26/lesson-01.md). No GPU, no network.
-
-**You will learn.** What changed in the **OWASP Top 10 for LLM Applications 2026** and how to
-translate every 2025 ID the course (and your old reports) uses; why "System Prompt Leakage"
-became **Hidden Context Exposure** and what that generalization means technically; and how to
-measure leakage *per context slot* and compare output filters against the one architectural
-control that is actually enforced.
-
-**Why this matters.** Security teams will file your findings under the 2026 IDs from now on.
-More importantly, the rename encodes a research result the course already implies but never
-states in one place: *everything in the context window is disclosed to a sufficiently motivated
-user* — tool schemas, retrieved policies and memory, not only the system prompt.
--->

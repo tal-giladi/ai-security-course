@@ -1,4 +1,28 @@
+---
+id: "17.1"
+module: 17
+minutes: 10
+practice_minutes: 120
+prerequisites: ["02.2", "05.1", "16.1"]
+objectives:
+  - Explain tool **description poisoning** and **result poisoning** as indirect injection through the tool interface.
+  - Explain why tool descriptions have **catalog-wide, every-task** reach (worse than a single doc).
+  - Apply **tool authorization** and **capability-based security** (least authority, object capabilities) as the enforced defense.
+  - Recognize **rug-pull** tools (benign at approval, poisoned later) and provenance/signing defenses.
+  - Combine catalog-as-data segregation with capability minimization.
+volatility: implementation
+sources:
+  - title: "Invariant Labs — MCP prompt injection in the wild (GitHub issue 1803950)"
+    url: https://github.com/invariantlabs-ai/mcp/issues/180
+  - title: "Model Context Protocol specification — tools, authorization and trust"
+    url: https://modelcontextprotocol.io/specification
+  - title: "OWASP Top 10 for LLM Applications 2025 — LLM08 Excessive Agency"
+    url: https://genai.owasp.org/llm-top-10/
+last_verified: "2026-09-30"
+---
 # 17.1 · Tool poisoning & abuse
+
+Agents load third-party tools (plugins, MCP servers — M19). Each tool's description is author-controlled text the model reads to decide when to call it — so a poisoned description is indirect injection with catalog-wide reach, firing on every task. This is the mechanism behind the most-discussed MCP attacks.
 
 ## Why this matters
 
@@ -159,19 +183,3 @@ some concatenate it directly into the system context (worst case).
 - Explain the catalog-wide, every-task reach of description poisoning.
 - Apply capability-based least authority (structural) plus catalog-as-data segregation (filter) and
   provenance/pinning against rug pulls.
-
--->
-**Prerequisites.** [16.1 agent attack surface](../module-16/lesson-01.md), [05.1 indirect
-injection](../module-05/lesson-01.md), [02.2 tool calling](../module-02/lesson-02.md). Lab: shared
-agent runtime, offline.
-
-**You will learn.** Tool poisoning: malicious tool **descriptions** and **results** as injection
-channels, **tool authorization**, and **capability-based security** (least authority per tool). The
-key realization: everything about a tool — its name, its description, its output — is untrusted text
-that enters the model's planning context.
-
-**Why this matters.** Agents load third-party tools (plugins, MCP servers — M19). Each tool's
-description is author-controlled text the model reads to decide when to call it — so a poisoned
-description is indirect injection with catalog-wide reach, firing on every task. This is the
-mechanism behind the most-discussed MCP attacks.
--->

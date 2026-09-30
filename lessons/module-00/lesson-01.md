@@ -1,4 +1,29 @@
+---
+id: "00.1"
+module: 0
+minutes: 13
+practice_minutes: 75
+prerequisites: []
+objectives:
+  - Enumerate an AI system's assets and, for each, name who may reach it and who must not.
+  - Draw a data-flow diagram and mark every trust boundary and untrusted entry point on it.
+  - Apply STRIDE and an attack tree to an LLM application, then rank the resulting threats by risk.
+  - Explain authentication versus authorization, privilege, and isolation, and where "the model decides" removes them.
+  - Recognize the confused-deputy pattern as the structural skeleton of most LLM and agent attacks.
+volatility: concept
+sources:
+  - title: "Greshake et al., Not what you've signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection"
+    url: https://arxiv.org/abs/2302.12173
+  - title: "NIST IR 4189 — The Confused Deputy (Norm Hardy)"
+    url: https://csrc.nist.gov/pubs/ir/4189/final
+  - title: "OWASP Top 10 for LLM Applications 2025"
+    url: https://genai.owasp.org/llm-top-10/
+last_verified: "2026-09-30"
+---
+
 # 00.1 · Threat modeling for AI systems
+
+Before you can attack or defend an AI system, you have to know where its boundaries are. This lesson teaches you to draw the data-flow diagram, name the trust boundaries, and derive the attacks from them — so that you can threat-model a system you have never seen before.
 
 ## Why this matters
 
@@ -382,20 +407,3 @@ special access — the confused-deputy shape. Full guide arrives with Module 05.
   dissolves them.
 - Recognize the confused-deputy pattern as the skeleton of most attacks in this course.
 - Represent a threat model as runnable, rankable data.
-
--->
-**Prerequisites.** None beyond being an experienced software engineer. No ML background is
-needed for this lesson. If you have started the sibling
-[LLM Research Engineer](https://tal-giladi.github.io/llm-research-engineer-course/) course you
-already know what a transformer and a tool-calling agent are; if not, treat the LLM as a black
-box that maps text in → text out and sometimes calls tools. That is enough here.
-
-**You will learn.** How to systematically find where an AI system can be attacked *before*
-knowing any specific attack: assets, trust boundaries, data flows, privilege, the
-authentication/authorization split, isolation, and the confused-deputy pattern — and why LLM
-and agent systems break the assumptions that classical threat modeling relies on.
-
-**Why this matters.** Every later module (prompt injection, RAG poisoning, agent hijacking, MCP)
-is a *specific* instance of a boundary being crossed. If you can draw the boundaries, you can
-predict the attacks on a system you have never seen — which is the entire goal of this course.
--->

@@ -165,19 +165,3 @@ returns a tenant-B doc (regression guard) — the practical deliverable a real t
 - Identify and defend metadata-spoofing attacks; quantify post-filter's availability cost.
 - Layer tenancy authz with provenance, retrieval hygiene, and egress control, and guard it with CI
   regression tests.
-
--->
-**Prerequisites.** [14.1 RAG retrieval](../module-14/lesson-01.md), [00.1 authz / "the model
-decides"](../module-00/lesson-01.md), [01.1 broken access control / IDOR](../module-01/lesson-01.md).
-Lab: numpy + shim, offline.
-
-**You will learn.** The multi-tenant RAG failure that is *not about the model at all*: **missing or
-misplaced authorization on retrieval**, causing **cross-user / cross-tenant leakage**, plus
-**metadata attacks** and where the authz check must live. This is broken access control (a top web
-vulnerability) reappearing inside RAG.
-
-**Why this matters.** In production, the single most damaging RAG bug is usually this one: a shared
-index serving many customers with authorization enforced weakly, late, or "by the model." It leaks
-other customers' confidential data — a direct, severe, and common breach, and one no prompt-level
-defense can fix.
--->

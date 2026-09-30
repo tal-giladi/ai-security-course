@@ -187,18 +187,3 @@ smoothing certifies only $\ell_2$; CW is $\ell_2$-oriented; certified accuracy l
 - Derive and implement the randomized-smoothing certificate and verify it empirically.
 - Distinguish empirical from certified robustness, and evaluate robustness rigorously (AutoAttack,
   transfer) rather than with a single hand-picked attack.
-
--->
-**Prerequisites.** [09.1 FGSM/PGD](../module-09/lesson-01.md) (threat models, projected gradient
-attacks, adversarial training), sibling optimization/probability. Lab: CPU torch, builds on Lab 09.
-
-**You will learn.** The three ideas that separate rigorous adversarial-ML from running PGD once:
-the **Carlini–Wagner (CW)** minimal-norm optimization attack, **transfer / black-box** attacks, and
-**certified robustness** (randomized smoothing) — the difference between *"I couldn't find an
-attack"* and *"no attack exists"*.
-
-**Why this matters.** Empirical defenses are repeatedly broken by stronger attacks; the field
-learned to demand (a) evaluation with strong ensembles (AutoAttack), and (b) *certificates* where
-possible. And transfer is the reason black-box systems aren't safe just because their gradients are
-hidden — the through-line to GCG transfer (M07) and real deployments.
--->

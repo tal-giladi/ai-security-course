@@ -1,4 +1,28 @@
+---
+id: "18.1"
+module: 18
+minutes: 10
+practice_minutes: 0
+prerequisites: ["01.1", "05.1", "14.1", "16.1", "17.1"]
+objectives:
+  - Trace a complete multi-hop agent kill chain and identify every trust-boundary crossing.
+  - Reproduce it locally end to end and measure **chain depth** (executed hops).
+  - Apply **defense-in-depth** and show where each enforced control bites; explain why breaking any link suffices.
+  - Compute **chain-success probability** as a product over hops and justify defense-in-depth quantitatively.
+  - Design the **minimal** control set that stops the chain while preserving the legitimate task.
+volatility: concept
+sources:
+  - title: "NATO StratCom COE — Attributing Information Influence Operations"
+    url: https://www.stratcom.nato.int/
+  - title: "MITRE ATLAS — Exfiltration (AML.TA0010) and Impact"
+    url: https://atlas.mitre.org/
+  - title: "OWASP ASVS v5 — architecture-level defense-in-depth"
+    url: https://owasp.org/www-project-application-security-verification-standard/
+last_verified: "2026-09-30"
+---
 # 18.1 · End-to-end attack chains
+
+Real incidents are chains, not single bugs. Thinking in chains is how you both attack (find the full path) and defend (find the cheapest link to cut). This lesson is the synthesis of Stage 7 and the template for the agent capstone.
 
 ## Why this matters
 
@@ -170,18 +194,3 @@ must be complete-mediation (every tool call authorized), not spot checks.
 - Measure chain depth and place enforced controls to cut the chain early while preserving the task.
 - Quantify chain-success probability and justify enforced-first, then probabilistic, defense-in-depth.
 - Defend memory-persistence and RAG-entry variants and design a minimal control set.
-
--->
-**Prerequisites.** [16.1 agent surface](../module-16/lesson-01.md), [17.1 tool poisoning](../module-17/lesson-01.md),
-[05.1 indirect injection](../module-05/lesson-01.md), [01.1 SSRF/exfiltration](../module-01/lesson-01.md),
-[14.1 RAG poisoning](../module-14/lesson-01.md). Lab: shared agent runtime, offline.
-
-**You will learn.** How the individual attacks compose into a realistic **end-to-end kill chain** —
-webpage → browsing agent → indirect injection → tool call → credential read → exfiltration — and how
-**defense-in-depth** breaks it: each enforced control cuts the chain at a different hop, and breaking
-any one link stops the whole attack. You measure **chain depth** as a defense metric.
-
-**Why this matters.** Real incidents are chains, not single bugs. Thinking in chains is how you both
-attack (find the full path) and defend (find the cheapest link to cut). This lesson is the synthesis
-of Stage 7 and the template for the agent capstone.
--->

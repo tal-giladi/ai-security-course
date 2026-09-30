@@ -104,7 +104,10 @@ def park_prereq(text: str, log: list[str]) -> str:
         re.DOTALL,
     )
     if existing:
-        block = existing.group("block").strip() + f"\n{PARK_END}\n"
+        # Rebuild the whole marker. `block` spans from after PARK_START to before the closing
+        # PARK_END, so the closing " -->" of the start marker is inside it; re-emitting it
+        # verbatim is what dropped the marker on an earlier run.
+        block = PARK_START + " -->\n" + existing.group("block").rstrip() + f"\n{PARK_END}\n"
         rest = text[: existing.start()].rstrip() + "\n\n" + text[existing.end():]
         return rest.rstrip() + "\n\n" + block
     m = PREREQ_LEAD_RE.match(text)

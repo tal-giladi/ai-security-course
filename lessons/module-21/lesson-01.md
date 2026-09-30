@@ -1,4 +1,28 @@
+---
+id: "21.1"
+module: 21
+minutes: 10
+practice_minutes: 120
+prerequisites: ["01.1", "13.1", "16.1", "17.1", "18.1"]
+objectives:
+  - Enumerate the code-repo attack surface: README/docs, manifests + install/build scripts, source comments, tests, issues, PRs.
+  - Reproduce **prompt injection in repo content** driving a shell-capable agent to exfiltrate.
+  - Apply enforced defenses: repo-content-as-data, least privilege (no shell), **sandboxing** (no egress/secrets), command allowlists, approval gates.
+  - Explain and model **dependency confusion** and defeat it with pinning + integrity hashes.
+  - Reason about **install/build script** execution (postinstall) and CI/CD as code-execution paths.
+volatility: implementation
+sources:
+  - title: "Alex Birsan — Dependency Confusion in a private registry"
+    url: https://www.sonatypeblog.com/dependency-confusion-risk/
+  - title: "SLSA — Supply-chain Levels for Software Artifacts"
+    url: https://slsa.dev/
+  - title: "OWASP Top 10 for Agentic Applications 2026 — ASI05 unexpected code execution"
+    url: https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/
+last_verified: "2026-09-30"
+---
 # 21.1 · Code-agent security
+
+Coding agents read and act on repositories, and a repo is almost entirely attacker-controllable text (README, manifests, source, tests, issues, PRs) feeding an agent that can run shell commands. This combines every prior lesson — indirect injection, excessive agency, tool poisoning, supply chain — into the highest-consequence agent scenario.
 
 ## Why this matters
 
@@ -159,21 +183,3 @@ signed-but-compromised deps remain a residual (M13/M22).
 - Reproduce repo-content injection driving a shell agent and defend it structurally.
 - Sandbox build/shell execution (no egress/secrets) and reason about command allowlists' limits.
 - Reproduce and defeat dependency confusion with pinning + integrity hashes, and reason about CI/CD risk.
-
--->
-**Prerequisites.** [16.1 agent surface](../module-16/lesson-01.md), [17.1 tool poisoning](../module-17/lesson-01.md),
-[01.1 command injection / code execution / supply chain](../module-01/lesson-01.md),
-[13.1 supply chain / pinning](../module-13/lesson-01.md), [18.1 chains](../module-18/lesson-01.md).
-Lab: shared agent runtime, offline.
-
-**You will learn.** Code-agent security: **malicious repos/READMEs**, **poisoned dependencies**,
-**install/build scripts**, **prompt injection in source/issues/PRs**, and **dependency confusion** —
-the worst case being untrusted repo content driving a **shell-capable** agent (arbitrary code
-execution). Plus the enforced defenses (repo-content-as-data, least privilege, sandboxing, command
-allowlists, dependency pinning).
-
-**Why this matters.** Coding agents read and act on repositories, and a repo is almost entirely
-attacker-controllable text (README, manifests, source, tests, issues, PRs) feeding an agent that can
-run shell commands. This combines every prior lesson — indirect injection, excessive agency, tool
-poisoning, supply chain — into the highest-consequence agent scenario.
--->

@@ -165,19 +165,3 @@ not a pixel-space perturbation (answer: provenance/scan don't; least privilege +
 - Reproduce multimodal (alt/EXIF/OCR/invisible) and cross-agent injection and measure ASR.
 - Explain why multi-agent depth raises compromise probability and defend per-stage with least
   privilege and provenance.
-
--->
-**Prerequisites.** [05.1 Indirect injection](../module-05/lesson-01.md) (this is indirect
-injection through new carriers), [00.1 confused deputy](../module-00/lesson-01.md). Lab uses the
-[shim](../../lab/models/README.md).
-
-**You will learn.** Injection carriers that require neither a typed prompt nor a text document:
-**multimodal** injection (instructions hidden in an image's OCR text, alt text, EXIF metadata,
-invisible/zero-width characters) and **cross-agent** injection (one agent's output poisoning the
-next). Why they defeat text-input filters, and why the fix is the same least-privilege /
-provenance discipline as M05, applied at every place bytes become context.
-
-**Why this matters.** As soon as a system accepts images, files, or chains multiple agents, the
-attacker's canvas expands to anything those pipelines read. Multimodal and multi-agent systems
-are where injection gets invisible.
--->

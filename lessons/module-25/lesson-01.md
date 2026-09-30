@@ -1,4 +1,28 @@
+---
+id: "25.1"
+module: 25
+minutes: 10
+practice_minutes: 120
+prerequisites: ["07.1", "08.1", "18.1", "24.1"]
+objectives:
+  - Build a **mutation fuzzer** over attack payloads and an automated **search** loop toward higher ASR.
+  - Explain the **attacker/judge/defender** components and why the judge bounds the attacker (M08/M24).
+  - Run **attacker vs defender co-evolution** and read the arms-race ASR curve.
+  - Assemble an **automated exploit-chain** red-teamer (reuse the agent runtime, M18).
+  - Integrate with the eval harness (CIs, coverage) and regression testing (M24).
+volatility: implementation
+sources:
+  - title: "Perez et al. — Red Teaming Language Models with Language Models"
+    url: https://arxiv.org/abs/2202.03286
+  - title: "Chao et al. — Jailbreaking LLMs with PAIR"
+    url: https://arxiv.org/abs/2312.08761
+  - title: "NIST AI RMF (AI 100-1) — measure function"
+    url: https://www.nist.gov/itl/ai-risk-management-framework
+last_verified: "2026-09-30"
+---
 # 25.1 · Automated red teaming
+
+You can't manually red-team a system against a determined, adaptive adversary — there are too many payloads and the defense keeps changing. Automated red teaming is how real programs achieve coverage and keep pace: it's the offensive complement to the evaluation discipline (M24) and the operational form of "attack your own defense" (the purple-team cycle).
 
 ## Why this matters
 
@@ -156,19 +180,3 @@ and enforced controls.
 - Explain and run attacker/defender co-evolution and read the arms-race curve.
 - Automate exploit-chain discovery against an agent and integrate red teaming as CI regression.
 - State honestly what automated red teaming can and cannot certify.
-
--->
-**Prerequisites.** [08.1 PAIR/TAP + judges](../module-08/lesson-01.md), [24.1 evaluation harness](../module-24/lesson-01.md),
-[07.1 optimization](../module-07/lesson-01.md), [18.1 chains](../module-18/lesson-01.md). Lab: shim +
-evalkit, offline.
-
-**You will learn.** Automated red teaming: **attack generation**, **mutation/fuzzing**,
-**search/optimization**, **attacker/defender models**, and **automated exploit chains** — turning the
-individual attacks and the evaluation harness into a system that discovers and adapts attacks at
-scale, and co-evolves against defenses.
-
-**Why this matters.** You can't manually red-team a system against a determined, adaptive adversary —
-there are too many payloads and the defense keeps changing. Automated red teaming is how real programs
-achieve coverage and keep pace: it's the offensive complement to the evaluation discipline (M24) and
-the operational form of "attack your own defense" (the purple-team cycle).
--->

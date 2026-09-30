@@ -1,4 +1,27 @@
+---
+id: "26.1"
+module: 26
+minutes: 10
+practice_minutes: 0
+prerequisites: []
+objectives:
+  - State the course's **method** as a repeatable procedure for a new system.
+  - Map every module onto **OWASP LLM Top 10**, **MITRE ATLAS**, and **NIST AI RMF/100-2**.
+  - Use the **competency matrix** to self-assess honestly.
+  - Plan and execute the five **capstones**, especially the research project.
+volatility: concept
+sources:
+  - title: "NIST AI RMF (AI 100-1)"
+    url: https://www.nist.gov/itl/ai-risk-management-framework
+  - title: "MITRE ATLAS"
+    url: https://atlas.mitre.org/
+  - title: "OWASP Top 10 for LLM Applications 2026"
+    url: https://genai.owasp.org/llm-top-10/
+last_verified: "2026-09-30"
+---
 # 26.1 · Purple-team synthesis, standards & capstones
+
+Techniques are only useful assembled into a *method*: given a new LLM/agent system you've never seen, map its attack surface, formulate and reproduce attacks, build and measure defenses, attack your own defenses, and research what's unknown. That method — not any single attack — is what makes you an LLM/agent security *researcher*.
 
 ## Why this matters
 
@@ -83,17 +106,3 @@ supply chain) from **fast-moving** modules (M19 MCP, agent frameworks, model API
 change slowly; re-verify the fast-moving specifics (MCP auth, provider APIs, current attack papers)
 before relying on them, and update those modules independently. Distinguish, in your own notes,
 FOUNDATIONAL / CURRENT / EMERGING / DEPRECATED.
-
--->
-**Prerequisites.** All modules M00–M25. This is the synthesis.
-
-**You will learn.** How the whole course fits together as a **purple-team** practice, how it maps onto
-the industry standards (**OWASP LLM Top 10**, **MITRE ATLAS**, **NIST AI RMF / AI 100-2**), how to use
-the final **competency matrix**, and how to approach the five **capstones** — including the research
-project that is the course's real objective.
-
-**Why this matters.** Techniques are only useful assembled into a *method*: given a new LLM/agent
-system you've never seen, map its attack surface, formulate and reproduce attacks, build and measure
-defenses, attack your own defenses, and research what's unknown. That method — not any single attack —
-is what makes you an LLM/agent security *researcher*.
--->
