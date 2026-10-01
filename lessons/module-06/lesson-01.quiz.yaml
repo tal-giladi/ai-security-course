@@ -1,27 +1,80 @@
-# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
-# The lesson's model answer is shown as the explanation. `source` fingerprints the original
-# question + answer; if the lesson changes, the site flags the question for review.
-- source: 70285965a25a
-  question: Why is OCR/metadata extraction an injection surface?
+- id: q1
+  question: >-
+    Why is OCR and metadata extraction an injection surface rather than just a convenience feature?
   options:
-    - It runs attacker files as executables on the server during extraction
-    - It turns attacker-controlled file bytes into text in the model's instruction stream
-    - It sends the image to a third-party service that may store it
-    - It lowers image resolution, so safety classifiers miss harmful pictures
+    - It executes the attacker's file as a program on the server during the extraction step
+    - It turns attacker-controlled file bytes into text in the model's single instruction stream
+    - It forwards the uploaded image to a third-party service that may retain a copy of it
+    - It downsamples the image, so safety classifiers stop detecting harmful pictures
   correct: 1
-- source: 94aab86c58c4
-  question: Why do multi-agent pipelines enlarge the attack surface?
+  explanation: >-
+    Everything in context is one instruction stream, so any pipeline step that converts bytes into
+    tokens feeds that stream — OCR, captioning, alt- or EXIF-extraction and transcription all
+    qualify. These carriers are unusually effective because input moderation is almost always wired
+    to the user's text message and not to the layers extracted from the file, so the instruction
+    arrives having bypassed the filter entirely. Downsampling and third-party forwarding are real
+    privacy and accuracy concerns, but neither is the injection mechanism.
+- id: q2
+  question: >-
+    Why do multi-agent pipelines enlarge the attack surface instead of diluting it?
   options:
-    - Each extra stage lowers overall compromise odds, but raises latency
-    - Agents share one context window, so only the first stage can be attacked
-    - Each stage is another chance to obey an injection, and edges are unmarked trust boundaries
-    - Agents always run with admin rights, unlike single-model apps
+    - Each extra stage lowers the overall odds of compromise while adding latency to the answer
+    - Agents share one context window, so only the first stage in the chain can be attacked
+    - Each stage is another chance to obey an injection, and every edge is an undrawn trust boundary
+    - Agents run with administrator rights by default, unlike applications built on a single model
   correct: 2
-- source: b4d83b2cb730
-  question: Which carrier defeats an exact-match text filter, paired with its fix?
+  explanation: >-
+    The compromise term is $1 - \prod_j (1 - a_j)$, which grows with the number of stages, because
+    obeying at any single stage is enough to propagate downstream. Every edge from A to B is a data
+    flow across a trust boundary that B has no way to authenticate, and designers forget to draw it
+    precisely because "they're all our agents" feels like trust. The attacker therefore injects the
+    weakest-guarded agent and lets its output hijack the rest.
+- id: q3
+  question: >-
+    Which carrier defeats an exact-match text filter on extracted content, paired with the right fix?
   options:
-    - Zero-width or homoglyph characters; Unicode-normalize and strip them before scanning
-    - A longer prompt; truncate all input to a fixed length before scanning
-    - Lowercase text; convert the filter's patterns to uppercase
-    - A polite tone; add rude-word detection to the filter
+    - Zero-width or homoglyph characters, fixed by Unicode-normalizing and stripping them before scanning
+    - A longer prompt, fixed by truncating all input to a fixed length before it is scanned
+    - Lowercase text, fixed by converting the filter's match patterns to uppercase instead
+    - An unusually polite tone, fixed by adding rude-word detection to the same filter
   correct: 0
+  explanation: >-
+    The filter matches literal substrings while the model reads straight through them, so
+    interleaving a zero-width space inside a trigger word preserves the instruction while failing the
+    substring test — the classic false negative of treating a filter as a classifier. Normalizing and
+    stripping invisible characters closes that specific gap and nothing else: a base64 instruction is
+    still a false negative. That is why detection on this channel is triage rather than a gate, and
+    why it has to be paired with least privilege on whatever acts on the pipeline's output.
+- id: q4
+  question: >-
+    A $k$-stage agent pipeline obeys an injected instruction with probability $a_j$ at stage $j$.
+    What does the compromise probability become as stages are added?
+  options:
+    - It stays at $a$, because obeying at one stage is all the formula counts exactly once
+    - It becomes $a^k$, because every stage must be obeyed before the chain is compromised
+    - It becomes $1 - a^k$, because each added stage is assumed to be obeyed outright
+    - It becomes $1 - (1-a)^k$, because each stage is an independent chance to follow the payload
+  correct: 3
+  explanation: >-
+    The first factor is the probability that at least one stage obeys, which is why the stages are
+    independent chances rather than a conjunction. At $a = 0.1$, two stages give roughly 0.19 and
+    three give roughly 0.27, so tripling the chain nearly triples the chance an injection is
+    followed somewhere. Compromise then rides downstream through agent outputs the next stage cannot
+    authenticate, which is exactly why per-stage least privilege buys more as $k$ grows.
+- id: q5
+  question: >-
+    A team extends its injection filter to run on OCR text and metadata as well as the prompt.
+    Which claim is accurate?
+  options:
+    - The attack is prevented, because scanned channels can no longer carry an instruction
+    - It only helps once the user has jailbroken the model, so it is really an offensive control
+    - It stops recognized plaintext instructions on those layers, but encoded or pixel-space payloads pass
+    - Coverage now reaches 100%, so the enforced controls can be dropped from the design
+  correct: 2
+  explanation: >-
+    Scanning the extracted layers is necessary breadth, since the unfiltered channel is exactly why
+    multimodal carriers work, but the scan is still a classifier with false negatives: base64
+    instructions, steganography and pixel-space perturbations all sit outside what it can match. Its
+    false-positive cost is real too, since legitimate images carry instruction-like captions. The
+    guarantee therefore has to come from the enforced side — least privilege on whatever acts on the
+    pipeline's output, an egress allowlist, and no secrets in a context that can be made to emit them.

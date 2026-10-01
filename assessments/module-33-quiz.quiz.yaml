@@ -85,10 +85,10 @@
     An approval gate asks a human to confirm a refund before the agent issues it. Which finding
     is the most relevant warning sign for this control?
   options:
-    - Approvals are slow, so the gate adds latency to every refund
-    - An agent that can shape what the human is shown can obtain approval for the wrong action
-    - Refunds are low value, so the gate is disproportionate to the risk
-    - Human reviewers approve almost everything, which makes the gate theatre
+    - Approvals are slow to obtain, so the gate adds noticeable latency to every refund
+    - An agent that can shape what the reviewer is shown can win approval for the wrong action
+    - Refunds are individually low value, so the gate is disproportionate to the risk taken
+    - Human reviewers approve almost everything they see, which makes the gate a rubber stamp
   correct: 1
   explanation: >-
     A gate is only as strong as the description the reviewer reads, and the agent writes that
@@ -102,10 +102,10 @@
     An attacker moves an action off the recorded API so that no event is emitted. What does
     this tell you about the evidence design?
   options:
-    - The layer is compromised and must be replaced with kernel-level capture
-    - The attacker has defeated the defense, so the engagement should be reported as a win
+    - The recording layer is compromised and must be replaced with kernel-level capture instead
+    - The attacker has defeated the defense outright, so the engagement should be reported as won
     - Layers have to be composed, since relocating one recorder only relocates the blind spot
-    - Recording should be disabled for actions the attacker has demonstrated they can hide
+    - Recording should be disabled for any action the attacker can demonstrate they can hide
   correct: 2
   explanation: >-
     Every projection of a run — prompts, tool calls, syscalls — is blind to something, which is
@@ -118,10 +118,10 @@
   question: >-
     Which change would most improve adherence without relying on model behaviour at all?
   options:
-    - A longer, more emphatic system prompt restating the scope
-    - Adding more few-shot examples of staying in scope
-    - Lowering the model's temperature to make it more predictable
-    - Removing from the agent the capability the scope excludes, so the action is not reachable
+    - A longer, more emphatic system prompt that restates the scope up front
+    - Adding more few-shot examples of the agent staying inside its scope
+    - Lowering the sampling temperature so the model's behaviour is more predictable
+    - Removing the capability the scope excludes, so the action is out of reach
   correct: 3
   explanation: >-
     The whole measurement says prompts move the rate without closing it, so anything that depends

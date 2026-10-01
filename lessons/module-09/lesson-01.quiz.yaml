@@ -1,35 +1,64 @@
-# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
-# The lesson's model answer is shown as the explanation. `source` fingerprints the original
-# question + answer; if the lesson changes, the site flags the question for review.
-- source: 9dfd4f3e382f
-  question: Why is "the model is robust" meaningless without a threat model?
+- id: q1
+  question: >-
+    Why is the claim "the model is robust" meaningless unless a threat model is stated alongside it?
   options:
-    - Robustness only applies to image models, not to text models
-    - Robustness is always measured on clean accuracy, which ignores attacks
-    - Robustness is binary, so any single failure means the model is not robust
-    - Robustness is defined only relative to a norm, budget $\epsilon$, and attacker access
+    - Robustness only applies to image models, since text models cannot be perturbed at all
+    - Robustness is always measured on clean accuracy, which deliberately ignores the attacker
+    - Robustness is binary, so one failure at any budget proves the model is not robust
+    - Robustness is defined only relative to a norm, a budget $\epsilon$ and the attacker's access
   correct: 3
-- source: d1ff1e303263
-  question: What is FGSM, and why is one step not optimal for the true loss?
+  explanation: >-
+    Robustness is a claim about a set rather than about a model: the guarantee covers only the
+    perturbations inside the norm ball and budget you trained and tested, and says nothing outside
+    it. A model defended at $\ell_\infty$ with $\epsilon = 0.05$ can fall immediately to an $\ell_2$
+    attack or a larger budget, which is why the guarantee box warns against generalizing past the
+    threat model you chose. Access belongs in the same sentence, because untested black-box and
+    transfer attacks are already in the attacker's option set.
+- id: q2
+  question: >-
+    What is FGSM, and why is a single step not optimal for the true loss?
   options:
-    - $x_{adv}=x-\epsilon\nabla_x\ell$; one step overshoots because $\epsilon$ is too large
-    - $x_{adv}=x+\epsilon\operatorname{sign}(\nabla_x\ell)$; it is optimal only for a linear approximation
+    - $x_{adv}=x-\epsilon\nabla_x\ell$; one step overshoots because the budget $\epsilon$ is too large
+    - $x_{adv}=x+\epsilon\operatorname{sign}(\nabla_x\ell)$; it is exact only for the linear approximation
     - $x_{adv}=x+\epsilon\,\nabla_x\ell/\|\nabla_x\ell\|_2$; one step ignores the $\ell_\infty$ budget
-    - $x_{adv}=x+\epsilon\operatorname{sign}(x)$; it ignores the gradient entirely
+    - $x_{adv}=x+\epsilon\operatorname{sign}(x)$; the update ignores the gradient of the loss entirely
   correct: 1
-- source: 21f1ead71f0a
-  question: Why must robustness be evaluated with PGD, not FGSM?
+  explanation: >-
+    Maximizing $\nabla^\top\delta$ under $\|\delta\|_\infty \le \epsilon$ moves each coordinate to its
+    extreme independently, which is what produces the sign step — the constraint norm is what sets the
+    shape of the attack. That is exact only for the first-order Taylor expansion, and networks are
+    non-linear, so the true loss can rise by less than the linear surrogate predicted. That gap is
+    precisely why iterated, projected attacks exist; the normalization in the third option belongs to
+    the $\ell_2$ ball rather than this one.
+- id: q3
+  question: >-
+    Why must adversarial robustness be evaluated with PGD rather than FGSM alone?
   options:
-    - PGD generalizes FGSM, so it finds attacks at least as strong and exposes gradient masking
-    - PGD is faster than FGSM, so it can test more inputs in the same time
-    - FGSM always finds stronger attacks, which makes models look worse than they are
-    - PGD uses a larger $\epsilon$ than FGSM, which is the required standard
+    - PGD generalizes FGSM, so it finds at least as strong attacks and exposes gradient masking
+    - PGD is faster than FGSM, so far more inputs can be tested within the same query budget
+    - FGSM always finds the stronger attack, which makes models look worse than they really are
+    - PGD uses a larger $\epsilon$ than FGSM, and that larger budget is the required standard
   correct: 0
-- source: 876ebaa5103a
-  question: What is the adversarial-training objective, and what does it cost?
+  explanation: >-
+    FGSM is PGD with one step and no restart, so PGD explores a superset of the iterates and its
+    worst-case loss is at least as high — reporting FGSM robustness alone can only overstate security.
+    The second benefit is diagnostic: a model whose FGSM robustness far exceeds its PGD robustness is
+    usually gradient-masked, hiding uninformative or shattered gradients over a real failure. Real
+    robustness degrades smoothly as steps and budget grow, while masked robustness collapses as soon
+    as the attack is strengthened.
+- id: q4
+  question: >-
+    What is the adversarial-training objective, and what does it cost you?
   options:
-    - $\max_\theta\min_\delta\ell$; it certifies robustness against all norms at no extra training cost
+    - $\max_\theta\min_\delta\,\ell$; it certifies robustness against all norms at no extra cost
     - $\min_\theta\mathbb E[\ell(\theta,x,y)]$; it costs only more data, with no loss in clean accuracy
     - $\min_\theta\mathbb E[\max_{\|\delta\|\le\epsilon}\ell]$; lower clean accuracy and higher training cost
     - $\min_\delta\|\delta\|$ subject to misclassification; it slows inference but keeps clean accuracy
   correct: 2
+  explanation: >-
+    Madry's formulation moves the maximization over the perturbation inside the expectation and
+    minimizes over the weights, so the model is trained against the worst case rather than nominal
+    inputs. Approximating that inner maximum with PGD is what makes the objective trainable, and it
+    is also where the cost comes from — a PGD loop for every training step. The accuracy given up is
+    not a bug but the trade-off itself, and what you get back is empirical robustness inside one
+    threat model, not a certificate.

@@ -1,0 +1,158 @@
+- id: q1
+  question: >-
+    The support bot reads untrusted input from three places — crawled help pages, inbound email
+    and uploaded PDFs — and already holds two capabilities: read the orders database and send
+    email. Engineering adds a `run_python(code)` tool for advanced analytics. Using the lesson's
+    attack-surface model, how many new (untrusted-input-location, reachable-privilege) pairs
+    does that tool create?
+  options:
+    - 3, since the new privilege becomes reachable from each existing entry point
+    - 6, since the new tool exposes two privileges, one for reading and one for executing
+    - 9, since every existing privilege is now reachable from every entry point as well
+    - 12, since the whole entry-by-privilege grid has to be re-enumerated from scratch
+  correct: 0
+  explanation: >-
+    Surface grows as locations times new privileges rather than additively, and this tool
+    contributes one privilege that is reachable from all three locations, so the added count is
+    the small product. The consequence that matters is the shape rather than the count: every
+    threat whose entry is an injection point now also reaches arbitrary code execution, so the
+    impact column is what has to be recomputed, and least privilege stops mattering more, not
+    less.
+- id: q2
+  question: >-
+    Your ranked table holds T2 confused-deputy email exfiltration at P 0.7 and impact 5 (risk
+    3.5), T1 system-prompt disclosure at P 0.8 and impact 3 (risk 2.4), and T3 cross-tenant
+    retrieval at P 0.5 and impact 5 (risk 2.5). You can harden exactly one. Which, and on what
+    basis?
+  options:
+    - T1, because the highest success probability dominates the product no matter the impact
+    - T3, because cross-tenant disclosure is a compliance matter rather than a security one
+    - T2, because risk is the product, and both of its factors lead the table
+    - Neither, because the three are close enough that hardening any single one changes little
+  correct: 2
+  explanation: >-
+    Risk is probability times impact, so the item that leads is not the one with the largest
+    probability — it is the one whose two factors are both high. T1 has the highest probability
+    and still ranks third, which is exactly the confusion the product exists to prevent. Ranking
+    is what tells you where to spend a scarce mitigation budget, and it changes as the model
+    changes.
+- id: q3
+  question: >-
+    The attacker has no account on your support product and no access to your API. They can edit
+    one help-centre page that the crawler ingests nightly. The bot, holding the canary and a
+    `send_email` tool, then emails the secret to them. Which statement characterizes this
+    correctly?
+  options:
+    - The attacker needs a privilege escalation bug in the bot before this becomes possible
+    - The agent's privilege is what was abused, and text placement is the attacker's whole capability
+    - The crawler is the compromised component, since it stored the attacker's page as trusted
+    - The email tool is the vulnerability, since any tool able to send mail can be abused this way
+  correct: 1
+  explanation: >-
+    This is the classic deputy shape: a less-privileged party supplies a request and a
+    more-privileged component performs it on their behalf, and the deputy has no way to tell
+    where the instruction came from. Naming the capability as the ability to place text — rather
+    than as special access — is what makes the threat model tractable, because it tells you which
+    ingress paths to harden. Fixing it means reducing what the deputy may do, not improving its
+    judgment.
+- id: q4
+  question: >-
+    A handler used to answer a document request with an `if (user.canRead(doc))` check before
+    returning anything. The rewrite removes the check and lets the model choose which retrieved
+    chunk to cite. What has that done to the system's authorization?
+  options:
+    - Nothing, since the retriever already filters to documents the current tenant owns
+    - It has moved authorization earlier in the pipeline, into the retrieval step that fetches chunks
+    - It has made the check statistical, and the attacker's job is now to shift that distribution
+    - It has removed authorization, which is acceptable since the model was trained to stay in scope
+  correct: 2
+  explanation: >-
+    A branch in deterministic code either returns the document or it does not; the model emits
+    text whose distribution an attacker can move, so the same property now arrives with a failure
+    rate instead of a verdict. That is the lesson's point about the model deciding: a control you
+    can argue with is not a control. The correct place for the check is back in code, on the
+    request, before the chunk is ever placed in context.
+- id: q5
+  question: >-
+    The threat model was written at launch and filed. Eight months later an incident lands on a
+    debug endpoint added in month three and never drawn. Which line of the guarantee box explains
+    the failure?
+  options:
+    - Threat modeling finds candidate threats, not proofs, and the attacker used an undrawn flow
+    - The guarantee analysis assumes the model is complete, so a missing flow is a measurement error
+    - Attack trees rot faster than diagrams because their leaves are concrete executable actions
+    - The redraw is only required after an incident, since until then there is nothing to invalidate
+  correct: 0
+  explanation: >-
+    The box is explicit that the process gives you a systematic enumeration and no proof that any
+    boundary holds, because a model on paper can miss a flow that exists in code. What that
+    predicts is an attacker moving through something nobody drew — a hidden retrieval path, an
+    unlogged tool, a debug route — which is precisely what a stale artifact hands them. The cost
+    is a redraw every time the system changes, and it is worthless if filed once.
+- id: q6
+  question: >-
+    In the attack tree for exfiltrating the canary, the AND node requires both an instruction
+    placed where the agent reads it and an egress-capable tool. What does that structure tell you
+    to harden first?
+  options:
+    - The instruction-placement conjunct, since a stronger payload defeats whatever marking you add
+    - Neither conjunct, because an OR branch elsewhere already covers both of these conditions
+    - The egress capability, since killing one conjunct kills the branch and only one is controllable
+    - Both equally, since the tree weights every leaf by how often the attacker is likely to try it
+  correct: 2
+  explanation: >-
+    An AND node is a conjunction, so breaking either conjunct collapses the whole subtree, and
+    the decompositional value of the tree is exactly that: it names the cheapest cut. You cannot
+    stop an outsider from writing text somewhere you will read it; you can decide whether anything
+    they reach has the ability to carry a value outward. The OR siblings in the same tree are what
+    make this branch worth isolating — they fail for different reasons and need different fixes.
+- id: q7
+  question: >-
+    Running STRIDE over the retrieval-plus-tool diagram, which element produces the Repudiation
+    finding, and what is the smallest thing that actually addresses it?
+  options:
+    - The vector store, since poisoning it destroys the record of what was retrieved and returned
+    - The user-to-app flow, since session tokens expire and a later user can deny having asked
+    - The external API, since a third party sits outside your own audit boundary entirely
+    - The LLM-to-tool flow, since recording the call still leaves no record of why it was made
+  correct: 3
+  explanation: >-
+    STRIDE rewards forcing every letter against every element even when it seems inapplicable,
+    and the one that is easy to skip is the ability to deny an action. Recording that a call
+    happened is not the same as recording the decision that produced it, so an agent can leave a
+    complete-looking call log that still cannot answer why. The smallest fix is a record of the
+    decision written where the agent has no handle on it.
+- id: q8
+  question: >-
+    A reviewer argues that the canary and the system prompt are the assets that matter, and that
+    the email tool is an implementation detail. What does the lesson's own example say about that?
+  options:
+    - The capability outranks both, since impact attaches to what a component can do, not to a datum
+    - The reviewer is right, because secrets are the only assets a synthetic canary can measure
+    - The reviewer is right, because the email tool is already a named function in the model context
+    - It cannot be settled from the diagram, since asset value is a business judgment, not a structural one
+  correct: 0
+  explanation: >-
+    The lesson ranks capabilities above single data points, and the worked example is the
+    evidence: the egress capability outranks the prompt leak even though the prompt is easier to
+    disclose, because it is the capability that turns disclosure into a completed attack. Asset
+    enumeration is not bookkeeping, since the sentence you write for each asset — who may reach it
+    and who must not — is the boundary every later module attacks. Treating the tool as a detail
+    leaves the highest-impact flow unowned.
+- id: q9
+  question: >-
+    On the diagram, the arrow carrying ingested web pages and uploads into the LLM's context is the
+    one you keep returning to. What is the precise reason no boundary can be drawn on that arrow
+    from inside the model?
+  options:
+    - The retriever appends the text after the assistant turn, so the tokens arrive out of window
+    - The model has no privileged channel marking those tokens inert once they are concatenated
+    - The vector store strips role markers, so the chunks arrive with no indication of their origin
+    - The chat template sorts by role, which reorders retrieved text to sit after the system prompt
+  correct: 1
+  explanation: >-
+    Everything is concatenated into one sequence before the model sees it, and role markers are
+    themselves just tokens that the model has learned to respect rather than a channel the
+    system can enforce. Data untrusted on one side of the arrow is implicitly promoted on the
+    other, and that collapsed line is the whole attack class the next modules build on. Finding
+    it by drawing the diagram is the point — it was there before anyone gave it a name.

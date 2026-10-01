@@ -1,27 +1,79 @@
-# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
-# The lesson's model answer is shown as the explanation. `source` fingerprints the original
-# question + answer; if the lesson changes, the site flags the question for review.
-- source: 355ab6af9485
-  question: How can you jailbreak a model with no gradients?
+- id: q1
+  question: >-
+    A deployed target exposes no gradients — only text replies. What is the working strategy for jailbreaking it?
   options:
-    - Estimate gradients from the tokenizer vocabulary and run GCG on them
-    - Search over prompts by querying the target and keeping what a judge scores as working
-    - Fine-tune a copy of the target model on refusals, then invert it
-    - Send the same prompt many times until sampling randomness succeeds
+    - Estimate the model's gradient from the tokenizer vocabulary, then run GCG on that estimate
+    - Search over prompts by querying the target and keeping what the judge scores as working
+    - Fine-tune a local copy of the target on its refusals, then invert the fine-tuned model
+    - Send the same prompt repeatedly until sampling randomness finally produces compliance
   correct: 1
-- source: 247ec9112326
-  question: Why is the judge the linchpin of automated red teaming?
+  explanation: >-
+    With no gradients, the search has to be driven by a signal observed after each attempt rather
+    than by a descent direction, and that signal is the judge: propose a candidate, send it, score
+    the reply, keep what scored well. PAIR and TAP differ only in how the search is organized — a
+    refinement chain against a pruned tree — not in what makes either of them work. The target never
+    reveals why it complied, which is why the search can stay entirely black-box.
+- id: q2
+  question: >-
+    Why is the judge the linchpin of automated red teaming rather than a reporting detail?
   options:
-    - It is the objective the search optimizes, so its errors bias what attacks are found
-    - It generates the candidate prompts, so its creativity limits the search
-    - It blocks unsafe outputs, so it doubles as the production defense
-    - It sets the query budget, so it decides how long the search runs
+    - It is the objective the search optimizes, so its errors bias which attacks get found at all
+    - It generates the candidate prompts, so its own creativity bounds how far the search can go
+    - It filters unsafe replies, so it doubles as the production defense on the target's side
+    - It sets the query budget, so it decides how long each attack attempt is allowed to run
   correct: 0
-- source: 251b70a33f90
-  question: Why does a keyword jailbreak classifier fail, and what does the automated search do about it?
+  explanation: >-
+    The success signal the search climbs is $r a + f(1-a)$, so a low-recall judge can hide a working
+    attack while a high-false-positive judge manufactures phantom ones that the budget then chases.
+    That is the same bias-versus-base-rate logic as any filter's precision, pointed at your own
+    evaluation this time. Swapping in a semantic detector does not escape the problem — it is another
+    attackable model with its own coverage gaps, so it has to be red-teamed with the same search.
+- id: q3
+  question: >-
+    Why does a keyword jailbreak classifier fail against an automated search, and what does the search do about it?
   options:
-    - It is too slow; the search floods it with requests until it times out
-    - It blocks too much; the search learns to avoid benign words
-    - It matches strings, not intent; the search finds paraphrases like a fictional wrapper
-    - It only reads outputs; the search hides the payload in the system prompt
+    - It is too slow to keep up, so the search floods it with queries until it times out
+    - It blocks far too much, so the search learns which benign words to avoid using
+    - It matches strings rather than intent, so the search finds paraphrases that dodge it
+    - It only reads the model's replies, so the search hides the payload inside the system prompt
   correct: 2
+  explanation: >-
+    A keyword filter is a string matcher, and the space of phrasings carrying the same intent is
+    vastly larger than the list of trigger words, so a guided search rediscovers a wrapper the
+    filter never anticipated — the lab's story framing is exactly that. What the filter stopped was
+    a known shape rather than the capability, which is why the lesson calls it a speed bump and not
+    a boundary. Its false-positive cost also lands on legitimate fiction, role-play and encoding
+    requests.
+- id: q4
+  question: >-
+    An attack has a true success rate $a = 0.6$, and the judge has recall $0.8$ with a
+    false-positive rate of $0.1$. What success rate does the search actually climb?
+  options:
+    - About 40%, because false positives are discarded before the score is ever counted
+    - About 60%, because the judge is unbiased once its error rates are known in advance
+    - About 94%, because recall and the false-positive rate both add directly to the rate
+    - About 58%, from $r a + f(1-a) = 0.8 \cdot 0.6 + 0.1 \cdot 0.4$
+  correct: 3
+  explanation: >-
+    Each query is scored as a success whenever the judge fires, so the observed rate is the judge's
+    recall applied to real compliance plus its false-positive rate applied to the $1-a$ of refusals
+    that make up the rest of the traffic. Knowing the error rates in advance does not remove the
+    bias — the search still climbs a wrong objective, and the phantom winners spend a finite query
+    budget that a real attack needed. That is why the judge is red-teamed alongside the target.
+- id: q5
+  question: >-
+    An attack establishes a benign fictional persona in turn 1 and issues the real request in turn 2.
+    Why does this often beat any single-turn framing?
+  options:
+    - The context now holds attacker-friendly framing the model itself produced, shifting its distribution
+    - Turn 1 resets the model's refusal state, so turn 2 is judged without any prior context
+    - It doubles the query budget, and that alone is why the success probability improves
+    - Multi-turn prompts skip the judge entirely, so the reply is scored as a success by default
+  correct: 0
+  explanation: >-
+    Nothing resets between turns, so the frame the model accepted in turn 1 stays in its context and
+    biases the distribution the second request is answered from — self-conditioning in the attacker's
+    favour rather than any special privilege granted by the system. That is why the search space is
+    really sequences of prompts rather than single messages, and why the extra queries buy something
+    other than repetition. It also widens what the defense must cover, since each turn is a fresh
+    chance to plant framing that later turns inherit.

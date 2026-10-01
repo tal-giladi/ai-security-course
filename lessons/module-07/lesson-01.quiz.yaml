@@ -1,35 +1,63 @@
-# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
-# The lesson's model answer is shown as the explanation. `source` fingerprints the original
-# question + answer; if the lesson changes, the site flags the question for review.
-- source: fa5931d0a53b
-  question: What is the GCG objective, and why can't it be solved by plain gradient descent?
+- id: q1
+  question: >-
+    What is the GCG objective, and why can plain gradient descent not solve it?
   options:
-    - Maximize $\log p_\theta(t\mid p)$ over weights; the model's weights are frozen
-    - Minimize $-\log p_\theta(t\mid p\oplus s)$ over suffix tokens; tokens are discrete
-    - Minimize the suffix length $L$; the loss has no gradient at all
-    - Minimize $-\log p_\theta(p\mid s)$ over the prompt; the target $t$ is unknown
+    - Maximize $\log p_\theta(t \mid p)$ over the model's weights, which stay frozen during the attack
+    - Minimize $-\log p_\theta(t\mid p\oplus s)$ over the suffix tokens, which form a discrete domain
+    - Minimize the suffix length $L$, because the target loss offers no usable gradient at all
+    - Minimize $-\log p_\theta(p\mid s)$ over the prompt itself, since the target $t$ is unknown
   correct: 1
-- source: 350f6bf9045f
-  question: Why does GCG evaluate candidate swaps with real forward passes instead of trusting the gradient?
+  explanation: >-
+    The prompt is fixed and the adversary's only lever is the suffix, so the objective is
+    cross-entropy to a chosen target continuation under the prompt-plus-suffix pair. What blocks
+    ordinary descent is the domain rather than the objective: the suffix ranges over $|\mathcal V|^L$
+    discrete tokens, and gradient descent needs a differentiable neighbourhood to move through.
+    Bridging that gap — and replacing brute force over $|\mathcal V|^L$ with a polynomial number of
+    forward passes — is the entire point of the algorithm.
+- id: q2
+  question: >-
+    Why does GCG evaluate shortlisted candidate swaps with real forward passes instead of trusting the gradient?
   options:
-    - The gradient is exact, but forward passes are cheaper to compute
-    - The gradient cannot be computed for closed models, so forward passes replace it
-    - The one-hot gradient is only a linear approximation of the true discrete loss change
-    - Forward passes are needed to measure perplexity, not the target loss
+    - The gradient is exact, but forward passes are cheaper to compute for each candidate swap
+    - Gradients cannot be computed for closed models, so forward passes stand in for them entirely
+    - The one-hot gradient is only a first-order estimate of the discrete loss change
+    - Forward passes are needed to measure perplexity rather than the target loss being minimized
   correct: 2
-- source: 1cac86c2b2bb
-  question: Why does a perplexity filter stop vanilla GCG, and how does the adaptive attack defeat it?
+  explanation: >-
+    $\nabla_{e_i}L$ is a first-order Taylor estimate of what substituting token $v$ at position $i$
+    will do, and the true loss surface over token swaps is not linear, so the highest-gradient
+    candidate is often not the best one. Evaluating a sampled batch of shortlisted swaps measures the
+    actual loss instead of the approximation, at a cost of one backward plus $B$ forwards per step.
+    That propose-then-verify structure is what buys the query-efficiency over random search.
+- id: q3
+  question: >-
+    Why does a perplexity filter stop vanilla GCG, and how does an adaptive attack defeat it?
   options:
-    - Vanilla suffixes are gibberish with high perplexity; adding a fluency term yields readable ones
-    - Vanilla suffixes are too long; the adaptive attack shortens them below the limit
-    - Vanilla suffixes repeat the target; the adaptive attack encodes them in base64
-    - Vanilla suffixes have low perplexity; the adaptive attack adds random tokens
+    - Vanilla suffixes are gibberish with high perplexity; a fluency term yields readable ones
+    - Vanilla suffixes are too long; the adaptive attack shortens them below the detector limit
+    - Vanilla suffixes repeat the target verbatim; the adaptive attack encodes them in base64
+    - Vanilla suffixes already have low perplexity; the adaptive attack adds random tokens to spread it
   correct: 0
-- source: b38cf7471327
-  question: Why are transferable suffixes a threat to closed-source models?
+  explanation: >-
+    Perplexity filtering works because the original attack has no incentive to be readable: tokens
+    are chosen purely to move the loss, so the result looks like gibberish to a language model and
+    scores high perplexity. Adding a fluency penalty to the same objective makes the optimized suffix
+    read like ordinary text while keeping most of the success, dropping it under the threshold. The
+    filter therefore has an ROC curve rather than a gate, and its false-positive cost lands on real
+    inputs such as code, other languages and rare jargon.
+- id: q4
+  question: >-
+    Why are suffixes found on open surrogates a genuine threat to closed-source targets?
   options:
-    - Closed models expose gradients through their API logprobs
-    - Suffixes leak the closed model's weights once they succeed
-    - Closed models are trained on the suffixes, so they memorize them
+    - Closed models expose their gradients directly through the logprobs their API already returns
+    - A suffix that succeeds leaks the closed model's weights back to whoever found it
+    - Closed models were trained on these suffixes, so they memorize and repeat them verbatim
     - Suffixes optimized on open surrogates often work on black-box targets too
   correct: 3
+  explanation: >-
+    Models trained on overlapping data learn overlapping features and similar decision geometry, so
+    an input that finds a failure region in one model tends to land near the same region in another.
+    That is what makes a white-box attack on an open surrogate a real threat to a closed system: the
+    attacker never touched the target, so no API hardening, rate limit or input filter applies. "We
+    are closed-source" is a fact about access, not a control — and surrogates are open because one was
+    always downloadable, distillable or fine-tunable.
