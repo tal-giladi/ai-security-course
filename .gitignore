@@ -16,3 +16,4 @@ lab/.data/
 *.pt
 *.bin
 .env
+.cc.txt

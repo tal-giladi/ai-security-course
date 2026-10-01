@@ -3,89 +3,83 @@
 Goal: take the course from **347 check-course problems / 80 valid questions** to
 **0 problems / every question live**, with every lab shipped in a module zip, and add
 state-of-the-art 2026 content. Binding rules: `tals-academy/docs/new-course-instructions.md`.
-Working recipe: `curriculum/migration-spec.md`. Audit that started this: below.
+Working recipe: `curriculum/migration-spec.md`.
 
-## Why this session exists (audit, 2026-09-30)
+## Progress
 
-- `npm run check-course` = **347 problems, 80 valid questions**. Only the 6 new modules
-  (16.2, 27-31) comply; the 30 pre-2026-09-30 lessons and 31 legacy quiz YAMLs are dropped
-  on import.
-- **22 of 28 labs never ship.** `course-creator.ts:293` picks `labs/module-NN/` zips *else* the
-  shared `lab/` folder. This repo has both, so modules 00-26 get **no zip at all**
-  (line 305 returns `[]`), and the shared runtime is in nobody's zip.
-- **OWASP Top 10 for Agentic Applications 2026 (ASI01-ASI10) absent** from the standards map
-  despite the course being agent-heavy (M16-M21, M28).
-- **Six Class-A 2026 findings sit unbuilt** in `research/staging.md`.
-- Missing required files: `curriculum/course-details.md`, `PUBLISHING_WARNING.md`, `glossary.md`.
+| | |
+|---|---|
+| Starting point | 347 problems, 80 valid questions, 6 compliant lessons |
+| Now | **72 problems, 154 valid questions, 35 compliant lessons, 33 modules** |
+| Remaining | 27 module quiz YAMLs + 13 lesson quiz YAMLs (delegated) |
 
-## The adapter question (important, resolved 2026-09-30)
+check-course problem breakdown as of the last run:
 
-The Academy also has a **bespoke `ai-security` adapter** (`src/lib/importer/adapters/ai-security.ts`,
-documented as `docs/source-formats.md` section B) that understands the legacy format natively: it
-parses `<div class="prereq">`, uses `## Assessment` as the quiz source, maps `lessons/frontier/`
-to `F.1`, and ships `labs/lab-NN` + the shared `lab/` in every module zip. Two things settled this:
-
-1. **`npm run check-course` hard-codes `courseCreatorAdapter`** (`scripts/check-course.ts:11`) and
-   has no flag for another adapter — so the 347-problem number is measured against the general
-   contract, not the course's bespoke one.
-2. **The repo has already outgrown the bespoke adapter.** It splits the sidebar header on `" · "`
-   and skips any section whose first token is not a bare number, so `- **Module 27 — …**`
-   is logged as "Unknown sidebar section" and **dropped entirely** — modules 27-31 would not
-   import at all. It also has no notion of front matter or `.quiz.yaml`, so 16.2 and 27-31 would
-   import with **no quiz**.
-
-`TODO_FOR_TAL.md` already recorded the intended fix ("their lessons have no Academy front-matter
-and their .quiz.yaml use the old `source:` format … To import cleanly they need front-matter +
-source-free quizzes + sidebar `- **Module N —**` format. Separate migration job."). This session
-is that job, and it also removes the need for the one-off adapter: the course moves to the
-general `course-creator` contract, as `new-course-instructions.md` requires.
+- 27 × "no .quiz.yaml" + 27 × "Quiz page has no Answers section" — **one root cause**: the module
+  quizzes have intro pages but no question file. The second message is a *symptom*: with no YAML
+  the adapter falls back to the old markdown-quiz parser and warns. Writing the YAML clears both.
+- 13 × "0 valid questions" — legacy lesson quizzes still on the old `source:` fingerprint format.
+- 5 small link/length fixes — done.
 
 ## Units
 
 - [x] U0 Audit (check-course, lab tests, research registry, web research)
 - [x] U1 Migration spec + canonical section set
-- [ ] U2 Mechanical migration script (divs->alerts, drop Assessment/Progress, normalize sections)
-- [ ] U3 Front matter for 30 legacy lessons
-- [ ] U4 Rewrite 31 legacy quiz YAMLs (4 options + explanation, no `source:`)
-- [ ] U5 23 missing module quizzes (md intro + yaml)
-- [ ] U6 `_sidebar.md` rebuild to Academy format
-- [ ] U7 Lab relocation: `labs/lab-NN` -> `labs/module-NN`, add `labs/common/`
-- [ ] U8 course-details.md, PUBLISHING_WARNING.md, glossary.md
-- [ ] U9 OWASP Agentic Top 10 (ASI01-ASI10) crosswalk in `references/standards-map.md`
-- [ ] U10 New lessons + labs: monitor evasion / trace tampering, scope adherence,
-      denial-of-wallet, render-before-reading
-- [ ] U11 Final QA: check-course 0 problems, lab tests pass, commit + push
+- [x] U2 Mechanical migration script (divs→alerts, drop Assessment/Progress, reorder sections)
+- [x] U3 Front matter for all 28 legacy lessons (agent for 00–16, script for 17–26 + 32)
+- [x] U4 Rewrite 28 legacy quiz YAMLs — 15 done, 13 delegated
+- [ ] U5 27 missing module quizzes — delegated
+- [x] U6 `_sidebar.md` rebuilt to Academy format (33 modules, running lesson numbers 01–35)
+- [x] U7 Lab relocation: `labs/lab-NN` → `labs/module-NN`, `labs/common/` added, 127+14 tests pass
+- [x] U8 course-details.md, PUBLISHING_WARNING.md, glossary.md (90 terms)
+- [x] U9 OWASP Agentic Top 10 (ASI01–ASI10) crosswalk + refreshed ATLAS tactics
+- [x] U10 New module 33 — oversight, scope adherence, out-of-band evidence (+ lab, 14 tests)
+- [ ] U11 Final QA: check-course 0 problems, full lab suite, commit
 
 ## Resume procedure
 
 Read this file, then `curriculum/status/*.log`; skip units whose log says `module done`.
-**At most two writing agents at a time** (main session + one sub-agent). Main session owns the
-shared files — `_sidebar.md`, `glossary.md`, `README.md`, `labs/common/`, `templates/`,
-`references/`, `curriculum/*` — and edits them only between agent runs. Agents write glossary
-additions to `curriculum/glossary-inbox/module-NN.md`. Commit after every unit.
+**At most two writing agents at a time** (main session + one sub-agent, or two sub-agents on
+disjoint file sets). Main session owns the shared files — `_sidebar.md`, `glossary.md`, `README.md`,
+`labs/common/`, `templates/`, `references/`, `curriculum/*` — and edits them only between agent
+runs. Agents write glossary additions to `curriculum/glossary-inbox/module-NN.md`. Commit after
+every unit.
 
 ## Now working
 
-- (none)
+- Two agents: one rewriting the 13 legacy lesson quizzes (modules 04–16), one writing the 27
+  module quiz YAMLs. Disjoint file sets; the main session is not editing quiz files meanwhile.
+
+## Scripts added this session
+
+| Script | What it does |
+|---|---|
+| `scripts/migrate_lessons.py` | The mechanical half of the lesson migration. Idempotent, with a size guard that aborts rather than writing if a file shrinks past the intended deletions. |
+| `scripts/migrate_labs.py` | `labs/lab-NN` → `labs/module-NN`, adds the shipped `sys.path` line, rewrites repo references. Skips `scripts/` so it cannot rewrite its own mapping tables. |
+| `scripts/sync_labs_common.py` | Keeps `labs/common/` (shipped copy) in sync with `lab/` (source of truth). `--check` for CI. |
+| `scripts/add_front_matter.py` | Generates front matter from each lesson's own objectives and its lab's stated runtime. |
+| `scripts/gen_module_quiz_pages.py` | Generates the missing `assessments/module-NN-quiz.md` intro pages. |
+| `scripts/check_quizzes.py` | Validates every `.quiz.yaml` against section 5 of the course instructions. **Run this after any quiz edit.** |
 
 ## Decisions
 
-- **Lab layout.** Move `labs/lab-NN/` to `labs/module-NN/` so each module zip carries its own
-  lab, matching the modules that already work (27-31). Add `labs/common/` for the shared
-  runtime copied out of `lab/`, so the legacy labs run standalone from a download. Safe now:
-  the course has never been imported, so no learner path depends on the old names.
-- **Keep `lab/` at the repo root** for the docsify/GitHub workflow and `pytest lab/tests`;
-  `labs/common/` is the shipped copy, kept in sync by `scripts/sync_labs_common.py`.
-- **Sidebar.** Drop the `curriculum/` and `PROGRESS.md` links (§3 forbids listing `curriculum/`
-  pages) and the duplicate `papers/index.md`; drop the lab-README links (benign warning) and
-  rely on the in-lesson zip links. Papers become `templates/`-style standalone pages listed
-  under a Reference section, or a Projects section.
-- **Legacy F.1 (`lessons/frontier/update-01.md`)** trips "module page outside lessons layout".
-  Move to `lessons/module-32/lesson-01.md` (id `32.1`) — a new module at the end, no renames.
-- **`projects/capstones.md`** trips the same check; keep it but list it under Projects, which
-  the importer picks up automatically.
-- Answer positions balanced A-D across every quiz file.
+- **Lab layout.** `labs/lab-NN/` → `labs/module-NN/` so each module zip carries its own lab,
+  matching the modules that already worked (27–31). `labs/common/` holds a flat copy of the shared
+  runtime so it lands in every module zip; `lab/` stays at the repo root as the source of truth and
+  for the docsify workflow. Safe now: the course has never been imported, so no learner path
+  depends on the old names.
+- **Sidebar.** Dropped the `curriculum/` and `PROGRESS.md` links (§3 forbids listing `curriculum/`
+  pages) and the duplicate `papers/index.md`. Lab READMEs are no longer listed, which removes the
+  "module page outside lessons layout" warnings; lessons link `labs/module-NN/` instead, which
+  becomes the module zip download.
+- **Front-matter objectives are quoted.** Objective text lifted from a lesson often starts with
+  `**Compose** …`, which unquoted YAML reads as an alias reference; the whole block then fails to
+  parse and the importer reports every front-matter key as missing. All objective lists are quoted.
+- **Legacy F.1 → module 32.** `lessons/frontier/update-01.md` tripped "module page outside
+  lessons/module-NN/lesson-MM.md layout". Moved to `lessons/module-32/lesson-01.md` (id `32.1`).
+- Answer positions balanced across A–D in every quiz file.
 
 ## Open questions for Tal
 
-- (none blocking; see `TODO_FOR_TAL.md`)
+- Set the course row's adapter to **`course-creator`** in the Academy. The bespoke `ai-security`
+  adapter can stay but is no longer the right one — see the adapter note above.
