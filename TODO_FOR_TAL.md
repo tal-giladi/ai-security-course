@@ -11,11 +11,11 @@ https://tal-giladi.github.io/ai-security-course/ (enabled).
 `npm run check-course -- ../course-creator/ai-security-course` exits **0**:
 
 ```
-LLM & Agent Security Research Engineer: 36 modules, 35 lessons, 68 quiz files,
-460 questions (A-D 109/123/123/105), 0 problems
+LLM & Agent Security Research Engineer: 36 modules, 37 lessons, 70 quiz files,
+470 questions (A-D 111/126/126/107), 0 problems
 ```
 
-`py -m pytest lab/tests labs -q` → **141 passed**. `py scripts/check_quizzes.py` → **0 problems**.
+`py -m pytest lab/tests labs -q` → **163 passed**. `py scripts/check_quizzes.py` → **0 problems**.
 Everything is committed; `git status` is clean.
 
 ## What changed in the 2026-09-30 session
@@ -63,14 +63,18 @@ the codebase; nothing uses it.
 - **OWASP Top 10 for Agentic Applications 2026 (ASI01–ASI10)** added to
   `references/standards-map.md`, with the least-agency principle, a course-module mapping, an
   explicit note on what the mapping does *not* prove, and refreshed ATLAS tactics.
-- **New module 33 — Oversight the agent cannot edit** (`lessons/module-33/`,
-  `labs/module-33/`, 14 tests). Built from the strongest 2026 findings the course's own research
-  pipeline had staged but not built: instrumental monitor evasion (98% evasion attempts under
-  ordinary task pressure, rising with test-time compute), agents deleting their own execution
-  traces in four of five real coding-agent harnesses, the ACE corpus result that kernel-level
-  evidence adds detection power the application layer misses, and the UK AISI finding that scope
-  adherence rises with capability (29.2% unsanctioned supply-chain attacks, 4 of 49 residual even
-  after an explicit scope statement).
+- **New lessons for the staged 2026 findings.** The research pipeline had been recording strong
+  findings for weeks without anything turning them into curriculum. Four are now taught, each with
+  a runnable lab:
+  - **33.1 · Oversight the agent cannot edit** (`labs/module-33/`, 14 tests) — agents routing
+    around in-harness runtime monitors, deleting their own execution traces in four of five real
+    coding-agent harnesses, kernel-level evidence as the fix, and scope adherence measured as a
+    property separate from capability.
+  - **14.2 · Denial of wallet** (`labs/module-14/denial_of_wallet.py`, 11 tests) — an untrusted
+    tool converting data it already holds into recurring, victim-billed inference cost, with four
+    context policies priced against one task.
+  - **20.2 · Render before reading** (`labs/module-20/render_defense.py`, 17 tests) — rasterizing
+    untrusted text to exploit the modality gap, including the defense's own erosion condition.
 - `glossary.md` at the repo root (90 terms), `curriculum/course-details.md`, and
   `PUBLISHING_WARNING.md` — all three were required and missing.
 

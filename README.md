@@ -100,13 +100,13 @@ Pages is ever disabled.
 
 ## Status
 
-**33 modules (M00–M33)**, 35 lessons, one runnable and tested lab per module, all on the shared
+**36 modules (M00–M33)**, 37 lessons, one runnable and tested lab per module, all on the shared
 lab infrastructure (deterministic model shim, local egress sink, agent runtime, defense toolkit,
 eval harness) with `labs/common/` copied into every module's download so a lab runs straight out of
 the zip.
 
 ```bash
-py -m pytest lab/tests labs -q      # 141 lab tests
+py -m pytest lab/tests labs -q      # 163 lab tests
 py scripts/check_quizzes.py         # every quiz against the Academy's quiz rules
 ```
 
@@ -121,7 +121,9 @@ curriculum-review pipeline (`research/`) that reads new attacks, defenses, advis
 standards, classifies each candidate, and adds at most one piece of curriculum a week only when
 it clears the bar — with a safe local lab, never a claim it cannot back with a measurement.
 
-The most recent additions are the agent-oversight module (M33: agents routing around in-harness
-runtime monitors, deleting their own execution traces, and scope adherence measured as a property
-separate from capability) and the OWASP Agentic Applications crosswalk
-([`references/standards-map.md`](references/standards-map.md)).
+The most recent additions are the OWASP Agentic Applications crosswalk
+([`references/standards-map.md`](references/standards-map.md)) and three lessons built from 2026
+findings the research pipeline had staged for weeks: agent oversight and scope adherence (33.1 —
+agents routing around in-harness monitors and deleting their own execution traces), denial of
+wallet (14.2 — an untrusted tool that turns data it already holds into a bill), and
+render-before-reading (20.2 — closing the text-channel injection gap by changing carrier).

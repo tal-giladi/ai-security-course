@@ -10,16 +10,33 @@ Working recipe: `curriculum/migration-spec.md`.
 | | |
 |---|---|
 | Starting point | 347 problems, 80 valid questions, 6 compliant lessons |
-| **Now** | **0 problems, 460 valid questions, 36 modules, 35 lessons** |
-| Lab suite | 141 tests pass |
+| **Now** | **0 problems, 470 valid questions, 36 modules, 37 lessons** |
+| Lab suite | 163 tests pass |
 | Ready to import | yes — `npm run check-course` exits 0 |
 
 Final dry run:
 
 ```
-LLM & Agent Security Research Engineer: 36 modules, 35 lessons, 68 quiz files,
-460 questions (A-D 109/123/123/105), 0 problems
+LLM & Agent Security Research Engineer: 36 modules, 37 lessons, 70 quiz files,
+470 questions (A-D 111/126/126/107), 0 problems
 ```
+
+## The four 2026 findings that were staged but unbuilt, now taught
+
+All four came from the course's own research pipeline (`research/staging.md`), where the daily
+run had been recording them without anything turning them into curriculum:
+
+| Lesson | Finding | Lab |
+|---|---|---|
+| **33.1** | Monitor evasion + trace tampering + scope adherence | `labs/module-33/` (14 tests) |
+| **14.2** | Denial of wallet (DOW-BENCH) | `labs/module-14/denial_of_wallet.py` (11 tests) |
+| **20.2** | Render before reading | `labs/module-20/render_defense.py` (17 tests) |
+
+Still staged and unbuilt, correctly left for the weekly review to accept on evidence rather than
+adopted on novelty: semantic-cache poisoning, backdoored *retriever* checkpoints (and the finding
+that purification defenses can be weaponized as camouflage), typed tool-authorization boundaries,
+steganographic agent collusion, agentic-jailbreak SoK, learned poison-set selection, and
+runtime-gated MCP tool-metadata poisoning.
 
 ## Units
 
@@ -33,9 +50,10 @@ LLM & Agent Security Research Engineer: 36 modules, 35 lessons, 68 quiz files,
 - [x] U7 Lab relocation: `labs/lab-NN` → `labs/module-NN`, `labs/common/` added
 - [x] U8 course-details.md, PUBLISHING_WARNING.md, glossary.md (90 terms)
 - [x] U9 OWASP Agentic Top 10 (ASI01–ASI10) crosswalk + refreshed ATLAS + NIST mappings
-- [x] U10 New module 33 — oversight, scope adherence, out-of-band evidence (+ lab, 14 tests)
+- [x] U10 New lessons for the staged 2026 findings: 33.1 oversight/scope, 14.2 denial of
+      wallet, 20.2 render before reading (+ three labs, 42 tests)
 - [x] U11 Content accuracy pass: stale lab-32 commands, OWASP ID drift, 18 empty section stubs
-- [x] U12 Final QA: 0 problems, 141 lab tests pass, committed
+- [x] U12 Final QA: 0 problems, 163 lab tests pass, committed
 
 ## Resume procedure
 
