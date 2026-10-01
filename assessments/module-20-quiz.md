@@ -12,6 +12,5 @@ Scenario questions, not recall: you are given a situation and asked what to do, 
 
 ## Where to review
 
-- [22 · Multimodal security (deep)](../lessons/module-20/lesson-01.md)
-
-If a question is hard, go back to the lesson it came from — especially its Mathematics section and the guarantee analysis for any defense involved.
+- [23 · Multimodal security (deep)](../lessons/module-20/lesson-01.md)
+- [24 · Render before reading](../lessons/module-20/lesson-02.md)

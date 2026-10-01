@@ -1,0 +1,92 @@
+- id: q1
+  question: >-
+    A host runtime carries every tool result into all later model turns. A tool returns 40,000
+    characters on its first call and the agent then runs 10 more turns. Why is this expensive?
+  options:
+    - The provider re-meters the whole context on every turn, so one payload is billed repeatedly
+    - The agent re-reads the payload and charges the host for each read
+    - The tool is billed per byte returned, and 40,000 bytes exceeds the tool's quota
+    - Long contexts slow the model down, so latency costs scale with context length
+  correct: 0
+  explanation: >-
+    Billing is per input token on every turn, and the context includes everything the tool said
+    earlier. So a payload returned on turn one is charged again on turns two through ten — the
+    damage is the payload multiplied by the turns still to come, which is why an attacker wants
+    to be the first tool called rather than the last. Nothing re-reads or re-read-bills anything;
+    it is the accumulating transcript and the per-turn price.
+- id: q2
+  question: >-
+    Which statement separates denial of wallet from exfiltration?
+  options:
+    - It targets the vector store rather than the model's weights
+    - It needs write access to the retriever index to place the payload
+    - Its objective is the victim's spend, and it requires no credential and no egress
+    - It only works against agents that stream their output back to the user
+  correct: 2
+  explanation: >-
+    The goal is the invoice: the attacker converts a capability they already legitimately have —
+    returning tool output — into recurring, victim-billed inference cost. No credential is taken,
+    no data leaves the machine, and nothing in the event log resembles an intrusion, which is
+    exactly why a SIEM watching for actions misses it and cost-per-session is the real instrument.
+- id: q3
+  question: >-
+    With a fixed per-turn payload $k$ and session length $T$, cumulative input grows as $T C_0 +
+    k\frac{T(T-1)}{2}$. What does this tell a defender?
+  options:
+    - Fixing $T$ alone is sufficient, since the payload term is dominated by $C_0$
+    - The payload term is quadratic in $T$ and linear in $k$, so pinning one axis moves the attack
+    - Cost is independent of $k$ once $T$ is bounded, because tools rarely return large results
+    - The term is negative for small $T$, so short sessions are free of the attack
+  correct: 1
+  explanation: >-
+    The attacker chooses whichever axis the host makes cheap: longer sessions or larger payloads,
+    and pinning one just relocates the attack onto the other. The practical consequence is that a
+    session-length cap alone does not bound the bill, because $k$ is unbounded — which is why the
+    enforced control has to cap the payload in code rather than the number of turns.
+- id: q4
+  question: >-
+    Your team caps the context window by deleting prior turns on every call. The bill falls by
+    98%. Why is this not a defense?
+  options:
+    - Deleting history is a structural control, so the 98% figure cannot be trusted
+    - It completes only 1 of 12 task steps, so the saving comes from breaking the work
+    - The cap still permits the original attack at one tenth of the cost
+    - Deletion is cheaper than compression and so should always be preferred
+  correct: 1
+  explanation: >-
+    The saving is real and it is bought by destroying the context the task depends on, so the
+    defense has an almost total utility cost — which is what makes it a denial of service on
+    yourself rather than a mitigation. This is the module-23 pattern in a new place: a defense is
+    a pair of numbers, cost and utility, and reporting the first without the second is how a
+    broken product gets described as a mitigation.
+- id: q5
+  question: >-
+    Where does the enforced control belong, and why?
+  options:
+    - In the model, by fine-tuning it to ignore oversized tool results
+    - In the tool wrapper, capping response size in code before the value enters the transcript
+    - In the cost dashboard, by alerting when a session exceeds a threshold
+    - In the system prompt, by instructing the agent not to request large results
+  correct: 1
+  explanation: >-
+    Capping the response in code removes the attacker's freedom rather than filtering for bad
+    content, so the quadratic term is bounded no matter what any downstream context policy does,
+    and it holds even when the agent is fully compromised. The dashboard is a detector with a
+    base-rate problem, and the prompt and fine-tuning are both priors that cost one API call each
+    and are evadable by a tool that simply returns a plausible amount.
+- id: q6
+  question: >-
+    Cost-per-session anomaly detection against this attack is usually *effective*, even though
+    it is only a detector. Why?
+  options:
+    - Because the effect size is large, so a few standard deviations separates benign from attack
+    - Because the attacker's sessions always contain a recognizable tool name
+    - Because billing systems log the tool's identity alongside the token count
+    - Because the attacker cannot see the victim's thresholds and so cannot tune the payload
+  correct: 0
+  explanation: >-
+    The attack multiplies cost by an order of magnitude, which is a large effect size, so a
+    threshold a few standard deviations above the benign mean separates the two populations with
+    real power. The catch is the usual one: effectiveness at *separating* does not survive the
+    base rate, because benign sessions are far more numerous. Strong signal, poor prior — which
+    is why this detection alerts rather than blocks.
