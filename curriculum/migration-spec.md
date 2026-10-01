@@ -38,7 +38,7 @@ Same order in every lesson. Optional sections are marked; keep them when the les
 ## Learning objectives
 ## Concept
 ## Intuition
-## Technical explanation
+## Technical explanation     (optional)
 ## Mathematics               (optional)
 ## Attack / Defense model     (optional)
 ## Real-world examples        (optional)
@@ -49,6 +49,11 @@ Same order in every lesson. Optional sections are marked; keep them when the les
 ## Further reading
 ## What you should now be able to do
 ```
+
+A section marked optional is present only where the lesson has that content — an empty heading
+teaches nothing and is worse than an absent one. `Why this matters`, `Learning objectives`,
+`Concept`, `Intuition`, `Code`, `Practical lab`, `Exercise`, `Research paper`, `Further reading`
+and `What you should now be able to do` are always present.
 
 Normalize the legacy variants:
 
@@ -101,9 +106,26 @@ page. If the lesson opens straight into `## Why this matters`, add a one-sentenc
 - **No `source:` field** (old fingerprint format → 0 valid questions).
 - `explanation` is required.
 - 3-5 questions per lesson, 8-10 per module quiz, 4 options, one correct.
-- Spread `correct` across 0-3 (~25% each), no run of three.
+- Spread `correct` across 0-3 (~25% each), no run of three, and use at least three distinct
+  positions in every file.
 - No "all/none of the above"; distractors are plausible mistakes, similar length.
 - Use `>-` for any text containing `:`, `#`, quotes or backslashes.
+
+> **Quote every option.** An unquoted scalar containing `: ` parses as a YAML *mapping*, and a
+> bare number as a float, so the importer rejects the entry with "options must be 4 non-empty
+> strings" even though the list does have four items. Quote them unconditionally:
+>
+> ```yaml
+>   options:
+>     - "Stops: injected instructions in any carrier"
+>     - "Stops: nothing, because the filter runs after the model"
+>     - "Stops: recognized plaintext only, not encoded payloads"
+>     - "Stops: the harmful action itself, before the model is called"
+> ```
+>
+> `py scripts/check_quizzes.py` checks all of this, including that all four options are strings.
+> Run it after every quiz edit; it is faster and clearer than a full import dry run.
+
 
 ## 6. Module quizzes
 
