@@ -10,31 +10,32 @@ Working recipe: `curriculum/migration-spec.md`.
 | | |
 |---|---|
 | Starting point | 347 problems, 80 valid questions, 6 compliant lessons |
-| Now | **72 problems, 154 valid questions, 35 compliant lessons, 33 modules** |
-| Remaining | 27 module quiz YAMLs + 13 lesson quiz YAMLs (delegated) |
+| **Now** | **0 problems, 460 valid questions, 36 modules, 35 lessons** |
+| Lab suite | 141 tests pass |
+| Ready to import | yes — `npm run check-course` exits 0 |
 
-check-course problem breakdown as of the last run:
+Final dry run:
 
-- 27 × "no .quiz.yaml" + 27 × "Quiz page has no Answers section" — **one root cause**: the module
-  quizzes have intro pages but no question file. The second message is a *symptom*: with no YAML
-  the adapter falls back to the old markdown-quiz parser and warns. Writing the YAML clears both.
-- 13 × "0 valid questions" — legacy lesson quizzes still on the old `source:` fingerprint format.
-- 5 small link/length fixes — done.
+```
+LLM & Agent Security Research Engineer: 36 modules, 35 lessons, 68 quiz files,
+460 questions (A-D 109/123/123/105), 0 problems
+```
 
 ## Units
 
 - [x] U0 Audit (check-course, lab tests, research registry, web research)
 - [x] U1 Migration spec + canonical section set
 - [x] U2 Mechanical migration script (divs→alerts, drop Assessment/Progress, reorder sections)
-- [x] U3 Front matter for all 28 legacy lessons (agent for 00–16, script for 17–26 + 32)
-- [x] U4 Rewrite 28 legacy quiz YAMLs — 15 done, 13 delegated
-- [ ] U5 27 missing module quizzes — delegated
-- [x] U6 `_sidebar.md` rebuilt to Academy format (33 modules, running lesson numbers 01–35)
-- [x] U7 Lab relocation: `labs/lab-NN` → `labs/module-NN`, `labs/common/` added, 127+14 tests pass
+- [x] U3 Front matter for all 28 legacy lessons
+- [x] U4 Rewrite all 31 lesson quiz YAMLs
+- [x] U5 All 33 module quizzes (intro page + 8-10 question YAML)
+- [x] U6 `_sidebar.md` rebuilt to Academy format (running lesson numbers 01–35)
+- [x] U7 Lab relocation: `labs/lab-NN` → `labs/module-NN`, `labs/common/` added
 - [x] U8 course-details.md, PUBLISHING_WARNING.md, glossary.md (90 terms)
-- [x] U9 OWASP Agentic Top 10 (ASI01–ASI10) crosswalk + refreshed ATLAS tactics
+- [x] U9 OWASP Agentic Top 10 (ASI01–ASI10) crosswalk + refreshed ATLAS + NIST mappings
 - [x] U10 New module 33 — oversight, scope adherence, out-of-band evidence (+ lab, 14 tests)
-- [ ] U11 Final QA: check-course 0 problems, full lab suite, commit
+- [x] U11 Content accuracy pass: stale lab-32 commands, OWASP ID drift, 18 empty section stubs
+- [x] U12 Final QA: 0 problems, 141 lab tests pass, committed
 
 ## Resume procedure
 
@@ -47,8 +48,25 @@ every unit.
 
 ## Now working
 
-- Two agents: one rewriting the 13 legacy lesson quizzes (modules 04–16), one writing the 27
-  module quiz YAMLs. Disjoint file sets; the main session is not editing quiz files meanwhile.
+- (none — all units complete)
+
+## Traps hit during this migration, worth remembering
+
+Each of these passed an obvious first check and failed only in the importer:
+
+1. **Unquoted YAML options.** `- Stops: something` parses as a *mapping*, and a bare `0.216`
+   parses as a float. The importer then rejects the entry with "options must be 4 non-empty
+   strings" even though the list has four items. Quote every option.
+2. **Unquoted objectives starting with `**`.** `- **Compose** controls…` is an alias reference, so
+   the whole front-matter block fails to parse and `splitFrontMatter` returns `{}` — which the
+   importer then reports as every key missing, with no hint about the real cause.
+3. **A migration script that rewrote its own source.** `migrate_labs.py` ran a
+   `labs/lab-NN` → `labs/module-NN` reference rewrite over the whole repo including `scripts/`,
+   which turned its own `MERGE_INTO` key into a self-mapping and made the second run `rmtree`
+   the destination. It now skips `scripts/` and aborts if a move's source and destination resolve
+   to the same directory.
+4. **`check_quizzes.py` counting options without checking their type.** It used `str(o)` for the
+   distinctness check, so a dict passed. It now requires all four to be non-empty strings.
 
 ## Scripts added this session
 

@@ -6,6 +6,18 @@ Commit-tracked so a stopped session resumes from here. Working detail lives in
 Repo: https://github.com/tal-giladi/ai-security-course · Pages:
 https://tal-giladi.github.io/ai-security-course/ (enabled).
 
+## Ready to import
+
+`npm run check-course -- ../course-creator/ai-security-course` exits **0**:
+
+```
+LLM & Agent Security Research Engineer: 36 modules, 35 lessons, 68 quiz files,
+460 questions (A-D 109/123/123/105), 0 problems
+```
+
+`py -m pytest lab/tests labs -q` → **141 passed**. `py scripts/check_quizzes.py` → **0 problems**.
+Everything is committed; `git status` is clean.
+
 ## What changed in the 2026-09-30 session
 
 A full audit, then the fixes it pointed at.
@@ -18,7 +30,8 @@ importer dropped them: no front matter, `<div>` boxes instead of GitHub alerts, 
 sections and `course.py` commands, and quiz YAMLs in an old `source:` fingerprint format with no
 `explanation` — which the importer counts as **0 valid questions**.
 
-All 28 legacy lessons and their quizzes are now on the current format. 33 modules, 35 lessons.
+All 28 legacy lessons and every quiz in the course are now on the current format: 36 modules,
+35 lessons, 68 quiz files, 460 questions, answer positions balanced A–D.
 
 ### 22 of 28 labs were never shipped
 
@@ -63,9 +76,22 @@ the codebase; nothing uses it.
 
 ## Still open
 
-- Finish the module quiz YAMLs and the remaining legacy lesson quizzes (in progress).
-- Re-run `npm run check-course` until it reports **0 problems**.
-- Re-run the full lab suite and commit.
+Nothing blocking. Optional follow-ups, in rough value order:
+
+- **Deepen the depth-first modules.** Most modules have one flagship lesson; the flagship is
+  deep, the neighbours are thin. The strongest candidates for a second lesson are modules 14
+  (RAG), 19 (MCP) and 24 (evaluation).
+- **Simulation pages.** `simulations/` is empty and optional; an interactive one for the
+  monitor-evasion or audit-coverage experiment would be the natural first candidate.
+- **M09's q2/q3 nearly duplicate** each other (FGSM one-step optimality vs "evaluate with PGD, not
+  FGSM"). They test different claims, so both stay, but it is the weakest pair in the course.
+- **M13 declares `volatility: implementation`** and presents `trust_remote_code` and
+  `torch.load(weights_only=True)` as current behaviour. Worth a re-check against current
+  PyTorch and transformers releases before treating it as settled.
+- **M20 states "MSE ≤ 1" as the imperceptibility bound** where the lab measures ~0.05. The
+  Mathematics section states it correctly as a per-pixel bound; the prose line should be aligned.
+- **`labs/module-09/adv.py` defaults to `eps=0.1`** while the lesson quotes output at `eps = 0.05`.
+  Either change the default or make the lesson say which it means.
 
 ## Validation commands
 
