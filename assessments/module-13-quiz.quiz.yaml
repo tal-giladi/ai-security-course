@@ -1,0 +1,161 @@
+- id: q1
+  question: >-
+    The team verified the adapter's SHA-256 against a trusted manifest, then loaded it with `torch.load`.
+    What is still unverified?
+  options:
+    - Nothing, since a matching digest proves the bytes are the ones the publisher signed
+    - Only the licence, since a signature carries no statement about how the file will be deserialized
+    - Whether loading runs code — the signature says who shipped it, not whether the format is executable
+    - Whether the publisher is trustworthy, since a digest pins identity and says nothing about intent
+  correct: 2
+  explanation: >-
+    These are two orthogonal questions and the digest answers only the first. A pickle checkpoint
+    reconstructs objects through `__reduce__`, so `torch.load` invokes the recorded callable during
+    deserialization, before any tensor exists and before the signature could matter. The format is
+    what removes the code path — safetensors, or `weights_only=True` — and it has to be checked
+    independently of who published the bytes.
+- id: q2
+  question: >-
+    The base model was converted to safetensors and loads cleanly, but the LoRA adapter still drives
+    trigger ASR to 1.00 after merge. Which layer failed to help?
+  options:
+    - The format layer, because a safe-by-construction file prevents code execution and says nothing about behaviour
+    - The signature layer, since safetensors cannot be verified without also converting the adapter
+    - The sandbox, because a backdoor changes model outputs rather than issuing syscalls at load time
+    - The provenance layer, because a valid tensor file cannot carry a trigger into the merged model
+  correct: 0
+  explanation: >-
+    The lab's adapter keeps clean accuracy at 0.98 while reaching ASR 1.00, and every weight it
+    contributes is a perfectly valid tensor — the format guarantee is about what loading can *do*,
+    not about what the numbers *are*. Safe loading and safe behaviour are separate properties, which
+    is why the stack keeps behavioral vetting and least privilege after the format and provenance
+    layers.
+- id: q3
+  question: >-
+    A repository ships no `tokenizer.json`, so the team passes `trust_remote_code=True` to
+    `from_pretrained`. What have they opted into?
+  options:
+    - A slower tokenizer path, since the remote loader is the only implementation that supports the model
+    - Arbitrary Python from that repository running at load time, in addition to the pickle-free weights
+    - Telemetry about which models are loaded, which the remote loader requires before it will resolve
+    - A one-time download of tokenizer weights, which are then cached and hashed locally
+  correct: 1
+  explanation: >-
+    The flag means the repository may ship model, tokenizer or processor *code* that gets executed
+    during load, by design — converting an untrusted repo from data into a program. The risk is
+    identical to the pickle one and is not mitigated by safetensors, since the code runs around the
+    tensor load rather than inside it. That is why this is listed as its own load-time code path and
+    why a sandbox with no network is the compensating control.
+- id: q4
+  question: >-
+    The load gate hashes the file on disk, closes it, then reopens it to deserialize. An attacker with
+    write access swaps the file in between. What class is this, and what is the fix?
+  options:
+    - A signature forgery, fixed by rotating the publisher key and re-pinning the manifest
+    - A malicious publisher, fixed by provenance review before any artifact enters the index
+    - A scanner false negative, fixed by running opcode inspection on the bytes actually deserialized
+    - Time-of-check to time-of-use, fixed by hashing the exact bytes you load from a single opened handle
+  correct: 3
+  explanation: >-
+    Two operations on two reads leave a window, and the verification is on a file that was never
+    loaded. Hashing the bytes you actually consume — one handle, read once — closes it, and pinning
+    the manifest to a signed release makes the trusted root explicit. This is the same filesystem
+    pattern as any TOCTOU bug, and it is why a hash gate that looks correct in review can still be
+    bypassed by an attacker who merely waits.
+- id: q5
+  question: >-
+    You scan downloaded artifacts with `pickletools.dis` and flag any `REDUCE` or `GLOBAL` opcode to a
+    dangerous callable. Why is that fragile next to a format guarantee?
+  options:
+    - Opcode names are obfuscated in real payloads, so the scan only catches textbook examples
+    - The scan inspects only the serialized form, so a payload in an allowed remote-code path never reaches it
+    - It is a detector with a false-negative rate, whereas a format that cannot express code removes the class entirely
+    - Dangerous callables are ordinary Python imports, so every legitimate checkpoint trips the rule
+  correct: 2
+  explanation: >-
+    Opcode inspection is a classifier, and classifiers carry the base-rate problem the module keeps
+    returning to: a novel payload or an obfuscated one passes. A format guarantee is not a better
+    detector, it is the removal of the attack surface — there is no field in the file that means "run
+    this" — which is why the ecosystem moved rather than adding scanners.
+- id: q6
+  question: >-
+    Every artifact is safetensors and every digest matches a signature from a publisher key you trust.
+    Which attacker still wins cleanly?
+  options:
+    - The publisher themselves, since a signature authenticates malware just as faithfully as it authenticates weights
+    - Anyone with write access to the cache, since a valid signature does not bind to the file on disk
+    - A scanner author, since the format check only covers tensors and never inspects tokenizer code
+    - The model's original authors, since safetensors files carry no licence and so no legal protection
+  correct: 0
+  explanation: >-
+    Provenance answers "is this the artifact the publisher intended to ship", not "is the publisher
+    hostile". A key you trust is a statement about identity, and an attacker who holds it produces
+    bytes that verify perfectly — which is exactly the condition the guarantee box calls out when it
+    pairs provenance with behavioral vetting rather than ranking it as sufficient.
+- id: q7
+  question: >-
+    The stack is now safetensors, pinned signed digests and trigger probing, but `trust_remote_code=True`
+    is still set for two repositories. Which layer is carrying the residual risk?
+  options:
+    - The sandbox, since it is the only remaining layer and therefore inherits every failure of the others
+    - Least privilege at load — no network and no credentials inside the loader bounds what that code can reach
+    - The provenance layer, since it should have refused to pin a repository that ships executable code
+    - The format layer, since safetensors cannot constrain code that runs after the tensors are loaded
+  correct: 1
+  explanation: >-
+    Every other layer assumes the artifact will not execute code, so once you have opted into remote
+    code that assumption fails and something has to bound the consequences instead. Running the loader
+    with no network, no credentials and a read-only filesystem turns an arbitrary-code hole into a
+    bounded one. That is why the stack is described as layered: each control covers a failure the
+    others do not, and the sandbox covers the one you accepted deliberately.
+- id: q8
+  question: >-
+    The adapter objective is `4·clean_loss + backdoor_loss`, and you keep the most stealthy variant that
+    still exceeds ASR 0.9. What has that bought you?
+  options:
+    - A weaker backdoor, because the penalty trades clean accuracy against attack success rate inside the objective
+    - A measurable detection guarantee, since a stealthy adapter leaves less spectral separation for a detector
+    - A deployable artifact, since the chosen point already satisfies the team's stated ASR requirement of 0.9
+    - Nothing conclusive, since the frontier is a training artifact and the trigger still has to be found by probing
+  correct: 3
+  explanation: >-
+    $\lambda$ is the attacker's dial between how obvious the adapter looks on clean data and how
+    reliably the trigger fires; tuning it moves you along that curve, it does not change what a
+    defender can observe. Clean evaluation was an explicit term in the objective, so 0.98 says nothing
+    about ASR, and the only remaining probe is behavioral — which means guessing the trigger, one
+    candidate pattern at a time.
+- id: q9
+  question: >-
+    The merged model scores 0.98 clean accuracy and 1.00 ASR on your trigger probe. Why did the adapter
+    pass the team's clean evaluation?
+  options:
+    - The adapter was trained on the evaluation split, so clean accuracy is optimistic but the backdoor is absent
+    - Clean accuracy is an explicit term in the attacker's objective, and the trigger is simply never in the eval set
+    - Safetensors round-trips the delta exactly, so the merged weights match the intended fine-tune
+    - LoRA deltas cannot express conditional behaviour, so the 1.00 ASR is a measurement artifact
+  correct: 1
+  explanation: >-
+    The stealth objective is written as clean loss plus a weighted backdoor term, so the attacker
+    optimizes for exactly the metric the evaluation reports and pays for it in the conditional
+    behaviour instead. That is the supply-chain version of the M11 result: the base model's own
+    weights file is never touched, the adapter looks like an ordinary fine-tune, and the trigger
+    condition is invisible to anything that samples from the clean distribution.
+- id: q10
+  question: >-
+    You are writing the guarantee box for the full load-time stack. Which pairing of claims is correct?
+  options:
+    - >-
+      Stops: all backdoors. Does not stop: nothing. Adapts: none, since a format cannot carry a trigger
+    - >-
+      Stops: substitution. Does not stop: a hostile publisher. Cost: conversion and signature infrastructure
+    - >-
+      Stops: code execution at load. Does not stop: a backdoored adapter. Adapts: ship valid tensors instead
+    - >-
+      Stops: poisoned data. Does not stop: stolen signatures. Adapts: sign the adapter with a rotated key
+  correct: 2
+  explanation: >-
+    The box has to survive the question of what each layer actually bought, and the honest answer is
+    that the format closes code execution and nothing else — weights are data, and data can be
+    malicious while remaining perfectly loadable. The predicted adaptation is therefore to stay inside
+    the format and move the attack downstream into behaviour, which is why provenance, probing and a
+    sandbox stay in the stack after the guarantee is satisfied.

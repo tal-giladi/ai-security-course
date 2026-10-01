@@ -1,0 +1,152 @@
+- id: q1
+  question: >-
+    CW fools every input and the median $\ell_2$ norm among fooled points is 0.27, far below a
+    typical PGD $\epsilon$. Why is the median the number worth reporting?
+  options:
+    - It is the minimal break the model has, while fixed-$\epsilon$ attacks report a budget chosen in advance
+    - The mean is dominated by outliers and cannot be trusted on a sample of this size
+    - The $\ell_2$ norm is invariant to the number of perturbed coordinates, so medians compare cleanly
+    - The fooled fraction is reported separately, so perturbation size is the only number left to give
+  correct: 0
+  explanation: >-
+    FGSM and PGD fix $\epsilon$ and maximise the loss, so the size they report is a property of
+    the attacker rather than of the model. CW inverts the problem and minimises $\|\delta\|_2$
+    subject to the margin term, so what it reports is a property of the model: the smallest nudge
+    that flips it with confidence $\kappa$. That is the sharper probe, and it is the reason models
+    tested only against sign attacks looked robust until this objective was run against them.
+- id: q2
+  question: >-
+    You raise $\kappa$ from 0 to 2 in the CW objective. What happens to the reported perturbation
+    size, and why?
+  options:
+    - Perturbations shrink, because a positive margin makes the objective easier to satisfy
+    - Nothing changes, because $\kappa$ is a constant and constants do not affect a gradient
+    - Only the fooled rate moves, because $\kappa$ fixes how many inputs end up misclassified
+    - Perturbations grow, because the margin must hold with confidence before the penalty drops to zero
+  correct: 3
+  explanation: >-
+    The penalty term is $\max(0, Z_y - \max_{j \ne y} Z_j + \kappa)$, so it stays positive until
+    the true class is beaten by a margin of $\kappa$ rather than by any hair. A larger $\kappa$
+    therefore demands a point further and further past the decision boundary, and the minimised
+    norm grows with it. This is the knob that connects CW's tiny numbers to the semantics you
+    care about: a misclassification you can be confident about costs more perturbation than one
+    that squeaks through.
+- id: q3
+  question: >-
+    `transfer_rate` crafts PGD adversarials on $A$ and finds about 0.98 of them also fool $B$, a
+    model trained on the same data with a different seed. What does that number license you to say?
+  options:
+    - Any adversarial example crafted on a surrogate will also fool a target you cannot access
+    - A black-box target is as cheap to break as a white-box one, given enough surrogate compute
+    - Surrogates sharing data and architecture transfer well, and the rate falls as they diverge
+    - Withholding gradients is the only mitigation a black-box provider can actually deploy
+  correct: 2
+  explanation: >-
+    The two models here differ in exactly one respect — the seed — and the measurement holds
+    data, architecture and procedure fixed, so it measures the similarity you have rather than
+    the worst case you might face. Transfer rate is a function of that similarity, which is why
+    ensembling surrogates improves it and why the plot against similarity is the exercise's real
+    deliverable. The security consequence is a default: assume a surrogate will transfer, because
+    withholding access removes the gradient but not the shared decision geometry.
+- id: q4
+  question: >-
+    You attack inside the certified radius $R$ and the smoothed prediction $g$ flips on one point.
+    What does that mean?
+  options:
+    - The radius is conservative, so you can safely report a smaller $R$ without re-verifying
+    - The base classifier changed under the perturbation, which is expected and says nothing about $g$
+    - The point was never certified, so check $\underline{p_A}$: too few samples or a wrong confidence bound
+    - The certificate constrains $f$ rather than $g$, so the smoothing result has to be dropped
+  correct: 2
+  explanation: >-
+    The theorem says $g$ is provably constant for every $\ell_2$ perturbation below $R$, against
+    any attack, so a flip means the premise failed rather than the theorem. Either $n$ was too
+    small for the confidence the lower bound claims, or you evaluated the base classifier instead
+    of the Monte-Carlo vote. The hint names both, and the practical value of checking the bound
+    this way is that an implementation mistake surfaces as a violation instead of a quietly
+    worthless number.
+- id: q5
+  question: >-
+    You train the base classifier with input noise $\sigma$ and certify at
+    $R = \sigma\,\Phi^{-1}(\underline{p_A})$. Moving $\sigma$ from 0.25 to 0.5 changes which pair of
+    reported numbers?
+  options:
+    - Radii grow roughly with $\sigma$, while the added noise blurs the classes and clean accuracy falls
+    - Radii grow with $\sigma$ and clean accuracy rises, since more noise concentrates the model's vote
+    - Radii stay put, because $\sigma$ cancels between the injected noise and the probability bound
+    - Radii grow faster than $\sigma$, since $\Phi^{-1}$ itself increases with the noise level
+  correct: 0
+  explanation: >-
+    $R$ is linear in $\sigma$ through the first factor, and the second factor moves the other way:
+    more noise makes the smoothed top-class probability more decisive, which raises
+    $\underline{p_A}$ and with it $\Phi^{-1}(\underline{p_A})$. The cost lands on the un-noised
+    model, whose clean accuracy falls as the input is smeared across a wider region. That
+    clean-versus-certified frontier is the whole trade-off, and $\sigma$ is the knob you slide
+    along it.
+- id: q6
+  question: >-
+    A model reports 0.55 robust accuracy under AutoAttack at $\ell_2$, $\epsilon = 0.5$, and 0.12
+    certified accuracy at radius 0.3 under randomized smoothing. How should the pair be read?
+  options:
+    - The certified number is the true robustness, because a lower bound is the honest one to quote
+    - The two are directly comparable, because both are accuracies measured on the same test set
+    - The empirical number is a lower bound, since a stronger attack can only raise what is reported
+    - They measure different things at different radii, and only the certified one is a guarantee
+  correct: 3
+  explanation: >-
+    Robust accuracy under a specific attack $\mathcal A$ is an upper bound on true robustness,
+    because a stronger attack can only lower it, whereas certified accuracy at radius $R$ is a
+    lower bound. The two are commensurable only at the same norm and the same radius, so the
+    honest report states $R$ beside the number and reports both rather than promoting the
+    certified figure to a headline. Quoting 0.55 without the attack and 0.12 without the radius
+    is how a 0.3 result becomes a 0.55 claim.
+- id: q7
+  question: >-
+    A team publishes a robust-accuracy number from one hand-picked attack. What is the AutoAttack
+    argument against that number?
+  options:
+    - A parameter-free ensemble cannot be tuned to flatter the defender, which is what made it decisive
+    - Individual attack results are noisy, so averaging them yields a tighter interval on the truth
+    - Only gradient-based attacks should be used, since they are the reproducible ones to re-run
+    - Ensembles share one forward pass per example, so they are strictly cheaper than running them
+  correct: 0
+  explanation: >-
+    Evaluation is a negotiation, and a single hand-picked attack lets the defender choose the one
+    the model happens to survive. Croce and Hein's answer is an ensemble of parameter-free attacks
+    — two APGD variants, FAB and Square — that the reporting party cannot tune, and it used
+    exactly that property to strip the gradient masking out of dozens of published defences. The
+    parameter-free constraint is the whole point: any tunable component reintroduces the
+    negotiation.
+- id: q8
+  question: >-
+    A reviewer objects that randomized smoothing is too slow to serve. What is the real cost
+    profile, and what does the engineering buy?
+  options:
+    - One forward pass on a noised input, with clean accuracy essentially unchanged, plus a guarantee
+    - Many forward passes per prediction, in exchange for a guarantee against all $\ell_2$ attacks below $R$
+    - A base classifier retrained with noise, and nothing at all at inference time
+    - Nothing at inference, because the Monte-Carlo vote is computed once offline per test point
+  correct: 1
+  explanation: >-
+    Evaluating $g$ means sampling the neighbourhood and taking a vote, so every prediction pays
+    for a Monte-Carlo estimate, and certifying each point pays for a separate one at a stated
+    confidence level. What that buys is the one thing no amount of evaluation effort substitutes
+    for: a bound against attacks you never ran. The cost line is a throughput line rather than a
+    correctness one, and it has to be quoted next to the radius or the guarantee reads as free.
+- id: q9
+  question: >-
+    You want larger certified radii at the same $\sigma$ and you raise the sample count per point
+    from 2000 to 20000. What happens, and what does it cost?
+  options:
+    - Nothing moves, because $n$ affects the confidence level rather than the lower bound itself
+    - The lower bound $\underline{p_A}$ tightens upward, so $\Phi^{-1}$ rises and every radius grows
+    - The lower bound $\underline{p_A}$ falls, because a smaller sampling error permits a tighter shadow
+    - The certified fraction drops, because each extra sample can disagree with the current top class
+  correct: 1
+  explanation: >-
+    $\underline{p_A}$ is a confidence lower bound whose standard error scales as
+    $\sqrt{\underline p (1-\underline p)/n}$, so more samples push it closer to the true smoothed
+    probability from below. Since $R$ is monotone in $\underline{p_A}$ and $\Phi^{-1}$ is steep
+    near one, the radius grows faster than the bound does, and more points clear the
+    $\underline{p_A} > 0.5$ bar. The cost is ten times the forward passes per point, which is
+    exactly the bill the Monte-Carlo implementation incurs.

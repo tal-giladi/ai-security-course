@@ -1,0 +1,182 @@
+- id: q1
+  question: >-
+    Your mutation fuzzer plateaus at judged ASR 0.40 for five consecutive rounds against a
+    defended target, while a human red teamer reports occasional successes. What does the
+    plateau tell you to check first?
+  options:
+    - >-
+      The mutation set is too small, so add encoding and combination operators and run several
+      more rounds
+    - >-
+      The judge caps the search: observed ASR tracks $r a + f (1-a)$, so a low-recall classifier
+      hides the true rate
+    - >-
+      The target is well defended, since a population that stops improving has reached its
+      optimum
+    - >-
+      The population has converged on the strongest payloads, which is exactly the outcome the
+      search was asked for
+  correct: 1
+  explanation: >-
+    The objective is noisy and only as good as the success signal, so a plateau is ambiguous
+    between "no better payloads exist" and "better payloads are not being scored as successes."
+    Observed ASR is approximately $r\cdot a + f\cdot(1-a)$, so a classifier with poor recall
+    truncates the score long before the target's real resistance is reached, and the search
+    then optimises the classifier's blind spot. Validate the judge before buying more rounds.
+- id: q2
+  question: >-
+    Co-evolution rounds: undefended ASR 1.00; round 1 adds a keyword filter and ASR drops to
+    0.10; round 2 reruns the same fuzzer and ASR recovers to 0.95 on shouted, duplicated seeds
+    carrying none of the filtered words. What is the correct reading of that curve?
+  options:
+    - The filter works, since 0.95 took a payload no human red teamer would have thought of
+    - The fuzzer is broken, since a payload that worked in round 0 should not work in round 2
+    - >-
+      The filter is brittle: durability is the attacker's best-response ASR across rounds, not
+      the round-0 drop
+    - The filter is durable, since ASR fell nine tenths before the fuzzer was allowed to adapt
+  correct: 2
+  explanation: >-
+    Round-t ASR is the attacker's best response to the round-t defense, so the number that
+    matters is where that response settles once the attacker has had a round to adapt. A
+    keyword filter that recovers to near 1.0 within one or two rounds is a detector, not a
+    control: it narrows the space of payloads rather than removing the capability. A durable
+    defense keeps best-response ASR low regardless of round, which is the enforced-control
+    property rather than a filtering property.
+- id: q3
+  question: >-
+    After eight overnight rounds the fuzzer reports zero successes against the defended target
+    and the CI job goes green. What may the team state in the release note?
+  options:
+    - >-
+      No attack from the searched families and mutations was found in this run; it is not a
+      security claim
+    - The target is secure, because eight overnight rounds is the strongest evidence available
+    - The target is secure, because the judge is validated and the interval is narrow
+    - The search failed to converge, so the run should be repeated with a larger population
+  correct: 0
+  explanation: >-
+    Absence of a found attack is not absence of an attack, and the red-teamer's value is the
+    union of the families and transformations it explores. A run that returns zero says the
+    neighbourhood around the seeds contains nothing the judge scored as a win, which is a fact
+    about the search space and the success signal. The publishable form is coverage plus the
+    zero, stated so a reader can see exactly how narrow the neighbourhood was.
+- id: q4
+  question: >-
+    `labs/module-25/redteam.py` mutates only by framing, shouting, duplication and emphasis. A
+    defender blocks every framing marker you know about. Which change keeps the harness's
+    guarantee defensible?
+  options:
+    - Report ASR per round with confidence intervals, so the evasions show up in the numbers
+    - Replace the random fuzzer with an attacker model that reads the target's replies, PAIR-style
+    - Raise the trials per payload until the population stops changing between consecutive rounds
+    - >-
+      Widen the mutation set to encoding, obfuscation and combination, and state which
+      transformations it covers
+  correct: 3
+  explanation: >-
+    The guarantee box is bounded by the operators you implemented, not by the space of payloads
+    that exist. Framing, casing and duplication are one small slice, and a defender who blocks
+    them has learned the slice rather than closed the channel, so the fuzzer's rediscovery of
+    evasions is the predicted adaptation rather than a surprise. Publishing the operator list
+    next to the ASR is what lets a reader tell a real defence from a narrow one.
+- id: q5
+  question: >-
+    The search declares a winner from a single trial per payload, and the summary quotes that
+    payload's ASR as 1.00. What does the harness's reporting rule require instead?
+  options:
+    - Report the winner at 1.00, since one confirmed success does not need an interval
+    - >-
+      Repeat trials per payload and report ASR with confidence intervals before naming a winner
+    - Report the mean ASR over the whole population, since averaging cancels the trial noise
+    - Report the round-0 ASR as the baseline and leave the later rounds without their own figures
+  correct: 1
+  explanation: >-
+    The objective is a proportion over finite trials, so a single observation carries no
+    information about how often the payload actually works and the search selects on whatever
+    noise that round produced. The same discipline as an evaluation applies here: enough
+    repetitions per payload, an interval around the rate, and a winner declared only when the
+    interval clears the bar. Otherwise the population evolves toward payloads that got lucky.
+- id: q6
+  question: >-
+    You point the chain-finder at the agent runtime with the judge "did the canary reach the
+    sink". It reports a successful one-step chain. What does that measurement leave unmeasured?
+  options:
+    - The number of tool definitions the attacker had to read, which scales with schema size
+    - Whether the legitimate workflow reaches the sink unaided, with no injection involved at all
+    - >-
+      Everything deeper: chain depth and exfiltration rate at each layer still need separate
+      measurement
+    - Nothing, since a one-step chain is the cheapest win there is and the easiest one to reproduce
+  correct: 2
+  explanation: >-
+    Chain search returns the first sequence the judge accepts, and the shortest one is the
+    cheapest for the search to find rather than the most informative. The defence question is
+    per layer: at what depth does each control cut the chain, and what exfiltration rate survives
+    it, because that is what tells you which control carries the load. Measuring only the
+    minimum chain produces a pass on a system where the multi-step paths were never tested.
+- id: q7
+  question: >-
+    An attacker model that proposes payloads from the target's replies reaches judged ASR 0.90
+    in 40 queries; the random mutation fuzzer needs 400 for the same figure. What is the
+    defensible way to report that?
+  options:
+    - >-
+      A query-efficiency gain for the attacker model, with CIs, while coverage stays bounded by
+      the judge and the families
+    - That the fuzzer is now redundant, since anything it finds the attacker model finds faster
+    - That the attacker's quality is proven, since one successful search certifies every payload
+    - That this is a defense improvement, because a costlier attacker raises the measured rate
+  correct: 0
+  explanation: >-
+    Replacing random mutation with a model that reads the target's reply changes the search's
+    efficiency on this target and this judge, which is a real result worth a table with intervals.
+    It says nothing about what either generator reaches in payload families neither was pointed
+    at, so the coverage statement has to be produced separately rather than inherited from the
+    faster generator. Generators are interchangeable behind the same interface, and the
+    comparison belongs between them, not between them and a defence.
+- id: q8
+  question: >-
+    The red team runs the night before a release, and twice a year a developer ships a change
+    without it. Which guarantee claim survives a security review?
+  options:
+    - >-
+      Continuous regression detection, since the suite runs on the same schedule as the releases
+    - >-
+      Coverage of the attack families in the suite, since the suites are what produce the
+      findings
+    - >-
+      Honest ASR over time for both sides, since the reported history draws on every round
+    - >-
+      Nothing time-continuous: the guarantee holds only where the loop re-runs after a change
+  correct: 3
+  explanation: >-
+    Red teaming becomes a control at the moment it re-runs unattended after every change, and a
+    calendar schedule attaches it to releases rather than to modifications, so the gap sits
+    exactly where a defense is edited and nobody looks. Coverage and per-round ASR remain real
+    properties of each run, but they describe the system as it stood when the loop last fired.
+    The defensible statement is conditional on the trigger, and the trigger belongs in CI.
+- id: q9
+  question: >-
+    A CI job fails when any single family's ASR exceeds 0.05. After a quarter of adding two
+    probe families per round, the job fails constantly on one family at 0.08 while the overall
+    rate is 0.01. What is the correct reading?
+  options:
+    - >-
+      Tune the judge, since a family that always fails is usually a scoring artifact rather than
+      a real leak
+    - >-
+      The added coverage found exposure the narrow suite could not see; the aggregate fell
+      because the denominator grew
+    - >-
+      Report the overall rate instead, since per-family gates fire on families the aggregate
+      smooths away
+    - >-
+      Nothing needs doing, since a green run is what the gate was already reporting
+  correct: 1
+  explanation: >-
+    Coverage and ASR move in opposite directions when you widen a suite, and reading the
+    aggregate as a security trend hides that entirely: a mean over more families can fall while
+    an untested-in-production family becomes exploitable. The constant failure is the suite
+    working, because a gate that fires only when the aggregate moves never notices a family
+    going from clean to broken. Report per-family rates with the coverage statement beside them.

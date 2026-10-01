@@ -1,0 +1,175 @@
+- id: q1
+  question: >-
+    The same guarded support bot returns ASR 0.00 on your ORIGINAL suite of four plain
+    requests and ASR 1.00 on an ADAPTED suite of authority-framed prompts, n=20 each, with
+    widely separated intervals. What does that pair license you to report?
+  options:
+    - >-
+      The two suites describe different systems, so neither figure belongs in the writeup
+    - The mean of the two, since it is the fairest single number for a deliberately mixed suite
+    - The adapted figure, because it is the one produced by the strongest attack you have
+    - The original figure, since the suite was fixed before any result was seen
+  correct: 2
+  explanation: >-
+    Adaptive evaluation is the decisive methodology rule here: the suite is a choice, so the
+    number is a property of the suite as much as of the bot. The pre-registered suite only
+    documented that those four wordings are blocked, and an attacker who studies the filter
+    picks the wording it does not recognise. What you publish is the best-response figure plus
+    the suite it came from, so a reader sees both the number and how hard it was tried.
+- id: q2
+  question: >-
+    Two configurations of the same defense score ASR 0.20 and 0.30 at n=20 each, and their
+    95% Wilson intervals overlap. A release note claims the second configuration is more
+    secure. What is the defensible response?
+  options:
+    - >-
+      The difference is not established; roughly n >= 193 per condition is needed to resolve a
+      0.1 gap
+    - The claim holds, since 0.30 is three tenths lower and any reviewer can do the arithmetic
+    - Reject the change, because a gap needing 193 samples cannot be real at any sample size
+    - Average the two into 0.25, which halves the interval width by the square-root rule
+  correct: 0
+  explanation: >-
+    Overlapping intervals mean the data cannot separate the two configurations, so the claim is
+    noise read as signal. The sample-size rule makes that quantitative: n scales with the
+    inverse square of the target gap, which is why a tenth of a point costs roughly 193 trials
+    per arm while a whole point resolves on twenty. Small suites show direction only; the
+    remedy is more data, not a better sentence in the release note.
+- id: q3
+  question: >-
+    Your judged success signal is an LLM classifier with recall $r = 0.9$ and a 5%
+    false-positive rate on defended runs. The defense's true ASR is $a = 0.20$. What will the
+    harness report, and what does the gap mean?
+  options:
+    - >-
+      0.20, since the classifier already sees most real successes and is reporting a rate it
+      holds
+    - >-
+      About 0.22 from $r a + f (1-a)$, and the false-positive floor lets the harness manufacture
+      successes
+    - >-
+      About 0.29, because classifier recall and its false positives both add to the observed
+      rate
+    - 0.90, which is the recall figure the harness uses directly as its success criterion
+  correct: 1
+  explanation: >-
+    Observed ASR is approximately $r\cdot a + f\cdot(1-a)$: $r$ times 0.20 gives the successes
+    the classifier actually sees, and $f$ times the remaining 0.80 is the residue it invents on
+    a defended system. That 0.04 floor matters because it does not shrink as the defense
+    improves, so a benchmark run against a strong control still reports a non-zero rate and the
+    search drifts toward noise. Validating the judge is the first task, not a cleanup step.
+- id: q4
+  question: >-
+    An injection detector scores ROC-AUC 0.94 in the lab at 90% TPR and 5% FPR. Production
+    traffic carries roughly 1 attack in 1,000 requests. What does base-rate precision make of
+    that operating point?
+  options:
+    - >-
+      It stays high, since AUC is threshold-free and cannot be distorted by prevalence
+    - >-
+      It falls to about 18%, so roughly five benign requests are blocked for each real attack
+    - >-
+      It falls to about 1.8%, and that precision is still good enough to block automatically
+    - >-
+      Precision falls, and block-versus-alert must be decided on the base-rate-adjusted number
+  correct: 3
+  explanation: >-
+    Precision depends on prevalence, not only on the score ranking: at $\pi = 0.001$ the true
+    positive term is 0.0009 against 0.04995 from false positives, so about one alert in
+    fifty-six is real. AUC really is prevalence-free, which is precisely why it is the wrong
+    number to block on. The lab curve picks the ranking; the deployment decision comes from
+    recomputing precision at the base rate you actually face and pricing the false blocks.
+- id: q5
+  question: >-
+    Your benchmark reports overall ASR 0.02 over 300 prompts, of which 280 are direct
+    injection. The suite holds no indirect injection, no poisoning and no agent-chain payload.
+    How should the result be presented?
+  options:
+    - As 0.02 overall, with a note that the injection family clears its threshold
+    - >-
+      As 0.02 bounded to the families run, with the untested families named as open questions
+    - As a failure, since a suite that omits families cannot produce a valid aggregate at all
+    - As 0.00 on indirect injection, since direct and indirect share the same entry point
+  correct: 1
+  explanation: >-
+    An aggregate over a suite you chose inherits that choice: the denominator quietly encodes the
+    coverage you bought, so a low numerator and a narrow denominator are the same statement. What
+    makes the report arguable is the second number, how many of the families that matter to this
+    architecture are in the suite at all, plus per-family rates, because a family that is absent
+    cannot be read off a mean that never contained it.
+- id: q6
+  question: >-
+    You measure a defense's ASR at one attack budget and record 0.05. Raising the budget moves it
+    to 0.90. What does the first number hide, and what do you report in its place?
+  options:
+    - >-
+      The cliff position, which only the ASR-versus-strength curve shows and a single point
+      cannot
+    - Nothing, since 0.05 at the standard budget is the operating point a real attacker faces
+    - The sample size, since the two runs differ in n and are therefore not comparable
+    - The mechanism, since a cliff identifies which control gave way and which one held firm
+  correct: 0
+  explanation: >-
+    Robustness is the entire curve, and a scalar picks one point on it for you. The property
+    worth knowing is where the surface stops being flat, because that is the budget an attacker
+    needs and the distance between your measurement and the attacker's capability. Reporting the
+    curve with the cliff marked also tells a reader how much headroom a proposed fix has to buy
+    before the headline number moves at all.
+- id: q7
+  question: >-
+    You tune a jailbreak against model and defense A until ASR 0.85, then run it unmodified
+    against defense B and measure 0.20. What does that transfer measurement support as a claim
+    about B?
+  options:
+    - B is meaningfully weaker, since 0.20 is well below the 0.85 you demonstrated on A
+    - Neither, because the payload was tuned on A and B was never a condition of that search
+    - >-
+      Only B's own number, since low transfer measures the threat's generalisation rather than
+      B's residual weakness
+    - B is secure, because an attack tuned on another system is unlikely to transfer anyway
+  correct: 2
+  explanation: >-
+    Transfer runs in one direction and tells you about the attack, not about B. A high rate on B
+    would say the threat generalises across defenses and every deployment is exposed; a low rate
+    says the tuned payload was specific to A's surface, which is a fact about your search and
+    not a verdict on B. Either way B's number is the one that describes B, and an attack tuned
+    against B is still the only honest test of it.
+- id: q8
+  question: >-
+    Your CI gate fails when overall ASR exceeds 0.10. A defense change ships that moves one
+    family from 0.00 to 0.40 while overall ASR goes from 0.02 to 0.05. What does the gate do?
+  options:
+    - It passes, and the family result surfaces at the next quarterly review of the suite
+    - It fails, because the overall rate moved three points and the threshold has headroom
+    - It passes, and the family regression is a judgement call the suite owner should make
+    - >-
+      It passes, so the gate must be per-family: an aggregate hides the family that went from
+      clean to exploitable
+  correct: 3
+  explanation: >-
+    Averaging over families weights every family equally regardless of whether it is load-bearing
+    for this system, and a family that was previously clean contributes almost nothing to the
+    aggregate until it is already failing. The regression guard is the place where that averaging
+    is most expensive, because it is the only control that runs unattended on every change. Set
+    the threshold per family and fail the build when a family regresses, then say which families
+    the suite does not contain.
+- id: q9
+  question: >-
+    An audit asks whether your evaluation certifies that the system is secure. Which answer is
+    defensible?
+  options:
+    - >-
+      Yes, provided ASR is reported with a 95% Wilson interval on every condition you ran
+    - >-
+      No: it bounds the attacks you ran against the strongest adapted one you could build
+    - >-
+      Yes, if the suite covers at least four attack families and each one has an interval
+    - >-
+      No, because intervals around a proportion describe sampling error and nothing else
+  correct: 1
+  explanation: >-
+    Evaluation is an upper bound in the useful sense: it characterises the attacks you ran, and
+    a stronger or novel one can only move the number the wrong way for you. Every component the
+    lesson lists is conditional on a choice you made, which suite, which judge, which sample
+    size, which base rate, and the box exists to say so out loud. What a well-run evaluation buys
+    is comparability and regression protection, not a safety property.

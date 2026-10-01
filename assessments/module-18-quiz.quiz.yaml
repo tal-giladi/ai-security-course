@@ -1,0 +1,174 @@
+- id: q1
+  question: >-
+    Undefended, the lab chain executes 3 tool calls and the synthetic canary reaches the sink. What
+    does that number actually measure?
+  options:
+    - The number of trust boundaries the design drew, independent of any defense in place
+    - Executed hops before the cut, which lower-bounds the privilege the attacker achieved
+    - The model's error rate, since each hop is one decision it could have refused to make
+    - The number of filters that missed, since each executed hop evades one of them
+  correct: 1
+  explanation: >-
+    The number is executed tool calls before the chain stopped, which is why the table reads none → 3,
+    egress allowlist → 2, least privilege → 1, approval gate → 0. Fewer hops means the attacker got
+    less far, so the metric lower-bounds the privilege achieved and upper-bounds what remains to be
+    done — and because it is a number rather than a feeling, it can be regression-tested in CI.
+
+- id: q2
+  question: >-
+    The attacker page sits on the allowlisted `research.test` host, so browsing must stay. Which
+    single change stops the chain earliest while preserving the task?
+  options:
+    - Remove `read_file`, since a research agent has no use for the filesystem
+    - Add an approval gate on `http_get`, since browsing is the most exposed hop in the chain
+    - Extend the egress allowlist to the article host, since that page is attacker content
+    - Add a keyword filter on tool results, since both injections arrive as ordinary text
+  correct: 0
+  explanation: >-
+    The page is legitimately reachable, and the injection only becomes useful once `read_file` hands
+    it the credentials, so removing that capability cuts the chain at the read hop and leaves the
+    legitimate fetch untouched. The egress allowlist works too but cuts one hop later, and a filter
+    on tool results is probabilistic, so it leaves a residual rather than a boundary.
+
+- id: q3
+  question: >-
+    The approval gate on egress produced chain depth 0 in the lab, cutting earlier than any other
+    control. Why is it not the obvious first choice?
+  options:
+    - Because an approval gate is probabilistic, so its residual is never exactly zero
+    - Because a depth-0 cut means the chain never started, which invalidates the measurement
+    - Because the gate adds no latency, so it is free to place on every egress hop
+    - Because it also denies the legitimate fetch, so the whole browsing task is the cost
+  correct: 3
+  explanation: >-
+    Earlier cuts mean a smaller blast radius and a larger utility bill, and gating every `http_get`
+    bills the entire browsing task while stopping nothing a less intrusive control would not. The
+    engineering answer is to cut with the cheapest high-impact link — remove a capability the task
+    never needed, keep egress control as the last-hop backstop — because defense-in-depth is a
+    sequence to be ordered, not a stack to be piled up.
+
+- id: q4
+  question: >-
+    Per-hop success is $p_i$ and the chain succeeds with $P(\text{chain}) = \prod_i p_i$. You can
+    add a second probabilistic filter on the injection hop, or one enforced least-privilege control
+    that makes `read_file` unreachable. What do you deploy, and what is the residual?
+  options:
+    - The filter first, since a residual of 0.09 beats what an unenforced hop leaves behind
+    - The filter first, because it acts at the earliest hop and so shortens chain depth to 1
+    - >-
+      The enforced control first, because one $p_i \to 0$ zeroes the product, unlike $q_1q_2$
+    - Both together, since a product of filters and a product of hops are the same expression
+  correct: 2
+  explanation: >-
+    A chain completes only if every hop does, so one enforced control that makes a hop impossible
+    sets the whole product to zero however generous the other hops are. Stacked probabilistic
+    filters on the same hop multiply instead: two filters at 0.3 leave 0.09, which is better and
+    still nonzero. Deploy the enforced control first, then keep the filters as depth where no
+    enforced control exists.
+
+- id: q5
+  question: >-
+    Egress allowlist, least privilege and an input filter are all deployed on the research agent.
+    Which chain still runs to completion?
+  options:
+    - The web-entry chain, because filtering the injection text at the hop makes the page safe
+    - A chain that stays inside granted tools and allowlisted hosts, posting the secret to one of them
+    - The memory-persistence hop, because the stored directive is re-read as trusted context
+    - The RAG-entry chain, because a retrieved document never passes through the egress check
+  correct: 1
+  explanation: >-
+    The box's condition is about crossing a boundary you control, and a chain that crosses none is
+    outside every layer. Posting the secret to a host that is on the allowlist, or damaging something
+    with a tool the task legitimately granted, spends authority the system handed over. Filtering
+    content does not make an attacker-influenced page safe to fetch, and a retrieved document still
+    has to exit through egress.
+
+- id: q6
+  question: >-
+    The attacker adds a hop: the injection writes the directive into long-term memory, then the
+    page is taken down and the chain re-fires on the next task. What does this change in your
+    defense plan?
+  options:
+    - The entry hop moves into the memory store, so read-time provenance becomes a control
+    - Chain depth rises by one hop, so the existing depth target of 3 now describes it
+    - The egress allowlist still denies the last hop, so no additional control is needed
+    - The attack turns probabilistic, because retrieval probability is below one for every store
+  correct: 0
+  explanation: >-
+    Taking the page down does not end the attack once the directive sits in a store the agent trusts
+    and re-reads, so the chain now starts somewhere the tool-level controls do not watch. The
+    response is to treat memory as untrusted on read and scope what can be written, then re-measure.
+    A depth target does not follow the chain to its new start, and a durable store is not a bounded
+    loop the agent walks.
+
+- id: q7
+  question: >-
+    The lesson's stated limit is that real agents have many tools and long horizons, so controls must
+    be complete mediation rather than spot checks. What does that mean for your policy?
+  options:
+    - Review the highest-traffic tools monthly and accept the residual risk on the long tail
+    - Move authorization into the model, so it can judge each call in the context it was given
+    - Re-run the chain lab after each release, since it already exercises complete mediation
+    - Authorize every call at one chokepoint, so an unlisted route cannot skip the decision
+  correct: 3
+  explanation: >-
+    Complete mediation means no tool call is ever decided outside the enforcement point — not spot
+    checks on the common tools, which leave the long tail as a route around the policy. That is the
+    limit the lesson flags at scale, where agents carry many tools and long horizons. Moving the
+    decision into the model converts enforcement back into a prior, which is the thing this course
+    keeps warning against.
+
+- id: q8
+  question: >-
+    The assistant must browse and summarize, and never needs the filesystem or arbitrary egress.
+    Which is the smallest policy that breaks every chain above while preserving the task?
+  options:
+    - An input filter on fetched pages plus a system prompt telling the model to ignore directives
+    - Drop `read_file`, allowlist egress hosts, and decide every call in the policy layer
+    - Keep every tool but wrap the two dangerous ones in a human approval gate
+    - Allowlist egress hosts and lean on the approval gate to catch misuse of granted tools
+  correct: 1
+  explanation: >-
+    The minimal set removes what the task does not need, backstops the last hop, and decides every
+    call in one place. Keeping `read_file` and gating it instead preserves exactly the capability the
+    chain needs, and filter-plus-prompt leaves both layers probabilistic. The cost to watch is the
+    browsing path, which least privilege has to leave intact for the task to work at all.
+
+- id: q9
+  question: >-
+    You are writing the guarantee box for the layered agent controls on a kill chain. Which pairing
+    of claims is correct?
+  options:
+    - >-
+      Stops: any chain, however long. Does not stop: misuse inside granted capabilities. Adapts:
+      ship a new tool
+    - >-
+      Stops: the chain outright. Does not stop: a hop you never controlled. Adapts: stay inside grants
+    - >-
+      Stops: the chain while one hop is cut by an enforced control. Adapts: exfil via an allowed host
+    - >-
+      Stops: injection in fetched pages. Does not stop: memory re-firing. Adapts: a longer page
+  correct: 2
+  explanation: >-
+    The stop condition is conditional and that is the point: while one hop is cut by a control
+    enforced in code, the chain cannot complete, whatever the model concluded. The options claiming
+    an unconditional stop overstate it, because a chain confined to granted capabilities and
+    allowlisted destinations still runs, and the attacker adapts by routing the exfiltration through
+    a destination that is on the list.
+
+- id: q10
+  question: >-
+    A teammate proposes ordering by blast radius alone: apply whichever control stops the chain
+    earliest, measured by chain depth. What is the missing term in that reasoning?
+  options:
+    - The per-hop success probability $p_i$, which chain depth does not encode
+    - The utility cost of each cut, since a depth-0 control may also block the legitimate task
+    - The number of injection channels $C$, since browsing feeds more than one at a time
+    - The attacker's adaptation cost, which is zero for every enforced control on the list
+  correct: 1
+  explanation: >-
+    Chain depth measures the attacker's progress and nothing else; an approval gate on all egress
+    scores best and simultaneously blocks the fetch the research task needs. The module's table
+    pairs every cut point with its note on utility for exactly this reason, and the engineering task
+    is the smallest set of controls that cut while preserving the task, not the earliest cut
+    available.

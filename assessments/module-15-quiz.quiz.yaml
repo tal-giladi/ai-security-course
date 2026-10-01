@@ -1,0 +1,145 @@
+- id: q1
+  question: >-
+    An index holds 50 tenants, and the retriever takes a global top-k with $k = 5$ and only then
+    filters. Roughly how many authorized documents should a post-filter return?
+  options:
+    - Five, because the filter removes only what it should and leaves the k intact for the caller
+    - About 0.1 — $k\rho$ with $\rho = 1/50$ — so in practice the caller gets an empty or one-document answer
+    - Two or three, because the caller's own chunks reliably outrank the other forty-nine tenants' chunks
+    - Always zero, since a global top-k of five can never contain a document the querying tenant owns
+  correct: 1
+  explanation: >-
+    If the caller owns a fraction $\rho$ of a well-mixed index, the expected number of authorized
+    documents in a global top-k is $\approx k\rho$, so the filter runs out of things to keep long
+    before it runs out of things to drop. The failure is silent — no unauthorized chunk is returned,
+    which is why post-filter looks correct on a leak test — but the answer quality degrades as the
+    tenant count grows. Pre-filter ranks inside the authorized set and returns $k$.
+- id: q2
+  question: >-
+    Post-filter blocks the cross-tenant leak, but Acme's user gets back an empty result set. Is that a
+    correct control?
+  options:
+    - No — it is the availability failure, and pre-filter ranks inside the authorized set to still return k
+    - Yes, because availability is out of scope and any control that removes the leak is acceptable
+    - Yes, provided the retriever keeps raising k until enough authorized documents survive the filter
+    - No, because authorization belongs in the prompt rather than in the retrieval query
+  correct: 0
+  explanation: >-
+    A control that stops the leak while destroying the feature is a denial of service in the name of
+    access control, and on a large shared index it degrades without ever looking like an attack.
+    Raising $k$ to compensate re-exposes the original leak, since more global slots means more foreign
+    documents to drop. The fix is structural rather than parametric: restrict the candidate set first,
+    then rank, so $k$ describes authorized results by construction.
+- id: q3
+  question: >-
+    Acme's user ingests a document whose own metadata field says `tenant = globex`. Post-filter trusts
+    `d.tenant`. What happens, and what fixes it?
+  options:
+    - Nothing, because the ingest path validates the tenant field against the authenticated session
+    - The document is dropped, because post-filter compares `d.tenant` to the caller and finds a mismatch
+    - It passes the filter, and the fix is to resolve scope from a trusted principal-to-scope mapping
+    - It is filtered but still leaks its text, because similarity scores it against the Acme query anyway
+  correct: 2
+  explanation: >-
+    Any authorization that reads a field the attacker wrote is authorization on the object's
+    self-description, which is the IDOR pattern in a new costume. Pre-filter builds its candidate set
+    from the caller's tenant resolved through your auth system, so the document's claim is never read
+    as authority — it is simply in the wrong set. The lesson's rule generalizes: authorize on the
+    subject, not on a label the subject can write.
+- id: q4
+  question: >-
+    Under no-authz, an attacker crafts a query matching a victim tenant's secret document and measures
+    the leak rate across seeds. What does a rate near 1.0 mean for triage?
+  options:
+    - It is an artifact of one unlucky seed, so the result should be re-run before anyone is told
+    - It is probabilistic, so filtering the answer text per request is an adequate mitigation
+    - It is a property of the embedding, so switching embedders removes the exposure
+    - It is a reliable attack, not a fluke — treat the victim's document as disclosed and rotate what it protects
+  correct: 3
+  explanation: >-
+    Leak probability rises with the similarity between the query and the victim document and with index
+    mixing, so an attacker who knows the topic can push it toward 1 — that is a property of the
+    ranking, not bad luck. Once the retrieval is unauthorized, downstream filtering only raises the
+    attacker's cost, and output controls are exactly the thing the module warns against treating as
+    authorization. The correct response is to rotate the exposed secret and fix the retriever.
+- id: q5
+  question: >-
+    A caller is authorized for exactly one folder, and pre-filter is enforced in code on the
+    authenticated principal before ranking. Which statement about the residual risk is accurate?
+  options:
+    - Nothing is left, because once scope is enforced before ranking no document from outside the folder can be returned
+    - A poison inside the authorized folder still reaches the model, which is a retrieval-poisoning problem for a separate
+      control
+    - An over-broad role is caught by the same check, since the mapping resolves the caller's full scope at request time
+    - A shared document with a wrong ACL entry is caught too, since the caller's scope overrides the document's own list
+  correct: 1
+  explanation: >-
+    Pre-filter is a statement about which candidates exist, so anything an attacker plants inside the
+    set the caller is already entitled to see is untouched by it — that is the M14 poison arriving
+    through an authorized door. The other two failures are provisioning rather than bypass: the
+    control faithfully resolves whatever scope the mapping grants, so an over-broad role or a bad ACL
+    on a shared document passes straight through and has to be fixed where it is written.
+- id: q6
+  question: >-
+    The team adds a system prompt instructing the model never to reveal another tenant's data, and files
+    no authorization change. What has the team actually done?
+  options:
+    - Added a control, because the instruction is enforced at generation time before any token is emitted
+    - Added a control with a known false-positive cost, since the model will refuse some legitimate questions
+    - Added a prior, not a control — authorization is a deterministic decision made on the authenticated principal
+    - Added a control, provided the retriever also filters, since the prompt covers what the retriever misses
+  correct: 2
+  explanation: >-
+    The lab's swap-the-model experiment is the point: the leak persists when the model changes, because
+    it lives in which documents were candidates, not in what the model then says about them. A prompt
+    is a statement about behaviour under a particular model, and the attacker adapts to it without
+    breaking anything — which is the same reason the module treats "the model decides" as a category
+    error rather than a control.
+- id: q7
+  question: >-
+    The principal-to-scope mapping grants one integration role access to all fifty tenants. Pre-filter
+    runs exactly as designed. What is the residual problem?
+  options:
+    - Over-provisioning — the mapping is faithful but too broad, so least privilege and scope review are the controls
+    - A pre-filter bug, since correct designs must re-check the final k against the caller's own documents
+    - A ranking problem, since a shared index cannot express authorization without per-tenant namespaces
+    - A spoofing problem, since a role that wide lets an attacker write `tenant` into document metadata
+  correct: 0
+  explanation: >-
+    Authorization is only as tight as the scope it is handed: a correct check against an over-broad
+    grant passes, and the failure mode is indistinguishable from a correctly scoped system until you
+    audit the grants themselves. That puts scope provisioning — least privilege, periodic review of
+    who holds which role — inside the guarantee's operational cost rather than outside it. It is a
+    different problem from the retriever design, and fixing the retriever will not touch it.
+- id: q8
+  question: >-
+    The team must serve thousands of tenants from one vector store. Which design trade-off is the honest
+    one?
+  options:
+    - Per-tenant namespaces only, because a shared index can never express authorization correctly
+    - Shared index only, because per-tenant namespaces make retrieval cost proportional to tenant count
+    - Shared index with post-filtering, because filtering after ranking saves the ranking work entirely
+    - Either works if scope is enforced before ranking; partitioning buys isolation and costs index-sharing efficiency
+  correct: 3
+  explanation: >-
+    The correctness requirement is that scope restricts the candidate set before similarity runs, and
+    both partitioning and row-level filtering over a shared index can satisfy it. What they trade is
+    operational: separate namespaces give stronger isolation and simpler reasoning at the cost of
+    index-sharing efficiency and a great deal of provisioning, while a shared index keeps efficiency
+    and makes the ACL data load-bearing — which is where the metadata-spoofing risk re-enters.
+- id: q9
+  question: >-
+    You want the tenancy guarantee to survive future refactors of the retrieval layer. What belongs in
+    CI?
+  options:
+    - A prompt-regression suite, since the model is where a cross-tenant document would eventually be surfaced
+    - A periodic penetration test, since an automated cross-tenant check would run too slowly on every commit
+    - An automated assertion that no query from tenant A ever returns a tenant-B document, at any k
+    - A latency dashboard per tenant, since availability is the property that actually regresses
+  correct: 2
+  explanation: >-
+    The guarantee is a property of the candidate set, so it is testable directly and cheaply: run a
+    query as one tenant over another tenant's distinctive document and assert an empty or
+    tenant-only result. That turns the control into a regression guard that fails the commit rather
+    than a claim in a design document, and it is cheap precisely because the test set is two tenants
+    and one document.

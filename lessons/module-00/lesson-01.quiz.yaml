@@ -3,10 +3,10 @@
     Why does the classical code/data boundary fail inside an LLM?
   options:
     - The system prompt is stored in a separate place, so user text cannot reach it.
+    - The model reads its whole context as one stream, so any text can steer it.
     - Only the user message is parsed as an instruction; retrieved text is ignored.
     - The tokenizer strips instructions out of retrieved documents before inference.
-    - The model reads its whole context as one stream, so any text can steer it.
-  correct: 3
+  correct: 1
   explanation: >-
     System prompt, user text, retrieved documents and tool outputs all feed one next-token
     distribution, and nothing marks some tokens as data-never-instruct. In a classical system the
@@ -15,11 +15,11 @@
   question: >-
     Which statement correctly describes the confused-deputy pattern in an LLM agent?
   options:
-    - An attacker plants text the agent reads, and the agent lends them its own privileges.
     - An attacker steals the agent's API key and then calls its tools directly themselves.
     - Two equally privileged agents disagree, and one silently overrides the other's output.
+    - An attacker plants text the agent reads, and the agent lends them its own privileges.
     - An attacker grants the agent too few privileges, so it fails the task without error.
-  correct: 0
+  correct: 2
   explanation: >-
     The deputy is the privileged party that gets tricked: it holds the secret, the credentials and
     the egress, while the attacker only controls text the agent reads. The attacker never needed
@@ -42,11 +42,11 @@
   question: >-
     Why is "the model decides which document to return" an authorization problem?
   options:
+    - Because an access decision moved into a predictor that attacker input can influence.
     - Because the model is too slow to check permissions on every candidate document.
     - Because retrieved documents are always encrypted and the model cannot read them.
     - Because the system prompt must list every user's permissions in full to stay correct.
-    - Because an access decision moved into a predictor that attacker input can influence.
-  correct: 3
+  correct: 0
   explanation: >-
     Authorization is a yes/no decision about a subject and a resource, and it has to live in
     deterministic, testable code. A decision an attacker can argue with, using a crafted prompt or

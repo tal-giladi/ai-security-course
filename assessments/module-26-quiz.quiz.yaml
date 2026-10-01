@@ -1,0 +1,190 @@
+- id: q1
+  question: >-
+    You are handed an unfamiliar agent with tools, memory and a web-fetch loop. Which sequence
+    matches the course's method?
+  options:
+    - >-
+      Attack first to find the worst case, then defend, then document the boundaries you
+      exploited
+    - >-
+      Map the DFD and trust boundaries, enumerate untrusted-input channels times reachable
+      privileges, then reproduce attacks locally
+    - >-
+      Model the system, state each mechanism's guarantee versus its mere probability, then
+      attack, defend with enforced controls and re-measure
+    - >-
+      Stand up automated red teaming first, so the search covers ground you have not thought
+      about
+  correct: 2
+  explanation: >-
+    The order is not stylistic: the DFD tells you which channels are untrusted and which
+    privileges they can reach, and that pairing is what the whole surface enumeration runs on.
+    Attacking before you have it means you find whatever you happened to try, which is the
+    narrow-suite failure the evaluation module spends a lesson on. Enforced controls are named
+    at step five because a probabilistic one at step three is a guess about a surface you have
+    not drawn yet.
+- id: q2
+  question: >-
+    Your surface enumeration produces two candidate fixes: an enforced egress allowlist, and a
+    probabilistic classifier that flags injection-shaped prompts. What does the method's
+    ordering require of the pair?
+  options:
+    - >-
+      Enforced controls first, with the classifier as depth whose value depends on its measured
+      recall
+    - Both together, since the classifier catches exactly what the allowlist permits by design
+    - The classifier first, since it ships this afternoon and the allowlist needs a sprint
+    - Whichever cuts ASR more in one run, with the other deferred to the next measurement cycle
+  correct: 0
+  explanation: >-
+    The ordering reflects what survives a determined attacker: an allowlist decides in code
+    regardless of what the model concludes, while a classifier's contribution is entirely a
+    property of its measured recall and false-positive rate at your real base rate. Putting the
+    enforced control in first also fixes what the classifier is being asked to protect, since a
+    detector's false negatives stop mattering once the capability is not there to be misused.
+- id: q3
+  question: >-
+    The agent can read any workspace file, run a shell, and post to any host. Which change
+    implements the method's recurring discipline?
+  options:
+    - Add "do not read .env" to the system prompt and re-measure the leak rate over a week
+    - >-
+      Scope each tool to the minimum capability it needs and allowlist egress to the hosts the
+      task actually uses
+    - Hide the shell tool from the schema shown to the model, while leaving it callable by name
+    - Run the classifier from step five in front of every call, and treat blocked calls as safe
+  correct: 1
+  explanation: >-
+    The discipline is about reachability rather than restraint: least privilege on capabilities
+    and on egress means the damaging action is not available, not merely discouraged. Removing
+    the tool from the advertised schema is the interesting failure here, because the capability
+    survives for anyone who knows or guesses the name, and hidden tools are themselves disclosed
+    material. Capability scoping is decided in the authorization layer and holds independently
+    of model behaviour.
+- id: q4
+  question: >-
+    Your matrix shows a filled cell under Theory and Implementation for security evaluation, and
+    an empty one under Attack and Research. You have read the lesson and the lab passes. What
+    does the matrix's own rule say you may claim?
+  options:
+    - >-
+      The capability, since a passing lab test is the definition of done for every column
+    - >-
+      The capability, since Theory and Implementation carry the operational value in a capstone
+    - >-
+      Nothing yet, because a partial row disqualifies every column it shares in the same row
+    - >-
+      Not yet; the bar is doing it again unaided on a system you have not seen before
+  correct: 3
+  explanation: >-
+    The matrix is a self-assessment instrument, and its columns are a conjunctive test rather than
+    a score you average: an empty cell is a capability you have only rehearsed, not one you
+    have. The remedy the lesson names is the lab, not another reading of the lesson, because the
+    lab is where the from-scratch implementation and the measurement live. Re-running the
+    exercise on an unfamiliar target is the only evidence that separates the two.
+- id: q5
+  question: >-
+    Your capstone 5 proposal reads "this prompt family makes instruction-tuned models leak their
+    system prompt". What separates that from an exercise?
+  options:
+    - >-
+      A falsifiable hypothesis, an explicit threat model, CIs, and an adaptive attack on your own
+      defense
+    - A larger model and more prompts, so the result is strong enough to be called research
+    - A published venue, so somebody outside the course can judge whether the claim holds
+    - An abstract and a related-work section, which are the parts a reviewer reads first
+  correct: 0
+  explanation: >-
+    The five capstones consolidate in order and the fifth is the only one that asks for a claim
+    that could be wrong, which is what makes it research rather than a larger lab. Its
+    structure forces the pieces the earlier modules built: a threat model, a from-scratch
+    implementation, measurements with intervals, then an attack against your own defense so the
+    result is not a number chosen against a strawman. Limitations and future work are named
+    because a result without them is a report.
+- id: q6
+  question: >-
+    Your end-to-end finding is an injected instruction in a fetched page driving a tool call
+    that sends a credential to the sink. Which framework mapping is the course's?
+  options:
+    - >-
+      OWASP LLM02 Sensitive Information Disclosure, drawing on the course's M12 and M15
+    - >-
+      NIST AI 100-2 abuse, the category reserved for end-to-end agent behaviour of this kind
+    - >-
+      ATLAS exfiltration, drawing on M05, M12 and M18, filed with tactic and technique IDs
+    - >-
+      OWASP LLM06 Excessive Agency, since the tool call is the step that causes the damage
+  correct: 2
+  explanation: >-
+    ATLAS is the vocabulary a security team already files under, and its exfiltration tactic
+    covers this chain whether the payload arrived through a retrieved page, a membership probe
+    or an agent hop, which is why the mapping spans M05, M12 and M18. Excessive Agency names
+    the missing control rather than the observed outcome, and LLM02 names the category of the
+    data rather than the path it took. Carrying the technique ID is what makes the finding
+    comparable to the team's other reports.
+- id: q7
+  question: >-
+    You intend to claim your program covers all four NIST AI RMF functions. The lesson's map
+    sends map to M00, measure to M24 and manage to M23. What is the honest gap?
+  options:
+    - >-
+      None; the four functions are covered because the method's steps cover all of them by
+      construction
+    - >-
+      Govern has no module behind it here, so governance evidence is yours to supply separately
+    - >-
+      Measure, because the method's measurement step produces ASR rather than a scored risk
+    - >-
+      Manage, because enforced controls are a Map-function output rather than a Manage one
+  correct: 1
+  explanation: >-
+    The map covers three of the four functions, and the one it leaves unassigned is exactly the
+    one no lab produces: ownership, accountability, documentation and the review cadence that
+    make the rest of the method repeatable inside an organisation. Supplying that is a policy
+    and process deliverable rather than a technical artifact, which is why a technical program
+    cannot close it by itself. Claiming all four from the method is how an otherwise careful
+    report overstates its scope.
+- id: q8
+  question: >-
+    Two modules sit in your notes: injection mechanics from M04, and MCP authentication from
+    M19. Which needs re-verification before you rely on it?
+  options:
+    - >-
+      The MCP one, since the foundations change slowly while the fast-moving specifics do not
+    - >-
+      Both equally, since every module in the course carries the same volatility label
+    - >-
+      Neither, since every claim was last verified on the same date across the whole course
+    - >-
+      The injection one, because indirect injection is the technique that mutates most often
+  correct: 0
+  explanation: >-
+    The course splits foundations from the parts that track an ecosystem: protocol
+    authentication, framework internals and provider APIs move on someone else's release
+    schedule, while the injection mechanics are settled enough to cite for years. Re-verifying
+    means checking the live documentation rather than trusting the lesson, and the FOUNDATIONAL,
+    CURRENT, EMERGING and DEPRECATED labels in your own notes are how the distinction stays
+    visible after the course ends. An unlabelled stale note is indistinguishable from a current
+    one at review time.
+- id: q9
+  question: >-
+    A new hire has memorised the OWASP list and presents it as the risk assessment for a client
+    agent. What does this course say that approach gets wrong?
+  options:
+    - >-
+      Nothing; a memorised list is the shared vocabulary every security organisation already
+      uses
+    - >-
+      The ordering, which should instead be reconstructed from the framework's own release notes
+    - >-
+      The scope, since the list covers models as components and not agent systems at all
+    - >-
+      The basis; it is a priority order to map findings onto, not a measurement of this system
+  correct: 3
+  explanation: >-
+    Standards are taught here as maps onto labs, and the map is only useful once your own
+    measurements populate it: the same category is the top risk for one architecture and noise
+    for another, and incident-derived weight is biased toward whatever gets reported and
+    databased. Using the list as the assessment inverts the method, because it asserts a
+    priority order without the measurements that would justify it for this system. Map your
+    findings onto the vocabulary, then rank them with the numbers you produced.

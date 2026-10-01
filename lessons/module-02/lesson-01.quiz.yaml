@@ -2,11 +2,11 @@
   question: >-
     Why is there no true instruction/data boundary inside an LLM?
   options:
+    - All roles form one token stream; role separation is only a learned behavior.
     - Role markers are encrypted, so the model cannot tell which role sent a token.
     - The API drops the system prompt whenever a user message is present.
     - Data tokens use a separate vocabulary that the model cannot interpret.
-    - All roles form one token stream; role separation is only a learned behavior.
-  correct: 3
+  correct: 0
   explanation: >-
     Every role is concatenated into one token sequence and the next-token distribution is
     produced from that single stream. The role markers are ordinary tokens the model was trained
@@ -16,10 +16,10 @@
     In what precise sense does RLHF "make a model safe"?
   options:
     - It removes harmful knowledge from the weights so it can never be produced.
-    - It adds a hard-coded filter that blocks any disallowed output at decode time.
     - It shifts outputs toward refusal on inputs resembling training, which is coverage not proof.
+    - It adds a hard-coded filter that blocks any disallowed output at decode time.
     - It proves the model refuses every harmful request, including novel phrasings.
-  correct: 2
+  correct: 1
   explanation: >-
     RLHF moves probability mass toward preferred behavior for contexts resembling the harmful
     distribution it was trained on. That gives coverage over a distribution, not a proof, so an
@@ -31,9 +31,9 @@
   options:
     - In the system prompt, because it has the highest priority in the hierarchy.
     - In the training data, because fine-tuned behavior cannot be overridden by input.
-    - In the user message, because the model follows the most recent instruction it sees.
     - In deterministic code outside the model, because prompt rules only hold with some probability.
-  correct: 3
+    - In the user message, because the model follows the most recent instruction it sees.
+  correct: 2
   explanation: >-
     A system-prompt rule is behavior-shaping: it holds with probability, and a strong enough
     instruction can push past it. Properties that must actually hold — authorization, validation,

@@ -1,0 +1,146 @@
+- id: q1
+  question: >-
+    The team replaced the keyword-stuffed poison with a fluent paraphrase that still ranks #1. Which
+    defense does not adapt with it?
+  options:
+    - Provenance — an untrusted source never enters the candidate set, whatever the document's similarity
+    - Dedup at $\cos > 0.92$, since a paraphrase is by construction not a near-duplicate of any stored chunk
+    - A similarity threshold, since a paraphrase lands closer to the query than a genuine answer ever does
+    - Term-frequency inspection, since the paraphrase shares fewer tokens with the query than the stuffing did
+  correct: 0
+  explanation: >-
+    Provenance is enforced before similarity is ever computed, so it does not participate in the
+    geometry the attacker is optimizing — the poison is excluded for being from a non-allowlisted
+    source, not for looking like a near-duplicate or like the query. That is the whole reason the box
+    ranks it above the probabilistic filters: those filters key on surface properties the attacker
+    can choose to avoid, and a genuine answer about the topic scores high by definition.
+- id: q2
+  question: >-
+    With a provenance allowlist in force, the attacker gets the poison into an allowlisted feed through
+    a compromised uploader. Which control is now load-bearing?
+  options:
+    - The allowlist, since it stops the poison regardless of how the upload path was compromised
+    - Nothing, because enforced provenance has no bypasses and needs no second control
+    - Retrieval hygiene plus downstream egress control, since provenance assumed the source was trustworthy
+    - The embedding model, since a compromised uploader's chunks still embed differently from genuine ones
+  correct: 2
+  explanation: >-
+    The allowlist's guarantee is scoped to the source, and a compromised uploader inside that source
+    breaks the premise the guarantee rests on rather than the mechanism itself. What remains are the
+    controls that do not consult where a document came from: thresholds, dedup and reranking reduce
+    the chance a poison is retrieved, and egress control limits what a retrieved one can do. That is
+    why the box describes the stack rather than a single control.
+- id: q3
+  question: >-
+    You add a similarity threshold $\tau$, tuned so the real answer always clears it. The attacker's
+    fluent poison clears it too. What has $\tau$ bought?
+  options:
+    - A guarantee that only genuine documents reach the prompt, since everything below the threshold is discarded
+    - Removal of low-similarity noise, paid for with recall on real answers that score poorly for a legitimate reason
+    - Ranking integrity, since a poison above $\tau$ must compete on genuine relevance rather than on repeated terms
+    - Block immunity to keyword stuffing, since the cosine ceiling is reached below any usable threshold
+  correct: 1
+  explanation: >-
+    A threshold is a floor on similarity, and relevance is what the attacker is also optimizing, so
+    anything genuinely on-topic passes — the lab's keyword-stuffed poison already ranks #1, well above
+    any threshold you would keep for recall. The filter earns its keep on low-similarity noise and
+    nothing else, and it is paid for in real answers that score weakly for reasons that have nothing
+    to do with being an attack.
+- id: q4
+  question: >-
+    Writing $d = d_0 + r\,q_{tok}$, the cosine $\cos(q,d)$ tends to the cosine of $q$ with the pure
+    query-token vector as $r$ grows. What does that predict?
+  options:
+    - Rank improves only logarithmically in $r$, so a large number of repetitions is needed to reach the top
+    - Rank degrades as $r$ grows, because a longer document dilutes its own norm below the query's similarity
+    - The limit is unreachable in practice, since a real document cannot consist solely of query tokens
+    - A handful of repetitions suffices, and a repeated-token filter can be tuned past that almost for free
+  correct: 3
+  explanation: >-
+    The numerator grows linearly in $r$ and the norm does too, so the ratio converges to the cosine of
+    the query with the pure query-token direction — the maximum attainable value — and it gets there
+    quickly because the limit is a fixed point rather than an asymptote approached slowly. The
+    practical consequence is that token-repetition counting is a weak filter: raising its threshold
+    costs recall on legitimate documents that quote the question, and the attacker can switch to
+    paraphrase instead.
+- id: q5
+  question: >-
+    In an HNSW index, a poison is placed so it sits on many neighbours' search paths and is retrieved
+    for queries whose raw cosine to it is low. Which control is unaffected by that?
+  options:
+    - Provenance, because it is enforced before ranking and never consults similarity or graph position
+    - Dedup at $\cos > 0.92$, because extra retrieval paths make the poison a near-duplicate of many documents
+    - A similarity threshold $\tau$, because a chunk reached through a hot neighbour is scored by its own cosine
+    - Term-frequency inspection, because path popularity is independent of how many query tokens it repeats
+  correct: 0
+  explanation: >-
+    An approximate index changes which documents a query reaches without changing how similar they
+    are, so every control that reads the score is reading a number the graph has already distorted.
+    Provenance is applied while building the candidate set and never asks the graph anything, which is
+    exactly why it is the control that survives an ANN-specific adaptation — and why HNSW is a reason
+    to prefer enforced filtering, not a reason to lower $\tau$.
+- id: q6
+  question: >-
+    Near-duplicate noise floods the index until the correct chunk for a real query is pushed out of the
+    top-k. Which single change restores it, and what does it cost?
+  options:
+    - A lower similarity threshold, which admits more chunks into the k so the original can compete again
+    - A provenance allowlist, which removes the flooding chunks because they arrive from an untrusted crawl
+    - Dedup at $\cos > 0.92$, which collapses the flood into one chunk at the cost of discarding genuinely similar pairs
+    - Reranking, which re-scores every chunk jointly and survives the flood without any recall cost
+  correct: 2
+  explanation: >-
+    The denial of service works by occupying slots in the top-k with copies of itself, so removing
+    near-duplicates restores the ranking without changing what a legitimate document scores. The cost
+    is real and is the standard filter trade-off: anything you collapse at that similarity threshold
+    includes genuine near-duplicates — templated tickets, repeated boilerplate — which now compete
+    for one slot. The distractor about reranking is wrong on the last clause; it adds a second model
+    and latency.
+- id: q7
+  question: >-
+    The answer ends with "According to the official internal policy", and the only chunk retrieved was
+    the attacker's. Why is a citation not a trust signal?
+  options:
+    - The model invents citations when it has no source, so the presence of one proves nothing about retrieval
+    - The authority claim is written by the attacker inside the retrieved text, which is the thing being cited
+    - Provenance allowlists prevent citations from untrusted sources, so any cited source is allowlisted
+    - A citation is only emitted when several retrieved chunks agree, which one attacker chunk never does
+  correct: 1
+  explanation: >-
+    Citation spoofing attacks the trust signal the answer carries rather than the ranking that
+    produced it: the document is written to read as an authority, and the model's job is to reproduce
+    that framing. Whatever screening happened upstream ran against the retrieved text, not against the
+    sentence the model then attributes to it. The way to recover a trust signal is to bind provenance to
+    the reference the answer emits, not to let the retrieved text declare it.
+- id: q8
+  question: >-
+    Provenance allowlist, threshold and dedup are all deployed. A poison from an allowlisted feed is still
+    retrieved and still leaks a canary through egress. What is not yet covered?
+  options:
+    - Retrieval, since an allowlisted source means the poison is retrieved exactly like a genuine document
+    - Provenance, since the allowlist was configured with the wrong sources for this particular tenant
+    - Chunking, since the poison was split so that no single chunk carries the full injection text
+    - Downstream least privilege, since retrieval defenses change whether poison is fetched, not what it can do
+  correct: 3
+  explanation: >-
+    Every control in place reduces the probability that poison reaches the prompt; none of them changes
+    what a retrieved document can direct the model to do. That is the takeaway the guarantee box ends
+    on — once the text is in the context, the remaining question is what the model is allowed to
+    emit, which is an egress and tool-scope decision from the confused-deputy lesson rather than a
+    retrieval one.
+- id: q9
+  question: >-
+    An attacker cannot compute your embedder, so instead of optimizing text in embedding space they
+    optimize text in token space against a cluster of likely queries. What is the implication for you?
+  options:
+    - The attack is out of scope, since embedding-space optimization is the only version the course defines
+    - Content-level optimization still works, so term-overlap filters remain the right layer to strengthen
+    - Semantic and provenance defenses are the ones that hold, since surface filters key on what the attacker chose
+    - Reranking is now useless, because the cross-encoder scores the same tokens the attacker optimized against
+  correct: 2
+  explanation: >-
+    The optimizer's access level changes the lever, not the objective: maximize similarity to the query
+    under whatever handle you have. A paraphrase needs no embedder access and still lands near the
+    query in a semantic space, which is why dedup and repeated-token filters keyed on surface
+    repetition fall away and provenance or genuinely joint scoring does not. Reranking remains the
+    harder target, but it is a model with its own adversarial surface rather than a guarantee.

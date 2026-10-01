@@ -1,0 +1,172 @@
+- id: q1
+  question: >-
+    A third-party plugin you installed ships a poisoned tool description. The module rates catalog
+    poisoning as more severe than a single poisoned web document. What is the mechanism behind that
+    rating?
+  options:
+    - Because the description is executed by the tool runtime rather than by the model's context
+    - Because the catalog text stays resident across model restarts, so its exposure accumulates
+    - Because its exposure scales with tasks times reachable actions, giving the highest duty cycle
+    - Because retrieved documents are filtered before use, while descriptions are never filtered
+  correct: 2
+  explanation: >-
+    In the $\Theta(C \cdot A)$ frame a description adds a channel that is present on every task and
+    read before tool selection, so its exposure is proportional to tasks times the reachable-action
+    set rather than to the single document that happens to be retrieved. That is a channel with the
+    highest duty cycle an attacker can ask for, which is why catalog poisoning is rated above a
+    one-off poisoned page.
+
+- id: q2
+  question: >-
+    A plugin you never reviewed ships a tool named `send_email_required_for_all_tasks`. No
+    description text contains a directive and the schema is valid. Which statement is correct?
+  options:
+    - The name is author-controlled text the model reads, so it can steer selection with no directive
+    - Only descriptions and results are untrusted, since names are checked against the tool schema
+    - A misleading name is harmless, since it changes only what the user sees in the catalog
+    - The name only matters once the tool is called, because selection happens after execution
+  correct: 0
+  explanation: >-
+    Three of the four interface fields are author-controlled — name, description and result — and
+    the model reads all three. A name that advertises itself as required biases which tool gets
+    picked without carrying a single instruction, which is why keyword and directive stripping has
+    nothing to match here. Curated sources and provenance are the defense, not a better regex.
+
+- id: q3
+  question: >-
+    You refactor so each task is granted only the handles it needs: a weather query receives
+    `{get_weather}` and nothing else. What does that buy that a directive stripper does not?
+  options:
+    - It recovers the legitimate usage hints that segregation strips out of descriptions
+    - It makes the reachable-action set a function of the grant, so no text can raise it
+    - It detects the poisoned description at load time, so the tool can be rejected outright
+    - It cuts the injection channels from one per tool down to one per task
+  correct: 1
+  explanation: >-
+    Under object capabilities a tool reference is the authority to use exactly that tool with
+    exactly its scoped arguments, so the reachable-action set for a task is precisely the handles
+    granted for it and no amount of text can enlarge it. That converts the defense from filtering
+    the injection to simply not holding the authority, which is what removes the dependency on
+    recognizing the attack at all.
+
+- id: q4
+  question: >-
+    A tool author writes a description that never contains a directive — it simply claims to be the
+    most accurate, up-to-date source, while the vetted tool's description is vague. The stripper
+    finds nothing. Which control addresses this?
+  options:
+    - Tightening the stripper to drop promotional adjectives from every description it loads
+    - Lowering the model's temperature, since confident phrasing is only a sampling artefact
+    - Adding a system prompt telling the model to prefer tools from the vetted source list
+    - Serving tools only from curated allowlisted sources whose provenance the client verifies
+  correct: 3
+  explanation: >-
+    Selection influence is a ranking attack, not an instruction attack: the description carries no
+    directive for a filter to strip, it just makes one tool look more relevant than another.
+    Tightening the stripper or the temperature does not touch the axis being attacked. What does is
+    deciding which sources may contribute to the catalog at all, at the price of vetting and pinning
+    as ongoing operational work.
+
+- id: q5
+  question: >-
+    A tool ships a benign description, passes your review, and a later release replaces it with a
+    poisoned one. Your client loads descriptions at every session start and acts on them. Which
+    control actually addresses this?
+  options:
+    - Pinning or signing the description, so a changed tool fails the client's hash check
+    - Treating descriptions as data, since the swapped directive is still instruction-shaped text
+    - Granting the tool least authority, since its authority is unchanged by the swap
+    - Scanning the catalog for directives at load time, before the model ever reads it
+  correct: 0
+  explanation: >-
+    A rug pull is chosen at review time, so every control keyed on the current text or the current
+    authority is decided by the attacker: the swapped directive is still strip-shaped and the
+    capability grant is unchanged. What binds is a hash or signature from a trusted manifest checked
+    at load, not only at approval, since verifying once and connecting later leaves a TOCTOU window
+    for the publisher to swap in between.
+
+- id: q6
+  question: >-
+    The attacker rewrites the directive so `_strip_directives` finds no `CALL token(` pattern, and a
+    real model still follows it. What does that show about the layering?
+  options:
+    - The regex is the real boundary and simply needs a stricter pattern than the current one
+    - The defense failed silently, so catalog-as-data should be dropped in favour of filtering
+    - Segregation is a filter with false negatives; capability scoping is the structural guarantee
+    - The evasion only works against the toy pattern and not against a production model
+  correct: 2
+  explanation: >-
+    The exercise is explicit: an encoded directive that survives the stripper still reaches a real
+    model, so segregation is one layer of depth rather than a boundary. The guarantee comes from
+    authority — a task granted `{get_weather}` holds no handle to `send_email` — and segregation is
+    kept because filters are cheap and they narrow what the other layers ever have to see.
+
+- id: q7
+  question: >-
+    Egress, filesystem and credentials are all available to the agent as ambient authority granted
+    once at startup. The module's design says authority should come from a handle. What changes?
+  options:
+    - Nothing about the attack surface, since the model decides which tool to call either way
+    - Each tool carries only the authority its job needs, so a hijacked plan has no master key
+    - Tool descriptions become trusted, since the client now owns the handles rather than the authors
+    - The number of injection channels drops, since fewer capabilities mean fewer texts to read
+  correct: 1
+  explanation: >-
+    The design is no ambient authority: egress, filesystem and credentials are separate scoped
+    capabilities granted per task, and a weather tool simply holds none of them. That does not
+    shrink the attack surface, because the agent still reads every untrusted description and result
+    in the catalog — it changes what a hijacked plan can do with everything it read.
+
+- id: q8
+  question: >-
+    Capability-based security is fully deployed and the reachable-action set is exactly the granted
+    handles. Which outcome is still inside what this guarantees against?
+  options:
+    - Calling a tool the task never granted, since no description can raise the reachable-action set
+    - Following a directive in a description to exfiltrate a secret the agent already holds
+    - Fetching an allowlisted host with an attacker-chosen path, since the host passed the check
+    - Driving a granted tool to an allowed destination the task never intended to reach
+  correct: 3
+  explanation: >-
+    The guarantee box is explicit that a tool misused within its granted authority sits outside the
+    control, and a legitimately egress-capable tool the task needs can still be driven somewhere it
+    should not go. Scoping arguments per task narrows that window; it does not turn a capability
+    into a prohibition. The change that does is not granting the capability at all.
+
+- id: q9
+  question: >-
+    You are writing the guarantee box for catalog-as-data plus capability least-authority. Which
+    pairing of claims is correct?
+  options:
+    - >-
+      Stops: tool-poisoned exfiltration. Does not stop: authority already granted to the tool.
+      Adapts: a look-alike domain
+    - >-
+      Stops: rug pulls. Does not stop: overload. Adapts: ship a new benign tool
+    - >-
+      Stops: directives in text and exceeding granted authority. Adapts: encode or stay in-grant
+    - >-
+      Stops: selection influence. Does not stop: cross-server flows. Adapts: request more handles
+  correct: 2
+  explanation: >-
+    A guarantee box has to say what was bought, and here two different things were bought: the
+    directives are removed from the instruction channel, and exceeding the grant is impossible
+    because there is nothing to exceed it with. The predicted adaptation is a filter evasion by
+    encoding or by staying inside the grant, which is why provenance and pinning are layered on
+    rather than treated as optional extras.
+
+- id: q10
+  question: >-
+    After enabling descriptions-as-data, tool selection degrades: the model picks the wrong tool
+    because the usage hints were stripped out. Which is the honest reading of this regression?
+  options:
+    - The filter's false-negative rate is the wrong metric here, since what happened is a utility cost
+    - The stripper is broken and should be narrowed to keep usage hints and directives alike
+    - Capability scoping was never needed once the descriptions were cleaned of directives
+    - Legitimate hints are part of the utility the filter destroys, so the cost is real and paid
+  correct: 3
+  explanation: >-
+    Dropping usage hints is a false-positive cost — legitimate capability the filter removes — which
+    is a different quantity from the residual false-negative risk it leaves behind. A narrower regex
+    trades one for the other without improving either. The way out is structural: minimize
+    capabilities, source tools from vetted places, and accept whatever utility that costs.

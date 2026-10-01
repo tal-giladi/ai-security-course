@@ -2,11 +2,11 @@
   question: >-
     What is the one root cause shared by SQL, command, and prompt injection?
   options:
-    - Untrusted data is parsed by an interpreter that cannot tell data from instructions.
     - Attackers obtain valid credentials and then reuse them against the interpreter.
     - The input is long enough to overflow a fixed-size buffer inside the parser.
+    - Untrusted data is parsed by an interpreter that cannot tell data from instructions.
     - The interpreter process runs with administrator privileges on the host machine.
-  correct: 0
+  correct: 2
   explanation: >-
     In every case a more powerful interpreter parses a string that mixes attacker-controlled data
     with its own instructions, and cannot separate them. Parameterization fixes it by keeping data
@@ -44,10 +44,10 @@
     Why do least privilege and detection carry more weight for LLMs than for a SQL application?
   options:
     - LLM applications usually run with fewer privileges than a database server does.
+    - Keeping data out of the instruction channel is only partly possible for LLMs.
     - Detection is cheaper for free text than it is for SQL query logs.
     - SQL injection cannot be detected at all, only prevented before it happens.
-    - Keeping data out of the instruction channel is only partly possible for LLMs.
-  correct: 3
+  correct: 1
   explanation: >-
     For SQL, parameterization genuinely closes the input side. For an LLM there is no true
     parameterization, so that defense is only partial, and the residual risk has to be absorbed by

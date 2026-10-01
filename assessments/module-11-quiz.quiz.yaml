@@ -57,7 +57,7 @@
   options:
     - The spectral signature detector, since the poison still forms a correlated sub-population in the target class
     - A mislabel-rate audit of the training set, since clean-label poison corrupts the label distribution
-    - Trigger probing of the shipped model, since the trigger still maps an input to the target output
+    - Trigger probing of the shipped model, since the trigger is one input pattern the attacker picks freely
     - Control of the training pipeline — trusted sources, signed datasets, reproducible training runs
   correct: 3
   explanation: >-
