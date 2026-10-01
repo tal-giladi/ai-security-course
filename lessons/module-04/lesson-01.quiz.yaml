@@ -1,35 +1,65 @@
-# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
-# The lesson's model answer is shown as the explanation. `source` fingerprints the original
-# question + answer; if the lesson changes, the site flags the question for review.
-- source: 25868f38bf68
-  question: Which set of one-line definitions for direct injection, indirect injection, and jailbreak is correct?
+- id: q1
+  question: >-
+    Which set of one-line definitions for direct injection, indirect injection and jailbreaking is correct?
   options:
-    - "Direct: via retrieved docs. Indirect: attacker's own input. Jailbreak: stealing the system prompt"
-    - "Direct: defeats safety training. Indirect: via tool output. Jailbreak: attacker's own input"
-    - "Direct: attacker's own input overrides instructions. Indirect: via content the model reads. Jailbreak: defeats safety training"
-    - "Direct: via emails. Indirect: via web pages. Jailbreak: any injection that succeeds"
+    - >-
+      Direct: via retrieved documents. Indirect: the attacker's own input. Jailbreak: stealing the system prompt
+    - >-
+      Direct: defeating safety training. Indirect: via tool output. Jailbreak: the attacker's own input
+    - >-
+      Direct: the attacker's own input overriding instructions. Indirect: via content the model reads.
+      Jailbreak: defeating safety training
+    - >-
+      Direct: via email attachments. Indirect: via web pages. Jailbreak: any injection that succeeds
   correct: 2
-- source: 37578813fd02
-  question: Why can base64-encoding a payload succeed where the plaintext fails?
+  explanation: >-
+    Direct versus indirect splits on the delivery channel, which is who supplies the text; jailbreaking
+    splits on the target, which is the safety boundary rather than the developer's instructions. The
+    two axes overlap constantly in practice, because a jailbreak is usually delivered by injection and
+    an indirect payload usually aims at the refusal boundary. Keeping them distinct matters because
+    they imply different threat models and different channels to defend.
+- id: q2
+  question: >-
+    Why can base64-encoding a payload succeed where the same payload in plaintext is refused?
   options:
-    - Encoding raises the instruction's authority to that of the system prompt
-    - Encoding moves it outside what safety training covered, while decoding still works
-    - Encoding hides the payload from the model, which follows it unknowingly
-    - Encoding makes the payload shorter, so it fits under the context limit
+    - Encoding raises the instruction's strength until it clears the system prompt's guard $G$
+    - Encoding moves the request outside the guarded distribution, while the model still decodes it
+    - Encoding hides the payload from the model, which then follows the decoded text unknowingly
+    - Encoding makes the payload shorter, so it fits under the remaining context limit
   correct: 1
-- source: c1ac2623af4a
-  question: Why report a Wilson interval on ASR instead of just the point estimate?
+  explanation: >-
+    Encoding is a coverage lever rather than an authority lever. Capabilities generalize
+    out-of-distribution better than safety training does, so the model still understands "print the
+    SECRET" written in base64 while the guard heuristics never fired on that surface form. The same
+    asymmetry explains leetspeak, homoglyphs and low-resource languages, and it is why nothing forces
+    compliance either way — you are moving a trained reluctance that was estimated on the plaintext.
+- id: q3
+  question: >-
+    Why report a Wilson interval on attack success rate instead of just the point estimate?
   options:
-    - ASR from finite $N$ near 0 or 1 needs a calibrated range to tell real differences from noise
-    - The Wilson interval is always narrower, so defenses look stronger
-    - A point estimate cannot be computed when $N$ is below 100
-    - Wilson intervals remove the need to run more trials when results overlap
+    - ASR near 0 or 1 from small $N$ needs a calibrated range to separate real differences from noise
+    - The Wilson interval is always narrower, which makes any defense look stronger than it is
+    - A point estimate cannot be computed at all when $N$ is below one hundred trials
+    - Intervals remove the need for more trials, since overlapping results already prove equality
   correct: 0
-- source: 8dfbe33cf7ec
-  question: The output scrubber holds under a fully jailbroken model, yet is not a complete fix. Why?
+  explanation: >-
+    The naive interval misbehaves exactly where injections land: near 0 or 1, where it can even
+    produce bounds outside $[0,1]$. Wilson stays inside the unit interval and remains sensible at
+    small $N$. The payoff is comparative — two defenses whose intervals overlap have not yet been
+    shown to differ, which is why the lesson says raise $N$ instead of declaring a winner.
+- id: q4
+  question: >-
+    The output scrubber holds even under a fully jailbroken model, yet it is not a complete fix. Why?
   options:
-    - It is only a system-prompt rule, so a jailbroken model can talk past it
-    - It slows responses too much to run on every message in production
-    - It blocks every form of the secret, but only for the first turn
-    - It is enforced code, but only blocks what it matches; encoded or split secrets escape
+    - It is only a system-prompt rule, so a jailbroken model can talk its way past it
+    - It slows responses too much to run on every message in production traffic
+    - It blocks every form of the secret, but only for the first turn of a session
+    - It is enforced code, but it only blocks what it matches, so encoded or split secrets escape
   correct: 3
+  explanation: >-
+    The scrubber runs after the model, in the application, so a jailbroken model cannot talk past it —
+    that is precisely what makes it the enforced control rather than a prior. Its limit is the matcher
+    rather than the model: any transform that preserves the canary's information while changing its
+    bytes (base64, zero-width characters, reversal, or a split across a URL the renderer fetches)
+    still leaks. Hence the real fix is to keep the secret out of the context entirely and back it
+    with egress control, not to write a cleverer regex.
