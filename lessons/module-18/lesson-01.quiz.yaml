@@ -1,59 +1,36 @@
 - id: q1
-  question: >-
-    Why does breaking any single link in an attack chain stop the whole chain?
+  question: "Why does breaking any single link in an attack chain stop the whole chain?"
   options:
-    - Because $P(\text{chain})=\sum_i p_i$, so removing one term lowers the total
-    - Because the attacker has to restart from the first hop after any failure
-    - Because $P(\text{chain})=\prod_i p_i$, so one hop at 0 zeroes the product
-    - Because $P(\text{chain})=\max_i p_i$, so only the strongest hop matters
+    - "Because $P(\\text{chain})=\\sum_i p_i$, so removing one term lowers the total"
+    - "Because the attacker has to restart from the first hop after any failure"
+    - "Because $P(\\text{chain})=\\prod_i p_i$, so one hop at 0 zeroes the product"
+    - "Because $P(\\text{chain})=\\max_i p_i$, so only the strongest hop matters"
   correct: 2
-  explanation: >-
-    A chain is a conjunction, so its success probability is the product of the per-hop
-    probabilities. One enforced control that makes a hop impossible sets that factor to 0 and the
-    product with it, which is why a single structural control can be worth more than many
-    probabilistic ones stacked on the same hop. A sum would mean the hops were alternatives, and a
-    max would mean only the best hop counted; neither describes a chain.
+  explanation: "A chain is a conjunction, so its success probability is the product of the per-hop probabilities. One enforced control that makes a hop impossible sets that factor to 0 and the product with it, which is why a single structural control can be worth more than many probabilistic ones stacked on the same hop. A sum would mean the hops were alternatives, and a max would mean only the best hop counted; neither describes a chain."
 - id: q2
-  question: >-
-    Why is chain depth a useful defense metric?
+  question: "Why is chain depth a useful defense metric?"
   options:
-    - It counts total tool calls, which measures the agent's usefulness
-    - It measures how many defenses are deployed, regardless of their results
-    - It is the number of attackers needed, which bounds the attacker's cost
-    - It counts hops executed before the cut, bounding residual blast radius
+    - "It counts total tool calls, which measures the agent's usefulness"
+    - "It measures how many defenses are deployed, regardless of their results"
+    - "It is the number of attackers needed, which bounds the attacker's cost"
+    - "It counts hops executed before the cut, bounding residual blast radius"
   correct: 3
-  explanation: >-
-    Depth is how far the attack got before a control stopped it, so it is a direct readout of
-    residual blast radius: a chain cut at hop 1 did far less than one cut at hop 4. It is a measure
-    of outcomes on your system, not a count of controls you bought or of effort an attacker spent.
+  explanation: "Depth is how far the attack got before a control stopped it, so it is a direct readout of residual blast radius: a chain cut at hop 1 did far less than one cut at hop 4. It is a measure of outcomes on your system, not a count of controls you bought or of effort an attacker spent."
 - id: q3
-  question: >-
-    When should you prefer least privilege over an approval gate?
+  question: "When should you prefer least privilege over an approval gate?"
   options:
-    - When the capability is high-impact and the task genuinely needs it
-    - When the task does not need the capability at all, so removing it costs nothing
-    - When human reviewers are available around the clock
-    - When the model is known to resist jailbreaks
+    - "When the capability is high-impact and the task genuinely needs it"
+    - "When the task does not need the capability at all, so removing it costs nothing"
+    - "When human reviewers are available around the clock"
+    - "When the model is known to resist jailbreaks"
   correct: 1
-  explanation: >-
-    Least privilege is free when the capability is not required, so take it and keep the gate for the
-    capabilities the task genuinely needs. When the capability is necessary, removing it is not an
-    option and you are left with a gate, which is exactly where an approval prompt can be
-    social-engineered. Reviewer availability and model robustness change the gate's cost, not the
-    comparison.
+  explanation: "Least privilege is free when the capability is not required, so take it and keep the gate for the capabilities the task genuinely needs. When the capability is necessary, removing it is not an option and you are left with a gate, which is exactly where an approval prompt can be social-engineered. Reviewer availability and model robustness change the gate's cost, not the comparison."
 - id: q4
-  question: >-
-    A chain has four hops with per-hop success probabilities 0.8, 0.6, 0.5 and 0.9. An enforced
-    control makes the third hop impossible. What is the chain's success probability now?
+  question: "A chain has four hops with per-hop success probabilities 0.8, 0.6, 0.5 and 0.9. An enforced control makes the third hop impossible. What is the chain's success probability now?"
   options:
-    - 0.216
-    - 0
-    - 0.43
-    - 0.27
+    - "0.216"
+    - "0"
+    - "0.43"
+    - "0.27"
   correct: 1
-  explanation: >-
-    The chain is the product of its hops, and an impossible hop contributes a factor of 0, so
-    0.8 times 0.6 times 0 times 0.9 is 0. Without the control the product would be 0.216, which is
-    the number the other options are drawn from. This is the quantitative reason the lesson puts
-    enforced controls first: one of them removes a whole column of possibilities rather than
-    shaving a factor off the end.
+  explanation: "The chain is the product of its hops, and an impossible hop contributes a factor of 0, so 0.8 times 0.6 times 0 times 0.9 is 0. Without the control the product would be 0.216, which is the number the other options are drawn from. This is the quantitative reason the lesson puts enforced controls first: one of them removes a whole column of possibilities rather than shaving a factor off the end."

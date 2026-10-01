@@ -1,63 +1,36 @@
 - id: q1
-  question: >-
-    Why can a clean-input evaluation pass a model that carries a fully working backdoor?
+  question: "Why can a clean-input evaluation pass a model that carries a fully working backdoor?"
   options:
-    - A backdoor lowers clean accuracy only slightly, below the level of measurement noise
-    - Backdoors activate only after deployment, never during an offline evaluation run
-    - Clean evaluation loads a different copy of the model than the one that is deployed
-    - The trigger is absent from clean inputs by design, so every sampled metric looks normal
+    - "A backdoor lowers clean accuracy only slightly, below the level of measurement noise"
+    - "Backdoors activate only after deployment, never during an offline evaluation run"
+    - "Clean evaluation loads a different copy of the model than the one that is deployed"
+    - "The trigger is absent from clean inputs by design, so every sampled metric looks normal"
   correct: 3
-  explanation: >-
-    Evaluation draws from the clean input distribution, and the trigger is constructed to be absent
-    from exactly that distribution, so the conditional behavior never fires during testing.
-    Accuracy, loss and calibration therefore all look like a healthy model, because the backdoor
-    lives on a set the evaluator never samples. That is why detection has to look inside the model or
-    at the training data, and why planting costs the attacker a few percent of poison while finding
-    the trigger costs the defender an unbounded search.
+  explanation: "Evaluation draws from the clean input distribution, and the trigger is constructed to be absent from exactly that distribution, so the conditional behavior never fires during testing. Accuracy, loss and calibration therefore all look like a healthy model, because the backdoor lives on a set the evaluator never samples. That is why detection has to look inside the model or at the training data, and why planting costs the attacker a few percent of poison while finding the trigger costs the defender an unbounded search."
 - id: q2
-  question: >-
-    Why does a small poison fraction produce a high attack success rate without hurting clean accuracy?
+  question: "Why does a small poison fraction produce a high attack success rate without hurting clean accuracy?"
   options:
-    - Poisoned samples get extra weight in the loss, so they come to dominate the training signal
-    - The trigger-to-target rule is simple and consistent, and a small share barely moves the clean fit
-    - The model ignores poisoned samples during training and learns them only at inference time
-    - Poison replaces the clean labels entirely, so clean accuracy is recomputed on poisoned data
+    - "Poisoned samples get extra weight in the loss, so they come to dominate the training signal"
+    - "The trigger-to-target rule is simple and consistent, and a small share barely moves the clean fit"
+    - "The model ignores poisoned samples during training and learns them only at inference time"
+    - "Poison replaces the clean labels entirely, so clean accuracy is recomputed on poisoned data"
   correct: 1
-  explanation: >-
-    The rule the poison has to teach is simple and perfectly consistent, so the model fits it from a
-    handful of examples and attack success saturates near 1 at single-digit poison fractions. Those
-    same samples are a tiny share of a large clean set, so their effect on the real task sits inside
-    the noise floor. The lab's 0.98 clean accuracy alongside 0.98 backdoor success at 10% poison is
-    the quantitative version of that asymmetry, and it is why poisoning is cheap relative to the harm.
+  explanation: "The rule the poison has to teach is simple and perfectly consistent, so the model fits it from a handful of examples and attack success saturates near 1 at single-digit poison fractions. Those same samples are a tiny share of a large clean set, so their effect on the real task sits inside the noise floor. The lab's 0.98 clean accuracy alongside 0.98 backdoor success at 10% poison is the quantitative version of that asymmetry, and it is why poisoning is cheap relative to the harm."
 - id: q3
-  question: >-
-    Why does a spectral signature expose poison, and what is the attacker's lever against it?
+  question: "Why does a spectral signature expose poison, and what is the attacker's lever against it?"
   options:
-    - Poison shares a trigger representation that dominates the top singular direction; spreading it evades
-    - Poisoned samples carry larger pixel values; normalizing the inputs evades the signature
-    - Poison is mislabeled relative to its content; adding more poison evades the signature
-    - Poison produces unusually low loss; adding label noise evades the signature
+    - "Poison shares a trigger representation that dominates the top singular direction; spreading it evades"
+    - "Poisoned samples carry larger pixel values; normalizing the inputs evades the signature"
+    - "Poison is mislabeled relative to its content; adding more poison evades the signature"
+    - "Poison produces unusually low loss; adding label noise evades the signature"
   correct: 0
-  explanation: >-
-    Every poisoned sample carries the same trigger and is pushed toward the same target, so the
-    network learns one shared internal direction for them; in the centered target-class activation
-    matrix that direction is the leading right singular vector, and poisoned rows project onto it
-    strongly. Detectability scales with the trigger's representational strength $\mu$, so the
-    attacker's lever is to weaken or spread the trigger, or to use a clean-label poison that produces
-    no relabelling anomaly at all. Detection remains a probabilistic filter with both error rates.
+  explanation: "Every poisoned sample carries the same trigger and is pushed toward the same target, so the network learns one shared internal direction for them; in the centered target-class activation matrix that direction is the leading right singular vector, and poisoned rows project onto it strongly. Detectability scales with the trigger's representational strength $\\mu$, so the attacker's lever is to weaken or spread the trigger, or to use a clean-label poison that produces no relabelling anomaly at all. Detection remains a probabilistic filter with both error rates."
 - id: q4
-  question: >-
-    Given that detection is fundamentally imperfect, what is the durable defense against poisoning?
+  question: "Given that detection is fundamentally imperfect, what is the durable defense against poisoning?"
   options:
-    - Running the spectral-signature detector on every training run before the model is released
-    - Adversarial training with PGD over the whole dataset, including the fine-tuning data
-    - Provenance and control of the training pipeline: trusted, signed data and isolation
-    - Evaluating the released model on a much larger clean test set before it ships
+    - "Running the spectral-signature detector on every training run before the model is released"
+    - "Adversarial training with PGD over the whole dataset, including the fine-tuning data"
+    - "Provenance and control of the training pipeline: trusted, signed data and isolation"
+    - "Evaluating the released model on a much larger clean test set before it ships"
   correct: 2
-  explanation: >-
-    Detection runs after the fact, needs access to the training data and the model's internals, and
-    has a miss rate an adaptive attacker works against directly, so it cannot carry the guarantee on
-    its own. Provenance sits upstream of the attack: if the dataset is trusted and signed and the
-    training run is reproducible and isolated, the poison never enters. Even that is not a proof —
-    which is exactly the Sleeper Agents result, since safety fine-tuning does not reliably remove a
-    robust backdoor.
+  explanation: "Detection runs after the fact, needs access to the training data and the model's internals, and has a miss rate an adaptive attacker works against directly, so it cannot carry the guarantee on its own. Provenance sits upstream of the attack: if the dataset is trusted and signed and the training run is reproducible and isolated, the poison never enters. Even that is not a proof — which is exactly the Sleeper Agents result, since safety fine-tuning does not reliably remove a robust backdoor."

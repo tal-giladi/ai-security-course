@@ -51,6 +51,13 @@ def check(path: Path) -> list[str]:
         opts = q.get("options")
         if not isinstance(opts, list) or len(opts) != 4:
             problems.append(f"{tag}: {len(opts) if isinstance(opts, list) else opts} options, expected 4")
+        elif not all(isinstance(o, str) for o in opts):
+            # An unquoted scalar containing ": " parses as a mapping and a bare number as a
+            # float, so the importer rejects the entry even though the list has four items.
+            bad = [f"{type(o).__name__}" for o in opts if not isinstance(o, str)]
+            problems.append(f"{tag}: options must be 4 non-empty strings (got {', '.join(bad)})")
+        elif any(not str(o).strip() for o in opts):
+            problems.append(f"{tag}: options must be 4 non-empty strings")
         elif len({str(o).strip().lower() for o in opts}) != 4:
             problems.append(f"{tag}: options are not distinct")
 
