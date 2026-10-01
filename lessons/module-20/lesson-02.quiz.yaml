@@ -1,94 +1,45 @@
 - id: q1
-  question: >-
-    Multimodal models follow an embedded instruction more often when it arrives as text than as
-    an image. What is the underlying cause?
+  question: "Multimodal models follow an embedded instruction more often when it arrives as text than as an image. What is the underlying cause?"
   options:
-    - Text tokens are processed in an earlier layer than image patches
-    - Image encoders are lossy and discard small details such as short imperative sentences
-    - Text-centric instruction tuning makes text imperatives read as orders rather than content
-    - Vision encoders truncate the prompt more aggressively than the text channel does
+    - "Text tokens are processed in an earlier layer than image patches"
+    - "Image encoders are lossy and discard small details such as short imperative sentences"
+    - "Text-centric instruction tuning makes text imperatives read as orders rather than content"
+    - "Vision encoders truncate the prompt more aggressively than the text channel does"
   correct: 2
-  explanation: >-
-    The asymmetry comes from what the model was trained to treat as an instruction, not from how
-    the two modalities are processed. Text-centric tuning taught the model that imperatives in the
-    text channel are orders, so the same bytes rendered to pixels land in a channel read as
-    content. That is precisely why the gap can be exploited for defense — and why fine-tuning on
-    rendered instructions closes it again.
+  explanation: "The asymmetry comes from what the model was trained to treat as an instruction, not from how the two modalities are processed. Text-centric tuning taught the model that imperatives in the text channel are orders, so the same bytes rendered to pixels land in a channel read as content. That is precisely why the gap can be exploited for defense — and why fine-tuning on rendered instructions closes it again."
 - id: q2
-  question: >-
-    Your team renders untrusted tool output to pixels before the model reads it. What happens
-    if the provider later fine-tunes on rendered instructions?
+  question: "Your team renders untrusted tool output to pixels before the model reads it. What happens if the provider later fine-tunes on rendered instructions?"
   options:
-    - Nothing changes, because the defense operates outside the model
-    - The gap closes, the rendered text starts reading as instructions, and the defense stops working
-    - The defense strengthens, since the model becomes better at understanding rendered text
-    - Only benign task utility changes, while injection success is unaffected
+    - "Nothing changes, because the defense operates outside the model"
+    - "The gap closes, the rendered text starts reading as instructions, and the defense stops working"
+    - "The defense strengthens, since the model becomes better at understanding rendered text"
+    - "Only benign task utility changes, while injection success is unaffected"
   correct: 1
-  explanation: >-
-    The defense works only because of the modality gap, so training that gap away retires it.
-    Nothing in your code changes and no error surfaces — the defense fails silently, which is why
-    the lesson's operational advice is to track the measured gap itself and re-measure whenever the
-    model changes, rather than tracking whether the middleware is still deployed.
+  explanation: "The defense works only because of the modality gap, so training that gap away retires it. Nothing in your code changes and no error surfaces — the defense fails silently, which is why the lesson's operational advice is to track the measured gap itself and re-measure whenever the model changes, rather than tracking whether the middleware is still deployed."
 - id: q3
-  question: >-
-    Which attack does rendering untrusted text do nothing against?
+  question: "Which attack does rendering untrusted text do nothing against?"
   options:
-    - An instruction embedded in a document the agent retrieves
-    - A directive placed in a tool result the agent reads
-    - A pixel-space adversarial perturbation carried in the same image
-    - An imperative hidden in the OCR layer of a scanned page
-  correct: 2
-  explanation: >-
-    The defense changes the carrier of text, so it only helps for the text channel. A perturbation
-    chosen against the vision encoder is already in the pixel channel and passes through untouched,
-    and the same goes for an LSB-steganographic payload. This is the recurring structure of the
-    module: semantic, bit-level, pixel and document carriers are four separate surfaces needing
-    four separate controls, and a defense for one is not a partial mitigation of the others.
-- id: q4
-  question: >-
-    Why does the lesson insist you measure the modality gap on your own model rather than
-    quoting the published one?
-  options:
-    - Because the published number was measured on a text-only model and does not apply
-    - Because the gap is model-specific and fine-tuning erodes it, so your number is the one that counts
-    - Because the gap cannot be measured without a vision encoder in the loop
-    - Because the published figure is an upper bound that no real deployment can reach
-  correct: 1
-  explanation: >-
-    The gap is a property of how a particular model was trained, so it varies across models and
-    shrinks as providers train on rendered text. A published figure is a reason to go and measure,
-    not a number to put in a report — which is the same standard applied to attack success rates
-    throughout this course. With $\Delta$ around 0.1 you also need on the order of 150 trials per
-    carrier before the interval excludes zero.
-- id: q5
-  question: >-
-    Where should a rendering defense be applied in a production agent?
-  options:
-    - To the entire transcript, so no untrusted text can survive anywhere in the context
-    - Only to untrusted tool output and retrieved documents, because rasterizing is expensive
-    - Only to user messages, since tool output is already trusted by the runtime
-    - Only to images, since images are the carrier that bypasses text filters
-  correct: 1
-  explanation: >-
-    Rasterizing is one to two orders of magnitude more expensive per character than text, so
-    applying it to the whole transcript would be unusable; the deployment rule is to spend the cost
-    where the input is untrusted. The third option is the conflation this course keeps warning
-    about: a tool result is attacker-reachable text, exactly like a document, and treating it as
-    trusted because the runtime returned it is the confused deputy in a new costume.
-- id: q6
-  question: >-
-    An evaluation reports the rendering defense reducing attack success from 0.81 to 0.25. What
-    should you ask before accepting it?
-  options:
-    - Whether the adaptive-attack and human-red-team arms were run, and the sample size behind the intervals
-    - Whether the model was fine-tuned on rendered instructions after the defense was published
-    - Whether the benign task utility was measured on the same carrier as the attacks
-    - Whether the defense was applied to the system prompt as well as to tool output
+    - "A pixel-space adversarial perturbation carried in the same image"
+    - "An instruction embedded in a document the agent retrieves"
+    - "A directive placed in a tool result the agent reads"
+    - "An imperative hidden in the OCR layer of a scanned page"
   correct: 0
-  explanation: >-
-    The evaluation claims are only worth what the strongest attacks behind them are worth, and a
-    carrier defense can look excellent against static payloads that a human red-teamer or an
-    adaptive attacker never tried. Sample size matters for the same reason module 24 insists on it:
-    a $\Delta$ of 0.05 needs several hundred trials per carrier before the interval excludes zero.
-    The benign-utility and system-prompt questions matter too, but they are secondary to whether
-    the strongest attacker was used at all.
+  explanation: "The defense changes the carrier of text, so it only helps for the text channel. A perturbation chosen against the vision encoder is already in the pixel channel and passes through untouched, and the same goes for an LSB-steganographic payload. This is the recurring structure of the module: semantic, bit-level, pixel and document carriers are four separate surfaces needing four separate controls, and a defense for one is not a partial mitigation of the others."
+- id: q4
+  question: "Why does the lesson insist you measure the modality gap on your own model rather than quoting the published one?"
+  options:
+    - "Because the published number was measured on a text-only model and does not apply"
+    - "Because the gap cannot be measured without a vision encoder in the loop"
+    - "Because the published figure is an upper bound that no real deployment can reach"
+    - "Because the gap is model-specific and fine-tuning erodes it, so your number is the one that counts"
+  correct: 3
+  explanation: "The gap is a property of how a particular model was trained, so it varies across models and shrinks as providers train on rendered text. A published figure is a reason to go and measure, not a number to put in a report — which is the same standard applied to attack success rates throughout this course. With $\\Delta$ around 0.1 you also need on the order of 150 trials per carrier before the interval excludes zero."
+- id: q5
+  question: "Where should a rendering defense be applied in a production agent?"
+  options:
+    - "To the entire transcript, so no untrusted text can survive anywhere in the context"
+    - "Only to untrusted tool output and retrieved documents, because rasterizing is expensive"
+    - "Only to user messages, since tool output is already trusted by the runtime"
+    - "Only to images, since images are the carrier that bypasses text filters"
+  correct: 1
+  explanation: "Rasterizing is one to two orders of magnitude more expensive per character than text, so applying it to the whole transcript would be unusable; the deployment rule is to spend the cost where the input is untrusted. The third option is the conflation this course keeps warning about: a tool result is attacker-reachable text, exactly like a document, and treating it as trusted because the runtime returned it is the confused deputy in a new costume."
