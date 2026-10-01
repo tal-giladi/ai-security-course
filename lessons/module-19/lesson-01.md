@@ -90,8 +90,6 @@ defend by vetting who you hire (allowlist/sign servers), reading their wall-note
 their tools* not orders (metadata-as-data), forbidding contractors from directing each other without
 your say-so (cross-server gate), and giving each only the keys their job needs (capability scoping).
 
-## Technical explanation
-
 ## Mathematics
 
 Little formal math — this is architecture/trust — but reuse the chain-probability lens (M18): an MCP

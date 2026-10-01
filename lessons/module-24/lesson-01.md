@@ -93,8 +93,6 @@ across many attempts (with error bars), tests locks like yours *and* unlike your
 and re-tests every time you change the lock (regression). The number that matters is the adapted
 attacker's success rate, with a confidence interval — not your own gentle attempt.
 
-## Technical explanation
-
 ## Mathematics
 
 **Wilson interval** (M04) and **required $n$** as above. **ROC-AUC = Mann–Whitney U statistic**

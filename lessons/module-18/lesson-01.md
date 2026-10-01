@@ -89,8 +89,6 @@ that room) is cheaper and less annoying than stationing a guard who frisks every
 on one guard; you bar the windows the business doesn't use *and* watch the door. Measuring chain
 depth tells you which barrier the intruder reached before being stopped.
 
-## Technical explanation
-
 ## Mathematics
 
 **Chain-success probability.** If hop $i$ succeeds with probability $p_i$ (attacker lands the

@@ -95,8 +95,6 @@ the payload stapled on. Keyword stuffing is stuffing the ballot box with copies 
 words. Defenses either check *who submitted the ballot* (provenance) or *whether it's a genuine
 distinct answer* (dedup, thresholds, reranking) — not just how similar it looks.
 
-## Technical explanation
-
 ## Mathematics
 
 **Why keyword stuffing wins.** With a token-count embedding, $d$'s vector is (normalized) token

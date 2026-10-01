@@ -120,7 +120,7 @@ technique locally so the mapping is concrete, not nominal.
 
 | NIST AI RMF function | How the course realizes it |
 |---|---|
-| **Govern** | policy/authorization design, least privilege, guarantee-analysis discipline (M16, M23) |
-| **Map** | threat modeling, DFDs, attack surface enumeration (M00–M01) |
+| **Govern** | policy and authorization design, least privilege, guarantee-analysis discipline (M16, M23); engagement scope and rules of engagement, the authorization to test at all (M27, M31); standards crosswalks so findings are actionable (M26, M32) |
+| **Map** | threat modeling, DFDs, attack surface enumeration (M00–M01), reconnaissance for AI targets (M27) |
 | **Measure** | ASR+CIs, ROC/AUC, robustness, coverage, adaptive evaluation (M24), automated red teaming (M25) |
-| **Manage** | enforced controls, monitoring, audit, incident response (M23); CI regression gating (M24–M25) |
+| **Manage** | enforced controls, monitoring, audit, incident response (M23); out-of-band evidence so the audit log is not agent-controlled (M33); CI regression gating (M24–M25) |

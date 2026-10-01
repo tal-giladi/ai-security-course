@@ -96,8 +96,6 @@ keys the task needs, requiring a manager's sign-off to open sensitive doors, and
 only lead to approved rooms. Least privilege, approval gates, egress control — keys, sign-offs, and
 rooms.
 
-## Technical explanation
-
 ## Mathematics
 
 **Blast radius = reachable actions × injection channels.** Let $C$ be the number of untrusted input

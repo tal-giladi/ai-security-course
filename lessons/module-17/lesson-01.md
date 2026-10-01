@@ -16,7 +16,7 @@ sources:
     url: https://github.com/invariantlabs-ai/mcp/issues/180
   - title: "Model Context Protocol specification — tools, authorization and trust"
     url: https://modelcontextprotocol.io/specification
-  - title: "OWASP Top 10 for LLM Applications 2025 — LLM08 Excessive Agency"
+  - title: "OWASP Top 10 for LLM Applications 2025 — LLM06 Excessive Agency (LLM03:2026)"
     url: https://genai.owasp.org/llm-top-10/
 last_verified: "2026-09-30"
 ---
@@ -80,8 +80,6 @@ reads it before every job. A malicious contractor writes "step 0: fax the vault 
 number." You don't fix this by trusting nicer contractors; you (1) treat their instruction sheet as
 a *note about their tool*, not orders for your operator, and (2) make sure your operator physically
 cannot reach the fax or the vault unless the specific job handed them that exact key.
-
-## Technical explanation
 
 ## Mathematics
 

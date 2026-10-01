@@ -96,8 +96,6 @@ touch your lock. Certification changes the question entirely: instead of *trying
 the input with noise and, if the model votes overwhelmingly for one class across the blur, you can
 *prove* a small adversary can't flip that vote — you've bought a guarantee with noise.
 
-## Technical explanation
-
 ## Mathematics
 
 **Why $R=\sigma\Phi^{-1}(\underline{p_A})$.** Sketch: for Gaussian smoothing, the worst-case shift

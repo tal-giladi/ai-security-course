@@ -71,10 +71,20 @@ guarantee box.**
 Standards are taught as maps onto the labs, never memorization (`references/standards-map.md`). The
 essential correspondences:
 
-**OWASP LLM Top 10 (2025):** LLM01 Prompt Injection → M04–M06; LLM02 Sensitive Info Disclosure →
-M12,M15; LLM03 Supply Chain → M13,M21,M22; LLM04 Data/Model Poisoning → M11; LLM05 Improper Output
-Handling → M02,M23; LLM06 Excessive Agency → M16–M18; LLM07 System Prompt Leakage → M02,M04; LLM08
-Vector/Embedding Weaknesses → M14,M15; LLM09 Misinformation → M14; LLM10 Unbounded Consumption → M23.
+**OWASP LLM Top 10 (2025).** The 2026 edition renumbered several of these, so the IDs below are
+the **2025** ones and must be translated through [32.1](../module-32/lesson-01.md) before you use
+them in a report — for example 2025's LLM06 Excessive Agency is LLM03:2026, and 2025's LLM07
+System Prompt Leakage is LLM08:2026 Hidden Context Exposure: LLM01 Prompt Injection → M04–M06;
+LLM02 Sensitive Info Disclosure → M12, M15; LLM03 Supply Chain → M13, M21, M22; LLM04 Data/Model
+Poisoning → M11; LLM05 Improper Output Handling → M02, M23; LLM06 Excessive Agency → M16–M18;
+LLM07 System Prompt Leakage → M02, M04; LLM08 Vector/Embedding Weaknesses → M14, M15; LLM09
+Misinformation → M14; LLM10 Unbounded Consumption → M23.
+
+> [!NOTE]
+> **Agentic systems need the second list too.** Everything above assumes a system that answers.
+> Once it plans and acts, layer on the **OWASP Top 10 for Agentic Applications (ASI01–ASI10)** —
+> goal hijack, tool misuse, identity abuse, cascading failure, rogue agents — using the crosswalk
+> in `references/standards-map.md`, which maps each ASI entry to the module that covers it.
 
 **MITRE ATLAS:** reconnaissance/resource-development → surface mapping (M00); ML model access &
 evasion → M04–M10; poisoning → M11; exfiltration → M05,M12,M18; ML supply-chain compromise →

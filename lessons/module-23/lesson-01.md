@@ -91,8 +91,6 @@ privilege, sandboxing) and *add* sensors and cameras (detection, audit) for dept
 don't replace the locks with more sensitive motion sensors and call it secure. And you check that your
 sensors don't page you every time the cat moves (measure the FP cost).
 
-## Technical explanation
-
 ## Mathematics
 
 **Precision under base rates (from M02.2, now decisive).** A detector with recall $t$ and

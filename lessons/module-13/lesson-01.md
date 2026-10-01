@@ -97,8 +97,6 @@ trusted machine perfectly and quietly rewires it to misbehave only when a specif
 pressed. In every case the question is the same and rarely asked: *do I trust who made this, and can
 I verify it's what they claim?*
 
-## Technical explanation
-
 ## Mathematics
 
 Little equation here — this is a systems/trust lesson — but two quantitative points:

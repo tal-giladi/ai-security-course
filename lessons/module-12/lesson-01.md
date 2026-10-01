@@ -101,8 +101,6 @@ student to study with a blurred practice sheet, so no single question can leave 
 they learn the general material but can't betray any specific item, at the cost of learning a bit
 less.
 
-## Technical explanation
-
 ## Mathematics
 
 **Differential privacy.** A randomized algorithm $\mathcal M$ is $(\varepsilon,\delta)$-DP if for

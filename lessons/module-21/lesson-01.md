@@ -78,8 +78,6 @@ they must run builds, do it in a locked room with no phone and no keys (sandbox:
 secrets), (4) require a senior's sign-off for risky commands (approval), and (5) get dependencies
 only from the company store with a signed packing list (pinning + hashes).
 
-## Technical explanation
-
 ## Mathematics
 
 Reuse the chain lens (M18): a code-agent compromise is repo-injection → shell → egress. Each enforced

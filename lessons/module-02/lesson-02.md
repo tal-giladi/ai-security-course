@@ -157,8 +157,6 @@ latency and the responsibility for filter timing and partial-output side effects
 you a risk reduction and the responsibility for knowing their error rates. The recurring mistake
 is accepting the convenience while assuming the vendor kept the responsibility. They didn't.
 
-## Technical explanation
-
 ## Mathematics
 
 The quantitative core here is filter evaluation, previewed now, derived in Module 24.

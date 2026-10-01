@@ -78,8 +78,6 @@ tamper-evident seals**: each part has a part number (pin), a serial that matches
 manifest (integrity), a certificate from an approved supplier (provenance), and isn't a type known to
 hide explosives (safe format). You verify the parts, not just test-drive the car.
 
-## Technical explanation
-
 ## Mathematics
 
 **Chain integrity (M18 again).** The system is trusted only if *all* $N$ nodes verify:

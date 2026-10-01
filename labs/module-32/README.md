@@ -1,8 +1,8 @@
-# Lab 26 — Hidden context exposure (OWASP LLM08:2026)
+# Lab 32 — Hidden Context Exposure (OWASP LLM08:2026)
 
-**Lesson:** [F.1 · OWASP LLM Top 10 2026](../../lessons/frontier/update-01.md). **Time:** ~60 min.
-**Hardware:** CPU-only, stdlib only, offline, runs in < 1 s. **Targets:** local only; synthetic
-`LAB-CANARY-*` markers; no network.
+**Lesson:** [32.1 · OWASP LLM Top 10 2026: the crosswalk & Hidden Context Exposure](../../lessons/module-32/lesson-01.md).
+**Time:** ~60 min. **Hardware:** CPU-only, stdlib only, offline, runs in < 1 s. **Targets:** local
+only; synthetic `LAB-CANARY-*` markers; no network.
 
 ## Goal
 
@@ -10,6 +10,10 @@ Measure leakage **per context slot** (system, developer, tool schema, retrieved 
 credential), compare three output filters against the one architectural control that is enforced
 (the credential is held by the executor and never enters the context), and relabel 2025 OWASP IDs
 to 2026.
+
+The point of the per-slot measurement is that "System Prompt Leakage" was the wrong name: once you
+count slots you see that retrieved policies, tool schemas and memory leak by the same mechanism,
+which is why the 2026 list renamed the category **Hidden Context Exposure**.
 
 ## Files
 
@@ -23,9 +27,9 @@ to 2026.
 ## Run
 
 ```bash
-py labs/module-26-hidden-context/attack.py
-py labs/module-26-hidden-context/crosswalk.py "found LLM07 and LLM06:2025"
-py -m pytest labs/module-26-hidden-context -q
+py labs/module-32/attack.py
+py labs/module-32/crosswalk.py "found LLM07 and LLM06:2025"
+py -m pytest labs/module-32 -q
 ```
 
 Expected: `none` leaks every column; every filter still leaks the credential (ROT13); `keyword`
@@ -35,10 +39,13 @@ slot left in context still leaks.
 ## Docker (optional)
 
 ```bash
-cd labs/module-26-hidden-context && docker compose up
+cd labs/module-32 && docker compose up
 ```
 
 ## Exercise
 
-See lesson F.1 → **Exercise** (base64 rung of the encoding ladder, architectural mitigation,
-standards hygiene over the course's own lessons).
+See lesson 32.1 → **Exercise**: the base64 rung of the encoding ladder, the architectural
+mitigation, and standards hygiene over the course's own lessons.
+
+If you want to try the reporting tool under an older ID, `crosswalk.py "found LLM07"` is the
+fastest way to see why quoting an ID without its year is a real failure mode rather than pedantry.

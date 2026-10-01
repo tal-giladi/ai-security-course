@@ -84,8 +84,6 @@ lies about who owns it, the clerk is fooled. Pre-filter: the clerk first pulls o
 finds the best match *within it* — checked against the building's access list, not the folder's own
 sticker. Only the last is secure.
 
-## Technical explanation
-
 ## Mathematics
 
 Little math — this is access control — but two quantifiable points:

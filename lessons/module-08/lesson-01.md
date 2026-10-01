@@ -193,7 +193,7 @@ judge-corruption analysis, and the semantic detector + its evasion + guarantee b
 ## Research paper
 
 **Chao et al., "Jailbreaking Black Box Large Language Models in Twenty Queries" (PAIR, 2023)** and
-**Mehrotra et al., "Tree of Attacks: Jailbreaking Black-Box LLMs Automatically" (TAP, 2023).*
+**Mehrotra et al., "Tree of Attacks: Jailbreaking Black-Box LLMs Automatically" (TAP, 2023).**
 *Why:* the canonical automated black-box jailbreaks — an attacker LLM + judge + (tree) search, the
 loop you built. *Read (PAIR):* the algorithm and the attacker/judge prompts; note the ~20-query
 efficiency claim and how refinement uses the target's refusal. *Read (TAP):* the tree-search +

@@ -112,8 +112,6 @@ stronger attack). Adversarial training reshapes the landscape so the valley is *
 within $\epsilon$ of a training example climbs out — but flattening the landscape everywhere costs
 some of the sharp fitting that gave high clean accuracy.
 
-## Technical explanation
-
 ## Mathematics
 
 **Why $\operatorname{sign}$, and why $\ell_\infty$.** Maximizing $\nabla^\top\delta$ subject to a

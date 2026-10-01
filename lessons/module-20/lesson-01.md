@@ -89,8 +89,6 @@ but not the others; you need a different remedy for each, and for the perturbati
 the machine or blur its vision (smoothing). One "scan images for bad stuff" filter cannot catch all
 four.
 
-## Technical explanation
-
 ## Mathematics
 
 **Steg capacity & imperceptibility.** LSB embedding changes each used pixel by at most 1, so the

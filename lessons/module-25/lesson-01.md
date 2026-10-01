@@ -83,8 +83,6 @@ process that files new variants based on which almost-worked — running overnig
 time you change the lock. It won't be as insightful as your best human on any single attempt, but it
 covers ground no human can and never forgets to re-test after a "fix."
 
-## Technical explanation
-
 ## Mathematics
 
 **Search as noisy optimization (M08 recap).** The red-teamer maximizes judged ASR over a payload space

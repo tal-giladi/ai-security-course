@@ -84,8 +84,6 @@ behavior on normal inputs can never catch them; you have to inspect the books (t
 or their behavior *on the trigger* (which you'd have to guess). That asymmetry — cheap to plant,
 expensive to detect — is the whole problem.
 
-## Technical explanation
-
 ## Mathematics
 
 **Why a spectral signature exists.** Poisoned samples all carry the same trigger and are pushed to
@@ -164,7 +162,7 @@ py -m pytest labs/module-11 -q
    and write the guarantee box for your final defense stack.
 6. **Preference-poisoning reasoning (write-up).** Describe, mechanistically, how you would poison a
    *preference* dataset so a reward model rewards outputs containing a trigger phrase, and how that
-   propagates to the policy (tie to sibling M15). What clean eval would miss it, and what pipeline
+   propagates to the policy (tie back to the data-cleaning decisions in Module 01). What clean eval would miss it, and what pipeline
    control would catch it?
 
 <details><summary>Hint (step 5)</summary>
