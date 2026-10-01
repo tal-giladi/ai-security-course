@@ -1,0 +1,196 @@
+- id: q1
+  question: >-
+    A report reads "the model disclosed its system prompt (LLM07)". A reader working from the
+    2026 list sees LLM07 as Misinformation. How should that finding be written?
+  options:
+    - >-
+      LLM07, keeping the identifier, since the numbering is stable and only the labels moved
+    - >-
+      LLM08, since System Prompt Leakage is the only entry in the list that was renamed
+    - >-
+      LLM01, because hidden context disclosure is treated as a variant of prompt injection
+    - >-
+      LLM08:2026, Hidden Context Exposure, with the year attached to every ID in the document
+  correct: 3
+  explanation: >-
+    The rename is the one structural change that alters what a bare ID means rather than where
+    it sits, so the same seven characters name a different risk before and after the release.
+    Writing the year into the identifier costs nothing and makes every citation resolvable
+    against a known list, and the crosswalk then handles the old numbering mechanically instead
+    of by memory. This is exactly the boring failure the crosswalk was added to remove.
+- id: q2
+  question: >-
+    `crosswalk.py`'s `relabel` runs over a corpus containing a bare `LLM08` and an
+    `LLM08:2026`. What does it produce, and why does the distinction matter?
+  options:
+    - >-
+      Both become LLM09:2026, since every bare ID is by definition read as the older version
+    - >-
+      The bare one becomes LLM09:2026 and the tagged one is left alone, because a bare ID is
+      ambiguous
+    - >-
+      Neither changes, since the pattern only matches identifiers that already carry a year
+    - >-
+      Both become LLM08:2026, since a renamed category should keep its previous identifier
+  correct: 1
+  explanation: >-
+    The negative lookahead is what stops a second relabel, so an identifier that already names
+    its version passes through untouched while an untagged one is resolved and tagged. That
+    asymmetry is the whole design: once a year is present the string is unambiguous, and
+    running the function repeatedly is safe. It is also the reason the lesson insists on tagged
+    identifiers from the start, since an untagged string can only ever be a guess about which
+    list the author meant.
+- id: q3
+  question: >-
+    The 2026 ranking weights a practitioner vote at 75% and 6,639 real incidents at 25%. What
+    does that license you to do with a category's rank on your client's system?
+  options:
+    - >-
+      Nothing direct; the order comes from the framework, and your own measurements set your
+      priorities
+    - >-
+      Everything, since a vote of practitioners is the most accurate ordering available today
+    - >-
+      Little, since the incident data is the stronger signal and the two weights should swap
+    - >-
+      Nothing at all, because a weighted vote and a dataset together cannot produce any ordering
+  correct: 0
+  explanation: >-
+    Three quarters of the weight is opinion and the remaining quarter is drawn from what gets
+    reported and databased, so both components are systematically biased away from the attacks
+    that were never disclosed. The ranking is a shared priority order, valuable for alignment and
+    harmful as a substitute for measurement, and the guarantee box says so directly. What
+    belongs on a client engagement is the ordering your own attack and evaluation numbers
+    produce, expressed in the shared vocabulary.
+- id: q4
+  question: >-
+    The list covers the model as a component inside an application. Your system has tools,
+    memory and downstream actions. Where does OWASP point, and what does that mean for this
+    course's map?
+  options:
+    - >-
+      The 2026 list covers agents as well, so the same IDs apply unchanged across M16 to M19
+    - >-
+      The NIST AI 100-2 taxonomy, which is the framework that covers acting models
+    - >-
+      The separate Agentic Top 10; the agent modules span both lists, so a finding can carry
+      two IDs
+    - >-
+      Nowhere, since no framework covers the agent case and the mapping has to be invented
+  correct: 2
+  explanation: >-
+    The list's stated scope stops at the model as a component, and once the model holds
+    credentials and causes downstream effects the question becomes a different one, which is
+    why a second list exists rather than a footnote. The course's agent modules deliberately
+    span both vocabularies, so a chain finding can be filed once as a model-component risk and
+    once as an agentic risk without renaming anything. Inventing a mapping where the framework
+    already publishes one costs you comparability with every other report.
+- id: q5
+  question: >-
+    You are given an unfamiliar LLM application and asked what falls under Hidden Context
+    Exposure. What do you inventory?
+  options:
+    - >-
+      Only the system prompt, since the remaining material is application data rather than
+      instructions
+    - >-
+      The system prompt and the retrieved documents, since those two hold the secret material
+    - >-
+      Whatever the model can produce unaided, since that is what counts as hidden context
+    - >-
+      Every slot placed in front of the model unseen: developer notes, tool schemas, workflow
+      logic, retrieval, memory, config
+  correct: 3
+  explanation: >-
+    The category is defined by what the application puts in the window and does not show the
+    user, not by whether the content reads like an instruction, which is why schemas, retrieved
+    policy and remembered preferences are all in scope. Each slot gets its own canary so a leak
+    is attributed to the slot that produced it, and a dump probe reaching all of them is the
+    expected baseline. Secret material is only the subset where the canary experiment and the
+    architectural control apply.
+- id: q6
+  question: >-
+    A reply contains the canary spelled with dashes between the letters, and your harness scores
+    the literal string, so it reports ASR 0.00 for that probe. What is the defect?
+  options:
+    - >-
+      The canary must be regenerated per run, since a reused marker inflates the observed rate
+    - >-
+      Success is scored after trivial decodings, so literal-only matching hides the whole family
+    - >-
+      The probe count is too small, since one leak among seven probes needs a Wilson interval
+    - >-
+      The reply was blocked downstream, so scoring it as a success double-counts the failure
+  correct: 1
+  explanation: >-
+    The attacker only needs to recover the material, not to emit it byte for byte, so the
+    criterion has to try the cheap decodings an attacker reaches for: identity, separator
+    removal, reversal and a substitution cipher, extended to base64 and translation as you go.
+    Scoring the literal string is the measurement bug that makes a filter look perfect while the
+    adversary simply asks for another encoding, and it is invisible in the ASR until the decoding
+    step is added.
+- id: q7
+  question: >-
+    In the reference matrix the keyword configuration reports ASR 0.71 and FPR 0.25, against
+    0.43 and 0.00 for the literal filter. What does that pair say about the keyword filter?
+  options:
+    - >-
+      It lost on both axes: it matches topics rather than secrets, and encoded leaks evade it
+    - >-
+      It is the better trade, since costing one benign answer is worth preventing one leak
+    - >-
+      It is the stronger filter, because the higher ASR counts leaks the literal one missed
+    - >-
+      It is equivalent, since the false-positive rate and the attack success rate cancel out
+  correct: 0
+  explanation: >-
+    A keyword filter recognises subject matter, so the encoding ladder that defeats the secret
+    also encodes the words doing the matching, and the filter stops firing exactly when the
+    attacker needs it to. The other end of the box is the price: a legitimate answer about return
+    instructions gets blocked, which is a real cost paid by users and not a rounding error. It
+    also costs essentially no runtime, which is the uncomfortable part, because it buys nothing
+    worth what it spends.
+- id: q8
+  question: >-
+    You move the credential out of the context behind an executor handle such as
+    `cred://refund`, and its column goes clean with no output filter at all. What remains
+    unfixed?
+  options:
+    - >-
+      The probe suite, which still reaches the schema and retrieval slots and should be extended
+    - >-
+      The false-positive rate, which now has to be measured against the benign set a second time
+    - >-
+      The remaining in-context slots, and the attacker's next move becomes steering the tool call
+    - >-
+      The runtime cost of the indirection, which is now paid on every model invocation
+  correct: 2
+  explanation: >-
+    Removing the credential from the window sets its extraction probability to zero by
+    construction rather than by lowering it, which is the only reason that column can be clean
+    with no filter at all. Everything still in the window remains disclosed, which is why the
+    guidance is to scope tool permissions as though the schemas were public. An attacker who
+    can no longer read the credential can still drive the executor with it, so least privilege
+    and authorization become the load-bearing controls from that point on.
+- id: q9
+  question: >-
+    A probe family extracts one slot with per-attempt probability $p = 0.01$. Over 300
+    independent attempts, what does the model give you, and what follows for a filter?
+  options:
+    - >-
+      A leak probability near 0.03, so the filter is already doing almost all of the work
+    - >-
+      About 0.95; a filter lowers $p$ for the families it recognises but never sets it to zero
+    - >-
+      Exactly 1.00, since independent attempts guarantee the leak eventually with no residual
+      risk
+    - >-
+      About 0.95, and the same figure holds for material removed from the context entirely
+  correct: 1
+  explanation: >-
+    With independent attempts the probability of no leak in n tries is $(1-p)^n$, so at
+    $p = 0.01$ and $n = 300$ it is about 0.05, leaving roughly 0.95 that the slot has leaked at
+    least once. The implication for a filter is the important half: it moves $p$ down for the
+    probe families it recognises and leaves the rest where it was, so the limit is approached
+    rather than avoided. Only taking the content out of the window sets $p = 0$, which is why
+    architecture and filtering are separate rows in the box.

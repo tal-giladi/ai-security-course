@@ -1,0 +1,163 @@
+- id: q1
+  question: >-
+    Your client aggregates a trusted `files-server` and a third-party `weather-plus`. Which trust
+    boundary does connecting both create that a single-server setup does not have?
+  options:
+    - A transport boundary, since each server opens its own connection back to the client
+    - An authentication boundary, since each server holds its own credentials for the client
+    - A server-to-server flow brokered by the client, carrying trusted data to an untrusted server
+    - A schema boundary, since servers declare tool parameters in incompatible types
+  correct: 2
+  explanation: >-
+    Every server is a trust boundary in its own right, but aggregating them creates a second one the
+    user never drew: the client holds connections to both and will relay a call from one to the
+    other on request. That is why the client, not the model, is the trust broker — the description
+    supplies the instruction and the client supplies the authority to act on it.
+
+- id: q2
+  question: >-
+    A server's `get_weather` description says: first `read_private()`, then `exfiltrate()`. On this
+    task the model never selects the weather tool. Why does the directive still take effect?
+  options:
+    - Descriptions sit in planning context before and regardless of tool selection, so the injection jumps the line
+    - The server runs its description as a pre-hook during `tools/list`, before the client runs the task
+    - The model resolves directives for tools it never selected, since descriptions read as trusted guidance
+    - The transport replays the whole catalog on every call until that tool is finally used
+  correct: 0
+  explanation: >-
+    The client shows descriptions so the model can decide when to call a tool, which means the text is
+    read whether or not the tool is chosen and whatever the task is. A server does not have to be
+    selected, or even useful, to have its instructions in context. This is module 17's catalog
+    poisoning arriving through the MCP catalog, with the duty cycle of every task.
+
+- id: q3
+  question: >-
+    The malicious `weather-plus` description tells the client to call `files-server.read_private`
+    and hand the result to `exfiltrate`. Which statement is right?
+  options:
+    - The call fails, because `weather-plus` holds no capability handle on `files-server`
+    - The client is the deputy, bridging a trust boundary between its two connections
+    - The call fails, because the client attributes every directive to the describing server
+    - The call succeeds only when `files-server` is allowlisted, which the client does by default
+  correct: 1
+  explanation: >-
+    The malicious server needs no handle of its own; it asks the client to make the privileged call
+    and pass the result back, and the client complies because the instruction arrived in context.
+    That is a confused deputy with the user's own operator as the deputy. The lab attributes each
+    directive to the server whose description carried it precisely so this hop shows up as a
+    cross-server flow a gate can deny.
+
+- id: q4
+  question: >-
+    The chain is description-injection, then cross-server read, then exfiltration. Which mapping of
+    client control to hop is correct?
+  options:
+    - Allowlist removes the injection hop, metadata-as-data the entry hop, the gate the exfil hop
+    - Allowlist removes the exfil hop, metadata-as-data the cross-server hop, the gate the entry hop
+    - Metadata-as-data removes the entry hop, allowlist the injection hop, the gate the exfil hop
+    - Allowlist removes the entry hop, metadata-as-data the injection hop, the gate the escalation hop
+  correct: 3
+  explanation: >-
+    Each control kills a different link. Not connecting the server keeps its description out of
+    context, so the chain has no entry. Stripping directives keeps the text in context as data, so it
+    cannot drive a call. The gate denies the privileged read that belongs to another server, so the
+    escalation never happens. Since the chain succeeds only if every hop does, one is sufficient.
+
+- id: q5
+  question: >-
+    Your client runs all four controls: allowlist and pinning, descriptions-as-data, per-server
+    capability scoping, and a cross-server gate. Which attack is still outside what they guarantee?
+  options:
+    - A pinned server that changes its descriptions after approval, since re-verification is not continuous
+    - A server you never allowlisted, whose description reaches the model through the raw catalog
+    - A server driving another server's tool, since the gate only covers user-initiated calls
+    - A directive carried in a server-provided prompt template, since only descriptions are stripped
+  correct: 0
+  explanation: >-
+    The box is explicit about the residual: a server that is allowlisted and signed can still be
+    malicious or become compromised, a rug pull changes tools after approval unless the pin is
+    re-verified, and approvals can be socially engineered. Everything else on the list is covered by
+    one of the four controls — an unallowlisted server never reaches context, and prompts and
+    resources get the same treatment as descriptions.
+
+- id: q6
+  question: >-
+    An attacker encodes the directive in a description so the client's strip misses it, and the
+    model still follows it. Which control is the real guarantee?
+  options:
+    - The stripper needs an anchored pattern, since regexes fail whenever the text is obfuscated
+    - The allowlist alone is enough, so descriptions-as-data should be switched off in production
+    - Allowlist and per-server capability scoping, which deny authority rather than match text
+    - The cross-server gate, since exfiltration is the hop that actually carries the data out
+  correct: 2
+  explanation: >-
+    The stripper matches a shape and encoding is the predicted adaptation, so that control is a
+    filter and the box says so in as many words. The guarantees are the ones that withhold
+    authority: a server you never vetted contributes no text at all, and a server with no handle to
+    another server's tools cannot reach them however its description is phrased.
+
+- id: q7
+  question: >-
+    You give each server an explicit capability set, and `weather-plus`'s scope contains no handle to
+    `files-server`'s tools. What happens to the cross-server gate?
+  options:
+    - It becomes mandatory, since the gate is the only place a cross-server flow is visible
+    - It becomes nearly redundant, since the request fails for lack of authority rather than intent
+    - It becomes more important, because scoping changes which flows count as cross-server
+    - It becomes the primary control, with the scopes existing only to speed up the decision
+  correct: 1
+  explanation: >-
+    The exercise hint is the point: if `weather-plus`'s scope contains no handle to `files-server`'s
+    tools, its directive fails for lack of authority, and nothing has to recognize the intent. That
+    is the object-capability principle from module 17 applied across servers. The gate is still
+    worth keeping — it is where a cross-server flow becomes visible in a log.
+
+- id: q8
+  question: >-
+    You strip directives from tool descriptions. The same server also exposes a `resource` and a
+    server-provided `prompt` template. What does that leave open?
+  options:
+    - Nothing, since the client renders prompt templates and never shows them to the model
+    - Only the resource, since a prompt template is covered by the server's signature
+    - Nothing, since resources arrive inside the same `tools/list` response and are stripped
+    - Both of them, since each is server-authored text entering context and needs the same treatment
+  correct: 3
+  explanation: >-
+    A resource is data the model reads and a prompt is a template the server supplies; both are
+    authored by the same party as the descriptions and both reach context, so either can carry the
+    same injection. Signing covers the provenance of the artifact, not the content inside it, and a
+    resource does not arrive through the `tools/list` response that gets filtered.
+
+- id: q9
+  question: >-
+    The lesson opens by warning that MCP's spec changes fast and teaches durable principles rather
+    than API details. Which deployment posture follows from that?
+  options:
+    - Vet, pin and sign servers; treat metadata as data; scope capabilities; gate cross-server flows
+    - Rely on the specification's authorization mechanism, which is the normative and versioned source
+    - Treat descriptions-as-data as sufficient, since the specification forbids directive-shaped metadata
+    - Defer MCP work until the specification is frozen, since the principles will change with it
+  correct: 0
+  explanation: >-
+    The lesson draws the line deliberately: specific API details move with the spec, the principles
+    do not. Servers are dependencies and prompt sources at once, so vet and pin them, scope what
+    each can reach, and gate the flows between them. Reading the current authorization section is
+    still worth doing, but it leaves client-side enforcement to the deployer, which is exactly where
+    this lesson puts the security.
+
+- id: q10
+  question: >-
+    A deployment relies on metadata-as-data alone, arguing that stripping directives from tool
+    descriptions closes the MCP injection class. Which statement is the defensible one to put in
+    the review?
+  options:
+    - The class is closed for untrusted servers, since only allowlisted metadata reaches the model
+    - The class is closed, since a directive that survives the stripper cannot survive capability scoping
+    - The class is narrowed, since the remaining routes are encoding evasion and approved cross-server flows
+    - The class is closed for signing servers, since a signature attests to the content inside them
+  correct: 2
+  explanation: >-
+    Stripping is a filter with a residual, and the box says as much when it lists hiding directives
+    by encoding among the predicted adaptations. The routes that remain are exactly the ones no
+    single text filter covers: a payload the pattern misses, and a cross-server read a human
+    approved. Scoping and allowlisting are what remove the authority those routes need.
