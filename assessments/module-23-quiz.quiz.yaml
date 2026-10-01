@@ -1,0 +1,148 @@
+- id: q1
+  question: >-
+    A pipeline has four controls: a system prompt telling the model never to call `run_shell`, a
+    keyword detector on inputs, an egress allowlist, and an audit log. Which one is enforced?
+  options:
+    - The egress allowlist, since it decides the destination in code and holds under a compromised model
+    - The system prompt, since the model follows it reliably on every request it serves
+    - The keyword detector, because it scores the input before the model is ever called
+    - The audit log, since every request and response is written to durable storage
+  correct: 0
+  explanation: >-
+    The catalog splits controls that decide in code from controls that score text, and only the
+    former hold when the model is fully compromised. The prompt is a prior the model could decline,
+    the same argument the agent modules make about scope, and the detector is probabilistic by
+    construction with both a false-negative and a false-positive rate. The audit log is classified
+    separately as forensic, stopping nothing and enabling detection and IR afterwards.
+- id: q2
+  question: >-
+    Your detector has recall 0.9 and a 5% false-positive rate. At a production attack prevalence of
+    0.5%, what is its precision?
+  options:
+    - 0.90, because recall is the dominant term once the detector is well calibrated
+    - About 0.083, because a 5000:1 base rate swamps even a strong detector's lift
+    - 0.95, because it is the false-negative rate that precision measures at low prevalence
+    - 0.005, because precision tends to the prevalence as the false-positive rate approaches 1
+  correct: 1
+  explanation: >-
+    Substituting $t=0.9$, $f=0.05$ and $\pi=0.005$ into the PPV formula gives
+    $0.0045/(0.0045+0.04975)\approx 0.083$, so more than 90% of alerts are false. That is the
+    arithmetic behind the rule that detectors feed triage and monitoring rather than hard blocking,
+    while enforced controls, whose precision is 1 by construction within scope, do the blocking.
+    The lesson's instruction is to compute this at your real prevalence before a detector may reject
+    traffic.
+- id: q3
+  question: >-
+    The lab runs four configurations. Scrubber plus egress allowlist gives ASR 1.0 to 0.0 at FPR 0.
+    Adding the input detector raises recall but reports FPR 0.25. What is the finding?
+  options:
+    - The detector should be dropped, since it left the ASR unchanged and only worsened the metrics
+    - The detector should ship, since higher recall is the only number that matters for security
+    - It buys coverage the enforced pair lacks, and the compounding false-positive cost must be reported
+    - The order is wrong, since the detector has to run before the enforced controls to be useful
+  correct: 2
+  explanation: >-
+    The detector fires on the benign request that contains "ignore previous" and "developer mode",
+    which is why FPR moves to 0.25 and precision falls even as recall rises, the module's concrete
+    demonstration that adding a filter has a cost. The enforced controls still carry the weight,
+    since they drove ASR to zero with no false positives at all. The composition order exists so the
+    cheap deterministic checks reject first and the probabilistic one only sees surviving traffic.
+- id: q4
+  question: >-
+    A team adds a third and fourth keyword detector to drive residual ASR down. What does the
+    defense-in-depth math say about the result?
+  options:
+    - Residual attack probability reaches zero, because each filter removes a share of what is left
+    - Attacks are blocked, because the product of the filters' residual rates is the only term that counts
+    - False positives are unaffected, because stacked filters reject disjoint sets of benign requests
+    - >-
+      Residual $\prod q_i$ shrinks but never reaches zero, while cumulative false positives grow
+      toward one
+  correct: 3
+  explanation: >-
+    Stacked probabilistic filters compose multiplicatively on the attack side and compound on the
+    benign side, the asymmetry recorded by the module's $1-\prod(1-\text{fp}_i)$ term. A finite
+    product of rates below 1 is still above 0, so depth is never a boundary, and the last filter
+    added buys the least while adding the same order of user impact. That is why "should we add
+    another filter" is always paired with a measurement.
+- id: q5
+  question: >-
+    An attacker who cannot leave your allowlisted hosts exfiltrates session data to the analytics
+    endpoint that is on the list. How should this finding be characterized?
+  options:
+    - It sits inside the allowlist's scope boundary, so the control works as specified and the payload is the gap
+    - It is an allowlist failure, since the list should have been narrowed to exclude the analytics host
+    - It is a detector false negative, since no classifier in the pipeline can see a permitted host
+    - It is caught upstream by the scrubber, which inspects the request body and not only the reply
+  correct: 0
+  explanation: >-
+    The meta-guarantee box lists attacks entirely within enforced scopes, and allowlisted-host
+    exfiltration is the named example of one. An allowlist guarantees a destination constraint, not
+    a payload constraint, so the control is doing exactly what it was specified to do. The module's
+    answer is not to widen the control beyond its scope but to add a second one on the hop the
+    attack is now using, which is the scrubber or the sandbox.
+- id: q6
+  question: >-
+    A secret is base64-encoded into the model's reply, so the output scrubber's literal match does
+    not fire. The egress allowlist then blocks the request. Which pairing of their roles is correct?
+  options:
+    - The scrubber is the guarantee and the allowlist is depth, because the scrubber sees every reply first
+    - The allowlist guarantees its scope and the scrubber is a filter with a pass-through rate
+    - Both are probabilistic, since an encoded payload defeats any pattern either control matches
+    - Both are enforced, since each independently terminates the request before egress completes
+  correct: 1
+  explanation: >-
+    The catalog puts output scrubbing in the enforced column only for the literal pattern it
+    matches, and M04's transformed forms are precisely the documented miss. The egress allowlist
+    decides in code whether the request may leave, so it holds regardless of the encoding and
+    regardless of what the model said. That is the composition the module wants, one enforced
+    control on the hop where the filter has a pass-through rate.
+- id: q7
+  question: >-
+    A tool call passes your JSON schema but asks for a path outside the workspace. What does the
+    schema validator establish, and what does it not?
+  options:
+    - It establishes the call is authorized, because a schema-valid argument was checked against your policy
+    - It establishes the call is safe, because well-typed arguments leave no room for a malicious value
+    - It establishes the value is well-typed, and path scoping and URL allowlists are separate rules
+    - It establishes nothing, because any check of the model's own output is a probabilistic layer
+  correct: 2
+  explanation: >-
+    The catalog's wording is precise: structured-output validation is enforced for the malformed and
+    ill-typed values you check, and it is not semantic safety. Exercise 4 adds the semantic rules,
+    path scoping and URL allowlist, on top, and that composition is the enforced control a detector
+    cannot provide. The reason is structural, the check runs on your side against a schema you
+    wrote, not on anything the model proposed.
+- id: q8
+  question: >-
+    Your composed pipeline reports ASR 0.0 and FPR 0.00 on the lab's four attacks and four benign
+    requests. What does that support in a security review?
+  options:
+    - A claim that the system is secure, since every attack in the suite was blocked
+    - A claim of production readiness, since zero measured false positives means no user impact
+    - A claim that no further controls are needed, since enforced controls leave nothing for monitoring
+    - A scoped result on a small suite, not a guarantee, and the residual class needs its own control
+  correct: 3
+  explanation: >-
+    Four attacks and four benign requests show that the enforced pair behaves as advertised and
+    nothing more. The meta-guarantee box names the residual explicitly, attacks within enforced
+    scopes, detector-evading variants, and novel attacks no control covers. The takeaway requires
+    measuring ASR and FPR and stating honestly what still gets through, because a number over too
+    small a sample is not a result, and monitoring and IR cover the part the suite never exercised.
+- id: q9
+  question: >-
+    You are writing the guarantee box for rate limiting on a public agent endpoint. Which pairing is
+    correct?
+  options:
+    - Stops abuse and cost overruns; does not stop one slow request; adapts by pacing the calls
+    - Stops runaway automation; does not stop slow abuse; adapts by pacing calls below the cap
+    - Stops exfiltration of secrets; does not stop data sent inside the permitted rate; adapts by splitting
+    - Stops every denial of service; does not stop anything at all; adapts by switching identity
+  correct: 1
+  explanation: >-
+    The catalog's row for rate limiting names abuse, DoS and cost as the scope, and legitimate
+    bursts as the limit, which is a tuning decision rather than a failure. It is classified as
+    enforced because the counter decides in code, and like the other enforced controls it has
+    essentially zero false positives once the window is set sensibly. Nothing in it constrains what
+    a permitted request contains, which is why the residual section still needs egress and
+    scrubbing.

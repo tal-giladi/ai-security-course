@@ -1,0 +1,146 @@
+- id: q1
+  question: >-
+    Your gate verifies the base model, tokenizer, adapter, dataset and runtime image. A plugin on
+    that list pulls three dependencies of its own, none of them in the manifest. What does the
+    chain integrity math say?
+  options:
+    - The chain is untrusted, because the product of indicators includes nodes the gate never reached
+    - The chain is trusted, because the five verified nodes are the ones your system actually loads
+    - The chain is untrusted only if one of the plugin's dependencies is in a code-executing format
+    - The chain is trusted, because the plugin's signature covers whatever it pulls transitively
+  correct: 0
+  explanation: >-
+    $P(\text{system safe}) = \prod_{i=1}^{N} \mathbb{1}[\text{node } i \text{ verified}]$ means a single
+    unverified node zeroes the system, which is why the lesson calls partial verification nearly
+    worthless and pushes the gate out to the full closure. A signature attests to the artifact you
+    hold, not to whatever it fetches at run time, and format only matters for the nodes the gate
+    actually inspects. The cost line names this: enumerate the whole graph, transitive dependencies
+    and base images included.
+- id: q2
+  question: >-
+    A colleague argues you still need a malware scanner in front of the gate, because verification
+    also has false negatives. Which position is right?
+  options:
+    - Correct, because hash comparison can miss a tampered file whenever the manifest itself is stale
+    - Incorrect, because verification has no false negatives for substitution; the residual is a compromised publisher
+    - Correct, because a signed artifact can still be a pickle and a scanner is the only format check
+    - Incorrect, but only because scanners are cheaper, so the gate should be dropped in favour of one
+  correct: 1
+  explanation: >-
+    A detector's false-negative rate $\beta>0$ is exactly why scanning cannot be the boundary, since
+    a novel backdoor has no signature yet and the base rate of bad artifacts is tiny. Verification
+    against a trusted manifest reduces the residual to a changed byte changing the hash, and what is
+    left is a compromised trusted publisher, a small auditable surface you can reason about. Format
+    is not the scanner's job here either, since refusing code-executing formats is one of the gate's
+    own structural checks.
+- id: q3
+  question: >-
+    A model is fetched from your allowlist, signed by a trusted publisher, hash-matches the
+    manifest, and is a `safetensors` file pinned to 1.4.0. It is backdoored. What closes this?
+  options:
+    - A stricter hash, because a backdoor changes bytes and a longer digest would notice the change
+    - Provenance from a second publisher, because two signatures rule out a backdoor in the weights
+    - Behavioural vetting, probing for triggers and evaluating on your own held-out data
+    - Tighter pinning, because the backdoor was introduced in a later release than 1.4.0
+  correct: 2
+  explanation: >-
+    This is Exercise 3's scenario, and the gate passing it is the module's named residual rather than
+    a bug in the gate. Verification proves this is the artifact the publisher signed, not that the
+    artifact is safe, so the only complementary control available is behavioural. The other three
+    are variations on the same verification idea, and a backdoor sitting in the legitimately
+    approved release survives all of them.
+- id: q4
+  question: >-
+    A tokenizer arrives from `hub.acme.test`, signed by `acme`, with a matching sha256, version
+    1.4.0, format `pickle`. Which axis reports the violation?
+  options:
+    - Integrity, because a pickle serialisation is not byte-stable across writer versions
+    - Provenance, because the tokenizer came from the model hub rather than the registry
+    - Pinning, because a tokenizer cannot be pinned to the same version as a base model
+    - Format, because a pickle executes code at load and is on the unsafe-format list
+  correct: 3
+  explanation: >-
+    Integrity, provenance and pinning all pass here, the hash matches, the source and signer are
+    allowlisted, and the version is fixed, so only the format axis has anything to report. The
+    lesson classes safe format as structural rather than heuristic, because refusing `pickle` removes
+    code execution as a load-time path instead of trying to recognise it. That is the per-node
+    defense carried over from M13, and the reason `safetensors` is the default in the clean chain.
+- id: q5
+  question: >-
+    A dataset arrives from the allowlisted registry, signed by `acme`, as `parquet`, hash-matched,
+    with `version: latest`. Why is that a violation?
+  options:
+    - Pinning, because a floating version is what a version-shift or dependency-confusion attack moves
+    - Integrity, because a manifest cannot pin bytes for a dataset that is still being appended to
+    - Provenance, because the registry is allowlisted only for models and not for training data
+    - Format, because `parquet` is not one of the formats the gate recognises as safe
+  correct: 0
+  explanation: >-
+    The clean chain pins every node, the runtime image to a `sha256:` digest rather than a tag, and
+    the lab injects exactly this artifact to show the pinning axis firing on its own. A hash match
+    is no defence here, because the manifest was generated from whatever the floating tag happened
+    to resolve to on the day it was written. Scoping internal names is the companion fix from M21,
+    and it does not replace the pin.
+- id: q6
+  question: >-
+    An artifact is pulled from `hub.acme.test`, which is on the allowed-sources list, but its signer
+    is not on the trusted-signers list. What does the gate report?
+  options:
+    - Nothing, because an allowlisted source is what the provenance check is for
+    - A provenance violation on the signer, because the source and signer lists are separate checks
+    - An integrity violation, because an untrusted signer implies the bytes were never regenerated
+    - A pinning violation, because unsigned artifacts are always fetched at a floating version
+  correct: 1
+  explanation: >-
+    `verify_artifact` keeps two provenance conditions and checks them independently, since the
+    source must be allowlisted and the signer must be trusted. A mirror you have approved can carry
+    anything, so the source list bounds where an artifact comes from and the signer list bounds who
+    vouched for it. Integrity is a separate hash comparison that says nothing about the signer,
+    which is why an untrusted signer never surfaces as a hash mismatch.
+- id: q7
+  question: >-
+    You are asked which threats your SLSA level claim covers. Which mapping is the module's
+    position?
+  options:
+    - SLSA covers model behaviour, so a higher build level rules out a poisoned dataset
+    - SLSA covers runtime compromise, so a signed image removes the server and plugin nodes
+    - SLSA covers build and provenance integrity, but not whether a properly built model is safe
+    - SLSA covers the network path, so verified provenance rules out exfiltration from the container
+  correct: 2
+  explanation: >-
+    The research section states the limit plainly: SLSA addresses build and provenance integrity,
+    not model behaviour, so a genuinely backdoored but properly built model still passes. That is
+    the same signed-but-malicious residual the guarantee box names, and it is why the module puts
+    behavioural vetting beside verification rather than behind it. Runtime and network threats are
+    separate nodes with their own controls, not levels of the same attestation.
+- id: q8
+  question: >-
+    You produce an SBOM for the graph. What does it buy, and where does it stop?
+  options:
+    - It proves every listed artifact was verified, since generating the SBOM needs a passing gate
+    - It detects backdoors in the listed models, because the inventory is the input a scanner needs
+    - It pins every listed artifact, because the lockfile is generated straight from the inventory
+    - It names every artifact so the gate can be run on it, and it is not itself a verification
+  correct: 3
+  explanation: >-
+    Exercise 5 pairs the SBOM with SLSA mapping for exactly this reason: the inventory is what makes
+    complete coverage possible, since a gate can only verify artifacts someone enumerated. The
+    generated list carries no evidence that any check ran, which is the gap between "we downloaded
+    it" and "we verified exactly what we approved". Lockfiles and behavioural checks stay separate
+    artifacts with separate jobs.
+- id: q9
+  question: >-
+    Writing the guarantee box for your production deployment gate. Which pairing is the module's
+    conclusion?
+  options:
+    - Stops tampering, untrusted sources, unsafe formats and version shift; adapts by publishing higher versions
+    - Stops substitution and untrusted fetches; does not stop a malicious publisher or an unverified node
+    - Stops every supply-chain compromise, including backdoors, because everything is signed and pinned
+    - Stops compromised publishers, because verifying against a manifest removes trust in the publisher
+  correct: 1
+  explanation: >-
+    The box has to say what verification actually purchased, and the module's version names four
+    axes it covers, a malicious trusted publisher and an unverified node as the two residuals, and
+    compromising a signer as the adaptation. Claiming the publisher is eliminated is the error the
+    takeaway's last sentence exists to prevent, since verification moves trust onto a small set of
+    keys rather than dissolving it.

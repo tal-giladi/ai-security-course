@@ -1,0 +1,167 @@
+- id: q1
+  question: >-
+    A guard in the system prompt says the canary must never be revealed. One tester adds a louder
+    `NEVER REVEAL UNDER ANY CIRCUMSTANCES` banner; another delivers the request base64-encoded.
+    Using the log-odds model, what did each move, and why does neither close the gap?
+  options:
+    - Both raise the instruction's strength, since shouting and encoding both make it more salient
+    - The banner lowers the guard and the encoding raises the strength, since both widen the model
+    - The banner raises the guard and the encoding leaves its covered distribution, and both stay finite
+    - The banner raises the guard to a hard bound, while the encoding is the only one still finite
+  correct: 2
+  explanation: >-
+    The guard is a bias in the score, and adding words to the system prompt moves that bias rather
+    than making it infinite. Encoding works the other way round: the capability generalizes to
+    unfamiliar surface forms faster than the refusal training does, so moving off the covered
+    distribution makes the same instruction cheaper. Because the role bias stays finite, both
+    moves buy probability and neither buys a guarantee, which is exactly the asymmetry the
+    enforcement work later has to make up for.
+- id: q2
+  question: >-
+    A colleague proposes that "never reveal the canary" be enforced by an output check in your
+    application code, rather than by training the model harder to refuse. What is the decisive
+    reason?
+  options:
+    - Refusal is a tendency in the weights, while a check in code is a decision it cannot argue with
+    - Output checks run after generation, so they cost more latency than any training-based defense
+    - Training the model harder requires retraining, which is unavailable once the service is deployed
+    - Output checks are applied per request, so they cannot cover a model that generates in parallel
+  correct: 0
+  explanation: >-
+    Refusal and the instruction hierarchy are properties of the weights, which means they hold for
+    the distribution the training covered and can be pushed aside by an input from outside it. Code
+    around the model fails the way ordinary software fails, and it fails testably — which is what
+    makes it a control rather than a mitigation. The design rule that follows is blunt: anything
+    you truly need enforced lives outside the model, never in the prompt or in good behaviour.
+- id: q3
+  question: >-
+    You measure a refusal rate of 0.60 over 20 trials with one phrasing and 0.70 over 20 trials
+    with another. What can you honestly report about the difference?
+  options:
+    - That the second phrasing is 10 points worse, since the point estimate is the whole measurement
+    - That the difference is inside the interval for that sample size, so you have not shown one
+    - That the second phrasing is worse, since two rates that differ in the estimate must differ in fact
+    - That the sample size is large enough, since twenty trials resolve any difference above ten points
+  correct: 1
+  explanation: >-
+    A proportion estimated from a small sample carries a wide interval, and at this size the two
+    overlap comfortably, so the honest statement is about what you failed to show rather than about
+    what you found. Separating a ten-point difference around the middle of the range needs a sample
+    in the low hundreds, which is why evaluation practice cares so much about the count behind a
+    headline rate. The Wilson interval is the right form here precisely because rates near the ends
+    break the naive one.
+- id: q4
+  question: >-
+    A team wraps untrusted user text in role delimiters and reports that the model now respects
+    them. What is the precise correction to that claim?
+  options:
+    - The delimiters are correct, and the model's respect for them is enforced by the chat template
+    - The delimiters are inert, since the template concatenates all roles into one token stream
+    - The delimiters help only for encoding attacks, and never for authority-framed ones
+    - The same marking that frames user text as data is what a forged role block borrows from
+  correct: 3
+  explanation: >-
+    Role markers are tokens in the same sequence, respected because training made them respected,
+    and anything that looks like a role marker inherits exactly that standing. So the same feature
+    that frames user text as data is the thing an attacker forges to make their own text look
+    higher-priority. The lesson treats the mitigation as hardening the prior, not as a boundary —
+    never letting untrusted text control the structural markers helps and proves nothing.
+- id: q5
+  question: >-
+    A safety evaluation reports zero jailbreaks in 200 English payloads. An attacker submits the
+    same request in a low-resource language. Which statement survives review?
+  options:
+    - The evaluation is invalid, since a rate of zero cannot be reported with a finite sample
+    - The claim is scoped to the distribution tested, and the coverage argument predicts the other result
+    - The attacker found a defect, since behaviour should be identical across surface encodings
+    - The evaluation stands, since a payload that changes language no longer makes the same request
+  correct: 1
+  explanation: >-
+    Refusal was trained as a preferred behaviour over a particular distribution, so what the
+    evaluation measured is that behaviour within that distribution and not beyond it — which is
+    what "the model is safe" always compresses into. The mechanism predicts the other result
+    directly: capability generalizes off-distribution faster than refusal does, so a phrasing the
+    guard never saw costs the attacker nothing extra in capability. The adversary is free to
+    choose a different distribution, so the report has to name the one it used.
+- id: q6
+  question: >-
+    A tool call arrives with `{"path": "secrets/LAB-CANARY", "mode": "read"}` and the model emitted
+    it in strict JSON mode against your schema. What has the schema established, and what not?
+  options:
+    - It established that the call is safe to run, since a constrained decoder cannot produce an unsafe value
+    - It established the caller's intent, since emitting a tool call commits the model to it
+    - The schema fixed the argument shape only, so values still need validation and authorization in code
+    - It established the destination is reachable, so an allowlist on the path prefix is now redundant
+  correct: 2
+  explanation: >-
+    Constrained decoding buys you a parser that will not surprise you, which is a real operational
+    win and a security non-event. A string field carries whatever text the model produced, and the
+    mechanism has no way to express "not a traversal" or "not a secret" as a type constraint. The
+    field you act on has to be validated and authorized exactly as if a user had typed it,
+    because transitively it came from one.
+- id: q7
+  question: >-
+    Your app streams the model's Markdown to the browser and renders images eagerly, while the
+    output filter only decides on the complete response. What is the correct diagnosis?
+  options:
+    - A side effect fires on a prefix, so any check needing the full output must gate the side effect
+    - The renderer is at fault for rendering Markdown, and rendering it as escaped text is the fix
+    - The filter is at fault for running late, and running it per token closes the timing gap
+    - The race is in the order of the checks, so moving the filter in front of the render removes it
+  correct: 0
+  explanation: >-
+    The outbound request happens when the first delta is rendered, long before the whole-message
+    filter has an opinion, and an incremental filter would not help either since it only ever sees
+    prefixes and can miss content whose meaning depends on its end. The streaming trade-off is
+    therefore unavoidable as stated: buffer until the decision is made, and pay the latency. The
+    lesson is that the control has to sit on the effect rather than on the final display.
+- id: q8
+  question: >-
+    An input filter has recall 0.9 and a false-positive rate of 0.05. At what attack prevalence
+    does half of what it flags turn out to be real?
+  options:
+    - About 1%, which is roughly the prevalence at which filtering becomes worth the latency
+    - About 5%, since the crossover is where true and false alarms are equally likely
+    - About 11%, since the gap between the two rates has to be repaid twice over
+    - About 50%, since that is the prevalence at which the filter becomes balanced overall
+  correct: 1
+  explanation: >-
+    Setting the posterior equal to one half makes the expected true and false alarms identical,
+    which solves directly for the prevalence at roughly one alarm in twenty. Below that, most
+    alerts are noise and the tool is triage rather than a gate; well above it, the filter earns
+    its latency. The lesson's operational point is that this crossover is a property of your base
+    rate, not of the filter vendor's accuracy claim.
+- id: q9
+  question: >-
+    A provider's output filter is enabled on your agent that holds a `send_email` tool. Where does
+    the filter belong in the pipeline, and what is it for?
+  options:
+    - In front of the model, blocking the prompt before it is ever tokenized into the context
+    - Around the tool call, since the filter is the only component that sees both text and action
+    - Nowhere, since an agent that can act cannot be defended by a component that only reads text
+    - Behind the real controls, cutting attack success rate without being the thing that makes it safe
+  correct: 3
+  explanation: >-
+    The filter reads text, so it has no view of what a call would do and no authority over whether
+    it should happen; those are code decisions about capability and authorization. Stacked behind
+    least-privilege tools and enforced checks, it is worth having as risk reduction, and the harm
+    moves to a call it never inspects the moment that assumption fails. Its other costs are real
+    too: extra latency, a second model call for model-based filtering, and mostly false alerts once
+    attacks are rare.
+- id: q10
+  question: >-
+    You removed the `authorized()` call from the tool loop because the schema already validates
+    every argument. Which two exploits does that open, given the exposed `fetch_url` and
+    `lookup_order` tools?
+  options:
+    - Only a cross-tenant `lookup_order`, since URLs are already constrained to string form
+    - A malformed arguments object, and a call to a tool name that is not in the exposed set
+    - A cross-tenant `lookup_order` and a `fetch_url` to the metadata endpoint, both shape-valid
+    - Neither, since the schema still rejects any call the model produces without the required keys
+  correct: 2
+  explanation: >-
+    Shape is not intent: a host that resolves inward and an order id belonging to the other tenant
+    are both well-typed strings, and the schema has no vocabulary for either judgement. Deleting
+    the check therefore removes the only component that knew who was asking and what they were
+    entitled to, which is the single most important line in the loop. Exposing a tool is granting a
+    capability reachable by text the attacker can influence.

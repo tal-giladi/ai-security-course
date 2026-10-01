@@ -1,0 +1,151 @@
+- id: q1
+  question: >-
+    You want the exact maximiser of the loss increase subject to $\|\delta\|_2 \le \epsilon$, for
+    the same gradient the $\ell_\infty$ attack already used. What is the perturbation?
+  options:
+    - $\epsilon\,\operatorname{sign}(\nabla_x \ell)$, since every coordinate saturates at the budget
+    - $\epsilon\,\operatorname{sign}(\nabla_x \ell)$ scaled by $1/\sqrt{d}$, since the norm couples coordinates
+    - $\epsilon\,\nabla_x \ell/\|\nabla_x \ell\|_2$, the steepest-ascent direction normalised
+    - $\epsilon\,\nabla_x \ell/\max_i|\nabla_x\ell_i|$, scaled so the largest coordinate hits the budget
+  correct: 2
+  explanation: >-
+    Maximising a linear form under a norm constraint is a dual-norm problem: the constraint
+    geometry, not the gradient, sets the shape of the maximiser. Under $\ell_\infty$ each
+    coordinate is maximised independently and you get the sign vector; under $\ell_2$ the
+    constraint is a single energy budget and you get the normalised gradient. That is why
+    switching norm is the first thing an attacker tries against a model trained on one of them,
+    and why a robustness claim has to name the norm it was measured under.
+- id: q2
+  question: >-
+    A model passes your review because FGSM at $\epsilon = 0.05$ leaves accuracy at 0.88. What is
+    the correct response to that number?
+  options:
+    - FGSM is PGD with one step and no restart, so it reports an upper bound on true robustness
+    - The number is fine, because one step and twenty steps explore the same $\ell_\infty$ ball
+    - Raise $\epsilon$ until FGSM fails, since a larger budget is a fairer test of the same model
+    - Report it, since FGSM is the attack the model was trained to withstand in the first place
+  correct: 0
+  explanation: >-
+    PGD explores a superset of the iterates FGSM can reach, so the best loss it finds is at least
+    as high and attacked accuracy is at most as high — the gap is the first-order error, not a
+    different ball. Raising $\epsilon$ instead changes the threat model rather than testing it
+    harder, which is a separate experiment carrying a separate claim. The rule the lesson states
+    is simple: always evaluate with PGD or stronger, and never report single-step robustness.
+- id: q3
+  question: >-
+    Your PGD implementation returns adversarial inputs with coordinates slightly outside $[0,1]$,
+    and many perturbations sit far from the clean example. Which two steps are missing?
+  options:
+    - The projection onto the $\ell_\infty$ ball and the clip back to the valid domain
+    - The clip back to the valid domain and the random start inside the ball
+    - The random start inside the ball and a momentum term on the step size
+    - The clip back to the valid domain and a second forward pass to pick the best iterate
+  correct: 1
+  explanation: >-
+    Three projections make the attack legal and honest: clamp the perturbation to the
+    $\ell_\infty$ ball, clamp the input to the valid box, and start from a random point in the
+    ball. Dropping the clip yields inputs the model was never meant to see, so the number is not
+    about the stated threat model. Dropping the random start is subtler — it pins the search to
+    the neighbourhood of the clean example, which is precisely what one-step FGSM does, and it
+    under-reports the attack's own strength.
+- id: q4
+  question: >-
+    At $\epsilon = 0.05$ under $\ell_\infty$ the standard model goes clean 0.91, PGD 0.53; the
+    adversarially-trained model goes clean 0.83, PGD 0.62. Which reading is correct?
+  options:
+    - The trained model is simply worse, since both of its numbers are lower than the standard model's
+    - The 0.62 is a guarantee, since the model was trained on the same attack it is evaluated with
+    - The comparison is confounded, since the two models differ in clean accuracy before any attack
+    - Robustness was bought with clean accuracy, and only at the norm and budget it was trained at
+  correct: 3
+  explanation: >-
+    0.91 to 0.83 clean against 0.53 to 0.62 under attack is the trade-off the min–max objective
+    encodes: the model gives up sharp fitting near the training points to flatten the
+    neighbourhood around them. That is not a bug, it is the current state of the field, and the
+    claim it licenses is scoped to the $\ell_\infty$ ball of radius 0.05 that was actually
+    trained and tested. Reading it as a guarantee inverts the argument, since training on an
+    attack makes a model good at that attack without proving anything about the others.
+- id: q5
+  question: >-
+    A published model reports 0.80 accuracy under FGSM and 0.79 under PGD. What does that gap, or
+    its absence, tell you, and what is the right follow-up?
+  options:
+    - The gap is small, so the model is robust and the evaluation can be closed out here
+    - A large FGSM–PGD gap is the signature you are looking for, and this model shows it
+    - Real robustness degrades gracefully with step count, so add steps and restarts to find the plateau
+    - The model is gradient-masked, since masked models show a small gap by construction
+  correct: 2
+  explanation: >-
+    Masked robustness looks strong precisely because the gradient has been made uninformative,
+    and the tell is a large FGSM–PGD gap: FGSM-only adversarial training teaches a model to
+    defeat the one-step attack while leaving the sharp curvature PGD walks straight up. Real PGD
+    adversarial training shows a small gap and a plateau as the step count rises. So the
+    reassuring sign here is the flat curve, and the honest follow-up is more steps, random
+    restarts, and a transfer or black-box attack to break anything that learned to hide.
+- id: q6
+  question: >-
+    A model was adversarially trained at $\ell_\infty$ with $\epsilon = 0.05$. Which attack falls
+    outside the guarantee it was trained for?
+  options:
+    - An $\ell_2$ attack at the same nominal radius, since the defence was fitted to one norm
+    - A PGD attack at the trained $\epsilon = 0.05$, since that is the ball it was trained on
+    - A sign-based perturbation with every coordinate at full $\epsilon$, the edge of that ball
+    - A targeted attack toward a chosen wrong class, since misclassification is the training objective
+  correct: 0
+  explanation: >-
+    The training objective optimised the worst case inside one norm and one radius, so nothing
+    follows for a different norm even at a nominally identical budget: the $\ell_2$ ball of
+    radius 0.05 includes points far outside the $\ell_\infty$ box of side 0.1. That containment
+    argument is exactly why the box says robustness is relative to a threat model you chose and
+    must not be generalised past the norm and $\epsilon$ actually trained and tested. The
+    attacker adapting by switching norm is the first item on the list, not an edge case.
+- id: q7
+  question: >-
+    PGD adversarial training with 7 inner steps makes each training step cost roughly 8 times a
+    standard one. Where does that cost actually land?
+  options:
+    - On inference, since the inner PGD loop has to be rerun for every prediction served
+    - On training only, because at test time the model is an ordinary network taking one forward pass
+    - On both, since a fresh perturbation has to be regenerated for every new input
+    - On the data pipeline, since adversarial examples have to be precomputed and stored on disk
+  correct: 1
+  explanation: >-
+    The inner maximisation is part of the training objective, not part of the deployed model, so
+    the model you ship is unchanged and inference costs what it always cost. Training, by
+    contrast, multiplies every step by the number of inner iterations plus the backward passes
+    each one needs, which makes adversarial training a training-budget decision rather than a
+    serving one. A team that finds this expensive at training time has not produced a serving-cost
+    argument against robustness.
+- id: q8
+  question: >-
+    You plot clean, FGSM and PGD accuracy against $\epsilon \in [0, 0.2]$ for the standard model,
+    and the PGD curve flattens at 0.50. What does the plateau tell you?
+  options:
+    - The $\ell_\infty$ budget has stopped binding, so the attack has run out of room to move
+    - The model is now robust, since spending more budget no longer reduces its accuracy
+    - The experiment is buggy, since accuracy can never fall below chance under a valid attack
+    - The attack has driven the model to chance, so it has exhausted what this norm can do here
+  correct: 3
+  explanation: >-
+    On a binary task 0.50 is the floor, so a plateau there means PGD is winning outright rather
+    than being stopped by the constraint, and further increases in $\epsilon$ have nothing left to
+    buy. The questions worth asking next are the ones that leave that regime — a different norm,
+    a different domain constraint, a different model — because within one norm the curve has
+    already bottomed out. Reporting the collapse as a robustness number would invert what the
+    curve says.
+- id: q9
+  question: >-
+    Which set of claims is the correct guarantee analysis for PGD adversarial training?
+  options:
+    - Stops — perturbations the model cannot see coming — but not anything inside the trained ball
+    - Stops — every $\ell_2$ and $\ell_0$ attack, since the flattening transfers across norms
+    - Stops — perturbations within the trained $\ell_\infty$ ball — but not others, and not a proof
+    - Stops — adversarial examples, at a higher query cost to the attacker rather than to you
+  correct: 2
+  explanation: >-
+    The min–max objective is solved for one norm and one radius, so the guarantee is scoped to
+    that set, and it is empirical because the inner maximum is approximated rather than computed.
+    A stronger attack inside the same ball can still reduce the measured number, which is what the
+    masked-robustness cases exploit, and a different norm is simply outside the claim. The cost
+    side is the clean-accuracy drop plus the training multiplier; the box has to carry both, or
+    the trade-off gets reported as a free win.

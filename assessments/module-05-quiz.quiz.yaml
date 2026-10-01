@@ -1,0 +1,154 @@
+- id: q1
+  question: >-
+    Your support bot ingests a nightly crawl of a partner help site. An attacker with no account
+    and no API access edits one FAQ page. The bot retrieves it, obeys it, and emails the canary to
+    a stranger. Which capability statement belongs in the threat model?
+  options:
+    - The attacker needs write access to the vector store, since ingestion is the only entry point
+    - The attacker only needs to place text somewhere the system reads, and the deputy supplies the rest
+    - The attacker needs a session token, since retrieval text is attributed to the fetching identity
+    - The attacker needs write access to the crawl output, since only stored content is ever retrieved
+  correct: 1
+  explanation: >-
+    The lower bar is the whole point of the class: the attacker's requirement is a text-placement
+    capability, not an identity, which is why the paper frames attacker capability in terms of where
+    they can write rather than what they can reach. Once the text is in the retrieved role it is in
+    the same instruction stream as your system prompt, and the privilege it exercises is the
+    agent's own. That is why the mitigation is a privilege decision rather than a filtering one.
+- id: q2
+  question: >-
+    A payload leaks the canary when the user types it and fails when the same text sits in a
+    retrieved document. A framed variant then succeeds through the document. What does that say?
+  options:
+    - The retrieved role carries a lower bias, so more strength is needed, but the ceiling is unchanged
+    - Retrieval sanitizes content, so the framed variant only worked because it re-entered the user role
+    - The document was decoded before use, which is why the framing recovered the original strength
+    - The hierarchy is enforced at retrieval time, and the framed variant slipped past a buggy check
+  correct: 0
+  explanation: >-
+    Retrieved text arrives with a more negative role bias than a user message, so the same
+    instruction starts from a worse position and has to be stronger to clear the same threshold —
+    which is why a payload that works through the chat may not work through the knowledge base. The
+    framing compensates by adding strength, and it keeps working because the bias is finite rather
+    than absolute. The handicap therefore raises the attacker's effort without lowering the
+    ceiling, which is precisely why indirect injection is the class that keeps teams up.
+- id: q3
+  question: >-
+    Provenance markers move the probability that the injected instruction is obeyed from 0.6 to
+    0.2. An egress allowlist moves the probability that an emission reaches the attacker from 0.8
+    to 0.01. Which combination minimizes successful exfiltration, and by how much?
+  options:
+    - Provenance alone, at 0.16, since it attacks the factor the attacker controls most directly
+    - The allowlist alone, at 0.006, since capping the second factor beats shifting the first
+    - Both, at 0.002, since the factors are independent and a defense against one multiplies the other
+    - Both, at 0.08, since each defense halves the overall rate and the halves compound additively
+  correct: 2
+  explanation: >-
+    Exfiltration needs both conditions, so the two defenses multiply rather than add, and a gate
+    on the channel the attacker does not control is worth more than a nudge on the one they do.
+    The decisive property shows up in the limit: with the egress factor driven to zero, no rate of
+    obedience produces an exfiltration, however completely the model has been persuaded. That is
+    the quantitative form of the lesson's rule, and it is why the allowlist is the one to rely on
+    rather than the prompt.
+- id: q4
+  question: >-
+    You deploy an egress allowlist on the bot's renderer and mail tool. Which guarantee statement is
+    correct?
+  options:
+    - It stops exfiltration to any non-allowlisted destination, whether or not the injection worked
+    - It stops every exfiltration path, including channels that never resolve to a network destination
+    - It reduces the probability that an injected instruction is obeyed, by removing its obvious payoff
+    - It holds only while the allowlist stays smaller than the set of hosts an attacker can influence
+  correct: 0
+  explanation: >-
+    The check caps the second factor of the chain, so it holds independently of what the model
+    concluded — which is the property that makes it a boundary rather than a prior. What it does
+    not cover is an allowlisted destination the attacker can influence, a channel you never routed
+    through it such as text a user copies, and harm that is not an exfiltration at all. The box
+    prices the rest honestly: allowlist updates are operational friction and every check is one host
+    test per outbound request.
+- id: q5
+  question: >-
+    The injected instruction tells the model to emit the canary inside an image URL. The UI loads
+    images eagerly, so the request fires the moment the answer is displayed. Why is this severe
+    despite nobody clicking anything?
+  options:
+    - The renderer resolves the URL server-side, so it is an SSRF reached through the model
+    - The side effect fires on display, before any human reads the answer or any filter completes
+    - Browsers log image loads as page views, so the attacker gets a durable trace of who opened it
+    - Eager loading disables the same-origin policy, so the canary is also readable by the page itself
+  correct: 1
+  explanation: >-
+    The class's whole threat is that the deputy acts on its own initiative, so a renderer that
+    fetches on display completes the chain with no human decision anywhere in it. Any control that
+    needs the whole message — an output filter, a reviewer — arrives after the request has already
+    gone out, which is the timing trade-off the streaming lesson names. The mitigation is to gate the
+    effect rather than the display, and to make the destination set small enough that an untrusted
+    one is not in it.
+- id: q6
+  question: >-
+    You disable the egress allowlist, keeping provenance markers and the literal output scrub. The
+    canary still reaches the sink. How, and why does the allowlist stop the same attack?
+  options:
+    - By base64-encoding the canary in the URL, and the allowlist stops it because it blocks bad hosts
+    - By splitting the canary across the path and query, and the allowlist stops it on the host alone
+    - By echoing the canary in prose, and the allowlist stops it because prose never becomes a request
+    - By sending it through a second tool, and the allowlist stops it because tools are checked too
+  correct: 1
+  explanation: >-
+    The scrub matches one byte pattern, and any transform that preserves the information while
+    changing the bytes defeats it — the far end reassembles what the near end no longer
+    recognizes. The allowlist never inspects the payload at all; it decides on the host, so
+    encoding the value is simply irrelevant to it. That contrast is the whole argument for
+    privilege and destination controls over content matching.
+- id: q7
+  question: >-
+    The lab reports VULNERABLE exfil true and DEFENDED exfil false. A teammate concludes the
+    injection itself is now blocked. What is the accurate reading?
+  options:
+    - Correct, since the bot did not reach the sink and therefore never followed the injected text
+    - Correct, since the defended bot also wraps retrieved text in provenance markers
+    - Incorrect, since the defense is enforced and an enforced control cannot be obeyed past
+    - Incorrect, since the injection may still be obeyed but the deputy has no route to the attacker
+  correct: 3
+  explanation: >-
+    The measurement captures the product, not either factor, so a false exfiltration result is
+    consistent with the injection being followed exactly as before while the second factor sits at
+    zero. That is the intended reading: the model can be fully persuaded and still be unable to
+    cause damage, which is the property worth buying. Confusing the two would mean you believe
+    your prompt work is holding, and would send you back to re-tuning it the next time the
+    allowlist loosens.
+- id: q8
+  question: >-
+    With the allowlist in place, an attacker pivots from exfiltration to deleting records through
+    an authorized tool. What does this tell you about the control?
+  options:
+    - The allowlist is complete, since deletion is not exfiltration and never was in scope
+    - The control caps egress only, so destructive actions within the deputy's allowed set remain
+    - The control is bypassed, since any harm at all defeats a destination allowlist by definition
+    - The control is misconfigured, and destructive tools should have been added to the egress list
+  correct: 1
+  explanation: >-
+    The box says the control removes the deputy's ability to be misused for one purpose, and the
+    predicted adaptation is that the attacker uses a capability the deputy legitimately holds. So
+    a tight destination list leaves the real question untouched: what is this component allowed to
+    do at all, and is each of those actions separately authorized and worth its own check. The
+    lesson's answer is to keep reducing privilege until the residual is small enough to reason
+    about, and to put fewer secrets in reach while you do it.
+- id: q9
+  question: >-
+    Your weakest layer is provenance markers telling the model to ignore instructions in retrieved
+    text. A reviewer asks why it cannot be the primary defense. Which answer holds up?
+  options:
+    - It costs latency on every retrieval, which is why it cannot carry the security property alone
+    - It only covers the retrieved channel, and an attacker can reach the same model through a tool
+    - It shapes behaviour rather than enforcing it, and a stronger payload simply raises what is needed
+    - It is redundant once the egress allowlist is in place, so keeping it only adds complexity
+  correct: 2
+  explanation: >-
+    Telling the model to discount a class of input is the same move as a stronger system prompt: it
+    raises what the attacker must overcome, and the resistance it meets is finite, so a payload
+    strong enough clears it as the earlier leaks showed. It is worth keeping because it is nearly
+    free, but it is a prior, and the guarantees that matter come from the factors you can decide in
+    code. The other framings misplace the cost, which is a few tokens rather than a latency
+    problem.

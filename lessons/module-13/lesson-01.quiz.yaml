@@ -1,35 +1,61 @@
-# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
-# The lesson's model answer is shown as the explanation. `source` fingerprints the original
-# question + answer; if the lesson changes, the site flags the question for review.
-- source: 3ffd3de0b56c
-  question: Why is loading a .pt/.bin checkpoint a code-execution risk?
+- id: q1
+  question: >-
+    Why is loading a `.pt` or `.bin` checkpoint a code-execution risk rather than just a file-format choice?
   options:
-    - The tensors can overflow GPU memory and corrupt the process
-    - The format is pickle, whose `__reduce__` can run arbitrary code on load
-    - The checkpoint contains a compiled CUDA kernel that runs at inference
-    - The file is unsigned, so the OS runs it as an executable
+    - The tensors can overflow GPU memory and corrupt the surrounding process during deserialization
+    - The format is pickle, whose `__reduce__` can execute arbitrary code while objects are rebuilt
+    - The checkpoint bundles a compiled CUDA kernel that runs automatically at inference time
+    - The file carries no publisher signature, so the operating system executes it as an application
   correct: 1
-- source: c3eb9d60f4da
-  question: What does safetensors guarantee, and why is it stronger than a scanner?
+  explanation: >-
+    Pickle does not store data, it stores instructions for reconstructing objects, and `__reduce__`
+    lets the stream name a callable and its arguments to invoke at load time. Since `torch.save` and
+    `torch.load` are pickle, a `.pt` or `.bin` checkpoint is an executable payload and loading one
+    runs the sender's code before inference even begins. The lab demonstrates this inertly with a
+    marker function, which proves the primitive without doing any harm.
+- id: q2
+  question: >-
+    What does safetensors guarantee, and why is that stronger than running a scanner on the file?
   options:
-    - No backdoors in the weights, because it checks behavior on load
-    - No code execution on load, because the format cannot express code at all
-    - Smaller files, because it compresses tensors better than pickle
-    - No code execution on load, because it scans for known malicious payloads
-  correct: 1
-- source: 91fb2099321a
-  question: Why does safe loading not imply safe behavior?
-  options:
-    - Weights can still be poisoned or carry a backdoor as valid tensors
-    - safetensors can still execute code if the header is malformed
-    - Safe loading only applies to the base model, not to its tokenizer
-    - Safe loading disables inference-time guardrails for speed
-  correct: 0
-- source: 8069276268a1
-  question: Why can a malicious adapter pass ordinary evaluation?
-  options:
-    - Adapters are too small to affect outputs until merged twice
-    - Evaluation tools skip adapters and only test the base model
-    - Adapters are signed by the hub, so evaluators trust them
-    - It keeps clean accuracy while its trigger behavior fires only on rare inputs
+    - That the weights contain no backdoor, because the format inspects their behaviour on load
+    - That loading is faster and files are smaller, because tensors compress more densely than pickle
+    - That loading is safe because the loader scans the payload for known malicious byte patterns
+    - That no code executes on load, because the format cannot express code at all
   correct: 3
+  explanation: >-
+    safetensors is a JSON header plus raw tensor bytes with nowhere to put a callable, so the safety
+    claim is a property of the format rather than of a detector that might miss a novel payload.
+    That is what makes it stronger: a scanner is a classifier with false negatives, while the format
+    deletes the code path entirely, which is also why `torch.load(weights_only=True)` narrows
+    unpickling to plain data. What it does not touch is behaviour — the tensors can still be poisoned.
+- id: q3
+  question: >-
+    Why does loading weights safely not imply that the loaded model behaves safely?
+  options:
+    - Perfectly valid tensors can still be poisoned or carry a trigger-to-target backdoor
+    - safetensors can still execute code when its JSON header is malformed or truncated on load
+    - Safe loading applies only to the base weights, never to a tokenizer or a custom config
+    - Safe loading switches off inference-time guardrails so that the model runs faster
+  correct: 0
+  explanation: >-
+    A backdoor is a statistical property of the numbers, not of how they were serialized: the format
+    guarantees that loading runs nothing, which says nothing at all about what the loaded model does on
+    a trigger. This is why the defense stack needs provenance and behavioral vetting beside the safe
+    format. An attacker who ships a backdoored but perfectly valid safetensors file is stopped by
+    nothing in the loader, only by a test that never sends it a trigger.
+- id: q4
+  question: >-
+    Why can a malicious LoRA adapter pass an ordinary clean-accuracy evaluation?
+  options:
+    - Adapters are too small to affect the outputs until they have been merged into the base twice
+    - Standard evaluation tooling skips adapters entirely and only ever tests the unmodified base model
+    - It keeps clean accuracy high while its trigger behaviour fires only on rare inputs
+    - Adapters are signed by the hub, so evaluators trust them without inspecting their contents
+  correct: 2
+  explanation: >-
+    The attacker solves a stealth objective, trading a weighted clean-loss term against a backdoor
+    term, and tunes the weighting so the merged model is indistinguishable from the base on clean
+    data — the lab sees accuracy move only from 0.99 to 0.98 while trigger success reaches 1.00.
+    Evaluation samples from the clean distribution and the trigger is absent there by construction,
+    exactly as in Module 11. That is why catching it needs trigger probing or anomaly scanning, and
+    why the base weights file staying untouched proves nothing about the merged system.

@@ -1,0 +1,148 @@
+- id: q1
+  question: >-
+    Your defense is a regex that rewrites `CALL run_shell(...)` in any file the agent reads. An
+    attacker restates the same directive in prose. Which claim survives a security review?
+  options:
+    - It is a filter with pass-through, so it removes the injection hop without ever closing it
+    - It is enforced, because the model only ever sees the rewritten text and never the original file
+    - It is structural, because a directive that fails the pattern is never written into the context
+    - It is structural, because the agent's shell capability is denied whenever the pattern is absent
+  correct: 0
+  explanation: >-
+    The chain is injection, then execution, then exfiltration, and the module assigns each control
+    to one of those hops. Content-as-data is a filter, so it has $q_i>0$; the prose restatement is
+    exactly the adaptation the box predicts, and the control buys depth rather than a guarantee.
+    Only no-shell and the sandbox take $p_i$ to zero, which is why the takeaway ranks the structural
+    controls as the real guarantees and the stripper as one layer of depth.
+- id: q2
+  question: >-
+    The build sandbox runs with `network_mode: none` and a scrubbed environment. The injected
+    `curl` still executed, and the run was clean. Why?
+  options:
+    - An allowlist stripped the command before it ran, so the shell was never given the directive
+    - The shell ran but the exfiltration hop is empty, with no route out and no secret to send
+    - An approval gate refused the command, so the sink never received an executed string
+    - The content-as-data filter removed the injection, so the agent had no directive to act on
+  correct: 1
+  explanation: >-
+    The exercise asks you to show the injected command running and still failing to exfiltrate, and
+    the hint names both reasons: no network means nowhere to reach, and a stripped environment
+    means nothing to send. That is an empty exfiltration hop, the same property as $p_i=0$ even
+    though the command ran, which is why it is the strongest single control when the agent really
+    must build things. The other three stop the command before it runs, a different and weaker
+    guarantee here.
+- id: q3
+  question: >-
+    A dependency declares a `postinstall` script. The agent never reads it as text, and the
+    content-as-data stripper is enabled. What does that control buy here?
+  options:
+    - Nothing, because install scripts run after the agent has already finished its reasoning
+    - Full coverage, because the stripper rewrites every file the package manager executes
+    - Nothing, because the script runs as code at install time, before the agent reasons at all
+    - Partial coverage, because the stripper catches the script once the agent reads it for review
+  correct: 2
+  explanation: >-
+    The concept section is explicit that setting up the repo is running the repo's code before any
+    agent reasoning, so the software supply chain sits underneath the coding-agent loop rather than
+    inside it. A directive-shaped text filter operates on text the model reads, and this code path
+    never passes through the model. That is the module's reason for saying sandboxing and reviewing
+    install scripts matter as much as the agent's own behaviour; the review has to be of what runs,
+    not only of what is said.
+- id: q4
+  question: >-
+    Your command allowlist permits `git status`. A repo directive chains `git status; curl exfil`
+    through the shell. Which hardening actually removes that class of attack?
+  options:
+    - A longer allowlist entry, so the exact chained command can be named and refused up front
+    - A blocklist of `;` and `&&`, which are the two metacharacters this particular directive uses
+    - A second regex over the command string, matching the shell metacharacters before execution
+    - Arg-array execution with no shell interpolation, so the argument can never become a command
+  correct: 3
+  explanation: >-
+    Exercise 3 is a demonstration that a string allowlist is a filter, and filters on this hop have
+    $q_i>0$: a new metacharacter or a new chaining form reopens it at once. With arg-array
+    execution and no `shell=True`, the argument is data and there is no grammar for the model to
+    escape into. Blacklists and regexes over a command string are the same filter in different
+    syntax, and the set of metacharacters is not closed.
+- id: q5
+  question: >-
+    A resolver picks the highest version across registries: internal `acme-utils` is 1.2.0, and an
+    attacker publishes 9.9.9 on the public hub. What does pinning change?
+  options:
+    - It lowers the probability of resolving the attacker's package, without making the choice constant
+    - It makes the resolver's choice a constant, since the attacker's version is unreachable
+    - It adds a detector that scores the package name before the resolver ever gets a vote
+    - It raises the internal version to 9.9.10 so the legitimate package outranks the attacker's
+  correct: 1
+  explanation: >-
+    The lesson separates this from the probabilistic story deliberately: a pinned version and
+    registry turn the resolution into a constant, so the attacker's 9.9.9 is not a candidate at all
+    rather than merely unlikely. The integrity hash in the lockfile supplies the second half, since
+    a pinned name that still resolves to different bytes is caught at download. Outranking the
+    attacker is a race they simply re-run with a higher version.
+- id: q6
+  question: >-
+    Every dependency is pinned and hash-checked. One pinned package is still malicious, released by
+    its real maintainer. What does the lockfile buy you here?
+  options:
+    - It fixes the bytes, leaving a compromised pinned package as the residual, which needs provenance and behaviour
+    - It confirms the package is safe, because a hash match rules out malicious behaviour by construction
+    - It blocks the install script, since pinned packages run under the sandbox's default policy
+    - It reduces the risk to a small probability, since an integrity check has a non-zero false-negative rate
+  correct: 0
+  explanation: >-
+    Exercise 4 deliberately reproduces this: the lockfile pins the name, the integrity hash pins the
+    bytes, and a compromised pinned dependency still gets in. That is the signed-but-malicious
+    residual the module forwards to M13 and M22, where verification is paired with behavioural
+    vetting. A hash answers whether these are the approved bytes, never whether those bytes are
+    good, which is the whole difference between verifying an artifact and vouching for it.
+- id: q7
+  question: >-
+    You are hardening the pipeline that runs pull requests from outside contributors. Which change
+    removes the most value from an attacker's position?
+  options:
+    - Prompting the agent more firmly that PR content is data and not instructions to follow
+    - Scanning PR diffs for the directive patterns your content-as-data stripper already knows
+    - Withholding secrets from PR-triggered jobs and running the runner with no egress at all
+    - Adding a second approval gate in front of every shell command the agent wants to run
+  correct: 2
+  explanation: >-
+    Exercise 5 asks why CI is the highest-value target, and the answer is that it is where secrets,
+    egress and automatic execution are all present at once, the whole chain the module models, with
+    no human in the loop. Ephemeral credentials and a network-isolated runner delete the payload
+    and the route rather than the injection, so they survive any evasion of the textual filters.
+    The prompt and the extra gate both depend on a step the attacker is trying to shape, which is
+    the module's social-engineering caveat about approvals.
+- id: q8
+  question: >-
+    A senior approves the `run_shell` call after reading the agent's one-line summary of what it is
+    about to do. Which is the module's specific warning here?
+  options:
+    - Approvals add latency to every gated call, so the gate trades throughput for safety
+    - Approvals are theatre when most reviewers approve, so the gate yields no real risk reduction
+    - Approvals are low value because the agent's shell capability is redundant once dependencies pin
+    - The agent writes what the reviewer reads, so it can obtain approval for the wrong action
+  correct: 3
+  explanation: >-
+    The module lists social-engineered approvals under what the defenses do not stop, and the
+    reason is structural: the decision input is authored by the party being gated. That is why
+    approval gates the execution hop rather than guaranteeing anything, since the approver reads a
+    summary of the command, not the command. The fix is the same one a log written by the agent
+    needs, assemble what the reviewer sees somewhere the agent has no handle.
+- id: q9
+  question: >-
+    All five module controls are deployed: content-as-data, no-shell, sandbox, approval and
+    pinning. Which attack is still open?
+  options:
+    - A README directive restated in prose so the stripper's pattern no longer matches it
+    - A pinned dependency compromised at its real maintainer, which the lockfile faithfully pins anyway
+    - A shell command outside the allowlist, which the policy and the approval gate both refuse
+    - An egress request to a host outside the allowlist, which `network_mode: none` blocks outright
+  correct: 1
+  explanation: >-
+    Pinning makes the resolver's choice a constant, and the exercise deliberately shows a
+    compromised pinned package still getting in, the residual the module forwards to provenance and
+    behavioural vetting. The other three are closed by structural controls rather than by luck: no
+    shell removes the execution hop, the policy and approval gate refuse that specific command, and
+    no egress removes the route. The takeaway's ordering is the point, structural controls are the
+    guarantees and filters are depth.

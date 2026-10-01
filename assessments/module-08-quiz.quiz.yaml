@@ -1,0 +1,150 @@
+- id: q1
+  question: >-
+    PAIR's attacker LLM refines each new prompt from the target's last refusal, and an LLM judge
+    decides which attempts counted as successes. You swap the judge for a keyword check on the
+    target's reply. What breaks?
+  options:
+    - Nothing — the search still sees only replies, and a keyword check is cheaper per query
+    - The search optimizes "the reply contains a trigger" rather than "the target complied"
+    - The attacker loses the refusals it conditions on, so refinement has nothing to work with
+    - The target's replies become deterministic, so the stochastic ASR estimate stops mattering
+  correct: 1
+  explanation: >-
+    The judge is the objective function; whatever it rewards is what the hill-climb maximises. A
+    keyword check rewards surface features of the reply rather than compliance, so the search
+    converges on prompts that make the target emit a trigger and leaves genuinely dangerous
+    compliance under-credited. The attacker's loop is untouched — it still sees only replies,
+    which is the point of the black-box setting — and the failure is silent, because a search
+    that optimises noise still reports its best score.
+- id: q2
+  question: >-
+    The best true attack has ASR $a = 0.50$. Your judge has recall $r = 0.70$ and false-positive
+    rate $f = 0.05$. What success rate is the search actually climbing toward?
+  options:
+    - It is 0.35, which is $r\,a$ with the false-positive contribution ignored as negligible
+    - It is 0.50, which is the true rate, since the judge only reweights how it is estimated
+    - It is 0.375, which is $r\,a + f(1-a)$ and a biased estimate of the truth
+    - It is 0.70, which is the recall, since a missed attack is still counted once it is found
+  correct: 2
+  explanation: >-
+    The search never sees $a$, only whatever the judge returns, which is a low-recall signal
+    shifted upward by false positives. Low recall hides a working attack from the search
+    entirely, and a high $f$ manufactures phantom ones for it to chase, so the ranking is biased
+    even when the ordering happens to survive. This is the same base-rate arithmetic as the input
+    filters, aimed at your own evaluation, which is why a good judge is a prerequisite for
+    red-team automation rather than a detail.
+- id: q3
+  question: >-
+    Beam search ranks compositions by $\widehat{\text{ASR}}$ from $n$ trials. A composition that
+    scored 1.0 on two queries outranks one that scored 0.75 on eight. What has the search done?
+  options:
+    - Over-committed to a lucky low-$n$ estimate, confusing exploration with exploitation
+    - Kept too narrow a beam, since widening it is the fix for an unstable ranking
+    - Mismeasured the compositions, since the $\widehat{\text{ASR}}$ estimator itself is wrong
+    - Left out pruning, since TAP's early drop is the component that was never implemented
+  correct: 0
+  explanation: >-
+    The estimate is a finite-sample average of a stochastic target, so a small $n$ gives high
+    variance and an inflated score that a lucky pair of compliant replies can produce. The
+    trade-off is the one a bandit faces: spend every query pinning down one candidate and you
+    waste the budget, spread too thin and the ranking is noise. Raising $n$ per composition is
+    the lever the exercise sweeps; TAP's pruning instead saves the queries you would have spent
+    on branches that already look bad.
+- id: q4
+  question: >-
+    A two-turn attack sets up a fictional frame in turn 1 and issues the real request in turn 2.
+    Why does this beat the best single-turn prompt against the same judge?
+  options:
+    - The judge only inspects the last message, so the setup turn is invisible to it
+    - The context window fills up, so the system prompt is pushed out of the model's attention
+    - The attacker measures refusal cheaply on turn 1 and stops before spending the real request
+    - Turn 1 shifts the distribution before the ask, and the framing was produced by the model
+  correct: 3
+  explanation: >-
+    After the setup turn the context contains framing the target authored and accepted as benign,
+    so the second message rides on something the model already agreed to. That is why the space
+    being searched is a sequence of prompts rather than one string, and why multi-turn expands
+    the surface beyond anything a single-message wrapper library covers. The judge still sees the
+    final reply, so the gain is real rather than an artefact of scoring.
+- id: q5
+  question: >-
+    Under the keyword defense the search's best composition flips from `roleplay` to `story` and
+    its ASR settles near 0.6. What happened mechanically?
+  options:
+    - The defense is dropped after the first refusal, so the second round runs undefended
+    - The story framing still moves the target out of distribution while matching none of the markers
+    - The roleplay wrapper grows more effective once it leaves the top of the beam
+    - The classifier is retrained on the blocked prompts, which pushes up its false-positive rate
+  correct: 1
+  explanation: >-
+    The classifier matches surface strings — role-play, hypothetical, dan, base64, system
+    override — and a story wrapper is the same request with none of them present, so it still
+    moves the target off-distribution while passing the filter. The search is not told the filter
+    exists; it only sees the judge, and climbing on judged compliance rediscovers the evasive
+    framing on its own. That rediscovery is the demonstration: the filter stopped a known shape,
+    not the capability.
+- id: q6
+  question: >-
+    You replace the marker classifier with a semantic detector that asks whether a prompt is
+    trying to elicit disallowed content, then re-run the same search against it. What is the
+    honest status of the new control?
+  options:
+    - It raises the bar, and it is itself a model with its own ASR, so it has to be red-teamed too
+    - It closes the evasion class, since intent is exactly what the marker filter was missing entirely
+    - It is strictly cheaper, since one classifier call replaces the marker string scan on every input
+    - It cannot be evaded, since a single prompt carries only one true intent for it to classify
+  correct: 0
+  explanation: >-
+    A semantic detector generalises past surface strings, which is real progress, but it inherits
+    the coverage gaps every model has and carries its own false-negative rate. Pointing the same
+    search at it is the honest evaluation, and the guarantee box has to say that the detector is
+    attackable rather than quoting its accuracy on the old attack set. Detection quality here is
+    a measured number against a named threat, not a property of the classifier.
+- id: q7
+  question: >-
+    Your guided search reports a best ASR of 0.6 within 200 queries, and a query-matched random
+    search reports 0.5. What does that pair of numbers establish?
+  options:
+    - That the wrapper strategies are composable, since composition is what the guided search exploits
+    - That 200 queries is enough to characterise the true ASR of the best composition found
+    - Very little, since the target is stochastic and both figures are estimates from finite queries
+    - That the random baseline is mis-implemented, since it should have found the same wrapper
+  correct: 2
+  explanation: >-
+    Each $\widehat{\text{ASR}}$ is a finite-sample average of a stochastic reply, so a single
+    0.6-versus-0.5 split is inside the noise and would usually reverse on a rerun. The
+    guided-search claim needs many prompts with Wilson intervals, and the efficiency claim needs
+    queries-to-first-success under a matched budget reported separately from the success rate. A
+    best-so-far number is a search trace, not a measurement.
+- id: q8
+  question: >-
+    You read that PAIR breaks black-box models in about twenty queries. Re-running the same
+    algorithm against your target takes 400. Which statement survives both numbers?
+  options:
+    - The published figure is wrong, since your measured 400 is the value on a real target
+    - The re-run is wrong, since the algorithm's query count is fixed by its own convergence
+    - Both are correct, because a different target is by definition a different threat model
+    - Neither is a guarantee, since each is one search against one target, judge and strategy pool
+  correct: 3
+  explanation: >-
+    Query count is a property of a run, not a constant of the algorithm: it depends on the
+    target, the judge, the strategy pool and the stopping rule, and the paper's own caveat is
+    that efficiency tracks judge quality and attacker capability. A judge with poor recall
+    under-credits good attacks, so the same code can spend hundreds of queries before it sees any
+    signal at all. The number to report is the one you measured, with its interval.
+- id: q9
+  question: >-
+    Your search mis-ranks because each composition is scored from too few trials. Which change is
+    TAP's pruning doing that simply widening the beam is not?
+  options:
+    - Keeping more candidates per round, so a better composition is less likely to be discarded early
+    - Scoring each surviving composition more times, so its estimate carries less variance
+    - Dropping candidates below a judge threshold early, so no further queries are spent on them
+    - Enlarging the wrapper strategy pool, so the space searched covers more framings
+  correct: 2
+  explanation: >-
+    Pruning is a query-allocation decision: a branch that already scored badly is abandoned
+    instead of consuming another round of trials, which is why it improves query efficiency rather
+    than ranking quality. A wider beam spends more queries on more candidates, including weak
+    ones, so it buys coverage of the space at exactly the cost the search is trying to avoid. The
+    two knobs are independent, and the exercise's sweep over `n` is the other half of the answer.

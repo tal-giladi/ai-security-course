@@ -1,0 +1,167 @@
+- id: q1
+  question: >-
+    A checkpoint's evaluation report shows 0.98 clean accuracy and 0.00 trigger attack success rate
+    across ten thousand samples drawn from the clean distribution. The publisher is unknown. What
+    has that report established?
+  options:
+    - That the weights are free of backdoors, because poison reliably costs clean accuracy
+    - That the weights are free of backdoors, because the attacker's trigger was included in the sweep
+    - That the training set was poison-free, because ten thousand samples is a large evaluation set
+    - Almost nothing about a trigger-keyed backdoor, since the trigger is absent from clean evaluation
+  correct: 3
+  explanation: >-
+    The lab's own result is the counterexample — ten percent poison produced 0.98 clean accuracy and
+    0.98 backdoor ASR, indistinguishable from the clean model's 0.98 and 0.00. Every standard metric
+    samples from the clean input distribution, where the trigger by design never appears, so accuracy,
+    loss and calibration all look normal. Detection has to look inside the weights or at the data,
+    not at behaviour on ordinary prompts.
+- id: q2
+  question: >-
+    Your poison sweep finds that 1% poison gives an attack success rate of 0.93 with clean accuracy
+    still at 0.97. Why does the attack saturate at a fraction where clean accuracy barely moves?
+  options:
+    - Because trigger-implies-target is a simple consistent rule the model fits easily, while poison stays a
+      small share of a large clean set
+    - Because poisoned samples are also relabelled, so the model memorizes them and the clean mass absorbs the loss
+    - Because one percent of a large corpus is still thousands of trigger examples, which fills any capacity sooner
+      than expected
+    - Because clean accuracy is scored on the distribution the poison was drawn from, so it absorbs most of the damage
+  correct: 0
+  explanation: >-
+    The rule is trivially learnable — one trigger pattern, one target — so a small number of consistent
+    examples suffices to place it, while the clean set keeps its size and contains nothing that
+    contradicts it. That is why ASR saturates near 1 at single-digit fractions and why the quantity
+    worth reporting is the minimum fraction that clears the threshold, not the fraction at which clean
+    accuracy finally starts to move.
+- id: q3
+  question: >-
+    You halve the trigger's representational strength $\mu$ by stamping half as many features. ASR holds
+    at 0.95, but the spectral detector's recall falls from 0.90 to 0.30. Explain the trade-off you are
+    seeing.
+  options:
+    - The top singular vector comes from penultimate activations, which barely vary once the trigger is smaller
+    - Clean accuracy rose as the trigger shrank, so genuine samples now out-score the poisoned rows
+    - The poison's rank-one-ish activation component no longer dominates the top singular direction of the class
+    - Centered activations subtract the trigger's constant offset, so weaker triggers project onto nothing
+  correct: 2
+  explanation: >-
+    Poison adds an approximately rank-1 component $\mu\,\mathbf{1}_{poison}\,u^\top$ to the target
+    class's activation matrix, and the detector only finds it when that component dominates the leading
+    singular direction. Shrinking $\mu$ is exactly the adaptive lever the mathematics hands the
+    attacker: the poison still drives the behaviour, but it no longer moves coherently along one
+    axis, so the projection statistic separates far fewer of the poisoned rows.
+- id: q4
+  question: >-
+    The attacker switches to clean-label poisoning — labels stay correct, features are chosen to lean
+    toward the target, and a small trigger is added. Which control is not bypassed by the switch?
+  options:
+    - The spectral signature detector, since the poison still forms a correlated sub-population in the target class
+    - A mislabel-rate audit of the training set, since clean-label poison corrupts the label distribution
+    - Trigger probing of the shipped model, since the trigger still maps an input to the target output
+    - Control of the training pipeline — trusted sources, signed datasets, reproducible training runs
+  correct: 3
+  explanation: >-
+    A clean-label poison has no relabelling anomaly to audit and only a weak activation separation, so
+    detectors keyed to either signal lose their power; it typically needs a higher fraction for the same
+    ASR, which is a cost, not a defence. What remains is the supply chain itself — provenance over
+    the data and reproducibility of the run, because those constrain who could introduce the samples
+    at all rather than trying to recognize them afterwards.
+- id: q5
+  question: >-
+    Your detector flags the top-scoring 10% of target-class rows, and only 4% of those are actually
+    poison. The flagged rows are removed and the model is retrained. What is the honest summary?
+  options:
+    - The detector is 90% accurate, since it flagged exactly the rows with the largest spectral score
+    - Precision is 0.40, so six in ten flagged rows are clean data you discard; recall still tracks trigger strength
+    - Nothing was lost, since discarded clean samples only slow training without changing the shipped model
+    - The cost is one SVD per class, which the guarantee box names as the dominant expense of the method
+  correct: 1
+  explanation: >-
+    The filter is a triage mechanism, not a guarantee, and its own numbers say so: flagging a tenth of
+    a class to catch four percent means roughly six percent of good data is discarded for every real
+    hit, which is a data-loss cost measured in training samples. Recall is bounded by the same
+    $\mu$ argument as before, so the reported figure should be precision and recall on your own poison,
+    with the base rate stated alongside.
+- id: q6
+  question: >-
+    Safety-fine-tuning the poisoned model on clean data drops ASR from 0.98 to 0.35 and leaves clean
+    accuracy unchanged. What does that result support?
+  options:
+    - Fine-tuning reduces the behaviour without removing it, so provenance and pipeline control stay the durable defense
+    - Fine-tuning is a reliable removal procedure, since the residual 0.35 is within measurement noise
+    - The backdoor was an artifact of the poison fraction, so a second clean epoch would finish the removal
+    - Pruning can be skipped, since 0.35 sits below any attack success rate worth reporting to a reviewer
+  correct: 0
+  explanation: >-
+    Post-hoc training and pruning shrink the behaviour; Hubinger et al. report that SFT, RLHF and
+    adversarial training all fail to remove a robust sleeper, and larger models hide it better. The
+    correct reading is that remediation is partial by nature, so the durable control is provenance
+    and control of the training pipeline, with post-hoc removal as a second line rather than the
+    primary one.
+- id: q7
+  question: >-
+    A deliberately backdoored model survives SFT, RLHF and adversarial safety training, and a larger
+    version of it looks cleaner on every clean evaluation. How should that change the review?
+  options:
+    - Keep training with the same objectives, since a residual below the attack threshold is the expected result
+    - Escalate the finding — a passing safety suite is evidence about the triggers you tried, not evidence the backdoor is gone
+    - Test only the serialization format, since behavioural residue cannot survive a format that cannot execute code
+    - Measure clean accuracy on the released checkpoint alone, since that is the one metric the pipeline controls
+  correct: 1
+  explanation: >-
+    The sleeper-agent result is that safety training is a filter, not an eraser: the behaviour is
+    conditioned on a trigger the training distribution never presents, so every safety example teaches
+    clean behaviour only. Capability makes the hiding better rather than the backdoor weaker, which
+    means the evidence you hold after a passing suite is coverage over the triggers you guessed, and
+    should be reported as a coverage number instead of a clearance.
+- id: q8
+  question: >-
+    An attacker corrupts a preference dataset so the reward model learns to favour outputs containing
+    a trigger phrase. Which control catches this before the policy ships?
+  options:
+    - Held-out reward-model accuracy, since the corrupted pairs shift the policy on the training distribution
+    - Membership inference on the preference set, since the poisoned pairs are mislabelled and easy to isolate
+    - Provenance and curation of the preference pairs themselves, because evaluating the finished policy is blind to it
+    - Trigger probing with the organization's own phrase list, since the injected phrase is always drawn from the corpus
+  correct: 2
+  explanation: >-
+    Preference poisoning is the same mechanism one level up: the label, not the input, carries the
+    attack, so nothing in the policy's output quality moves and clean evaluation has nothing to see.
+    What catches it is control of where preference pairs come from and who can vote on them. Probing
+    only works if you already know the phrase, and membership inference is aimed at the training
+    sample, not at a corrupted comparison.
+- id: q9
+  question: >-
+    A colleague downloads a checkpoint from a public repository. You have no training data and no
+    internal activations — only the weights file. What can the spectral-signature detector do for you?
+  options:
+    - Detect any poison present, since the safetensors header exposes the shapes and offsets of every tensor
+    - Estimate the poison fraction, since a poisoned model has a measurably different top singular spectrum
+    - Nothing, because it needs the training set and the model's internal activations, and you have neither
+    - Screen the trigger strength, since a weaker trigger shifts the singular values of the whole weight matrix
+  correct: 2
+  explanation: >-
+    The detector scores rows of the target class's penultimate activation matrix against the training
+    distribution the model was fit on, so without that data and those activations the statistic is
+    simply undefined. What remains is behavioral: probing candidate triggers, which requires guessing
+    the one input the evaluation never contains. That asymmetry is why provenance beats detection as
+    the durable control.
+- id: q10
+  question: >-
+    You are writing the guarantee box for spectral-signature detection on your own training data. Which
+    pairing of claims is correct?
+  options:
+    - >-
+      Stops: strong correlated triggers. Does not stop: stealthy or clean-label poison. Adapts: lower $\mu$ or spread it
+    - >-
+      Stops: backdoors in third-party checkpoints. Does not stop: anything. Adapts: nothing is worth trying
+    - >-
+      Stops: every poisoned row in the target class. Does not stop: mislabelled data. Cost: one SVD per class
+    - >-
+      Stops: poisoning at ingestion. Does not stop: sleeper agents. Adapts: ship a signed dataset instead
+  correct: 0
+  explanation: >-
+    A guarantee box has to survive the question of what the control actually bought, and here the
+    honest answer is a probabilistic filter on your own corpus, not a property of the model. The
+    attacker reduces the trigger's strength and the detector's separability collapses with it, which
+    is why the box pairs the mechanism with its own adaptation rather than with a claim of coverage.

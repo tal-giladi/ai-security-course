@@ -1,35 +1,62 @@
-# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
-# The lesson's model answer is shown as the explanation. `source` fingerprints the original
-# question + answer; if the lesson changes, the site flags the question for review.
-- source: 2f542639cbd8
-  question: Why is cross-tenant RAG leakage not a model problem?
+- id: q1
+  question: >-
+    Why is cross-tenant RAG leakage a broken access control bug rather than a model problem?
   options:
-    - The model memorized other tenants' data during pretraining
-    - The output filter fails to redact names from other tenants
-    - The system prompt forgets to tell the model which tenant is asking
-    - The retriever fetches unauthorized docs; the model just uses them faithfully
+    - The model memorized other tenants' data during pretraining and repeats it unprompted
+    - The output filter fails to redact the names and identifiers belonging to the other tenant
+    - The system prompt forgets to tell the model which tenant is currently asking the question
+    - The retriever returns unauthorized documents, and the model then uses them faithfully
   correct: 3
-- source: 12306993edf0
-  question: Why is pre-filtering correct and post-filtering not?
+  explanation: >-
+    The leak happens before the model is involved: the retrieval query returns a document the caller
+    was never authorized to see, and the model then does exactly what it should do with the context it
+    was handed. That makes this broken access control in the IDOR sense, just located on the retrieval
+    path. No amount of prompt engineering or output filtering repairs it, because the decision that
+    mattered was a candidate-set decision made in code.
+- id: q2
+  question: >-
+    Why is pre-filtering the correct authorization design while post-filtering is not?
   options:
-    - Post-filtering is slower, but both return the same documents and are equally secure
-    - Pre-filtering reranks by similarity after dropping docs, while post-filtering skips ranking
-    - Pre-filtering scopes to the caller before ranking; post-filtering crowds out results and trusts spoofable ACLs
-    - Pre-filtering trusts each document's own ACL field, which post-filtering ignores entirely
+    - Post-filtering is slower, though both designs return the same documents and are equally secure
+    - Pre-filtering reranks by similarity after dropping documents, while post-filtering skips ranking
+    - Pre-filter scopes to the caller before ranking; post-filter crowds out results and trusts ACLs
+    - Pre-filtering trusts each document's own ACL field, which post-filtering ignores when filtering
   correct: 2
-- source: fe4829437c7d
-  question: What is a metadata attack, and how do you stop it?
+  explanation: >-
+    Post-filtering takes a global top-k and then discards what it should never have returned, so a
+    tenant owning a fraction $\rho$ of the index ends up with roughly $k\rho$ useful results — a
+    recall loss that grows with the tenant count. It also makes security depend on document-supplied
+    ACL fields, which anyone who can influence ingestion simply sets to whatever passes. Pre-filtering
+    builds the candidate set from a trusted principal-to-scope mapping first, so unauthorized documents
+    are never ranked at all.
+- id: q3
+  question: >-
+    What is a metadata attack on tenant isolation, and how is it actually stopped?
   options:
-    - Setting a document's tenant/ACL field to the victim's; authorize on the caller's trusted identity
-    - Stuffing query keywords into document titles; stop it by lowering the similarity threshold
-    - Deleting a document's metadata fields; stop it by rejecting documents with empty fields
-    - Encrypting metadata so the retriever cannot read it; stop it by decrypting at ingestion
+    - Set a document's tenant field to the victim's; authorize from the caller's trusted identity instead
+    - Stuff query keywords into document titles; defeat it by lowering the similarity threshold used
+    - Delete a document's metadata fields entirely; defeat it by rejecting documents with empty fields
+    - Encrypt the metadata so the retriever cannot read it; defeat it by decrypting it again at ingestion
   correct: 0
-- source: 2bc46fc77aac
-  question: Under a targeted query with no authorization on the retriever, is cross-tenant leakage rare?
+  explanation: >-
+    This is the classic mistake of trusting the object's self-description instead of authorizing the
+    subject: the caller is authenticated by your auth system, while the `tenant` field on a document
+    is attacker-influenceable data. Keying the decision on the caller's identity through a trusted
+    mapping makes the document's claim irrelevant — a file that says `tenant = globex` simply is not in
+    Acme's candidate set. It is the same rule behind signed metadata being worth having and
+    self-asserted metadata being worth nothing.
+- id: q4
+  question: >-
+    Under a targeted query with no authorization on the retriever, is cross-tenant leakage rare?
   options:
-    - Yes, because embeddings of different tenants are kept far apart
-    - No, a query matching the victim's doc drives leak probability toward 1
-    - Yes, because top-k retrieval rarely returns documents from other tenants
-    - No, but only if the attacker already has the victim's document ID
+    - Yes, because embeddings of different tenants are naturally kept far apart from one another
+    - No; a query crafted to match the victim's document drives the leak probability toward one
+    - Yes, because a top-k retrieval over a mixed index rarely returns another tenant's documents
+    - No, but only once the attacker already knows the victim's exact document identifier
   correct: 1
+  explanation: >-
+    Leak probability rises with the similarity between the query and the victim's document and with how
+    well-mixed the shared index is, so an attacker who knows the victim's topic simply writes the
+    matching query and the document comes back. That turns a leak from a rare accident into a
+    reliable attack, which is the point worth internalizing. Tenant embeddings are not naturally
+    separated — they share one vector space precisely because the index is shared for cost.

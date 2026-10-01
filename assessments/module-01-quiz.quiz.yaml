@@ -1,0 +1,157 @@
+- id: q1
+  question: >-
+    A poisoned document must survive three independent steps to exfiltrate a secret: the injected
+    instruction is obeyed (p 0.4), the egress tool actually fires (p 0.6), and the request lands
+    on the attacker's host (p 0.9). You add one independent gate that the attacker must beat with
+    probability 0.5. What does this do to the chain?
+  options:
+    - It leaves the chain at 0.216, since the new gate blocks nothing the others already blocked
+    - It cuts the chain to 0.108, because each step multiplies and a new step adds a factor
+    - It cuts the chain to 0.054, because a new gate is added to the product rather than multiplied in
+    - It leaves the chain at 0.432, because a gate that is beat half the time contributes nothing
+  correct: 1
+  explanation: >-
+    A chain of independent steps succeeds only when every one of them succeeds, so the overall
+    figure is the product rather than the average or the sum. A defense the attacker must also
+    beat is just another factor below one, which is the quantitative form of defense-in-depth: each
+    additional gate multiplies the difficulty, and the factors stay independent only if the gate
+    is a genuinely new decision rather than a restatement of one already made. The product is why
+    a single weak component in the chain caps the whole attack.
+- id: q2
+  question: >-
+    A canary detector catches 95% of real exfiltration attempts and flags 2% of legitimate
+    traffic. In production, genuine attempts are one in a thousand requests. Roughly what
+    fraction of the alerts are real?
+  options:
+    - About 95%, since that is the figure the vendor quotes for the detector
+    - About 2%, since the false-positive rate is the only honest measure of alert quality
+    - About 5%, because the base rate, not the accuracy figure, dominates the posterior
+    - About 50%, since a detector above 90% on both rates balances out at any prevalence
+  correct: 2
+  explanation: >-
+    With prevalence so low, the true positives are swamped: roughly 0.95 genuine attempts per
+    1000 requests against about 20 false alarms from the 999 benign ones. That is the lesson's
+    warning about quoting an accuracy figure with no base rate attached — the number is nearly
+    meaningless on its own. The consequence for operations is triage rather than gating, and it is
+    why the same lesson insists that real controls live in authorization code instead.
+- id: q3
+  question: >-
+    Your agent has a `fetch_url` tool guarded by an allowlist that checks the hostname string and
+    refuses `169.254.169.254` and private ranges. An attacker registers a domain that resolves to
+    the metadata endpoint. What is the gap, and what closes it?
+  options:
+    - The check runs on the name rather than the resolved address, so validate again after resolving
+    - There is no gap, because an allowlist never admits a domain it has not explicitly listed
+    - The gap is shell parsing, and passing the host as an argument array removes the resolution step
+    - The gap is rate limiting, and bounding requests per minute keeps the metadata endpoint safe
+  correct: 0
+  explanation: >-
+    Validating a name and validating the address it resolves to are two different checks, and a
+    name the attacker controls can be made to mean something else by the time the request goes
+    out. Resolve first, then decide on the address, and keep the network layer refusing the
+    metadata endpoint outright so a mistake in one layer is not the only thing standing between
+    an agent and temporary cloud credentials. The tool is an ordinary SSRF primitive whose
+    destination is chosen by text the model was persuaded to emit.
+- id: q4
+  question: >-
+    A `run_code` tool executes model-generated Python behind a regex denylist, inside a container
+    with a read-only filesystem and dropped capabilities, but with network access and the API key
+    in the environment. Which guarantee statement is defensible?
+  options:
+    - The denylist is the control carrying the weight, and the container merely limits blast radius
+    - The container is the control, and the denylist adds nothing a real interpreter boundary would
+    - The container bounds what can be written, and neither egress nor the in-scope key is covered
+    - Neither layer helps, since arbitrary code execution is uncontainable once a model can emit code
+  correct: 2
+  explanation: >-
+    Pattern filters on code are near-worthless because the same effect has unbounded encodings, so
+    the weight sits in OS-level isolation, read-only mounts and dropped capabilities. What that
+    isolation buys is bounded writes, not bounded reach: with a live network the container is an
+    exfiltration primitive, and with the key in the environment the payload does not need to
+    break anything at all. Real containment means no egress and no secrets in scope, which is least
+    privilege from the threat-modeling lesson applied to a process.
+- id: q5
+  question: >-
+    Your renderer fetches only allowlisted image hosts, and a poisoned document reaches the sink
+    anyway. Which of these is the live path, and what is the general lesson?
+  options:
+    - The canary inside an image URL on an allowlisted host, which defeats the check on its own
+    - A base64 form of the canary inside a blocked image URL, since the allowlist inspects payloads
+    - The canary in link text the user copies, which never passes through the renderer's fetch
+    - The canary in a citation the app resolves server-side, which the host check never sees
+  correct: 2
+  explanation: >-
+    The check runs on one channel — requests the renderer makes — so anything that leaves by a
+    different route is untouched by it, and a user copying text is such a route. That is the
+    lesson's framing of exfiltration as any path out rather than the obvious front door, and it is
+    the same reason a signature filter loses to a transformed payload. The durable fix routes
+    every egress path through the check and reduces what secrets are in scope in the first place.
+- id: q6
+  question: >-
+    An inference service loads a checkpoint a colleague pulled from a model hub by URL, using
+    `torch.load` on a `.bin` file. Which statement is correct about that choice?
+  options:
+    - Only the format matters, since safetensors exists purely to make checkpoints load faster
+    - Nothing, since a checkpoint is a tensor archive with no executable component inside it
+    - Only the host matters, since the hub is a first-party registry and therefore trusted by default
+    - Loading that format can execute code, which is the reason safetensors and hub trust exist
+  correct: 3
+  explanation: >-
+    The deserialization primitives in legacy checkpoint formats reconstruct arbitrary objects, so
+    unpickling one runs whatever its payload says — the same bug class as any deserialization of
+    untrusted data, arriving without anyone writing application code. The format restriction that
+    makes checkpoints inert is exactly why safetensors was introduced. Model hubs sit in the same
+    position as package registries, which is why a downloaded model, tokenizer or adapter is an
+    untrusted artifact and not merely a file.
+- id: q7
+  question: >-
+    Engineering reports that every SQL query and every shell call is parameterized, and concludes
+    the system is now injection-free. Using the lesson's root cause, what is the correct reply?
+  options:
+    - They are right, since the fix shape is identical and therefore transfers to the model as well
+    - They are right, but only for the interpreter layer, since the model is not an interpreter
+    - The fix shape transfers only in part, since the model offers no slot guaranteed to stay inert
+    - The conclusion is wrong for a different reason, since injection here needs a shell rather than SQL
+  correct: 2
+  explanation: >-
+    Every instance of this bug class is untrusted data concatenated into a string a more powerful
+    interpreter parses, and the durable fix is a slot the parser will only ever treat as a value.
+    The model has no such slot, so the equivalent is marking and segregation — useful, partial,
+    defeatable. That is why for AI systems the second and third defenses, reduced privilege and
+    detection, carry most of the weight, and why they are probabilistic where the database
+    driver's fix was complete.
+- id: q8
+  question: >-
+    A codebase is parameterized on every request path except a nightly reporting job that rebuilds
+    a query by concatenating a value stored in a row months earlier. Which classification is right,
+    and what does it say about the defense?
+  options:
+    - Second-order injection, since parameterization is a property of a site, not of a value
+    - First-order injection, because the value reaches a parser without validation at write time
+    - Nothing, since the stored value was validated when it was originally written
+    - A logic flaw, since the reporting job is trusted code and trusted code cannot be exploited
+  correct: 0
+  explanation: >-
+    Validating on the way in constrains the value at that site only; the moment it is persisted
+    and later concatenated somewhere else, the data is in the instruction channel again. The
+    guarantee box names exactly this residual, and the adaptation it predicts is the attacker
+    looking for the one path that still builds a string — here, one nobody was watching because
+    the write looked clean. Parameterization is local; the discipline is finding every site that
+    is not.
+- id: q9
+  question: >-
+    An agent builds its ping call as a shell string interpolated with a hostname the model
+    produced from a retrieved document. What is the right fix, and what does it not cover?
+  options:
+    - Escape the hostname, which stops the shell from parsing a second command after it
+    - Use an argument array, which stops shell parsing but leaves the request's destination unvalidated
+    - Allowlist the hostname, which stops injection but leaves the shell interpreting the string
+    - Sanitize the retrieved document, which removes the untrusted source the string was built from
+  correct: 1
+  explanation: >-
+    The argument array is the same fix the lesson gives for the classic case, and it works
+    because the shell never gets a string to parse — the model is simply another source of
+    untrusted text, which is why the primitive returns in the code-agent module unchanged. What it
+    does not touch is the privilege of whatever the argument is used for, so a perfectly safe
+    argument array pointed at an internal address is still a request your server made. Fixing the
+    parse does not fix the destination.

@@ -1,0 +1,149 @@
+- id: q1
+  question: >-
+    Your ingest path applies `strip_lsb` to every uploaded image before the model sees it. An
+    attacker's directive still reaches the model. Which channel survives the strip?
+  options:
+    - OCR-readable text painted into the image, since it lives in the high-order bits the strip never touches
+    - A payload in bit 0 of the alpha channel, since `strip_lsb` masks only the colour planes
+    - A longer bit-0 payload, since zeroing the low bit halves capacity rather than removing it
+    - A bit-0 payload read by the extractor, since the strip runs after extraction rather than before
+  correct: 0
+  explanation: >-
+    Re-quantization is scoped to exactly one bit plane, and the guarantee box says so explicitly.
+    An OCR-visible layer is semantic injection, the M06 channel, and its bytes live in the
+    high-order bits the strip never touches; what defends it is treating extracted media text as
+    data plus provenance. The other three routes all keep the payload in bit 0, which is the one
+    plane the strip does remove, so they describe channels that are already closed.
+- id: q2
+  question: >-
+    You need a 700-byte hidden directive. Your carrier is a 64x64 grayscale image, which has 4096
+    pixels. What does `embed_lsb` do?
+  options:
+    - It embeds the directive, because the NUL terminator and the UTF-8 header are not charged to capacity
+    - It raises `payload too large for image`, because capacity is one bit per pixel
+    - It embeds the directive, because stripping bit 0 later frees a second usable bit per pixel
+    - It embeds the directive, because a grayscale pixel carries four channels of byte depth
+  correct: 1
+  explanation: >-
+    Capacity is $HW/8$ bytes, so 4096 pixels give 512 and 700 does not fit. That bound comes from
+    the format rather than from any policy, which is why a larger carrier and not a better policy
+    is the fix. The other three routes all try to buy capacity the embedding never had: the
+    terminator costs pixels, stripping happens after embedding, and a grayscale pixel is one byte
+    rather than four channels.
+- id: q3
+  question: >-
+    A chi-square test on the value-pair histograms flags an image as carrying an LSB payload, and
+    a reviewer looking at it sees nothing. How should that result be reported?
+  options:
+    - As detectable but not visible, because embedding flattens the pair histogram
+    - As invisible and therefore undetectable, since an MSE of 0.05 leaves no measurable bit-plane signal
+    - As visible under magnification, since a delta of one across 4096 pixels accumulates into a pattern
+    - As neither, because chi-square only applies to images whose payload has already been extracted
+  correct: 0
+  explanation: >-
+    Visibility, detectability and removability are three separate properties, and the exercise
+    separates them on purpose. MSE and max delta measure visibility and say nothing about the
+    bit-plane statistics that a chi-square or RS test reads. `strip_lsb` removes the channel
+    unconditionally, so removal never depended on detection in the first place. Concluding that a
+    payload is undetectable because it is invisible is exactly the inference the lab was built to
+    break.
+- id: q4
+  question: >-
+    You shipped `strip_lsb` on ingest. The campaign reappears with the payload in bit 2, and your
+    false-positive rate is still zero. What does the module's math say to do?
+  options:
+    - Ship nothing further, because zeroing bit 0 already removed the channel the attacker is now using
+    - Re-quantize down to two bits, since rounding below one grey level costs no measurable quality
+    - Enlarge the carrier, since capacity follows pixel count rather than the bit plane in use
+    - Zero bit 2 as well and pay the larger rounding error, expecting the attacker to move to bit 3
+  correct: 3
+  explanation: >-
+    Exercise 2 measures the visibility cost of a deeper plane precisely because it is not free:
+    embedding in bit 1 or 2 pushes MSE well above the ~0.05 of bit 0. The guarantee box names this
+    adaptation and answers it the same way, quantize deeper, accept the quality loss, expect the
+    next move. Scaling the carrier raises capacity but leaves the bit plane untouched, so it is
+    not the lever the attacker is pulling.
+- id: q5
+  question: >-
+    You wrap ingest in a JPEG re-encode and a one-pixel median blur to kill adversarial
+    perturbations. The attacker runs BPDA and differentiates through both transforms. What is the
+    outcome?
+  options:
+    - Both fail, because the attacker pays the same transformation cost on the images it generates
+    - Both fail, because a transform-based defense only guarantees against attacks unaware of it
+    - The blur holds, because re-encoding preserves the perturbation amplitude in the DCT domain
+    - Re-encoding holds, because a median filter keeps the pixel alignment the classifier expects
+  correct: 1
+  explanation: >-
+    Athalye et al.'s point is that obfuscating the gradient is not a defense, and BPDA and EOT are
+    the evaluation that exposes it. A deterministic pre-processing step sits inside the adversary's
+    loop the moment it is published, so the honest claim for re-encoding is transfer and
+    average-case robustness, not prevention. The module's prescribed remedy for the pixel-space
+    threat is adversarial training or randomized smoothing, which change the model rather than the
+    transform in front of it.
+- id: q6
+  question: >-
+    You are writing the media pipeline's one-line defense claim for a design review. Which
+    statement is the module's actual conclusion?
+  options:
+    - A single filter that scans images for suspicious content covers all four channels at once
+    - Re-quantize on ingest replaces adversarial training, since both operate on the same pixel values
+    - Re-quantize, media-content-as-data, provenance and adversarial training each buy one channel
+    - Provenance is sufficient on its own, since a verified image cannot carry a hidden payload
+  correct: 2
+  explanation: >-
+    The concept table gives the four threats four different carriers, semantic text, bit 0, a
+    high-order pixel perturbation, and document features, and therefore four different remedies.
+    The takeaway in the guarantee box is a matched set applied together, and the failure mode it
+    warns about is assuming one media filter spans all four. Provenance and content-as-data are
+    complementary controls on a different channel, not substitutes for quantization or training.
+- id: q7
+  question: >-
+    Your pipeline has no steganography extractor at all, and the hidden directive still lands in
+    the agent's context. Which mechanism explains that?
+  options:
+    - The payload sits in the file's EXIF block, which a metadata reader passes to the model verbatim
+    - The payload rides in a PDF's alt text, which the renderer forwards to the summarizer verbatim
+    - The pixel values encode the directive and a detail-sensitive model reads them without an extractor
+    - The payload is in the filename, which the agent repeats when it lists the workspace contents
+  correct: 2
+  explanation: >-
+    The lesson names two recovery routes, a pipeline that extracts the hidden data, or a model that
+    is simply sensitive to fine detail. That is how a deployment gets attacked while looking for no
+    attack at all, and why ingest-side re-quantization is the control that does not depend on
+    knowing who is reading the pixels. The other three are semantic carriers belonging to the
+    document channel, which has its own defenses and its own scope.
+- id: q8
+  question: >-
+    The team proposes making `strip_lsb` optional, enabled only for partners on a risk list. Which
+    finding does the guarantee box support?
+  options:
+    - It is safe, because the strip costs measurable quality damage on every image it touches
+    - It is safe, because a partner classified as trusted never ships a steganographic image
+    - It is safe, because images below a size threshold cannot carry a meaningful payload
+    - It is not safe, because the guarantee is scoped to the ingest paths that actually apply it
+  correct: 3
+  explanation: >-
+    A re-quantization guarantee is unconditional where it is applied and absent everywhere else, so
+    partial application buys exactly the coverage of the paths you switched on. The lesson's cost
+    line is explicit that this must run on ingest across all media, and the same scoping logic is
+    why a risk list is a poor substitute for a control this cheap. Provenance would be a sensible
+    extra argument, but it defends the semantic channel rather than the bit plane.
+- id: q9
+  question: >-
+    A document to summarize arrives as a PDF carrying an injection in its invisible text layer.
+    Your sanitizer strips metadata and removes embedded scripts, then the text layer is extracted
+    as usual. What is the result?
+  options:
+    - The injection is gone, because an invisible text layer is a PDF feature the sanitizer strips
+    - It survives sanitizing and dies at re-render, when the invisible layer never reaches the raster
+    - It survives re-rendering, because OCR reads the same text layer from the original file
+    - It survives entirely, because only prompt-level defenses touch document-carried instructions
+  correct: 1
+  explanation: >-
+    Sanitizing and re-rendering are two steps and the module lists them separately: the first
+    removes metadata and active content, the second rasterizes the pages so anything not drawn is
+    simply not present for OCR. That is the only reason the injection dies, and the durable part
+    the lesson adds is treating all extracted content as data. Neither step is a defense on its
+    own for the semantic channel, which is why the guarantee box keeps listing M06 as something
+    LSB-strip never covered.

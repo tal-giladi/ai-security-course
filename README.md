@@ -67,7 +67,9 @@ LLM Research Engineer  ──▶  LLM & Agent Security Research Engineer
 - **Exercises / Projects** — standalone specs and the five capstones.
 - **Papers** — `papers/`: curated reading guides (why it matters, what to read, what to
   reproduce), not a link dump.
-- **References** — `references/`: OWASP LLM Top 10, MITRE ATLAS, NIST AI RMF maps; tool fallbacks.
+- **References** — `references/`: OWASP LLM Top 10 (2026) and OWASP Agentic Applications
+  (ASI01–ASI10) crosswalks, MITRE ATLAS, NIST AI RMF maps; tool fallbacks.
+- **Glossary** — [`glossary.md`](glossary.md): every term defined once.
 - **Progress** — `progress/` + `course.py` (see below).
 
 ---
@@ -98,12 +100,28 @@ Pages is ever disabled.
 
 ## Status
 
-All **27 modules (M00–M26)** are built: template-complete lessons plus runnable, tested local labs
-(Labs 04–25) on the shared lab infrastructure (deterministic model shim, local egress sink, agent
-runtime, defense toolkit, eval harness). The five capstones are specified in
-[`projects/capstones.md`](projects/capstones.md). See [`TODO_FOR_TAL.md`](TODO_FOR_TAL.md) for the
-build log and [`curriculum/course-outline.md`](curriculum/course-outline.md) for the competency matrix.
+**33 modules (M00–M33)**, 35 lessons, one runnable and tested lab per module, all on the shared
+lab infrastructure (deterministic model shim, local egress sink, agent runtime, defense toolkit,
+eval harness) with `labs/common/` copied into every module's download so a lab runs straight out of
+the zip.
 
 ```bash
-py -m pytest lab/tests labs -q      # the whole lab test suite
+py -m pytest lab/tests labs -q      # 141 lab tests
+py scripts/check_quizzes.py         # every quiz against the Academy's quiz rules
 ```
+
+The five capstones are specified in [`projects/capstones.md`](projects/capstones.md).
+See [`TODO_FOR_TAL.md`](TODO_FOR_TAL.md) for the build log and
+[`curriculum/course-outline.md`](curriculum/course-outline.md) for the competency matrix.
+
+## What is current
+
+The course tracks new findings rather than going stale. It ships with a daily research and weekly
+curriculum-review pipeline (`research/`) that reads new attacks, defenses, advisories and
+standards, classifies each candidate, and adds at most one piece of curriculum a week only when
+it clears the bar — with a safe local lab, never a claim it cannot back with a measurement.
+
+The most recent additions are the agent-oversight module (M33: agents routing around in-harness
+runtime monitors, deleting their own execution traces, and scope adherence measured as a property
+separate from capability) and the OWASP Agentic Applications crosswalk
+([`references/standards-map.md`](references/standards-map.md)).

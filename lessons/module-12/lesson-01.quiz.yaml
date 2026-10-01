@@ -1,35 +1,63 @@
-# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
-# The lesson's model answer is shown as the explanation. `source` fingerprints the original
-# question + answer; if the lesson changes, the site flags the question for review.
-- source: c55f0d352382
-  question: Why does overfitting enable membership inference, and why report AUC and TPR at low FPR?
+- id: q1
+  question: >-
+    Why does overfitting enable membership inference, and why report AUC together with TPR at low FPR?
   options:
-    - Members have lower loss; TPR at low FPR shows confident identification that average AUC can hide
-    - Members have higher loss; AUC alone is enough since it covers all thresholds
-    - Overfit models output uniform confidence; TPR at low FPR measures accuracy
-    - Members are duplicated in the test set; AUC measures how many duplicates exist
+    - Members have lower loss, and TPR at low FPR exposes the identification that average AUC hides
+    - Members have higher loss; average AUC alone is enough, since it already covers every threshold
+    - An overfit model outputs uniform confidence; TPR at low FPR simply measures its raw accuracy
+    - Members are duplicated inside the test set, and the AUC measures how many duplicates exist
   correct: 0
-- source: fc4fa40a41a8
-  question: Why is LiRA stronger than the loss-threshold attack?
+  explanation: >-
+    Overfitting is the leak: the model fits the points it was trained on better than it fits new
+    ones, so loss and confidence separate members from non-members. Membership inference then runs at
+    extreme base rates and asymmetric costs, where the honest operating point is the far-left end of
+    the ROC rather than its average area. A model can post a respectable AUC and still confidently
+    identify a small set of real members, which is exactly the outcome a regulator cares about.
+- id: q2
+  question: >-
+    Why is the LiRA attack stronger than the loss-threshold membership attack?
   options:
-    - It uses a single global threshold, tuned on a larger set of known members
-    - It needs no shadow models, so it scales cheaply to much larger targets
-    - It reads the target model's weights directly instead of only its outputs
+    - It uses a single global threshold, tuned on a larger set of known member samples
+    - It needs no shadow models at all, so it scales cheaply to much larger training sets
+    - It reads the target model's weights directly instead of only its observable outputs
     - It calibrates per example with shadow models and applies a likelihood-ratio test
   correct: 3
-- source: da26cd915815
-  question: What does $(\varepsilon,\delta)$-DP guarantee, and why does it bound membership inference?
+  explanation: >-
+    A single global threshold cannot tell an easy example from a hard one — some inputs are low-loss
+    regardless of membership, so a shared cutoff spends its budget on those and misses the genuine
+    cases. Shadow models trained with and without each candidate supply the two conditional
+    distributions, and the ratio of their densities is the Neyman–Pearson optimal test for that
+    example. That is what lifts TPR at low FPR, which is where identification of specific people
+    actually happens.
+- id: q3
+  question: >-
+    What does $(\varepsilon,\delta)$-differential privacy guarantee, and why does it bound membership inference?
   options:
-    - Outputs are identical with or without any one example, so every attack always fails
-    - Outputs differ by at most $e^{\varepsilon}$ (plus $\delta$) when one example changes, bounding the advantage
-    - Training data is encrypted with a key of size $\varepsilon$, so no attacker can read it
-    - Accuracy drops by at most $\varepsilon$, so a membership attacker gains at most $\delta$
+    - The output is identical with or without any one example, so every attack always fails completely
+    - Outputs differ by at most $e^{\varepsilon}$ plus $\delta$ when one example changes, bounding advantage
+    - Training data is encrypted under a key of size $\varepsilon$, so no attacker can read the training set
+    - Accuracy drops by at most $\varepsilon$, so a membership attacker gains at most $\delta$ in return
   correct: 1
-- source: 3946778d52ad
-  question: Why is a query-only API not "safe" for the model?
+  explanation: >-
+    The bound is multiplicative on the output distribution: adding or removing one record shifts the
+    probability of any event by at most a factor of $e^{\varepsilon}$, plus a slack $\delta$. That is
+    what caps the membership adversary, since the advantage of any membership test is roughly bounded
+    by $e^{\varepsilon} - 1$ — so shrinking $\varepsilon$ drives the attack toward chance by
+    construction rather than by tuning. The guarantee is exactly as strong as the reported value, so
+    a model trained to $\varepsilon = 50$ is barely private at all.
+- id: q4
+  question: >-
+    Why is a query-only API not automatically safe for the model it serves?
   options:
-    - Queries leak the weights file byte by byte through response timing
-    - Queries let attackers fine-tune the hosted model directly on their data
-    - Extraction can train a student from queries, enabling IP theft and transfer attacks
-    - Queries always return the training data verbatim when the user asks for it
+    - Queries leak the weights file byte by byte through the response timing of each individual call
+    - Queries let attackers fine-tune the hosted model directly on their own private local data
+    - Extraction can train a student from queries, enabling IP theft and transfer attacks on the target
+    - Queries always return the training data verbatim whenever the user simply asks to see it
   correct: 2
+  explanation: >-
+    A query-only interface still returns enough signal to fit a surrogate: the student reproduces the
+    teacher's decision boundary with high fidelity, and that copy is then both stolen intellectual
+    property and a white-box model for crafting transfer attacks. Soft labels leak more than hard ones
+    for the same reason, since they carry more information per query. Restricting a model to inference
+    does not restrict extraction — differential privacy bounds membership, not the function the model
+    computes.

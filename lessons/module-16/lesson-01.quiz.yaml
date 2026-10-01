@@ -1,35 +1,69 @@
-# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
-# The lesson's model answer is shown as the explanation. `source` fingerprints the original
-# question + answer; if the lesson changes, the site flags the question for review.
-- source: aadf9e9274c4
-  question: What is excessive agency, and how do you measure it?
+- id: q1
+  question: >-
+    What is excessive agency, and how is it measured on a real agent?
   options:
-    - An agent that runs too long; measure it by wall-clock time per task
-    - An agent that asks the user too often; measure it by approval prompts
-    - An agent able to do more than the task needs; measure its reachable-action set
-    - An agent with too many input channels; measure it by the number of documents read
+    - An agent that runs for too long; measure it by the wall-clock time per completed task
+    - An agent that asks the user for confirmation too often; measure it by counting approval prompts
+    - An agent able to do more than the task needs; measure it by its reachable-action set
+    - An agent with too many input channels; measure it by the number of documents it reads
   correct: 2
-- source: f35a0f172c87
-  question: Why is the agent a confused deputy, and why doesn't a system prompt fix it?
+  explanation: >-
+    The OWASP definition is about capability rather than behaviour: what matters is the set of tools
+    and argument ranges the policy would let a persuaded brain reach. Blast radius scales as
+    $C \cdot A$ — untrusted channels times reachable actions — so one successful injection can drive
+    any reachable action and every tool added is reachable from every channel. That is why the set
+    is the number worth reporting: an input filter trims $C$ a little, while removing a tool deletes a
+    whole column.
+- id: q2
+  question: >-
+    Why is the agent a confused deputy, and why does a stronger system prompt not fix that?
   options:
-    - The attacker steals the agent's credentials; the prompt cannot rotate keys
-    - The agent lacks privileges; the prompt cannot grant new ones to it
-    - The user misuses the agent; the prompt cannot tell users apart
-    - It uses its privileges for injected text; the prompt is a finite prior a strong injection beats
+    - The attacker steals the agent's own credentials; a system prompt cannot rotate those keys
+    - The agent simply lacks the privileges the task needs; a prompt cannot grant it new ones
+    - The end user misuses the agent deliberately; a prompt cannot tell two users apart
+    - It spends its own privileges on injected text; the prompt is only a finite prior
   correct: 3
-- source: fd2f5652e719
-  question: Which three orthogonal enforced defenses for agents are correctly matched to what they stop?
+  explanation: >-
+    A confused deputy is a component that exercises authority its principal never meant to delegate to
+    whoever supplies the input — here the attacker is the author of the document and the agent is the
+    deputy holding the secret, the filesystem and the outbound connection. The system prompt sits in
+    the model's instruction stream, so it is a prior of finite strength that a sufficiently strong
+    injection outranks. Privilege is granted where it is enforced, in policy code that runs on every
+    call regardless of what the brain decided.
+- id: q3
+  question: >-
+    Which three defenses are orthogonal, enforced in code, and correctly matched to what each stops?
   options:
-    - "Input filter: all injections. Output moderation: exfiltration. System prompt: tool misuse"
-    - "Least privilege: dangerous action unreachable. Egress allowlist: exfiltration. Approval gates: some malicious calls"
-    - "Rate limit: exfiltration. Perplexity filter: tool misuse. Logging: all injections"
-    - "Least privilege: all injections. Egress allowlist: jailbreaks. Approval gates: every malicious call"
+    - >-
+      Input filter: all injections. Output moderation: exfiltration. System prompt: tool misuse
+    - >-
+      Least privilege: dangerous action unreachable. Egress allowlist: exfiltration.
+      Approval gates: some malicious calls
+    - >-
+      Rate limit: exfiltration. Perplexity filter: tool misuse. Logging: all injections
+    - >-
+      Least privilege: all injections. Egress allowlist: jailbreaks. Approval gates: every malicious call
   correct: 1
-- source: cbccbee68f10
-  question: Why does removing one egress tool often beat adding an input filter?
+  explanation: >-
+    They are orthogonal because each removes a different link in the chain: least privilege makes the
+    dangerous tool unreachable so nothing downstream matters, egress control removes the exfiltration
+    destination regardless of what was fetched, and approval gates catch a fraction $q$ of
+    side-effecting calls, leaving residual risk $(1-q)$. Filters and prompts do not belong in that
+    list — they act on persuasion rather than capability, so they fail exactly in the case you are
+    defending against, where the model has already been persuaded.
+- id: q4
+  question: >-
+    Why does removing one egress tool often cut more risk than adding an input filter?
   options:
-    - It removes a whole column of (channels × actions) for certain; a filter cuts channels only partly
-    - Input filters increase blast radius, because each filter adds another input channel
-    - Removing a tool makes the model more likely to refuse injected requests it reads
-    - Egress tools are the only way injections can enter the agent's context window
+    - It removes a whole column of channels-by-actions for certain, while a filter cuts channels only partly
+    - Input filters enlarge the blast radius, because each filter adds another untrusted input channel
+    - Removing the tool makes the model far more willing to refuse injected requests that it reads
+    - Egress tools are the only way an injection can enter the agent's context window at all
   correct: 0
+  explanation: >-
+    Blast radius is $\Theta(C\cdot A)$, so a filter lowers $C$ by some fraction while removing the
+    egress tool deletes every effect along that column outright. Capability minimization is also the
+    only move whose result does not depend on how persuasive the next attacker turns out to be, which
+    is why least privilege comes first rather than last in the stack. What remains is residual harm
+    inside the reduced action set: destructive actions, or exfiltration through a channel you never
+    routed through the policy.

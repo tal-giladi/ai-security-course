@@ -1,35 +1,64 @@
-# Multiple-choice version of the quiz in lesson-01.md (question N = question N there).
-# The lesson's model answer is shown as the explanation. `source` fingerprints the original
-# question + answer; if the lesson changes, the site flags the question for review.
-- source: 326a5f153deb
-  question: How does CW differ from PGD, and why does it find smaller perturbations?
+- id: q1
+  question: >-
+    How does the CW attack differ from PGD, and why does it find smaller perturbations?
   options:
-    - CW uses a larger fixed $\epsilon$ and runs more gradient steps than PGD does
-    - CW takes a single signed-gradient step, which moves less than PGD's many steps
-    - CW minimizes perturbation norm subject to misclassification instead of maxing loss in a fixed ball
-    - CW adds random noise before each step, which averages out and shrinks the perturbation
+    - CW fixes a larger budget $\epsilon$ and takes more gradient steps than PGD does per attack
+    - CW takes one signed-gradient step, which moves less far than PGD's many small steps do
+    - CW minimizes perturbation norm subject to misclassification, rather than maximizing loss in a fixed ball
+    - CW adds random noise before every step, which averages out and shrinks the resulting perturbation
   correct: 2
-- source: dd53de04f6b2
-  question: Why are transfer attacks a threat to black-box models?
+  explanation: >-
+    FGSM and PGD ask whether a perturbation of a fixed size exists, so their answer is bounded by the
+    budget you chose and they often report a needlessly large one. CW inverts the problem — minimize
+    $\|\delta\|_2^2$ subject to a margin loss that vanishes once the true class is beaten by
+    $\kappa$ — so the size it reports is the smallest nudge that actually flips the prediction, with
+    Adam doing the search. That is a much sharper probe, and it is what broke defenses that had only
+    ever been tested against sign-based attacks.
+- id: q2
+  question: >-
+    Why are transfer attacks a real threat to a target whose gradients are never exposed?
   options:
-    - Adversarials from a similar surrogate often fool the hidden target too
-    - Black-box APIs leak their gradients through confidence scores
-    - Transfer attacks steal the target's weights before attacking
-    - Black-box models are always trained on public data the attacker controls
+    - Adversarial examples crafted on a similar surrogate often fool the hidden target too
+    - Black-box APIs leak their gradients through the confidence scores they return per token
+    - Transfer attacks first extract the target's weights, then reuse them to craft the example
+    - Black-box models are always trained on public data that the attacker already controls
   correct: 0
-- source: c5f7b31b9721
-  question: What does the randomized-smoothing certificate guarantee?
+  explanation: >-
+    Models trained on similar data learn similar features and decision boundaries, so a perturbation
+    that pushes a surrogate across its boundary tends to cross the target's too — no access to the
+    target required. That is why hiding gradients is not a defense: the attacker simply moves to a
+    model they can inspect. Ensembling surrogates raises the transfer rate further, because a
+    perturbation that fools several of them is closer to a feature of the task than to one model's
+    idiosyncrasy.
+- id: q3
+  question: >-
+    What does the randomized-smoothing certificate actually guarantee?
   options:
-    - Robustness to any $\ell_\infty$ attack of any size, with no loss in clean accuracy
-    - Robustness to PGD specifically, but only within the budget $\epsilon$ used in training
-    - That the base classifier never misclassifies Gaussian-noised copies of the input
+    - Robustness to any $\ell_\infty$ perturbation of any size, with no loss in clean accuracy
+    - Robustness specifically to PGD, but only within the budget $\epsilon$ used during training
+    - That the base classifier never misclassifies a Gaussian-noised copy of the input itself
     - Unchanged prediction for every $\ell_2$ perturbation smaller than $R=\sigma\Phi^{-1}(\underline{p_A})$
   correct: 3
-- source: c7fd434f9a14
-  question: "Empirical vs certified robustness: which bounds which?"
+  explanation: >-
+    The certificate is a statement about the smoothed classifier $g$, not the base network: Gaussian
+    concentration bounds how far an $\ell_2$ perturbation can move the top-class probability, and
+    below radius $R$ the class ranking cannot change. That is what makes it attack-agnostic in a way
+    empirical evaluation never is. The guarantee is paid for in noise — larger $\sigma$ means larger
+    radii and lower clean accuracy, inference becomes a Monte-Carlo vote instead of one forward pass,
+    and nothing is certified where $\underline{p_A}$ sits at or below chance.
+- id: q4
+  question: >-
+    Empirical versus certified robustness: which is the upper bound on true robustness?
   options:
-    - Empirical is a lower bound; certified is an upper bound on true robustness
-    - Empirical is an upper bound; certified is a lower bound on true robustness
-    - Both are upper bounds; only more attacks can tighten them
-    - Both equal true robustness when AutoAttack is used
+    - Empirical is a lower bound on true robustness; certified is an upper bound on it
+    - Empirical is an upper bound on true robustness; certified is a lower bound on it
+    - Both are upper bounds; only running more attacks can tighten either of them downward
+    - Both equal the true robustness exactly, once AutoAttack has been run on the model
   correct: 1
+  explanation: >-
+    Robust accuracy under a specific attack $\mathcal A$ can only fall as the attack gets stronger, so
+    it necessarily sits above the real number — reporting it says only that this optimizer failed,
+    never that no perturbation exists. A certificate at radius $R$ is the mirror image: it proves a
+    neighbourhood is safe, so true robustness is at least that. The two answer different questions,
+    which is why the lesson says report both and evaluate empirically with the AutoAttack ensemble
+    rather than one hand-picked attack.

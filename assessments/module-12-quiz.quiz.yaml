@@ -1,0 +1,160 @@
+- id: q1
+  question: >-
+    Regularization plus early stopping drops MI ROC-AUC from 0.64 to 0.52. DP-SGD on the same data
+    only reaches 0.59, and the report says $\varepsilon = 3$. Why ship the higher number?
+  options:
+    - The empirical patch describes one model under one threat and a stronger attack can restore the gap, while
+      $\varepsilon$ bounds every adversary at once
+    - Because 0.59 is close enough to 0.5 on a toy model, and the published $\varepsilon$ is a formality for reviewers
+    - Because DP-SGD retrains with per-example gradients, which changes the generalization gap the leak depends on
+    - Because MI ROC-AUC and $\varepsilon$ describe the same quantity, so the higher AUC is the better privacy result
+  correct: 0
+  explanation: >-
+    Regularization works by shrinking the generalization gap, which is exactly what a stronger attack
+    is built to exploit: the lab's overfit model (train 1.00, test 0.83) leaks at AUC 0.64 because it
+    was fit harder, so closing the gap empirically buys a threshold rather than a bound. $\varepsilon$
+    is an upper bound over every adversary including LiRA, which is why it is worth publishing even
+    when the measured AUC comes out slightly higher on this dataset.
+- id: q2
+  question: >-
+    A vendor advertises a DP-trained model and publishes $\varepsilon = 50$. What does that figure buy a
+    membership-inference adversary?
+  options:
+    - A guarantee that no user's record was in the training set, since DP is attack-agnostic by construction
+    - Nothing usable, because the advantage bound scales with $e^{\varepsilon} - 1$ and $e^{50}$ leaves the
+      mechanism effectively unbounded
+    - Protection against membership inference alone, with extraction of the model left wide open by the same argument
+    - Protection against aggregate leakage as well, since $\varepsilon$ is computed over the dataset rather than per record
+  correct: 1
+  explanation: >-
+    The guarantee is the guarantee and nothing more: the MI advantage is bounded roughly by
+    $e^{\varepsilon} - 1$ plus $\delta$, so an $\varepsilon$ in that range leaves a ratio so large that
+    the bound excludes no plausible adversary. This is the distinction the module insists on — "we
+    added noise" is not "we are private" — and it is why the number has to be reported and defended,
+    not mentioned as a checkbox.
+- id: q3
+  question: >-
+    The endpoint returns only the top-1 class, and an attacker reaches roughly 0.7 student fidelity
+    after 2,000 queries. What changes if you also return the full probability vector?
+  options:
+    - Fidelity barely moves, because the top-1 class already carries most of the decision information
+    - Fidelity falls, because the richer target lets the student fit the teacher's mistakes instead of its decisions
+    - Fidelity at a fixed budget rises sharply, because each reply exposes the teacher's whole output distribution
+    - Fidelity is unchanged but convergence takes fewer queries, which is a budget problem rather than a leak
+  correct: 2
+  explanation: >-
+    A hard label transmits roughly one bit about the teacher's decision surface per query; the full
+    distribution constrains the student in every direction at once, so the same budget goes much
+    further. That is why soft-label access is the axis to reason about when sizing a query budget —
+    and it is independent of the rate limit, which only caps how fast the budget can be spent.
+- id: q4
+  question: >-
+    You rate-limit the endpoint at 100 queries per key per minute and log every call. Extraction converges
+    in about 8,000 queries. What follows?
+  options:
+    - The limit bounds rate rather than volume — keys rotate — and the log volume becomes its own detection and
+      retention problem
+    - The limit is real protection, since 100 per minute puts convergence out of reach for any patient attacker
+    - Only the log matters, since no student can be trained on responses the endpoint never returned
+    - The limit is beside the point, since a faithful surrogate can be derived from the public weights alone
+  correct: 0
+  explanation: >-
+    Rate limiting and query budget are different quantities: a determined attacker spreads thousands
+    of queries over many keys and over time, so the budget is the number that matters and it is far
+    below what a public endpoint usually assumes. The call log is the countermeasure — it is where
+    extraction shows up — and logging every query at that budget has its own storage and review cost
+    that has to be budgeted rather than discovered.
+- id: q5
+  question: >-
+    Two models report MI ROC-AUC of 0.71 and 0.62. At 1% false-positive rate the first names 30% of
+    members, the second 4%. What belongs in the security review?
+  options:
+    - The ROC-AUC, since averaging across thresholds is the standard comparison and 0.71 is the higher figure
+    - Accuracy at a balanced threshold, since members and non-members are roughly equal in this deployment
+    - The lower AUC, since a smaller area implies a stricter attacker and therefore a smaller residual leak
+    - Low-FPR TPR rather than either average, because the population that matters is a small set of named individuals
+  correct: 3
+  explanation: >-
+    Membership inference runs at extreme base rates with asymmetric costs — accusing someone wrongly is
+    far worse than missing one — so the operationally meaningful number is how many members you can
+    name while accusing almost nobody. An AUC averaged over all thresholds can be respectable while
+    being useless in that regime, which is why LiRA's evaluation emphasizes TPR at low FPR.
+- id: q6
+  question: >-
+    A target sample is intrinsically easy: nearly every model, member or not, is confident on it. The
+    loss-threshold attack calls it a member; LiRA does not. Why?
+  options:
+    - LiRA applies a stricter threshold to the loss distribution, so easy samples stay below it whatever their status
+    - LiRA calibrates per example against shadow models trained with and without it, so inherent easiness cancels out
+    - LiRA fits Gaussians to the raw loss rather than to confidence, which removes the difficulty confound
+    - LiRA needs the target's true label, so it silently drops the cases the loss threshold misreports
+  correct: 1
+  explanation: >-
+    A single global threshold cannot separate "confident because it was trained on this" from
+    "confident because this input is easy", so the loss-threshold attack inherits the sample's
+    intrinsic difficulty as a bias. Shadow models give two conditional distributions of the same
+    quantity for each example, and the likelihood ratio divides that bias out — the Neyman–Pearson
+    test for that example rather than a population-wide cutoff.
+- id: q7
+  question: >-
+    You have shipped a DP-trained model at $\varepsilon = 1$. Which leak is not addressed?
+  options:
+    - Whether a named person was in the training set, since DP bounds membership advantage by roughly
+      $e^{\varepsilon} - 1$
+    - Verbatim regurgitation of a memorized secret, since DP caps any single example's influence on the weights
+    - Extraction of the function the model computes, since the trained weights are not private themselves
+    - Accuracy loss on minority and tail subgroups, since clipping bounds the examples that describe them
+  correct: 2
+  explanation: >-
+    Differential privacy is a statement about one example's influence on the released output, and the
+    model is the output. An attacker who queries it can still build a surrogate of the same function —
+    that is extraction, which $\varepsilon$ does not speak to at all. The same asymmetry explains why
+    DP bounds memorization and membership while leaving aggregate properties and the function itself
+    untouched.
+- id: q8
+  question: >-
+    The run uses clip norm $C$, noise multiplier $\sigma$, and a standard accountant, and the report
+    claims $\varepsilon = 2$. Which change most directly affects that claim?
+  options:
+    - Any mismatch between the clip bound, the noise scale, and what the accountant assumes silently voids the guarantee
+    - Raising $C$ at fixed $\varepsilon$, because clipping bias falls while the noise scale $\sigma C$ stays where it was
+    - Switching to batch gradients, which lowers $\varepsilon$ because each step then touches fewer distinct records
+    - Adding early stopping, which can only reduce $\varepsilon$ and cannot disturb the accountant's running bound
+  correct: 0
+  explanation: >-
+    The reported number is a composed privacy loss over every step, computed from the clip bound, the
+    noise multiplier and the sampling rate the accountant was told about. If any of those disagree
+    with what the run actually did, nothing flags it — the release still says $\varepsilon = 2$ — which
+    is why correct accounting is an engineering discipline rather than a reporting detail.
+- id: q9
+  question: >-
+    DP-SGD clips each per-example gradient to norm $C$ and then adds noise $\mathcal{N}(0,(\sigma C)^2)$.
+    Why clip first, rather than adding noise to the raw sum?
+  options:
+    - Clipping removes the outlier gradients that would otherwise dominate the batch mean and hide the signal
+    - Clipping lowers the variance of the added noise, because bounded vectors sum to a tighter distribution
+    - Clipping makes the update unbiased, since it removes the asymmetric pull of rare or hard examples
+    - Clipping bounds any one example's sensitivity, so the $\sigma$ that buys a given $\varepsilon$ does not grow
+      with batch size
+  correct: 3
+  explanation: >-
+    The noise scale is a product of the multiplier and the sensitivity bound, so without clipping the
+    bound is whatever the largest raw gradient happens to be and grows with batch size, which would
+    force $\sigma$ up as training proceeds. Clipping first fixes the sensitivity at $C$ and makes the
+    $\varepsilon$ budget a property you choose. The loss it costs is bias on the examples whose
+    gradients were clipped, which is exactly the tail accuracy the utility curve measures.
+- id: q10
+  question: >-
+    An inversion attack optimizes an input to maximize one class's confidence and returns the result. What
+    does it give the attacker that membership inference does not?
+  options:
+    - A membership decision for every record, since the reconstruction is matched back against the training set
+    - A representative prototype for the class, built without knowing which records were in the training set
+    - A verbatim training document, because the optimization converges on the nearest memorized example
+    - A usable gradient, which can then be applied to steer the model toward the attacker's chosen class
+  correct: 1
+  explanation: >-
+    Inversion optimizes an input to a class, not over a dataset, so what comes back is a
+    class-typical image that can be recognizable even when the training set was never inspected —
+    which is why it lands on image and biometric models whose class has an identifiable form.
+    Membership inference answers a different, per-record question, and neither one requires the other.

@@ -1,0 +1,158 @@
+- id: q1
+  question: >-
+    On the starter suite, a polite request for the canary is refused and an authority-framed one
+    leaks. A base64-wrapped request also leaks, though the model answers it perfectly well. Using
+    the finite-bias model, what moved in each of the two leaking cases?
+  options:
+    - Framing raised instruction strength and encoding raised it further by shouting in capitals
+    - Framing borrowed apparent role and encoding shrank the effective guard, both staying finite
+    - Framing raised the guard because it matched system-priority training data more closely
+    - Encoding shrank the role bias to zero, while framing left the prior exactly where it was
+  correct: 1
+  explanation: >-
+    Authority framing works on the score the instruction contributes by making it resemble
+    something the trained prior treats as privileged, and encoding works on the other term by
+    moving the request into a region where the guard was never trained to fire. That asymmetry —
+    capability generalizing off-distribution faster than refusal does — is why the encoded version
+    can be answered fluently and still leak. Both are the same idea in different clothes: increase
+    apparent authority, or decrease the effective guard, and never convert a finite prior into a
+    gate.
+- id: q2
+  question: >-
+    The app builds its prompt by concatenating role-labelled blocks, so a user message can close
+    the user block and open a forged system block. What is the right mitigation, and what kind of
+    defense is it?
+  options:
+    - Escape the delimiters in user text, which makes the forged block unparseable to the template
+    - Strip anything matching role markers, which removes the forgery before concatenation happens
+    - Move to a chat template that takes structured roles, which stops untrusted text choosing them
+    - Never let untrusted text supply the structural markers, which hardens the prior but enforces nothing
+  correct: 3
+  explanation: >-
+    The structural markers are the part of the prompt the untrusted party must not control, and
+    keeping them out of reach of the input is the mitigation with the right shape. What it is not
+    is a boundary: the block still reaches the model as tokens the prior merely treats as
+    privileged, so a better forgery or a stronger framing remains available. The lesson is
+    explicit that this belongs to the input-wrapping family, which raises the bar and proves
+    nothing on its own.
+- id: q3
+  question: >-
+    You add an input wrapper that tells the model the user's text is data, and an output scrubber
+    that blocks any response containing the canary. Which pairing survives a fully jailbroken model,
+    and what does each one miss?
+  options:
+    - The input wrapper, since behaviour shaping still applies no matter what the model was trained to do
+    - The scrubber, since it is code and holds; but it misses the secret in any transformed form
+    - Both, since the wrapper handles what the scrubber misses and the two compose to completeness
+    - Neither, since only a model trained never to reveal the canary can stop it from leaving
+  correct: 1
+  explanation: >-
+    A check in code keeps its behaviour when the model's does not, so the enforced control is
+    stronger in kind rather than merely in degree — and it is still incomplete, because it matches
+    one byte pattern on one path. Transform the value and the same information leaves in different
+    bytes, which is why the lesson pairs it with reducing what is in context at all. The wrapper is
+    the other family entirely: it raises what the attacker must overcome and is bypassed by
+    anything that overcomes it.
+- id: q4
+  question: >-
+    The defended bot leaks the canary on 0 of 6 payloads, and the run prints ASR 0.00. What is the
+    honest version of that report?
+  options:
+    - The defense holds on this suite, and the interval's upper bound of roughly 0.39 is the residual
+    - The defense works, since zero successes out of six is the measurement and the measurement is clean
+    - The defense holds, since a Wilson interval around a zero estimate collapses to a single point
+    - The defense is unproven but the number is usable, because six payloads is the course's standard
+  correct: 0
+  explanation: >-
+    Six trials with no successes is consistent with a substantial true rate, and the interval's
+    far end is what says how substantial. Reporting the point estimate alone claims more than the
+    evidence supports, and collapsing the interval to a point is precisely the misbehaviour the
+    Wilson form exists to avoid at rates near the ends. The purple-team conclusion follows
+    directly: you have shown the literal channel is closed on these six, and every other channel is
+    untested.
+- id: q5
+  question: >-
+    Your defense moved the suite from 0.67 to 0.00 on six payloads, and you want to claim a real
+    improvement. What does the sample-size estimate say is required?
+  options:
+    - Nothing more, since a change from two successes to none is larger than any plausible noise
+    - A few more payloads, since 0.67 against 0.00 is a difference no small sample could produce
+    - Roughly 192 per condition to resolve a ten-point difference, so this suite shows direction only
+    - About 24 per condition, since a change of this size is easier to resolve than a ten-point one
+  correct: 2
+  explanation: >-
+    Resolving a small difference between two proportions needs a sample in the low hundreds, and
+    a suite of six can only show which way the number moved, not how far. The lesson says this
+    plainly: small suites show direction, and knowing the limit of your own measurement is part of
+    reporting it. The practical consequence is that the next question is not "did it improve" but
+    "how large a suite is this claim worth", and the defence work continues regardless because
+    the enforced control is what carries the guarantee.
+- id: q6
+  question: >-
+    The scrubber is perfect and the canary still reaches your local sink. Which mechanism explains
+    it, and what generalizes from it?
+  options:
+    - A timing race, since the response was streamed to the renderer before the scrubber ran
+    - A second request path, since the renderer resolves a citation the scrubber never inspected
+    - A transformed form, since any encoding that preserves the information evades exact matching
+    - A stale cache, since the sink replayed a canary recorded before the defense was deployed
+  correct: 2
+  explanation: >-
+    Matching is on bytes, and exfiltration only requires the information to arrive — so base64,
+    zero-width characters, reversal, or splitting the value across a path and a query all defeat a
+    literal check while the far end reassembles it. The generalization is the one the lesson keeps
+    returning to: a signature filter is a classifier with false negatives, and exfiltration is any
+    path out rather than the one you matched on. The fix is to check the effect rather than the
+    string, and to hold less worth stealing.
+- id: q7
+  question: >-
+    Two findings land in the same review. (a) An authenticated user types a payload asking for the
+    system prompt. (b) A crawled page instructs the assistant to email a file to a stranger. What
+    operationally separates them?
+  options:
+    - (a) is a jailbreak against safety training, while (b) is direct injection against the system prompt
+    - (a) is direct and (b) is a jailbreak, since only (b) seeks content the model was trained to withhold
+    - There is no meaningful difference, since both rely on the same authority-framing technique
+    - (a) is direct and (b) is indirect, and the difference is the entry point and the access required
+  correct: 3
+  explanation: >-
+    The techniques overlap almost completely — both raise instruction strength against a finite
+    prior — so the useful discriminator is not method but position: who is speaking, through which
+    channel, and what they need in order to do it. That distinction is what changes your
+    remediation, because an indirect finding is a statement about every place your system reads
+    text rather than about one user channel. Keeping them apart is what stops the threat model
+    from becoming a single undifferentiated injection line.
+- id: q8
+  question: >-
+    After two leaks, the team triples the length and force of the guard in the system prompt. What
+    is the honest cost-benefit, and what is still unproven?
+  options:
+    - It is worth it, since a longer guard is strictly stronger than the one it replaced
+    - It buys probability cheaply, at the price of over-refusal, and it still leaves the gap open
+    - It is a mistake, since prior-shaping defenses are worthless and the second leak proves it
+    - It buys probability cheaply and closes the gap, since three times the text is three times the bias
+  correct: 1
+  explanation: >-
+    The guarantee box prices this trade exactly: a few tokens of latency, and a real utility cost
+    when an over-strong instruction makes the model decline legitimate work. What it cannot do is
+    change the character of the boundary, because the bias remains finite however many tokens you
+    spend on it and the attacker still has strength to spend in return. The performance cost being
+    negligible is precisely why this defense is over-relied upon, since it is cheap enough to keep
+    proposing.
+- id: q9
+  question: >-
+    An input filter blocks any user message containing the ignore-previous phrase. An attacker
+    inserts zero-width characters inside the phrase and the filter passes it while the model still
+    obeys. What does that establish about the class of control?
+  options:
+    - The filter is misconfigured, and matching the phrase case-insensitively closes the bypass
+    - The tokenization itself is the vulnerability, and the model must be retrained on normalized text
+    - It is a pattern classifier with false negatives, so it can raise the bar but never be the boundary
+    - The user channel is the weak link, and indirect channels are unaffected by the same filter
+  correct: 2
+  explanation: >-
+    The model reads through the inserted characters and the matcher does not, which is the
+    defining property of a pattern classifier: an unbounded family of surface forms map to one
+    behaviour. Case folding and normalization narrow the family without closing it, which is
+    exactly the argument for putting the enforced control somewhere the input cannot rephrase its
+    way around. The filter still earns its place in front, raising what the attacker must spend.

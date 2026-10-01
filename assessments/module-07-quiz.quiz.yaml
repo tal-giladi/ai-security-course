@@ -1,0 +1,153 @@
+- id: q1
+  question: >-
+    GCG needs a score per candidate token: at position $i$, which substitution would lower the
+    loss most. Why does it differentiate with respect to a one-hot vector rather than the
+    embedding alone?
+  options:
+    - Because the embedding matrix is frozen during the attack, so no gradient can reach it
+    - Because the chain rule turns the input-space gradient into a vector along the vocabulary axis
+    - Because a one-hot input lets the model run a true forward pass on the exact discrete suffix
+    - Because a 48-token vocabulary is too large to score by evaluating each token separately
+  correct: 1
+  explanation: >-
+    Writing $x_i = E^\top e_i$ and differentiating gives $\nabla_{e_i}L = E\nabla_{x_i}L \in
+    \mathbb{R}^{|\mathcal{V}|}$, one component per candidate token at that position. Differentiating
+    with respect to the embedding itself would return a vector of shape $d$ and no way to say
+    which token it belongs to. That score is a first-order estimate regardless, which is exactly
+    why the top-$k$ proposals still have to be evaluated with real forward passes before one is
+    kept.
+- id: q2
+  question: >-
+    The toy uses a 48-token vocabulary and a 16-token suffix, so exhaustive search is roughly
+    $8\times 10^{26}$ candidates. What does GCG replace that with?
+  options:
+    - >-
+      steps times B forward passes plus steps backward passes, which is polynomial in the budget
+    - A single analytic gradient step, since the linearization is exact on a one-hot input
+    - A sample from the token posterior, which needs neither a gradient nor a candidate batch
+    - A continuous relaxation of the suffix, which lands exactly on a valid discrete token sequence
+  correct: 0
+  explanation: >-
+    Brute force is $|\mathcal{V}|^L$ because the suffix ranges over every token sequence of that
+    length; GCG replaces the enumeration with a short loop whose cost is set by the budget rather
+    than by the vocabulary, which is the whole reduction. The relaxation does not remove the
+    discreteness, so the search still has to evaluate candidates for real and still only ever
+    returns a valid sequence of tokens. Exponent in $L$ versus linear in steps is the difference
+    between an attack nobody can run and one that finishes in seconds.
+- id: q3
+  question: >-
+    At a given position the top-gradient token is usually, but not always, the token a
+    brute-force single-position search would pick. What does that mismatch mean for the algorithm?
+  options:
+    - The gradient is wrong at that position, so the position should be dropped from the suffix
+    - The suffix is too long, since more positions always increase the first-order error
+    - The estimate is only a local linearization, so real forward passes are what fix the error
+    - The candidate batch is too small, so raising B would remove the discrepancy entirely
+  correct: 2
+  explanation: >-
+    The Taylor estimate predicts the loss change from swapping in token $v$, and the true surface
+    over swaps is not linear, so ranking by gradient ranks by a proxy. Sampling a batch of
+    single-token swaps from the top-$k$ and keeping whichever has the lowest measured loss is
+    what turns a proposal into a decision, and it costs $B$ forward passes per step — the reason
+    GCG is query-efficient against random search even though it never gets a closed form.
+- id: q4
+  question: >-
+    You report GCG at 8/8 and random at 3/8 on eight prompts, with Wilson 95% intervals. A
+    reviewer asks why the claim needs a budget-matched baseline. What is the reason?
+  options:
+    - ASR here is stochastic, so the only reproducible quantity is the interval around each point
+    - The eight prompts are not a random sample, so the interval is the only valid estimate of the rate
+    - The query count is what determines the attack's cost, so the interval only describes the sample
+    - Both arms are query-bounded, so the gradient is isolated only when the budget is matched
+  correct: 3
+  explanation: >-
+    GCG and random are both searches under a query cap, so a comparison measures the contribution
+    of the gradient only if the cap is the same for both arms. Intervals then say how much of the
+    8/8 versus 3/8 gap is sampling noise on eight prompts, and the quantity that actually carries
+    the claim is queries-to-success, roughly three times lower for GCG in the lab. A success rate
+    reported without both is a number, not a result.
+- id: q5
+  question: >-
+    The filter rejects suffixes above a perplexity threshold, taking gibberish GCG from 8/8 to
+    about 1/8. Which attack does it not stop?
+  options:
+    - The adaptive attack that adds a fluency penalty to the objective, recovering about 7/8
+    - A longer vanilla GCG suffix, since more tokens push perplexity further above the threshold
+    - A suffix drawn from the target model's own training text, which is fluent by construction
+    - A retokenised copy of the same suffix, since token identity changes without changing the words
+  correct: 0
+  explanation: >-
+    Perplexity is a property of the surface form, so an attacker who adds the fluency penalty to
+    the same objective produces a suffix that reads as ordinary text and lands under the
+    threshold, paying in success rate and queries rather than in access. The filter stops the
+    original attack and not the capability, which is why the lesson pairs it with raising the
+    loss floor, rate limiting and monitoring instead of treating it as a boundary. The 7/8 is
+    the number that matters: it is measured against the adapted attack.
+- id: q6
+  question: >-
+    You sweep the perplexity threshold to build the ROC: true-positive rate is gibberish blocked,
+    false-positive rate is benign fluent inputs blocked. Which argument picks the operating point?
+  options:
+    - The threshold maximizing the true-positive rate, since blocking more gibberish is the safe direction
+    - The threshold minimizing the false-positive rate, since benign traffic is the larger population
+    - The threshold that keeps most benign inputs served, since that cost is paid on every request
+    - The threshold equal to the median vanilla GCG perplexity, which is the value the lab defaults to
+  correct: 2
+  explanation: >-
+    The two rates trade against each other and the base rate decides which error is cheaper here.
+    The false-positive side lands on real traffic — code, other languages and rare jargon all
+    score high perplexity — and it is charged on every single request, while the true-positive
+    side is charged on attacks. Setting the threshold at the vanilla median is a lab convenience
+    with no meaning on your own corpus; the defensible choice is argued from your benign base
+    rate and reported with the curve behind it.
+- id: q7
+  question: >-
+    A provider ships a closed API with a documented cap of 10 queries per minute. A GCG suffix
+    optimized on an open surrogate still breaks it. What does the cap buy?
+  options:
+    - Enough budget to run the full optimization loop, which is what the cap actually limits
+    - Very little, since the suffix was optimized on the surrogate and the transfer happens on target
+    - A reduction in transfer rate, because each of the ten queries tests a different suffix
+    - A guarantee that only suffixes optimized against the target itself can succeed
+  correct: 1
+  explanation: >-
+    The optimization loop runs against the surrogate, where the attacker already holds gradients,
+    and only the finished suffix meets the target. Models trained on overlapping data learn
+    overlapping features and similar decision geometry, so an input that exploits one lands near
+    the same failure region in another, which makes the cap a rate limit on a small number of
+    final checks rather than a barrier to the search. Closed-source is not a defense here; the
+    threat model that matters is surrogate similarity.
+- id: q8
+  question: >-
+    Your fixed-seed GCG run reports 0/8 successes. The same command gave 8/8 yesterday, and the
+    `nn.Embedding` layer was never given a local generator. What is the explanation?
+  options:
+    - The gradient proposal is stochastic, so the success rate legitimately varies between runs
+    - The vocabulary is wide enough that `topk` selects different candidates on each call
+    - The attack seed reaches the suffix but not the perplexity scorer used by the filter
+    - The embedding table drew from the global RNG, so earlier RNG use silently changed the model
+  correct: 3
+  explanation: >-
+    `nn.Embedding` initialises from the global generator, so the "fixed" model is a function of
+    every random draw that happened before it in the process. That matters more than it looks,
+    because the claim under test is that the gradient beats a budget-matched random search on the
+    same model — if the model moves between arms, the comparison is void rather than merely
+    noisy. Seeding from a local generator and logging the seed is what makes the measurement a
+    measurement.
+- id: q9
+  question: >-
+    Raising `suffix_len` from 8 to 32 raises success and raises queries-to-success. What is the
+    capacity argument for that trade-off?
+  options:
+    - Each extra token is a degree of freedom for shifting the output, and a wider search costs more
+    - More tokens sharpen the one-hot gradient, so the top-$k$ candidate set becomes more informative
+    - Perplexity falls as the suffix lengthens, so the extra tokens buy fluency for free
+    - The loss landscape is unchanged, so the added cost is only the longer forward pass per step
+  correct: 0
+  explanation: >-
+    Length buys degrees of freedom, not a better optimizer: the per-position candidate ranking is
+    computed the same way whatever the length, so the gain comes from having more places to put a
+    useful substitution. The price is search — a larger space takes more evaluated steps before a
+    good point appears — and the extra tokens also push the suffix's perplexity up, which is the
+    quantity a fluency filter is watching. Both costs belong on the same curve as the success
+    rate.
