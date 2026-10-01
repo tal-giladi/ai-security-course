@@ -17,10 +17,10 @@
   question: >-
     What does a low attack success rate fail to tell you?
   options:
-    - How long the evaluation took to run
-    - That the attacks you ran are the strongest ones the attacker could use
-    - How many attack families the suite covered
-    - Whether the confidence interval was computed correctly
+    - How long the whole evaluation took to run against the target system
+    - That the attacks you ran are the strongest ones a real attacker could use
+    - How many attack families the suite covered on this particular run
+    - Whether the confidence interval was computed correctly for the trial count
   correct: 1
   explanation: >-
     ASR is an upper bound produced by the attacks you chose. It certifies that a particular suite

@@ -72,6 +72,12 @@ def check(path: Path) -> list[str]:
             text = " ".join(str(o).lower() for o in opts)
             if any(b in text for b in BANNED):
                 problems.append(f"{tag}: uses an all/none-of-the-above option")
+            correct_len = len(str(opts[corr]).split())
+            others = [len(str(o).split()) for i, o in enumerate(opts) if i != corr]
+            if others and correct_len > max(others) * 1.4 and correct_len - max(others) >= 4:
+                problems.append(
+                    f"{tag}: correct option is much longer ({correct_len} words vs {max(others)})"
+                )
             if isinstance(expl, str) and len(str(opts[corr]).strip()) >= 12:
                 if str(opts[corr]).strip().lower() in expl.strip().lower():
                     problems.append(f"{tag}: explanation just restates the correct option")

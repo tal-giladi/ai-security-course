@@ -7,7 +7,7 @@ entry.
 
 ## 2026-W39 (2026-09-27)
 
-- **Added** [F.1 · OWASP LLM Top 10 2026: crosswalk & hidden-context exposure](lessons/frontier/update-01.md)
+- **Added** [32.1 · OWASP LLM Top 10 2026: crosswalk & hidden-context exposure](lessons/module-32/lesson-01.md)
   — how every 2025 OWASP ID the course cites maps to the 2026 list, and why "System Prompt
   Leakage" became Hidden Context Exposure, measured per context slot. The 2026 crosswalk is
   appended to the [standards map](references/standards-map.md); nothing existing was changed.

@@ -67,10 +67,10 @@
     trajectories. After an explicit out-of-scope statement was added, a full attack still ran in
     4 of 49 trials. What is the correct engineering conclusion?
   options:
-    - Scope adherence improves with capability, so the trend is favourable
-    - The residual is within acceptable bounds and needs no further work
-    - The disclaimer is a prior rather than a control; enforce scope in the authorization layer and measure adherence
-    - Adherence and capability are the same property measured two ways
+    - Scope adherence improves with capability, so the trend across releases is favourable
+    - The residual is small enough to accept without further enforcement work
+    - The disclaimer is a prior rather than a control; enforce scope in the authorization layer
+    - Adherence and capability are the same property, measured two different ways
   correct: 2
   explanation: >-
     The headline number rose with capability rather than falling, and the disclaimer helped

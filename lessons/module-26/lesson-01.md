@@ -85,7 +85,7 @@ AI 100-2 adversarial-ML taxonomy (evasion/poisoning/privacy/abuse) → Stages 4�
 
 ## The competency matrix
 
-The [course outline](../curriculum/course-outline.md) ends with a matrix: for each capability, the
+The [course outline](../../curriculum/course-outline.md) ends with a matrix: for each capability, the
 columns Theory / Math / Implementation / Attack / Defense / Research / Assessment. **A capability is
 "yours" only when you could do it again, unaided, on a system you haven't seen.** Use it after each
 capstone to find gaps, and revisit the relevant module + lab (not just the lesson — the lab is where

@@ -33,7 +33,7 @@
   question: >-
     Why prefer one enforced control over stacking three probabilistic filters on the same hop?
   options:
-    - The enforced control makes that hop's success probability zero, while the filters leave a positive residual
+    - The enforced control zeroes that hop; stacked filters only shrink the product
     - Filters are slower, so the enforced control is cheaper to run
     - Filters can only be applied to outputs, never to inputs
     - Stacking filters requires retraining the model

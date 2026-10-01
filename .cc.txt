@@ -12,7 +12,6 @@ PROBLEM assessments/module-07-quiz.md: Quiz page has no Answers section
 PROBLEM assessments/module-08-quiz.md: Quiz page has no Answers section
 PROBLEM assessments/module-09-quiz.md: Quiz page has no Answers section
 PROBLEM assessments/module-10-quiz.md: Quiz page has no Answers section
-PROBLEM lessons/module-11/lesson-01.quiz.yaml: Question 4: options must be 4 non-empty strings
 PROBLEM assessments/module-11-quiz.md: Quiz page has no Answers section
 PROBLEM assessments/module-12-quiz.md: Quiz page has no Answers section
 PROBLEM assessments/module-13-quiz.md: Quiz page has no Answers section
@@ -22,32 +21,12 @@ PROBLEM assessments/module-16-quiz.md: Quiz page has no Answers section
 PROBLEM assessments/module-17-quiz.md: Quiz page has no Answers section
 PROBLEM lessons/module-18/lesson-01.quiz.yaml: Question 4: options must be 4 non-empty strings
 PROBLEM assessments/module-18-quiz.md: Quiz page has no Answers section
-PROBLEM lessons/module-19/lesson-01.md: Bad front-matter: Unexpected scalar at node end at line 10, column 30:
-
-  - Apply defenses: **server allowlisting/pinning/signing**, **tool-metadata-as…
-                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 PROBLEM assessments/module-19-quiz.md: Quiz page has no Answers section
-PROBLEM lessons/module-20/lesson-01.md: Bad front-matter: Unexpected scalar at node end at line 7, column 58:
-
-  - Distinguish the multimodal sub-threats: **semantic** injection (M06), **ste…
-                                                         ^^^^^^^^^^^^^^^^^^^^^^^
-
 PROBLEM assessments/module-20-quiz.md: Quiz page has no Answers section
 PROBLEM assessments/module-21-quiz.md: Quiz page has no Answers section
 PROBLEM assessments/module-22-quiz.md: Quiz page has no Answers section
-PROBLEM lessons/module-23/lesson-01.md: Bad front-matter: Unexpected scalar at node end at line 9, column 17:
-
-  - **Compose** controls in the right order and **measure** ASR, FPR, and detec…
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 PROBLEM lessons/module-23/lesson-01.quiz.yaml: Question 3 (q3): the correct option is much longer than the wrong ones
 PROBLEM assessments/module-23-quiz.md: Quiz page has no Answers section
-PROBLEM lessons/module-24/lesson-01.md: Bad front-matter: Unexpected scalar at node end at line 11, column 14:
-
-  - **Design a security benchmark** and wire **regression tests** that fail if …
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 PROBLEM assessments/module-24-quiz.md: Quiz page has no Answers section
 PROBLEM assessments/module-25-quiz.md: Quiz page has no Answers section
 PROBLEM lessons/module-26/lesson-01.md: Link "../curriculum/course-outline.md" does not exist in the repository; kept as text
@@ -58,52 +37,41 @@ PROBLEM research/CHANGELOG.md: Link "lessons/frontier/update-01.md" does not exi
 PROBLEM assessments/module-00-quiz.md: no .quiz.yaml
 PROBLEM assessments/module-01-quiz.md: no .quiz.yaml
 PROBLEM assessments/module-02-quiz.md: no .quiz.yaml
+PROBLEM lessons/module-04/lesson-01.quiz.yaml: 0 valid questions, expected 3-5
 PROBLEM assessments/module-04-quiz.md: no .quiz.yaml
+PROBLEM lessons/module-05/lesson-01.quiz.yaml: 0 valid questions, expected 3-5
 PROBLEM assessments/module-05-quiz.md: no .quiz.yaml
+PROBLEM lessons/module-06/lesson-01.quiz.yaml: 0 valid questions, expected 3-5
 PROBLEM assessments/module-06-quiz.md: no .quiz.yaml
+PROBLEM lessons/module-07/lesson-01.quiz.yaml: 0 valid questions, expected 3-5
 PROBLEM assessments/module-07-quiz.md: no .quiz.yaml
+PROBLEM lessons/module-08/lesson-01.quiz.yaml: 0 valid questions, expected 3-5
 PROBLEM assessments/module-08-quiz.md: no .quiz.yaml
+PROBLEM lessons/module-09/lesson-01.quiz.yaml: 0 valid questions, expected 3-5
 PROBLEM assessments/module-09-quiz.md: no .quiz.yaml
+PROBLEM lessons/module-10/lesson-01.quiz.yaml: 0 valid questions, expected 3-5
 PROBLEM assessments/module-10-quiz.md: no .quiz.yaml
+PROBLEM lessons/module-11/lesson-01.quiz.yaml: 0 valid questions, expected 3-5
 PROBLEM assessments/module-11-quiz.md: no .quiz.yaml
+PROBLEM lessons/module-12/lesson-01.quiz.yaml: 0 valid questions, expected 3-5
 PROBLEM assessments/module-12-quiz.md: no .quiz.yaml
+PROBLEM lessons/module-13/lesson-01.quiz.yaml: 0 valid questions, expected 3-5
 PROBLEM assessments/module-13-quiz.md: no .quiz.yaml
+PROBLEM lessons/module-14/lesson-01.quiz.yaml: 0 valid questions, expected 3-5
 PROBLEM assessments/module-14-quiz.md: no .quiz.yaml
+PROBLEM lessons/module-15/lesson-01.quiz.yaml: 0 valid questions, expected 3-5
 PROBLEM assessments/module-15-quiz.md: no .quiz.yaml
+PROBLEM lessons/module-16/lesson-01.quiz.yaml: 0 valid questions, expected 3-5
 PROBLEM assessments/module-16-quiz.md: no .quiz.yaml
 PROBLEM assessments/module-17-quiz.md: no .quiz.yaml
 PROBLEM assessments/module-18-quiz.md: no .quiz.yaml
-PROBLEM lessons/module-19/lesson-01.md: H1 "# 19.1 · MCP security" does not match id undefined and sidebar title "MCP security"
-PROBLEM lessons/module-19/lesson-01.md: front-matter has no id
-PROBLEM lessons/module-19/lesson-01.md: front-matter has no module
-PROBLEM lessons/module-19/lesson-01.md: front-matter has no minutes
-PROBLEM lessons/module-19/lesson-01.md: front-matter has no objectives
-PROBLEM lessons/module-19/lesson-01.md: front-matter has no last_verified
 PROBLEM assessments/module-19-quiz.md: no .quiz.yaml
-PROBLEM lessons/module-20/lesson-01.md: H1 "# 20.1 · Multimodal security (deep)" does not match id undefined and sidebar title "Multimodal security (deep)"
-PROBLEM lessons/module-20/lesson-01.md: front-matter has no id
-PROBLEM lessons/module-20/lesson-01.md: front-matter has no module
-PROBLEM lessons/module-20/lesson-01.md: front-matter has no minutes
-PROBLEM lessons/module-20/lesson-01.md: front-matter has no objectives
-PROBLEM lessons/module-20/lesson-01.md: front-matter has no last_verified
 PROBLEM assessments/module-20-quiz.md: no .quiz.yaml
 PROBLEM assessments/module-21-quiz.md: no .quiz.yaml
 PROBLEM assessments/module-22-quiz.md: no .quiz.yaml
-PROBLEM lessons/module-23/lesson-01.md: H1 "# 23.1 · Defensive engineering" does not match id undefined and sidebar title "Defensive engineering"
-PROBLEM lessons/module-23/lesson-01.md: front-matter has no id
-PROBLEM lessons/module-23/lesson-01.md: front-matter has no module
-PROBLEM lessons/module-23/lesson-01.md: front-matter has no minutes
-PROBLEM lessons/module-23/lesson-01.md: front-matter has no objectives
-PROBLEM lessons/module-23/lesson-01.md: front-matter has no last_verified
 PROBLEM assessments/module-23-quiz.md: no .quiz.yaml
-PROBLEM lessons/module-24/lesson-01.md: H1 "# 24.1 · Security evaluation" does not match id undefined and sidebar title "Security evaluation"
-PROBLEM lessons/module-24/lesson-01.md: front-matter has no id
-PROBLEM lessons/module-24/lesson-01.md: front-matter has no module
-PROBLEM lessons/module-24/lesson-01.md: front-matter has no minutes
-PROBLEM lessons/module-24/lesson-01.md: front-matter has no objectives
-PROBLEM lessons/module-24/lesson-01.md: front-matter has no last_verified
 PROBLEM assessments/module-24-quiz.md: no .quiz.yaml
 PROBLEM assessments/module-25-quiz.md: no .quiz.yaml
 PROBLEM assessments/module-26-quiz.md: no .quiz.yaml
 PROBLEM assessments/module-32-quiz.md: no .quiz.yaml
-LLM & Agent Security Research Engineer: 36 modules, 35 lessons, 41 quiz files, 207 questions (A-D 47/52/54/54), 88 problems
+LLM & Agent Security Research Engineer: 36 modules, 35 lessons, 41 quiz files, 154 questions (A-D 33/37/39/45), 72 problems
