@@ -449,3 +449,66 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Confidence:** medium (single paper, but a real 7-model/4-family benchmark, a clearly stated structural explanation, and a measured, oracle-free mitigation).
 - **Recommendation:** monitor; revisit for ADD if independently replicated, or pair with `C-20260929-01` at the weekly review as two distinct causes (goal-pressure-driven vs. structurally-driven) of the same excessive-agency symptom.
 
+
+### C-20261003-01 · Sapien — stateful policy engine blocks 93–95% of AgentDojo attacks (62–85% on Toolathlon) at near-zero utility cost
+
+- **Class:** B
+- **Date discovered:** 2026-10-03
+- **Date published:** 2026-09-30
+- **Source:** https://arxiv.org/abs/2610.00797
+- **Organization/researchers:** Corinn Tiffany, Wen Zhang, Eugene Bagdasarian, Lillian Tsai. Affiliation not stated on the abstract page (Bagdasarian is an established LLM/agent-poisoning and privacy researcher, UMass Amherst, per prior publications — not confirmed on this page).
+- **Category:** agent-security
+- **What changed:** Extends the course's existing "policy layer authorizes each tool call" baseline (lab-16) and tool-allowlist defenses with a stateful contextual-policy engine: in multi-step tasks, which tool calls are valid depends on what the agent already did, which a flat allowlist cannot express.
+- **Technical summary:** A Sapien policy specifies permitted tool-call sequences as a regular expression extended with stateful predicates, deferred policy generation, and scoped semantic checks, synthesized per task and enforced on the agent's tool calls regardless of how the model itself was manipulated. Measured against two standard agent-security benchmarks: stays within "a few percent" of an unconstrained agent's utility, and even when the agent is fully hijacked, Sapien's policies rule out 93–95% of attacks on AgentDojo and 62–85% on Toolathlon — on Toolathlon's long-horizon tasks, roughly twice the block rate of plain tool allowlists (the course's own current baseline defense).
+- **Why it might matter:** A direct, quantified upgrade path for the course's already-taught weakest defense (tool allowlists, lab-16) using a benchmark the course already teaches from (`papers/16-debenedetti-agentdojo.md`) — exactly the kind of "measured cost, extends known material" result the weekly review looks for, and a clean `.callout.guarantee` case (what a stateful policy blocks vs. what a flat allowlist cannot express).
+- **Evidence of adoption:** None (single paper, days old).
+- **Major organizations using it:** none stated.
+- **Open-source implementation:** none found/linked on the abstract page.
+- **Paper:** https://arxiv.org/abs/2610.00797
+- **Code:** none confirmed
+- **Relationship to existing course material:** Directly extends `module-16` (lab-16 "policy layer authorizes each tool call"/tool allowlists) and the course's own AgentDojo paper guide (`papers/16-debenedetti-agentdojo.md`), adding the Toolathlon long-horizon benchmark the course does not yet reference. `lookup "policy engine agent"` / `"AgentDojo"` → matches only the course's existing policy-layer/AgentDojo material, confirming this is new comparative evidence, not a duplicate.
+- **Potential course lesson:** lab-16 extension: implement a minimal stateful-predicate policy (vs. the lab's current static allowlist) over the same attack scenarios, and reproduce the allowlist-vs-stateful-policy gap on a long-horizon task.
+- **Confidence:** medium (single paper, but evaluated on two real, independently-authored benchmarks — one of which the course already uses — with both attack-block and utility-retention numbers).
+- **Recommendation:** monitor; strong candidate for a module-16 lab extension if an implementation (even unofficial) becomes available, since no code is released yet to verify the numbers.
+
+### C-20261003-02 · Actions with Receipts — claim-anchored execution contracts catch 99.6% of cross-object substitution attacks on tool-agent audit trails
+
+- **Class:** B
+- **Date discovered:** 2026-10-03
+- **Date published:** 2026-09-29
+- **Source:** https://arxiv.org/abs/2610.00327
+- **Organization/researchers:** Not stated on the abstract page.
+- **Category:** detection/monitoring
+- **What changed:** Names a gap in tool-agent auditability distinct from "does the agent cite a real source": a citation and an execution trace can each be individually well-formed while being silently transplanted across claims, actions, runs, or source versions (e.g. a claim shown to the user is not actually the one the committed execution produced). Proposes a "claim-anchored execution contract" that jointly binds the claim, its exact source span, the ordered execution prefix, and the source version/access state observed.
+- **Technical summary:** Each receipt carries a deterministic emission anchor plus source identifiers, offsets, hashes, quotes, and a domain-separated execution commitment; a deterministic integrity verifier checks these bindings before any semantic/entailment judgment is applied (kept as a separate, pluggable "support plane"). The contract exposes seven independently testable binding properties. Across 1,280 constructed cross-object attacks (claim/action/run/source-version substitutions), the joint contract detects 1,275 (99.61%); removing any single targeted property drops that property's own detection rate to 1.56–6.25%, showing each binding is load-bearing rather than redundant. On an independently adjudicated 384-pair split, the downstream entailment ("support") guard reaches F1 0.8865 / false-acceptance 0.0729, degrading to F1 0.8679 / FA 0.0938 on unseen failure families.
+- **Why it might matter:** A rigorous, ablated integrity mechanism for exactly the "trust the receipts, not the model" audit pattern the course already covers in modules 19/22 (provenance, `TrustPolicy`, replayable tool-agent auditing) — the ablation (each property independently necessary) and held-out-failure-family generalization numbers are unusually strong evidence for a single paper.
+- **Evidence of adoption:** None (single paper, days old).
+- **Major organizations using it:** none stated.
+- **Open-source implementation:** none found/linked on the abstract page.
+- **Paper:** https://arxiv.org/abs/2610.00327
+- **Code:** none confirmed
+- **Relationship to existing course material:** Extends `module-19`/`module-22` (cross-server policy gating; `TrustPolicy`/`verify_artifact` provenance) with a formal, testable integrity contract for agent execution+citation audit trails. `lookup "claim-anchored execution"` / `"execution receipt"` → no prior matches; new topic.
+- **Potential course lesson:** module-19/22 exercise: implement the emission-anchor + execution-commitment binding over the existing lab's tool-call log, then run a subset of the paper's substitution-attack families against it and reproduce the per-property ablation.
+- **Confidence:** medium (single paper, but a large constructed-attack evaluation, a full ablation, and a held-out generalization check).
+- **Recommendation:** monitor; revisit for ADD if code or an independent reproduction appears, or pair with module-22's provenance material at a future weekly review.
+
+### C-20261003-03 · "Walking the Embedding Space" (ImmRAG) — image-embedded queries extract hundreds of private images from multimodal RAG datastores in one run
+
+- **Class:** B
+- **Date discovered:** 2026-10-03
+- **Date published:** 2026-10-01
+- **Source:** https://arxiv.org/abs/2610.01871
+- **Organization/researchers:** Maria Carmen Jica, Ali Satvaty, Suzan Verberne, Fatih Turkmen. Affiliation not stated on the abstract page.
+- **Category:** rag-security
+- **What changed:** A black-box data-extraction attack against *image-returning* multimodal RAG (where the retrieved image itself is the response), distinct from the course's current RAG-poisoning/ranking-manipulation framing (lab-14): instead of a textual malicious prompt, the malicious instruction is embedded inside a user-given input image, which is blended with an already-recovered image and used to adaptively steer subsequent queries (relevance-weighted resampling) toward still-unexplored regions of the embedding space.
+- **Technical summary:** Evaluated against three realistic deployments (medical assistant, document-focused helper, general-purpose tool) across multiple CLIP-family retrievers and generators. A single 2,500-query run reconstructs up to 611 distinct radiology images, 566 document scans, and 416 general-purpose images, reaching up to 5.6x as many distinct datastore items as a non-adaptive baseline.
+- **Why it might matter:** A concrete, quantified confidentiality attack on multimodal RAG (private medical/document images recoverable at scale via black-box queries) that the course's current RAG module (14/15, poisoning + missing-authorization framing) does not cover — extraction/confidentiality rather than integrity/availability — with a realistic, high-sensitivity scenario (radiology images) and a meaningful baseline comparison (5.6x).
+- **Evidence of adoption:** None (single paper, days old).
+- **Major organizations using it:** none stated.
+- **Open-source implementation:** none found/linked on the abstract page.
+- **Paper:** https://arxiv.org/abs/2610.01871
+- **Code:** none confirmed
+- **Relationship to existing course material:** New angle on `module-14`/`module-15` (RAG retrieval surface; course's `papers/15-zou-poisonedrag.md` and lab-14/lab-15 currently cover poisoning/ranking-manipulation and missing-authorization, not datastore extraction). `lookup "multimodal RAG extraction"` / `"datastore extraction"` / `"image-returning RAG"` → no prior matches; new topic.
+- **Potential course lesson:** module-14/15 extension or new exercise: build a toy image-returning RAG store, implement the shadow-image-blend + relevance-weighted resampling query strategy, and measure datastore coverage vs. query budget.
+- **Confidence:** medium (single paper, but three distinct realistic scenarios, multiple retriever/generator combinations, and a clear baseline comparison).
+- **Recommendation:** monitor; candidate for a module-14/15 "RAG confidentiality" angle alongside the module's existing poisoning/authorization material at a future weekly review.
