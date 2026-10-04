@@ -114,6 +114,7 @@
   - [Lab 24 · Security evaluation](labs/lab-24/README.md)
   - [Lab 25 · Automated red teaming](labs/lab-25/README.md)
   - [Lab 26 · Hidden context exposure (F.1)](labs/lab-26-hidden-context/README.md)
+  - [Lab 27 · Egress covert channels (05.1)](labs/lab-27-egress-channel/README.md)
   - [Lab 27 · Reconnaissance for AI targets](labs/module-27/README.md)
   - [Lab 28 · Multi-agent & A2A attacks](labs/module-28/README.md)
   - [Lab 29 · Embedding inversion & extraction](labs/module-29/README.md)

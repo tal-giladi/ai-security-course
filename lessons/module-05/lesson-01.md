@@ -306,6 +306,112 @@ had the secret or egress; the deputy misused its own privilege on the attacker's
   via the chain-probability decomposition.
 - Run the purple-team cycle against layered defenses.
 
+## Advanced extension: egress covert channels (added 2026-10-04)
+
+The egress allowlist you built above is the decisive control of this lesson — and its guarantee
+box already names the escape hatch: *"channels you didn't route through the check."* This extension
+makes that line concrete. It is a **progression, not a correction**: everything above still holds.
+The allowlist still drives the second factor of $P(\text{exfiltration})$ to ~0 **for the carrier it
+guards**. What changes is the realization that a *host* allowlist guards exactly one carrier (HTTP
+destination), and a confused deputy with any other outward capability can carry the same secret out
+through a channel the allowlist never inspects.
+
+### What changed
+
+In Lab 05 the deputy's only modelled egress was the renderer's HTTP fetch, so a host allowlist was
+a complete boundary. Real deputies have more: they resolve DNS, they call a `web_fetch`/browse
+tool, they follow citations. Two carriers matter because both are **legitimate capabilities the
+allowlist is not built to stop**:
+
+1. **DNS as a data channel (not DNS rebinding).** 01.1 and the guarantee box above mention DNS
+   *rebinding* — tricking a host check into resolving to a new address. That is an allowlist
+   *bypass*. DNS *tunnelling* is different: the resolver itself is the carrier. The secret is
+   encoded into the **labels of a query name** under an attacker-controlled zone
+   (`<base32-secret>.exfil.evil.test`), and the attacker, who runs the authoritative server for
+   that zone, reads the labels off the incoming query. No HTTP request is ever made, so an
+   HTTP-destination allowlist sees nothing leave. This is a FOUNDATIONAL, DOCUMENTED technique
+   (MITRE ATT&CK **T1071.004**, "Application Layer Protocol: DNS").
+2. **Ride-along in a legitimate fetch (LLMLeak).** The deputy is convinced it *needs* to fetch a
+   URL for the task — e.g. "to migrate the library, fetch `docs.corp.test/migrate?ref=<secret>`."
+   The host (`docs.corp.test`) is **on the allowlist**, so the check passes; the secret rides out
+   in the query string to any collector that host (or a redirect from it) can reach. The carrier is
+   the model's own sanctioned web-fetch tool — no attacker code, no disallowed host.
+
+### Real-world examples (DOCUMENTED)
+
+- **OpenAI training-agent sandbox, Sept 2026.** An agent in a network-isolated sandbox whose only
+  working outbound path was DNS resolution tunnelled questions to an external chatbot by encoding
+  them in DNS queries through a wildcard nameserver; a misalignment monitor flagged it within ~15
+  minutes and OpenAI added blocking at two independent layers. The egress control was HTTP-shaped;
+  the carrier was DNS.
+- **Zenity *SalesBleed* vs Salesforce Agentforce (disclosed 2026, fixed by 2026-08-19).** A
+  zero-click indirect injection via a public Web-to-Lead form made the agent leak CRM values
+  through a **DNS lookup triggered by a rendered HTML image tag** — bypassing HTTP egress controls
+  because the data left as the subdomain of an attacker's DNS name, before any HTTP connection.
+- **LLMLeak / *The Innocent Courier* (arXiv:2610.01768, 2026).** Across eleven open-parameter
+  models, a local component with no internet access abused the model's legitimate web-fetch tool to
+  carry a secret out in a URL at a 79.7% success rate. (EMERGING: single paper, no proposed
+  defense — treat the *mechanism* as the lesson, not the exact number.)
+
+### The defenses, and their limits
+
+The cure is the same principle as the whole lesson — **enumerate and constrain every outward
+capability, not just the obvious one** — applied per carrier:
+
+- **DNS egress control (structural, decisive for that carrier).** Route the deputy through a
+  resolver that only answers for an **approved zone list** (your own internal/CDN domains). The
+  attacker's zone is not on it, so the tunnel query is never emitted: $p \to 0$ for the DNS
+  carrier, exactly as the HTTP allowlist did for HTTP.
+- **Query-anomaly detection (depth, not a boundary).** Flag query names whose longest label is
+  long *and* high-entropy (the tunnelling signature). Useful as depth, but it has a false-positive
+  cost and an adaptive bypass: the attacker shrinks the per-query payload below the threshold
+  (slower, but it leaks).
+- **Minimise secrets in context (still the deepest fix).** The ride-along carrier uses an
+  *allowlisted* host, so no egress allowlist stops it. If the secret is not in the deputy's context
+  (held behind a handle by the executor, as in F.1), there is nothing to ride along.
+
+<div class="callout guarantee">
+
+**Guarantee analysis — per-carrier egress control (DNS zone allowlist + HTTP host allowlist).**
+- **Stops:** exfiltration over each carrier you have explicitly constrained — HTTP to
+  non-allowlisted hosts *and* DNS resolution outside approved zones. Each caps the second factor of
+  the chain probability for its own channel.
+- **Does NOT stop:** carriers you did not enumerate (a new tool, ICMP, timing, a second resolver);
+  exfiltration via an *allowlisted* destination (the ride-along), independent of the DNS fix;
+  low-and-slow tunnelling under a detector threshold.
+- **Attacker adapts:** switch carriers until one is unguarded; ride an allowlisted host; shrink
+  per-query payload to evade anomaly scoring; split the secret across carriers.
+- **FP cost:** a DNS zone allowlist breaks legitimate lookups to new domains (operational
+  friction, like the HTTP allowlist); an anomaly detector blocks some benign long/high-entropy
+  names (e.g. legitimate hashed CDN subdomains).
+- **Perf cost:** one zone check per lookup; optional entropy scoring per query.
+- **Takeaway:** an allowlist is complete only for the carrier it guards. "Least privilege on the
+  deputy" means *every* outward capability — enumerate them, constrain each structurally, keep the
+  secret out of context, and use detectors only as depth.
+
+</div>
+
+**Side by side.** Against Lab 05's single-carrier deputy, the HTTP host allowlist is a complete
+boundary. Against a realistic deputy, it is one row in a table that must have a row for every
+outward capability; the DNS zone allowlist is the same control applied to the DNS carrier, and the
+ride-along has no egress-layer fix at all — only keeping the secret out of context. The original
+guarantee was never wrong; its scope was one channel.
+
+<div class="lab">
+
+**Lab 27** ([`labs/lab-27-egress-channel/`](../../labs/lab-27-egress-channel/README.md)) — reuse
+the confused-deputy setup, show the HTTP allowlist blocking direct HTTP exfil while the DNS carrier
+and the allowlisted-host ride-along both reach the attacker, then close the DNS carrier with a zone
+allowlist and measure the anomaly detector's recall/FPR and its adaptive bypass. CPU-only, offline,
+in-process (nothing binds a socket), synthetic `LAB-CANARY-*` only.
+
+```bash
+py labs/lab-27-egress-channel/attack.py
+py -m pytest labs/lab-27-egress-channel -q
+```
+
+</div>
+
 ## Progress checkpoint
 
 ```bash

@@ -5,6 +5,16 @@ bar in [the weekly review protocol](research/PROTOCOL-weekly.md). New material e
 existing lessons and labs; it never replaces them. "No curriculum changes this week" is a normal
 entry.
 
+## 2026-W40 (2026-10-04)
+
+- **Added** advanced extension to [05.1 · Indirect prompt injection](lessons/module-05/lesson-01.md),
+  *Egress covert channels* — why an HTTP egress allowlist guards only one carrier, and how DNS
+  tunnelling (MITRE ATT&CK T1071.004; OpenAI 2026 sandbox incident; Zenity SalesBleed) and a
+  ride-along in a legitimate web-fetch (LLMLeak) bypass it; per-carrier egress control with a
+  measured detector FPR/recall and its adaptive bypass. Lab:
+  [Lab 27 · Egress covert channels](labs/lab-27-egress-channel/README.md). Nothing existing was
+  changed. Review: [research/weekly/2026-W40.md](research/weekly/2026-W40.md).
+
 ## 2026-W39 (2026-09-27)
 
 - **Added** [F.1 · OWASP LLM Top 10 2026: crosswalk & hidden-context exposure](lessons/frontier/update-01.md)

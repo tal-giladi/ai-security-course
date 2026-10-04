@@ -5,10 +5,26 @@ Every topic the weekly review has decided on, so nothing is reconsidered without
 
 | Status | Topic | Next review | Course change | Last decision |
 |---|---|---|---|---|
+| ADD | [Egress covert channels around agent egress controls (DNS tunnelling & legitimate-tool carriers)](research/accepted/egress-covert-channels-agent.md) | on new evidence | `lessons/module-05/lesson-01.md` (Advanced extension: egress covert channels, added 2026-10-04); `labs/lab-27-egress-channel/`; `_sidebar.md`; `curriculum/course-outline.md` | 2026-10-04 |
 | ADD | [OWASP LLM Top 10 2026 — crosswalk and Hidden Context Exposure](research/accepted/owasp-llm-top10-2026.md) | n/a | lessons/frontier/update-01.md (new lesson F.1); references/standards-map.md (appended 2026 crosswalk section); curriculum/course-outline.md (appended F.1 line + dependency row); _sidebar.md (Frontier updates section); labs/lab-26-hidden-context/ (shipped 2026-09-27, see below). | 2026-09-27 |
-| WAIT | [DNS as a covert channel around agent egress controls](research/deferred/dns-covert-channel-agent-egress.md) | 2026-10-04 | none | 2026-09-27 |
+| WAIT | [Agent "Skills" as a trust boundary (cross-skill poisoning, approval binding)](research/deferred/skill-trust-boundary.md) | 2026-11-08 | none | 2026-10-04 |
+| WAIT | [Agents defeat runtime oversight under ordinary task/goal pressure](research/deferred/agent-oversight-evasion.md) | 2026-11-08 | none | 2026-10-04 |
+| WAIT | [Autonomous repository-to-runtime agent red-teaming (AgentXploit)](research/deferred/automated-agent-redteaming.md) | 2026-11-22 | none | 2026-10-04 |
+| WAIT | [Backdoored retriever checkpoint hijacks agentic search](research/deferred/malicious-retriever-checkpoint.md) | 2026-11-22 | none | 2026-10-04 |
+| WAIT | [Black-box extraction of memorized credentials from commercial LLMs](research/deferred/llm-credential-memorization-extraction.md) | 2026-11-15 | none | 2026-10-04 |
+| WAIT | [Claim-anchored execution contracts for tool-agent audit trails](research/deferred/execution-audit-provenance.md) | 2026-11-29 | none | 2026-10-04 |
+| WAIT | [Denial-of-wallet via retained/re-billed tool output](research/deferred/agent-denial-of-wallet.md) | 2026-11-22 | none | 2026-10-04 |
+| WAIT | [Deterministic tool-call authorization gates (provenance / typed / stateful)](research/deferred/agent-tool-authorization-gates.md) | 2026-11-15 | none | 2026-10-04 |
+| WAIT | [Image-returning multimodal RAG datastore extraction (ImmRAG)](research/deferred/multimodal-rag-extraction.md) | 2026-11-29 | none | 2026-10-04 |
+| WAIT | [Inference-time / modality injection defenses (activation steering, render-before-reading)](research/deferred/inference-time-injection-defenses.md) | 2026-11-15 | none | 2026-10-04 |
 | WAIT | [Jailbreaks across agent components (SoK)](research/deferred/agentic-jailbreak-taxonomy.md) | 2026-11-22 | none | 2026-09-27 |
+| WAIT | [Keyless steganographic collusion between independently deployed agents (Codetta)](research/deferred/multi-agent-covert-collusion.md) | 2026-11-22 | none | 2026-10-04 |
 | WAIT | [Learned poison-set selection for LLM backdoors (SAILS)](research/deferred/poison-set-selection-backdoors.md) | 2026-11-22 | none | 2026-09-27 |
 | WAIT | [MCP runtime-gated tool-metadata poisoning (Deadbugz)](research/deferred/mcp-runtime-metadata-rug-pull.md) | 2026-10-25 | none | 2026-09-27 |
+| WAIT | [Out-of-band / kernel-level enforcement of agent oversight](research/deferred/out-of-band-oversight-enforcement.md) | 2026-11-08 | none | 2026-10-04 |
+| WAIT | [Proactive over-authorization (non-adversarial excessive agency)](research/deferred/proactive-over-authorization.md) | 2026-11-22 | none | 2026-10-04 |
 | WAIT | [Prompt-injection detector over-defense and distribution shift (PIDS-Bench)](research/deferred/prompt-injection-detector-over-defense.md) | 2026-11-08 | none | 2026-09-27 |
+| WAIT | [Semantic-cache poisoning (embedding-similarity vs answer-validity gap)](research/deferred/semantic-cache-poisoning.md) | 2026-11-22 | none | 2026-10-04 |
+| WAIT | [TOCTOU / state drift for transaction-signing agents (Proof-Gated Signing)](research/deferred/agent-toctou-state-drift.md) | 2026-11-29 | none | 2026-10-04 |
+| WAIT | [Trust-zoned memory for computer-use agents (persistent-memory attack)](research/deferred/trust-zoned-agent-memory.md) | 2026-11-01 | none | 2026-10-04 |
 | REJECT | [CVE-2026-58138 — pre-auth RCE in Orkes Conductor (agent orchestration backend)](research/rejected/orkes-conductor-cve-2026-58138.md) | on new evidence | none | 2026-09-27 |

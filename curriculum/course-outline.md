@@ -137,6 +137,10 @@ Only as much classical security as AI security requires — no generic pentest c
 - **F.1 OWASP LLM Top 10 2026: crosswalk & hidden-context exposure** (added 2026-09-27) — the
   2025→2026 ID crosswalk and LLM08:2026 Hidden Context Exposure measured per context slot.
   Depends on M04, M14, M16, M26. Layer: Current. Lab: pending (reference code in the lesson).
+- **05.1 extension — egress covert channels** (added 2026-10-04) — DNS tunnelling and
+  legitimate-tool ride-along carriers that bypass an HTTP-only egress allowlist; per-carrier egress
+  control, measured detector FPR/recall, adaptive bypass. Appended to lesson 05.1 as an advanced
+  extension; depends on M05, M01. Layer: Current (MITRE ATT&CK T1071.004). Lab: `labs/lab-27-egress-channel`.
 
 ---
 
