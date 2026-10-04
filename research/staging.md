@@ -512,3 +512,24 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** module-14/15 extension or new exercise: build a toy image-returning RAG store, implement the shadow-image-blend + relevance-weighted resampling query strategy, and measure datastore coverage vs. query budget.
 - **Confidence:** medium (single paper, but three distinct realistic scenarios, multiple retriever/generator combinations, and a clear baseline comparison).
 - **Recommendation:** monitor; candidate for a module-14/15 "RAG confidentiality" angle alongside the module's existing poisoning/authorization material at a future weekly review.
+
+### C-20261004-01 · Proof-Gated Signing — SMT-solver-checked transaction guards hold against "state drift" for onchain AI agents, and show LLM reviewers get *less* safe with a clean pre-drift simulation
+
+- **Class:** B
+- **Date discovered:** 2026-10-04
+- **Date published:** 2026-09-30
+- **Source:** https://arxiv.org/abs/2610.00354
+- **Organization/researchers:** Bravish Ghosh (single author). Affiliation not stated on the abstract page.
+- **Category:** agent-security
+- **What changed:** A new instantiation of the course's own recurring TOCTOU pattern (modules 13/17/19: "pin + re-verify, don't trust a snapshot check"), applied to AI agents that sign blockchain transactions. Existing safeguards (allowlists, LLM reviewers, simulations) check a snapshot state, but the transaction executes later, after an adversary may have changed conditions via front-running or contract mutation ("state drift") — and the paper reports that handing an LLM reviewer a clean pre-drift simulation makes it *more* likely to approve a drift attack, not less.
+- **Technical summary:** Proof-Gated Signing simulates the transaction, extracts its effects, and uses SMT solvers to validate policy compliance across oracle-uncertainty ranges, compiling an on-chain post-condition that must hold regardless of state changes between check and execution. Across 260 test scenarios: 93.6% harmful-transaction prevention, 97.5% benign-transaction pass rate, and zero attacker gains across 50 explicit drift scenarios.
+- **Why it might matter:** A concrete, measured defense (both attack-block and benign-utility numbers) for a TOCTOU-style failure the course already teaches as a general pattern but has not seen instantiated against agent-controlled financial transactions, plus a clean counterintuitive teaching point ("a confidence-building simulation can make an LLM safeguard *less* safe") for a `.callout.guarantee` box. Narrow domain (on-chain/wallet agents specifically) and a single-author preprint with no independent validation keep this at B, not A.
+- **Evidence of adoption:** None (single preprint, days old).
+- **Major organizations using it:** none stated.
+- **Open-source implementation:** not stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2610.00354
+- **Code:** none confirmed
+- **Relationship to existing course material:** New domain instantiation of the TOCTOU/pin-and-reverify pattern already taught in `module-13` (artifact swap after hashing), `module-17` and `module-19` (pinning + re-verification, including a TOCTOU bypass exercise). `lookup "Proof-Gated Signing"` / `"state drift transaction"` / `"SMT solver agent"` → no prior matches; new topic, not a duplicate.
+- **Potential course lesson:** module-13/17/19 exercise: add an "agent signs a transaction" variant of the existing TOCTOU lab where the checked state can drift before execution, reproduce the paper's "clean simulation makes the LLM reviewer less cautious" finding, then implement a minimal solver-checked post-condition guard and measure the same block/pass trade-off.
+- **Confidence:** medium (single-author preprint, narrow blockchain-specific domain, but concrete attack-block/benign-pass/zero-attacker-gain numbers across 260+50 scenarios and a generalizable, course-relevant mechanism).
+- **Recommendation:** monitor; revisit for ADD if independently replicated, code is released, or the weekly review wants it as a module-13/17/19 TOCTOU case study regardless (the mechanism and counterintuitive finding are teachable even as a single-paper example).
