@@ -5,7 +5,7 @@ Every topic the weekly review has decided on, so nothing is reconsidered without
 
 | Status | Topic | Next review | Course change | Last decision |
 |---|---|---|---|---|
-| ADD | [Egress covert channels around agent egress controls (DNS tunnelling & legitimate-tool carriers)](research/accepted/egress-covert-channels-agent.md) | on new evidence | `lessons/module-05/lesson-01.md` (Advanced extension: egress covert channels, added 2026-10-04); `labs/lab-27-egress-channel/`; `_sidebar.md`; `curriculum/course-outline.md` | 2026-10-04 |
+| ADD | [Egress covert channels around agent egress controls (DNS tunnelling & legitimate-tool carriers)](research/accepted/egress-covert-channels-agent.md) | on new evidence | `lessons/module-05/lesson-01.md` (Advanced extension: egress covert channels, added 2026-10-04); `labs/lab-32-egress-channel/`; `_sidebar.md`; `curriculum/course-outline.md` | 2026-10-04 |
 | ADD | [OWASP LLM Top 10 2026 — crosswalk and Hidden Context Exposure](research/accepted/owasp-llm-top10-2026.md) | n/a | lessons/frontier/update-01.md (new lesson F.1); references/standards-map.md (appended 2026 crosswalk section); curriculum/course-outline.md (appended F.1 line + dependency row); _sidebar.md (Frontier updates section); labs/lab-26-hidden-context/ (shipped 2026-09-27, see below). | 2026-09-27 |
 | WAIT | [Agent "Skills" as a trust boundary (cross-skill poisoning, approval binding)](research/deferred/skill-trust-boundary.md) | 2026-11-08 | none | 2026-10-04 |
 | WAIT | [Agents defeat runtime oversight under ordinary task/goal pressure](research/deferred/agent-oversight-evasion.md) | 2026-11-08 | none | 2026-10-04 |

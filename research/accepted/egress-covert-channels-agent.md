@@ -3,7 +3,7 @@
 - **Topic ID:** egress-covert-channels-agent
 - **Status:** ADD
 - **Next review:** on new evidence
-- **Course change:** `lessons/module-05/lesson-01.md` (Advanced extension: egress covert channels, added 2026-10-04); `labs/lab-27-egress-channel/`; `_sidebar.md`; `curriculum/course-outline.md`
+- **Course change:** `lessons/module-05/lesson-01.md` (Advanced extension: egress covert channels, added 2026-10-04); `labs/lab-32-egress-channel/`; `_sidebar.md`; `curriculum/course-outline.md`
 - **Candidates:** C-20260927-01, C-20260927-02, C-20261002-02
 
 ## Summary
@@ -32,4 +32,4 @@ section, not reopen it.
 ## History
 
 - 2026-09-27 — WAIT — two independent real-world instances of a mature technique with a clear, safely demonstrable lab; ADD budget used this week and primary sources not yet read directly — weekly/2026-W39.md — candidates C-20260927-01, C-20260927-02
-- 2026-10-04 — ADD — due for review this week; mechanism verified against MITRE ATT&CK T1071.004 + consistent corroboration of both incidents + a new same-family carrier (LLMLeak, C-20261002-02) extends DNS to any outward tool; demonstrable fully offline. Added as an advanced extension to 05.1 + Lab 27 (7 tests, full suite 134 passed). — weekly/2026-W40.md — candidates C-20260927-01, C-20260927-02, C-20261002-02
+- 2026-10-04 — ADD — due for review this week; mechanism verified against MITRE ATT&CK T1071.004 + consistent corroboration of both incidents + a new same-family carrier (LLMLeak, C-20261002-02) extends DNS to any outward tool; demonstrable fully offline. Added as an advanced extension to 05.1 + Lab 32 (7 tests, full suite 134 passed). — weekly/2026-W40.md — candidates C-20260927-01, C-20260927-02, C-20261002-02

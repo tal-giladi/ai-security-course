@@ -399,15 +399,15 @@ guarantee was never wrong; its scope was one channel.
 
 <div class="lab">
 
-**Lab 27** ([`labs/lab-27-egress-channel/`](../../labs/lab-27-egress-channel/README.md)) — reuse
+**Lab 32** ([`labs/lab-32-egress-channel/`](../../labs/lab-32-egress-channel/README.md)) — reuse
 the confused-deputy setup, show the HTTP allowlist blocking direct HTTP exfil while the DNS carrier
 and the allowlisted-host ride-along both reach the attacker, then close the DNS carrier with a zone
 allowlist and measure the anomaly detector's recall/FPR and its adaptive bypass. CPU-only, offline,
 in-process (nothing binds a socket), synthetic `LAB-CANARY-*` only.
 
 ```bash
-py labs/lab-27-egress-channel/attack.py
-py -m pytest labs/lab-27-egress-channel -q
+py labs/lab-32-egress-channel/attack.py
+py -m pytest labs/lab-32-egress-channel -q
 ```
 
 </div>

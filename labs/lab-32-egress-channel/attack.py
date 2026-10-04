@@ -1,7 +1,7 @@
-"""Lab 27 driver — attack -> observe -> detect -> mitigate -> retest -> adapt -> measure.
+"""Lab 32 driver — attack -> observe -> detect -> mitigate -> retest -> adapt -> measure.
 
-Run:  py labs/lab-27-egress-channel/attack.py
-      py -m pytest labs/lab-27-egress-channel -q
+Run:  py labs/lab-32-egress-channel/attack.py
+      py -m pytest labs/lab-32-egress-channel -q
 
 Prints, in order:
   1) an HTTP-only egress allowlist blocks the direct HTTP exfil (the control the course teaches);
@@ -53,7 +53,7 @@ def measure_detector(detector) -> dict:
 
 
 def main() -> None:
-    print("=== Lab 27 · egress covert channels vs an HTTP-only allowlist ===\n")
+    print("=== Lab 32 · egress covert channels vs an HTTP-only allowlist ===\n")
 
     # 1) Baseline: HTTP allowlist blocks the direct HTTP carrier.
     dep, http, dns = scenario()

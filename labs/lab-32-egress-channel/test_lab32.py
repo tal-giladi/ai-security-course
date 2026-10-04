@@ -1,4 +1,4 @@
-"""Lab 27 acceptance tests — the carriers reach the attacker, and each control does exactly what
+"""Lab 32 acceptance tests — the carriers reach the attacker, and each control does exactly what
 its guarantee box in lesson 05.1 (Advanced extension: egress covert channels) says: no more, no
 less. Offline, in-process, synthetic canaries only."""
 import sys

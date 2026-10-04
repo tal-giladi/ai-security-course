@@ -140,7 +140,7 @@ Only as much classical security as AI security requires — no generic pentest c
 - **05.1 extension — egress covert channels** (added 2026-10-04) — DNS tunnelling and
   legitimate-tool ride-along carriers that bypass an HTTP-only egress allowlist; per-carrier egress
   control, measured detector FPR/recall, adaptive bypass. Appended to lesson 05.1 as an advanced
-  extension; depends on M05, M01. Layer: Current (MITRE ATT&CK T1071.004). Lab: `labs/lab-27-egress-channel`.
+  extension; depends on M05, M01. Layer: Current (MITRE ATT&CK T1071.004). Lab: `labs/lab-32-egress-channel`.
 
 ---
 

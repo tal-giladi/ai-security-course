@@ -1,4 +1,4 @@
-"""Lab 27 — Egress covert channels that bypass an HTTP-only egress allowlist.
+"""Lab 32 — Egress covert channels that bypass an HTTP-only egress allowlist.
 
 Intentionally vulnerable, offline, stdlib only, synthetic LAB-CANARY-* markers, NO network I/O.
 Everything here is in-process: the "deputy" (an agent that holds a secret and can act outward),

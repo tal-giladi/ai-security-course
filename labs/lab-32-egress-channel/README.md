@@ -1,4 +1,4 @@
-# Lab 27 — Egress covert channels (DNS & legitimate-tool carriers)
+# Lab 32 — Egress covert channels (DNS & legitimate-tool carriers)
 
 **For:** lesson [05.1 · Indirect prompt injection](../../lessons/module-05/lesson-01.md),
 section *Advanced extension: egress covert channels*. **Time:** ~5 min to run, ~45 min with
@@ -30,8 +30,8 @@ Then you close each carrier and measure what the fix does and does not guarantee
 ## Run
 
 ```bash
-py labs/lab-27-egress-channel/attack.py
-py -m pytest labs/lab-27-egress-channel -q
+py labs/lab-32-egress-channel/attack.py
+py -m pytest labs/lab-32-egress-channel -q
 ```
 
 ## Purple cycle

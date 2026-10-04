@@ -12,7 +12,7 @@ entry.
   tunnelling (MITRE ATT&CK T1071.004; OpenAI 2026 sandbox incident; Zenity SalesBleed) and a
   ride-along in a legitimate web-fetch (LLMLeak) bypass it; per-carrier egress control with a
   measured detector FPR/recall and its adaptive bypass. Lab:
-  [Lab 27 · Egress covert channels](labs/lab-27-egress-channel/README.md). Nothing existing was
+  [Lab 32 · Egress covert channels](labs/lab-32-egress-channel/README.md). Nothing existing was
   changed. Review: [research/weekly/2026-W40.md](research/weekly/2026-W40.md).
 
 ## 2026-W39 (2026-09-27)
