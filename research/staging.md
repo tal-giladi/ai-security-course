@@ -89,3 +89,66 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** Strengthens the case (noted in the deferred file) for a module-24 extension / new "evaluating injection detectors" lesson with a from-scratch detector + a benchmark-transfer lab (train on one agent-benchmark's tool-output distribution, test on another) rather than only a hard-benign-FPR lab.
 - **Confidence:** medium (single-author preprint, but methodologically solid — real detectors including a shipped one, two independent agent benchmarks, and a plausible causal mechanism for the gap).
 - **Recommendation:** fold into the existing `prompt-injection-detector-over-defense` deferred topic at the next weekly review as corroborating evidence rather than opening a new topic file.
+
+### C-20261007-01 · HarnessSecurity: first systematic empirical benchmark of coding-agent harness security mechanisms (Claude Code, Codex CLI, Gemini CLI, gptme, Qwen Code, Copilot)
+
+- **Class:** A
+- **Date discovered:** 2026-10-07
+- **Date published:** 2026-10-06 (v1)
+- **Source:** https://arxiv.org/abs/2610.07639
+- **Organization/researchers:** Zhengyang Zhu, Liming Huang, Runmin Ji, Mingxi Ye, Zihan Zhou, Hanyang Guo, Jingwen Wu, Yuhan Ye, Yuming Feng, Hong-Ning Dai, Zibin Zheng (institutional affiliation not stated on the abstract page — not independently re-verified this run).
+- **Category:** agent-security
+- **What changed:** Coding-agent harnesses (the layer that mediates tool use and authorizes actions for agents like Claude Code, Codex CLI, Gemini CLI, gptme, Qwen Code, GitHub Copilot) ship a grab-bag of built-in security mechanisms whose actual protective effect and utility cost had never been measured systematically across real harnesses. This paper is the first such study.
+- **Technical summary:** Surveys 400 harness-mechanism implementations across six real, widely-used coding-agent harnesses; builds a 23-task benchmark spanning five attack surfaces; runs 2,500 trials recording 81,155 tool calls. Evaluates nine built-in mechanisms (auto-approve, network isolation, read-only mode, command allowlisting, command denylisting, and others not enumerated in the abstract). Headline measured results: ~50% of security mechanisms default to opt-in (off by default); enabling auto-approve raises attack success from 29.2% to 95.6%; network isolation and read-only mode cut attack success but at substantial utility loss; command allowlisting cuts attack success with only a small utility loss, and denylisting with a utility *gain* (both specific numeric utility-loss/gain figures not stated in the abstract excerpt — would need the full PDF).
+- **Why it might matter:** This is exactly the "what it guarantees / what it does NOT guarantee / cost" pattern the course's `.callout.guarantee` box is built around, measured empirically across the actual production harnesses the course's own labs reference (Claude Code appears by name in `lab/agents/agent.py` and `labs/lab-21/`), with a concrete, teachable finding (secure-by-default is the exception, not the rule — half of mechanisms are opt-in) and a real cost/benefit contrast between four mechanism classes (two costly, two cheap).
+- **Evidence of adoption:** Not a vendor claim — independent academic benchmark; the six harnesses tested are themselves in real, wide production use (Claude Code, GitHub Copilot, Gemini CLI, Codex CLI, Qwen Code, gptme), which is adoption evidence for the *systems under test*, not for this specific paper's findings.
+- **Major organizations using it:** n/a (evaluates third-party harnesses from Anthropic, OpenAI, Google, Alibaba, GitHub/Microsoft, and the open-source gptme — does not claim those vendors use this paper's benchmark).
+- **Open-source implementation:** Paper states a project page ("this https URL" on the abstract page) but no GitHub/HuggingFace link resolved from the excerpt fetched this run — treat as unverified until the full PDF or project page is checked directly.
+- **Paper:** https://arxiv.org/abs/2610.07639
+- **Code:** unverified — project link stated on abstract page, not independently confirmed this run
+- **Relationship to existing course material:** Extends `lessons/module-17/lesson-01.md` (tool poisoning), `lessons/module-19/lesson-01.md` (MCP/agent security), `lessons/module-21/lesson-01.md` + `labs/lab-21/` (code-agent security) — the course already has code-agent-security content but no empirical cross-harness measurement of built-in guardrail cost/effect. Adjacent to (but a distinct, broader empirical study than) `research/deferred/skill-trust-boundary.md` (installable-Skills trust boundary / Approval Laundering on Claude Code) — same general cluster (agent-harness authorization security) but a different, harness-mechanism-level question; not a duplicate.
+- **Potential course lesson:** module-21 (or a module-17/19 extension) lab/lesson update: a `.callout.guarantee` table contrasting auto-approve / network isolation / read-only / allowlist / denylist using this paper's measured ASR-and-utility numbers, plus the "~50% opt-in by default" finding as a concrete "secure defaults" teaching point.
+- **Confidence:** medium-high (large-scale empirical study — 2,500 trials, 81,155 tool calls, six real production harnesses — but single preprint one day old, no independent replication yet, and several exact figures only available in the full PDF, not the abstract excerpt this run relied on).
+- **Recommendation:** review for ADD as a module-21 lab/lesson extension once the full PDF's exact per-mechanism utility-cost numbers are confirmed; fetch the full PDF (not just the abstract page) before building a lab around it.
+
+### C-20261007-02 · PersistBD: a released technique to make supply-chain LLM backdoors survive benign SFT+RL post-training in coding agents
+
+- **Class:** B
+- **Date discovered:** 2026-10-07
+- **Date published:** 2026-10-05 (v1)
+- **Source:** https://arxiv.org/abs/2610.07510
+- **Organization/researchers:** Qiusi Zhan, Nian Lyu, Stephanie Ding, Arnav Mehta, Xander Davies, Daniel Kang (UIUC-affiliated code repo namespace `uiuc-kang-lab`; not independently re-verified this run).
+- **Category:** poisoning/backdoor
+- **What changed:** Prior sleeper-agent/backdoor work (course already teaches BadNets → Sleeper Agents in M11/papers) generally assumes the backdoor is evaluated right after insertion. This paper studies whether a supply-chain-planted backdoor in a base model survives a *downstream developer's own* benign SFT + RL adaptation into a software-engineering agent — and shows an attacker can deliberately engineer the planted backdoor to survive that process.
+- **Technical summary:** On Qwen2.5-Coder-7B, plain benign SFT alone sharply degrades a naively-planted backdoor's attack success rate; a subsequent RL stage preserves/sometimes amplifies what SFT left. The paper identifies the two governing factors (initial backdoor strength, gradient compatibility with the benign training signal) and uses them to build PersistBD, which pre-hardens the backdoor before release: attack success rises from 20% → 74% after benign SFT, and 20% → 76% after SFT+RL, while benign task performance stays comparable. Code released: https://github.com/uiuc-kang-lab/PersistBD.
+- **Why it might matter:** A concrete, measured escalation of the supply-chain-backdoor threat model the course already teaches (M11 backdoors, M13 supply chain) specifically for the agent fine-tuning pipeline (SFT→RL) that the course's own training-stage material (module-10/module-11) walks through — i.e. a backdoor surviving the exact pipeline stages the course teaches, with released code.
+- **Evidence of adoption:** None (preprint, days old); not a vendor claim — academic, with released code.
+- **Major organizations using it:** none stated.
+- **Open-source implementation:** https://github.com/uiuc-kang-lab/PersistBD
+- **Paper:** https://arxiv.org/abs/2610.07510
+- **Code:** https://github.com/uiuc-kang-lab/PersistBD
+- **Relationship to existing course material:** Extension of `lessons/module-11/lesson-01.md` (backdoors/sleeper agents, labs/lab-11) and `lessons/module-13/lesson-01.md` (supply chain, labs/lab-13) — new sub-topic (backdoor persistence through a developer's own benign post-training pipeline); `lookup` found no existing registry/course match.
+- **Potential course lesson:** module-11 or module-13 extension/lab: plant a weak vs. PersistBD-hardened backdoor, run benign SFT (+ optionally RL) on a small model, and measure the ASR-survival gap directly — a clean from-scratch numerical demonstration in the course's existing style.
+- **Confidence:** medium (single preprint, no independent replication, but released code and a clear, reproducible numeric result on a real 7B coding model).
+- **Recommendation:** monitor; re-review at the next weekly pass once/if an independent group reproduces the SFT+RL persistence numbers, or fold directly into a module-11 lab extension if the weekly review wants to act on it now given the released code.
+
+### C-20261007-03 · SkillPoison: agent skill-extraction poisoning from only verified-successful, individually-benign experiences (95.71% ASR, evades verification + lexical inspection)
+
+- **Class:** B
+- **Date discovered:** 2026-10-07
+- **Date published:** 2026-10-06 (v1)
+- **Source:** https://arxiv.org/abs/2610.07645
+- **Organization/researchers:** Lizhi Zhang, Xin He, Dianxuan Fu, Yuyuan Feng, Jiatong Li, Qi Wang, Xin Wang, Qinggang Zhang (code repo namespace `DEEP-JLU`; affiliation not independently re-verified this run).
+- **Category:** poisoning/backdoor
+- **What changed:** Prior agent-skill-poisoning attacks inject an identifiably malicious trigger/fact/behavior into an individual experience or extracted skill, so they are catchable by per-experience verification or lexical inspection. This paper shows poisoning can be done with every individual injected experience remaining genuinely task-correct and passing verification — only the *distribution* of experiences (which contextual conditions are present vs. absent) is manipulated, shaping how the skill extractor generalizes a learned behavior beyond its originally safe conditions.
+- **Technical summary:** SkillPoison builds a set of successful, verified-correct experiences that reinforce a target behavior, then removes the contextual conditions that should constrain when that behavior applies, so the self-improving agent's skill extractor generalizes the behavior to unsafe contexts. Across three (unnamed in the abstract excerpt) benchmarks: 95.71% attack success rate, with all injected experiences remaining task-correct and passing both verification and lexical inspection. Code released: https://github.com/DEEP-JLU/SkillPoison. No defense proposed.
+- **Why it might matter:** A structurally different poisoning mechanism than the course's existing BadNets/sleeper-agent trigger model (M11) — no malicious content anywhere in the training signal, so standard per-sample verification/lexical defenses are guaranteed not to catch it by construction. Directly relevant to the course's agent-memory/skills material (module-16 agent surface, module-28 multi-agent) if the course extends into self-improving/skill-distilling agents.
+- **Evidence of adoption:** None (preprint, days old); academic, with released code, not a vendor claim.
+- **Major organizations using it:** none stated.
+- **Open-source implementation:** https://github.com/DEEP-JLU/SkillPoison
+- **Paper:** https://arxiv.org/abs/2610.07645
+- **Code:** https://github.com/DEEP-JLU/SkillPoison
+- **Relationship to existing course material:** New sub-topic adjacent to `lessons/module-11/lesson-01.md` (backdoors — different mechanism: no malicious content in any individual sample) and `lessons/module-16/lesson-01.md` (agent memory/skills surface). `lookup` found no existing registry/course match for "skill poisoning" by this mechanism.
+- **Potential course lesson:** module-11 or module-16/28 extension: a from-scratch toy "skill extractor" that generalizes from a set of individually-correct experiences, showing how removing contextual guards in the training distribution (not content) produces unsafe generalization — paired with why content-only verification structurally cannot catch it.
+- **Confidence:** medium (single preprint, no independent replication, but released code and a clean, reproducible mechanism distinct from existing course content).
+- **Recommendation:** monitor; revisit if self-improving/skill-distilling agents become a bigger part of the course's agent-security track, or if an independent reproduction/defense appears.
