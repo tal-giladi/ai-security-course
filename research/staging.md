@@ -152,3 +152,108 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** module-11 or module-16/28 extension: a from-scratch toy "skill extractor" that generalizes from a set of individually-correct experiences, showing how removing contextual guards in the training distribution (not content) produces unsafe generalization — paired with why content-only verification structurally cannot catch it.
 - **Confidence:** medium (single preprint, no independent replication, but released code and a clean, reproducible mechanism distinct from existing course content).
 - **Recommendation:** monitor; revisit if self-improving/skill-distilling agents become a bigger part of the course's agent-security track, or if an independent reproduction/defense appears.
+
+### C-20261008-01 · PackHallu: prompt-injection in agent "rule files" (AGENTS.md / .cursorrules) drives package-hallucination supply-chain substitution
+
+- **Class:** A
+- **Date discovered:** 2026-10-08
+- **Date published:** 2026-10-07 (v1)
+- **Source:** https://arxiv.org/abs/2610.09264
+- **Organization/researchers:** Yupu Wang, Zhengyuan Jiang, Reachal Wang, Neil Zhenqiang Gong (affiliation not stated on the abstract page; not independently re-verified this run).
+- **Category:** supply-chain (mechanism: prompt-injection)
+- **What changed:** Agentic coding tools widely consume community-shared "rule files" (AGENTS.md, .cursorrules, CLAUDE.md-style files) to steer code generation, exactly the mechanism this course's own repos and `AGENTS.md`/`CLAUDE.md` files use. This paper shows that text injected into an otherwise-benign rule file can make a coding agent silently substitute attacker-controlled package names for legitimate dependencies — a supply-chain attack delivered entirely through prompt injection in a trust-boundary file most teams don't treat as untrusted input.
+- **Technical summary:** Introduces PackHallu, an evolutionary-optimization framework that refines the injected prompt text using trajectory-level feedback and LLM-guided mutations (rather than a single hand-written payload). Evaluated across multiple benchmarks, multiple LLMs, and multiple agent frameworks; the authors report high attack success rates that transfer across model/framework combinations (specific headline ASR numbers are in the full PDF tables, not stated in the fetched abstract text — flagged for the weekly review to pull before building a lab).
+- **Why it might matter:** This is a new, concretely demonstrated instance of exactly the "AI supply-chain attacks / dependency confusion" category the protocol flags, via exactly the "rule file" trust-boundary pattern this course's own CLAUDE.md/AGENTS.md convention (and sibling courses') depends on — exceptionally direct relevance and a natural from-scratch lab (plant an injected rule file, show package substitution, then build a defense: treat rule files as untrusted content / diff-review pipeline).
+- **Evidence of adoption:** None (preprint, 1 day old); not a vendor claim — independent academic work with a named, reproducible attack-optimization framework.
+- **Major organizations using it:** n/a (attacks third-party coding-agent frameworks and rule-file conventions, not any one vendor's product).
+- **Open-source implementation:** Not stated/linked on the abstract page — treat PackHallu's own code as unverified/unreleased until checked directly in the full PDF.
+- **Paper:** https://arxiv.org/abs/2610.09264
+- **Code:** none confirmed
+- **Relationship to existing course material:** Extends `lessons/module-13/lesson-01.md` (supply chain), `lessons/module-17/lesson-01.md` (tool/rule poisoning), `lessons/module-21/lesson-01.md` (code-agent security). `lookup "rule file"` / `"package hallucination"` found no existing registry/course match for this specific mechanism (rule-file-delivered prompt injection → package substitution) — new sub-topic.
+- **Potential course lesson:** module-13 or module-21 lab: plant an injected AGENTS.md/.cursorrules-style rule file in a sandboxed repo, show a toy coding agent substitute a malicious package, then implement a rule-file provenance/diff-review control as the from-scratch defense.
+- **Confidence:** medium (single preprint, 1 day old, no independent replication, and this run could not confirm exact ASR figures or a code release from the abstract page alone) but the mechanism itself is cleanly reproducible and the course's own file conventions make it unusually easy to verify directly.
+- **Recommendation:** review for ADD as a module-13/21 lab extension; fetch the full PDF for exact ASR numbers and check for a code release before building the lab.
+
+### C-20261008-02 · SLDR: layer-selective LoRA recovery + dynamic routing defends against malicious fine-tuning-as-a-service (NeurIPS 2026)
+
+- **Class:** A
+- **Date discovered:** 2026-10-08
+- **Date published:** 2026-10-07 (v1)
+- **Source:** https://arxiv.org/abs/2610.10345
+- **Organization/researchers:** Hui Zhang, Yachao Yuan, Jiayun Wang, Yuanzhuo Li, Hongtao Wang, Yali Yuan (affiliation not stated on the abstract page; not independently re-verified this run). Accepted at **NeurIPS 2026**.
+- **Category:** defense/guardrail
+- **What changed:** Fine-tuning-as-a-service lets a malicious customer weaken an aligned model's refusal behavior while it still performs the advertised downstream task well. Prior layer-wise safety diagnostics are extended here into a deployable post-fine-tuning defense rather than just an analysis.
+- **Technical summary:** The authors show a layer's effect on safety is directional — scaling some layers up strengthens refusals, others weaken them, some have little effect — and use this to build SLDR: a LoRA "recovery" adapter trained only on the highest/lowest-sensitivity layers, activated only for malicious queries via representation-based dynamic routing (so benign downstream task performance is untouched). Tested across four model architectures, five downstream tasks, and four harmful benchmarks. Headline number: on Llama3.1/SST2 the average harmful-output score drops from 11.54 to 0.08 while downstream accuracy is maintained, and the harmful score stays near zero even at a poisoning ratio of 0.9. Code released: https://github.com/Stardust457/SLDR.
+- **Why it might matter:** A peer-reviewed (NeurIPS 2026), code-released, measured defense with an explicit security/utility cost split (near-zero attack success, maintained downstream accuracy, robust to very high poisoning ratios) for a real, named production threat model (fine-tuning-as-a-service abuse) — exactly the `.callout.guarantee`-style "what it guarantees / cost" pattern the course is built around, and a clean from-scratch implementable mechanism (layer-sensitivity probing + gated LoRA adapter).
+- **Evidence of adoption:** Peer-reviewed NeurIPS 2026 acceptance; not a vendor claim. No confirmed production deployment.
+- **Major organizations using it:** none stated.
+- **Open-source implementation:** https://github.com/Stardust457/SLDR
+- **Paper:** https://arxiv.org/abs/2610.10345
+- **Code:** https://github.com/Stardust457/SLDR
+- **Relationship to existing course material:** Extends the malicious-fine-tuning thread already referenced in `lessons/module-11/lesson-01.md` ("connection to malicious fine-tunes/adapters (M13)") and `papers/10-gu-badnets.md`, but the course has no dedicated defense lesson/lab for fine-tuning-as-a-service abuse specifically; `lookup "malicious fine-tuning"` found no dedicated existing lesson/lab — new sub-topic/defense.
+- **Potential course lesson:** module-11 or module-13 extension/lab: reproduce the layer-sensitivity probe on a small open model, implement the gated LoRA recovery adapter from scratch, and measure the harmful-score/utility tradeoff directly, paired with the course's existing backdoor/fine-tune material.
+- **Confidence:** medium-high (major peer-reviewed ML venue, released code, clear quantitative result across multiple architectures/tasks/benchmarks) — no independent replication yet since this is a fresh preprint/camera-ready.
+- **Recommendation:** review for ADD as a module-11/13 defense lab extension once the released code is checked directly.
+
+### C-20261008-03 · Secure-CUA: per-step "action transactions" + masked untrusted regions give computer-use agents a formal security guarantee at near-zero utility cost (vs. CaMeL-CUA's large utility loss)
+
+- **Class:** A
+- **Date discovered:** 2026-10-08
+- **Date published:** 2026-10-07 (v1)
+- **Source:** https://arxiv.org/abs/2610.09469
+- **Organization/researchers:** Sarthak Choudhary, Mihai Christodorescu, Ashish Hooda, Somesh Jha, Tongxin Li, Damien Octeau (affiliation not stated on the abstract page; not independently re-verified this run).
+- **Category:** agent-security (defense)
+- **What changed:** Computer-use agents (CUAs) read screens mixing trusted controls with untrusted content; an adversary can embed hidden instructions or misleading visuals to redirect the agent's action or input target. The course is already tracking (staging `C-20261005-02`) a paper showing the Dual-LLM/CaMeL pattern's *formal* guarantees break down for CUAs via "branch steering," with its own COBRA mitigation. This paper is independent, concurrent work proposing a different mechanism (per-step committed "action transactions" + masking + an isolated query model) for the same formal-guarantee-for-CUAs problem, with a much smaller utility cost than the CaMeL baseline it benchmarks against.
+- **Technical summary:** Defines security requirements for both the agent's decisions and its GUI execution, proves enforcing both at every step protects execution traces in an idealized model, and implements it as Secure-CUA: before touching untrusted content, the agent commits to an explicit per-action "action transaction" (its queries + how answers may be used); untrusted regions are masked, an isolated query model answers the queries, and the target is located on the masked interface; a new transaction each step keeps utility high as interfaces change. Benign evaluation: 400 WebArena tasks, 3 frontier models, 5 seeds, 6,000 traces. Secure-CUA averages 53.55% task success vs. 55.12% for Vanilla-CUA (no guarantee) and only 13.17% for CaMeL-CUA (the existing formal-guarantee baseline) — i.e. a ~1.6-point utility cost vs. CaMeL's ~42-point utility cost for a comparable security guarantee.
+- **Why it might matter:** A measured, large utility-cost improvement over the exact formal-guarantee baseline (CaMeL) the course is already evaluating as a candidate topic, directly strengthening the teaching case for a Dual-LLM/CaMeL-pattern lesson by giving it a much more practical alternative mechanism to contrast against both CaMeL and the already-staged branch-steering attack/COBRA defense.
+- **Evidence of adoption:** None (preprint, 1 day old); no confirmed deployment.
+- **Major organizations using it:** none stated.
+- **Open-source implementation:** none stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2610.09469
+- **Code:** none confirmed
+- **Relationship to existing course material:** Directly adjacent to staging candidate `C-20261005-02` (branch-steering attacks on Dual-LLM/CaMeL for CUAs, COBRA defense) and deferred topic `research/deferred/trust-zoned-agent-memory.md` — same problem cluster (formal security guarantees for computer-use agents), different mechanism (action-transaction + masking vs. trusted-branch-plan + capability constraints). Not a duplicate; the weekly review should consider these together.
+- **Potential course lesson:** Same module-16/18-adjacent Dual-LLM/CaMeL lesson idea already noted for `C-20261005-02`, now with three things to contrast in one `.callout.guarantee` table: Vanilla-CUA (no guarantee, best utility), CaMeL-CUA (formal guarantee, large utility loss), Secure-CUA (formal guarantee, near-vanilla utility) — a clean "cost of a security guarantee" teaching point.
+- **Confidence:** medium-high (concrete large-scale benign-utility benchmark — 6,000 traces — directly comparing against a named existing baseline) but single preprint, no independent replication, and the security-under-attack numbers (vs. only benign utility) were not in the fetched abstract excerpt.
+- **Recommendation:** review for ADD together with `C-20261005-02` as a single Dual-LLM/CaMeL/CUA lesson covering both the branch-steering attack and both proposed defenses (COBRA and Secure-CUA); fetch both full PDFs for the attack-success-rate-under-attack numbers before building the lab.
+
+### C-20261008-04 · Formal runtime verification (MFOTL/MonPoly) of tool-using agent traces: generic policies over-trigger on benign runs; naive provenance checks are defeated by a single planted line
+
+- **Class:** B
+- **Date discovered:** 2026-10-08
+- **Date published:** 2026-10-07 (v1)
+- **Source:** https://arxiv.org/abs/2610.09793
+- **Organization/researchers:** Nikolaos Kekatos, Stylianos Basagiannis, Marinelio Chintri, Alexios Lekidis, Tom Nianios, Ioannis Seitoglou, Anastasios Temperekidis, Panagiotis Katsaros. Accepted at the 8th Workshop on CPS&IoT Security and Privacy (CPSIoTSec '26), co-located with **ACM CCS 2026**, The Hague (DOI 10.1145/3847353.3847499).
+- **Category:** detection/monitoring
+- **What changed:** Evaluates metric first-order temporal logic (MFOTL) policies, run through the unmodified MonPoly monitor, as a runtime-verification layer for tool-using agents — replaying recorded trajectories from AgentDojo, STAC, and R-Judge offline, without running an agent. Measures both detection and false-positive cost, and specifically stress-tests whether provenance-aware policies can be fooled by an attacker who fabricates provenance metadata.
+- **Technical summary:** Five generic safety obligations flag 71.8% of STAC attack chains and 70.1% of successful AgentDojo attacks, but also fire on 29.3% of benign runs — the imprecision traced to the corpora rarely recording approvals/timestamps. Provenance-aware policies discriminate better, but a naive provenance check is defeated by a single planted line in 94–99% of the runs it would otherwise have flagged; binding provenance to the lookup that produced it closes this gap without hurting detection or benign behavior. Proposes a 12-field enforcement-ready trace schema.
+- **Why it might matter:** A peer-reviewed (CPSIoTSec'26 @ CCS), concretely measured instance of exactly the "what it guarantees / what it does NOT guarantee / false-positive cost / how an attacker adapts" pattern the course's `.callout.guarantee` box is built around, and new evidence directly relevant to two existing deferred topics (`agent-tool-authorization-gates`, `execution-audit-provenance`) — specifically the finding that provenance data is itself a target an attacker can spoof, and the concrete fix (binding provenance to its originating lookup).
+- **Evidence of adoption:** Peer-reviewed workshop paper (CCS-colocated); not a vendor claim; no deployment claimed.
+- **Major organizations using it:** none stated.
+- **Open-source implementation:** MonPoly monitor named but not linked on the abstract page; the paper's own schema/policy code not confirmed as released.
+- **Paper:** https://arxiv.org/abs/2610.09793
+- **Code:** none confirmed
+- **Relationship to existing course material:** New evidence for `research/deferred/agent-tool-authorization-gates.md` and `research/deferred/execution-audit-provenance.md` (same problem space — runtime/audit enforcement for tool-using agents — concrete FP-rate and provenance-spoofing-evasion numbers these deferred files did not yet have).
+- **Potential course lesson:** Strengthens the case for a module-16/19 "runtime verification" lesson/lab: implement the five generic MFOTL-style obligations over a toy agent trace, measure the ~30% false-positive rate directly, then implement the provenance-binding fix and show it close the 94–99% evasion gap.
+- **Confidence:** medium (peer-reviewed workshop venue, concrete multi-benchmark numbers, but a workshop rather than a top-tier venue, single paper, no independent replication).
+- **Recommendation:** fold into the existing `agent-tool-authorization-gates` and `execution-audit-provenance` deferred files at the next weekly review as corroborating/quantified evidence rather than opening a new topic.
+
+### C-20261008-05 · WebMirage: localized adversarial-image perturbations hijack web agents end-to-end (grounding → browser execution), 91.9% ASR, defeats 3 existing defenses, code released
+
+- **Class:** B
+- **Date discovered:** 2026-10-08
+- **Date published:** 2026-10-07 (v1)
+- **Source:** https://arxiv.org/abs/2610.09240
+- **Organization/researchers:** Wanjing Han, Levi Taiji Li, Mu Zhang, Yue Jiang, Guanhong Tao (affiliation not stated on the abstract page; not independently re-verified this run).
+- **Category:** multimodal-attack (agent-security)
+- **What changed:** Prior visual red-teaming for web agents targets model inference only (does the VLM produce a bad output), ignoring the structured input processing and action post-processing that actually turn a model output into a browser action — so model-level attack success doesn't demonstrate real control over browser execution. This paper treats it as an end-to-end grounding-to-execution problem.
+- **Technical summary:** WebMirage crafts localized visual perturbations (via role-slot abstraction, webpage recomposition, and dataflow analysis) that make agents select attacker-controlled page content and perform the matching browser action consistently across different page renderings. Across 4 agent configurations, 6 VLM backbones, 2,250 tasks on 13 public websites plus a sandbox benchmark: 91.9% average attack success rate vs. 17.4% for the strongest baseline, and the attack remains effective against three agent-level defenses. Code released: https://github.com/MoonTea0416/WebMirage.
+- **Why it might matter:** A large-scale, code-released, measured multimodal attack directly on the browsing/computer-use agent surface the course already teaches (module-17/18 end-to-end webpage→browser-agent→injection→tool chain) and relevant to the same CaMeL/Secure-CUA cluster noted above (WebMirage explicitly defeats three existing agent-level defenses, which is useful evidence on what current defenses do NOT guarantee against visual/rendering-level attacks specifically, as opposed to the text-injection-level attacks those defenses were designed for).
+- **Evidence of adoption:** None (preprint, 1 day old); academic, with released code, not a vendor claim.
+- **Major organizations using it:** none stated.
+- **Open-source implementation:** https://github.com/MoonTea0416/WebMirage
+- **Paper:** https://arxiv.org/abs/2610.09240
+- **Code:** https://github.com/MoonTea0416/WebMirage
+- **Relationship to existing course material:** Extends `lessons/module-17/lesson-01.md` / `lessons/module-18/lesson-01.md` (webpage→browser-agent→injection→tool→credential chain) with a visual/rendering-level variant of that chain, distinct from the text-injection attacks those lessons currently cover; also adjacent to the CaMeL/Secure-CUA/branch-steering cluster (`C-20261005-02`, `C-20261008-03`) since it reports defeating "three agent-level defenses" without naming which — worth checking in the full PDF whether CaMeL/Secure-CUA-style defenses are among them.
+- **Potential course lesson:** module-17/18 extension: a from-scratch localized-perturbation attack on a toy visual web-agent grounding pipeline, demonstrating that text-level injection defenses (e.g. spotlighting, data-marking) don't catch a purely visual/rendering-level attack.
+- **Confidence:** medium (large benchmark — 2,250 tasks, 13 real websites, 6 VLM backbones — and released code, but single preprint, no independent replication, and the "three defenses" it defeats are unnamed in the fetched abstract excerpt).
+- **Recommendation:** monitor; re-review at the next weekly pass, and check the full PDF to confirm which three defenses were tested (especially whether CaMeL/Secure-CUA-style architectural defenses were among them, which would directly inform the combined Dual-LLM/CaMeL lesson recommended for `C-20261005-02`/`C-20261008-03`).
