@@ -72,3 +72,11 @@ technique locally so the mapping is concrete, not nominal.
 | **Map** | threat modeling, DFDs, attack surface enumeration (M00–M01) |
 | **Measure** | ASR+CIs, ROC/AUC, robustness, coverage, adaptive evaluation (M24), automated red teaming (M25) |
 | **Manage** | enforced controls, monitoring, audit, incident response (M23); CI regression gating (M24–M25) |
+
+## Weekly-review additions
+
+Rows added by the weekly curriculum review (`research/`); existing tables above are unchanged.
+
+| Framework category | Course lesson | Lab | Added |
+|---|---|---|---|
+| OWASP LLM01:2026 Prompt Injection / LLM03:2026 Excessive Agency — architectural (by-design) mitigation: plan isolation, capability flow control, per-branch bounds for computer-use agents | [17.2](../lessons/module-17/lesson-02.md) | lab-33 | 2026-10-11 |

@@ -5,6 +5,16 @@ bar in [the weekly review protocol](research/PROTOCOL-weekly.md). New material e
 existing lessons and labs; it never replaces them. "No curriculum changes this week" is a normal
 entry.
 
+## 2026-W41 (2026-10-11)
+
+- **Added** new lesson [17.2 · Prompt-injection defense by design: plan isolation, capabilities &
+  branch steering](lessons/module-17/lesson-02.md) — the Dual LLM pattern (what plan isolation
+  guarantees: control-flow integrity), CaMeL-style capability flow control (data-flow bounds, its
+  documented blind spots and measured cost), and branch steering against computer-use agents with
+  per-branch capability constraints, each with ASR *and* utility measured. Lab:
+  [Lab 33 · Capability flow control & branch steering](labs/lab-33-capability-flow/README.md).
+  Nothing existing was changed. Review: [research/weekly/2026-W41.md](research/weekly/2026-W41.md).
+
 ## 2026-W40 (2026-10-04)
 
 - **Added** advanced extension to [05.1 · Indirect prompt injection](lessons/module-05/lesson-01.md),

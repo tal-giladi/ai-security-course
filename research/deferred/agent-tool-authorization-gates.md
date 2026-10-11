@@ -4,7 +4,7 @@
 - **Status:** WAIT
 - **Next review:** 2026-11-15
 - **Course change:** none
-- **Candidates:** C-20260928-02, C-20260930-06, C-20261003-01, C-20261001-04
+- **Candidates:** C-20260928-02, C-20260930-06, C-20261003-01, C-20261001-04, C-20261005-03, C-20261008-04
 
 ## Summary
 
@@ -21,6 +21,9 @@ contrasted. Sapien is the most course-aligned (extends lab-16 + the AgentDojo pa
 - https://arxiv.org/abs/2609.30830 — AGATE. https://arxiv.org/abs/2609.37196 — ToolFence.
 - https://arxiv.org/abs/2610.00797 — Sapien. https://arxiv.org/abs/2609.39450 — ActionGuard.
 
+- https://arxiv.org/abs/2610.02569 — Pincer (Popa/Stoica group): learned per-user "digital twin" permission proxy for coding agents; mechanism-distinct, no headline metric on the abstract page, no code. Added 2026-10-11.
+- https://arxiv.org/abs/2610.09793 — MFOTL/MonPoly runtime verification over AgentDojo/STAC/R-Judge traces (CPSIoTSec '26 @ CCS): generic obligations flag ~70% of attacks but fire on 29.3% of benign runs; naive provenance checks defeated by one planted line in 94–99% of runs; binding provenance to its lookup closes it. Added 2026-10-11.
+
 ## What would change the decision
 
 Released code to verify numbers (none has it), independent replication, or adoption. When one
@@ -30,3 +33,4 @@ guarantee box; do not teach all four.
 ## History
 
 - 2026-10-04 — WAIT — a crowded, overlapping defense theme; all single papers without released code; Sapien is the lead candidate for a future lab-16 extension — weekly/2026-W40.md — candidates C-20260928-02, C-20260930-06, C-20261003-01, C-20261001-04
+- 2026-10-11 — WAIT — two more mechanism-distinct entries (Pincer learned proxy; MFOTL runtime verification with measured 29.3% benign FPR) — the theme stays crowded and unreplicated; note the new 17.2 (capability flow control) now covers the structural core, so a future ADD here must add measured gate/approval-fatigue evidence beyond it — weekly/2026-W41.md — candidates C-20261005-03, C-20261008-04

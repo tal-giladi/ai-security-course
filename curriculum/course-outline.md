@@ -141,6 +141,12 @@ Only as much classical security as AI security requires — no generic pentest c
   legitimate-tool ride-along carriers that bypass an HTTP-only egress allowlist; per-carrier egress
   control, measured detector FPR/recall, adaptive bypass. Appended to lesson 05.1 as an advanced
   extension; depends on M05, M01. Layer: Current (MITRE ATT&CK T1071.004). Lab: `labs/lab-32-egress-channel`.
+- **17.2 Prompt-injection defense by design: plan isolation, capabilities & branch steering**
+  (added 2026-10-11) — the Dual LLM pattern and CaMeL-style capability flow control (what each
+  provably guarantees, what it does not, measured cost), then branch steering against computer-use
+  agents and per-branch capability constraints. New lesson in M17; depends on M05, M16, M17.1.
+  Layer: Current (Dual LLM, CaMeL) → Emerging (branch steering, COBRA, Secure-CUA). Lab:
+  `labs/lab-33-capability-flow`.
 
 ---
 
@@ -176,6 +182,7 @@ Only as much classical security as AI security requires — no generic pentest c
 | M25 Automated red teaming | M08, M24 | Current | `lab/attack-tools` |
 | M26 Synthesis & standards | all | Current | `projects/` |
 | F.1 OWASP 2026 crosswalk & hidden context | M04, M14, M16, M26 | Current | pending (in-lesson reference code) |
+| 17.2 Injection defense by design (plan isolation, capabilities, branch steering) | M05, M16, M17 | Current→Emerging | `labs/lab-33-capability-flow` |
 
 *"sibling"* = provided by the LLM Research Engineer course; see `prerequisite-map.md`.
 

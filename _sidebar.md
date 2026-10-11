@@ -52,6 +52,7 @@
   - [16.1 · The agent attack surface](lessons/module-16/lesson-01.md)
   - [16.2 · Agent memory poisoning & stealth](lessons/module-16/lesson-02.md)
   - [17.1 · Tool poisoning & abuse](lessons/module-17/lesson-01.md)
+  - [17.2 · Injection defense by design: plan isolation, capabilities & branch steering](lessons/module-17/lesson-02.md)
   - [18.1 · End-to-end attack chains](lessons/module-18/lesson-01.md)
 - **19 · MCP security**
   - [19.1 · MCP security](lessons/module-19/lesson-01.md)
@@ -120,6 +121,7 @@
   - [Lab 30 · AI infrastructure exploits](labs/module-30/README.md)
   - [Lab 31 · Capstone engagement range](labs/module-31/README.md)
   - [Lab 32 · Egress covert channels (05.1)](labs/lab-32-egress-channel/README.md)
+  - [Lab 33 · Capability flow control & branch steering (17.2)](labs/lab-33-capability-flow/README.md)
 
 - **Reference**
   - [Standards map: OWASP / ATLAS / NIST](references/standards-map.md)
