@@ -89,3 +89,66 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** Possible M28 (multi-agent systems) extension: a toy RL loop with a cheatable automated evaluator and 2-3 small agents sharing a plan/memory channel, measuring whether a seeded reward-hacking strategy in one agent propagates to the others, and whether adding a review step reduces delivered hacks — mirrors the course's existing "implement the mechanism, then the defense" pattern.
 - **Confidence:** low-medium (novel mechanism, multi-backbone evaluation, stated theoretical backing, but no quantitative figures visible without the full PDF, unknown author affiliations, and no independent replication).
 - **Recommendation:** monitor; read the full PDF before next review to extract the actual propagation/ASR numbers and check whether the theoretical analysis and empirical claims hold up outside the four tested backbones.
+### C-20261013-01 · VEPA: verified, evolving formal guardrail policies close the gap between static formal guardrails and inconsistent adaptive ones for LLM agents
+
+- **Class:** A
+- **Date discovered:** 2026-10-13
+- **Date published:** 2026-10-08
+- **Source:** https://arxiv.org/abs/2610.12813 (verified resolves; v1, Thu 8 Oct 2026 23:49:50 UTC)
+- **Organization/researchers:** Duy Nguyen, Lesly Miculicich, Bhavana Dalvi Mishra, Shuo Li, Krishnamurthy Dj Dvijotham, Mohit Bansal, Tomas Pfister, Long T. Le — Google Cloud AI Research and Google DeepMind (Mohit Bansal: UNC Chapel Hill)
+- **Category:** defense/guardrail
+- **What changed:** The course already contrasts static/formal guardrails with adaptive LLM-judged ones nowhere explicitly; VEPA is the first mechanism found this week that makes the formal/adaptive trade-off itself the research object and proposes a concrete third option: a guardrail represented as executable symbolic rules over typed agent events, where an LLM proposes *patches* from deployment feedback but a deterministic verifier admits only structurally valid, conflict-free policies, and an evidence-aware layer only activates a new rule once enough evidence has accumulated for it.
+- **Technical summary:** Runtime guardrail = formal policy (symbolic rules over typed agent events) rather than a learned classifier. Loop: (1) LLM proposes a policy patch from recent deployment feedback/incidents, (2) a deterministic verifier rejects patches that are structurally invalid or conflict with existing rules, (3) an "evidence-aware" gate withholds activation of an admitted rule until it has accumulated sufficient supporting evidence (so one noisy incident can't flip a policy). Evaluated against AGrail and LiSA baselines on three **pre-existing** benchmarks (ASSEBench-Safety / ASSEBench-Security from Luo et al. 2025's AgentAuditor, and ATBench from Li et al. 2026) — not self-constructed benchmarks. Reported: final-round F1 0.81 (ASSEBench-Safety, +0.02 over best baseline) and 0.76 (ATBench, +0.09); mixed-stream F1 ≈0.86 vs 0.78 (AGrail)/0.80 (LiSA); 10%-label-flip noisy-feedback F1 ≈0.81 vs 0.77/0.76; 20-round-horizon F1 ≈0.87 vs 0.83/0.79. Ablations with measured cost: removing the verifier costs 0.13 F1, removing greedy search costs 0.04, removing the evidence/authority gate costs 0.03 — i.e. the paper reports what each safety mechanism is worth and what breaks without it, matching this course's `.callout.guarantee` pattern directly.
+- **Why it might matter:** Directly addresses the course's core recurring theme — guarantee / no-guarantee / adaptation / cost — for the specific, practical problem of a guardrail that must change after deployment without becoming either frozen (formal) or inconsistent (adaptive LLM judge). Agents with sensitive-resource access are exactly this course's module-16/17 scope.
+- **Evidence of adoption:** None; research paper only, no stated production deployment.
+- **Major organizations using it:** None stated as users; authored by Google Cloud AI Research / Google DeepMind researchers, not announced as a shipped Google product feature.
+- **Open-source implementation:** None found — no GitHub/code link on the arXiv abstract or HTML page.
+- **Paper:** https://arxiv.org/abs/2610.12813
+- **Code:** none
+- **Relationship to existing course material:** New. Closest existing material is `lessons/module-17/lesson-02.md` (injection defense by design: plan isolation, capability flow, branch steering) and the deferred `research/deferred/guardrail-stack-bypass.md` (which is about *attacking* multi-scanner guardrail stacks) and `research/deferred/prompt-injection-detector-over-defense.md` (detector false-positive cost) — VEPA is a defense-side complement to both: a guardrail mechanism explicitly designed to be updated safely over an agent's lifetime.
+- **Potential course lesson:** Module 17 extension (17.2/new 17.3) — "lifelong, verified guardrail policies" — fits the existing `.callout.guarantee` template (verifier = guarantee of structural/conflict validity; evidence gate = guarantee against single-incident policy flips; neither guarantees correctness of the underlying rules themselves).
+- **Confidence:** medium (single paper, no code, no independent replication, but from a credible lab, evaluated on three pre-existing third-party benchmarks with ablations)
+- **Recommendation:** Review for ADD as a module-17 extension (same treatment as the 2026-10-11 capability-flow-injection-defense ADD) once a) code/artifacts are checked for a from-scratch implementation path, b) AGrail/LiSA baseline papers are read to confirm VEPA's comparison is fair.
+
+### C-20261013-02 · HMP-GAE: hypergraph message-passing defense against Byzantine poisoning in federated LLM fine-tuning
+
+- **Class:** B
+- **Date discovered:** 2026-10-13
+- **Date published:** 2026-10-08
+- **Source:** https://arxiv.org/abs/2610.12711 (verified resolves; "Byzantine-Resilient Federated Large Language Model via Hypergraph Message Passing")
+- **Organization/researchers:** Not stated on the abstract page (authors not extracted; affiliation unconfirmed)
+- **Category:** poisoning/backdoor (defense)
+- **What changed:** The course's poisoning/backdoor coverage and `lookup "federated"` both have no federated-learning-specific material. This targets Byzantine participants sending corrupted low-rank updates during federated LLM fine-tuning, aiming at *semantic* corruption (factual resilience) rather than only raw accuracy degradation.
+- **Technical summary:** Low-rank (e.g. LoRA-style) per-agent updates are represented as nodes in a hypergraph so the defense can model relationships among several agents' updates jointly rather than pairwise; iterative hypergraph message passing, combined with historical checkpoints, flags and suppresses updates that are semantically inconsistent with the group, without the server accessing any agent's private local data. Backbones: Qwen-2.5 and Llama-3.2; tasks: AG News and Yahoo! Answers (classification, not generation/agentic). Self-reported results vs. best prior defense: +1.21% global accuracy, −44.08% final-model semantic entropy, −13.34% perplexity; vs. the GAE-only ablation: +1.39% accuracy, −54.5% semantic entropy, −35.5% perplexity.
+- **Why it might matter:** Federated fine-tuning of LLMs (multi-org, privacy-preserving) is a real deployment pattern (healthcare/finance consortia); a measured, LLM-specific Byzantine defense with semantic-level (not just accuracy-level) metrics is a genuine gap-filler if it replicates.
+- **Evidence of adoption:** None stated — academic benchmark only (AG News/Yahoo Answers), no production federated-LLM deployment named.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** None found on the abstract page.
+- **Paper:** https://arxiv.org/abs/2610.12711
+- **Code:** none
+- **Relationship to existing course material:** New sub-topic; nearest existing material is the general poisoning/backdoor coverage (no module number confirmed in this pass) — federated-specific threat model is absent from the course.
+- **Potential course lesson:** Possible narrow extension/aside wherever poisoning/backdoors are taught, flagged as a federated-training-specific variant — premature for a full lesson given single-paper status and a non-agentic classification-only evaluation.
+- **Confidence:** low-medium (single paper, no author/affiliation confirmed, benchmarks are narrow classification tasks rather than agentic/generative, no code)
+- **Recommendation:** Monitor; re-check in 4-6 weeks for a fuller version, author affiliation, or code release before any ADD consideration.
+
+### C-20261013-03 · WaveMark — new evidence for deferred topic `ai-content-watermarking.md`: a measured image-watermarking defense surviving state-of-the-art removal attacks
+
+- **Class:** B
+- **Date discovered:** 2026-10-13
+- **Date published:** 2026-10-09
+- **Source:** https://arxiv.org/abs/2610.12952 (verified resolves; "WaveMark: Robust Wavelet-Domain Image Watermarking for Diffusion Models")
+- **Organization/researchers:** Not confirmed from the abstract page.
+- **Category:** defense/guardrail (content provenance)
+- **What changed:** The deferred topic `research/deferred/ai-content-watermarking.md` (WAIT, next review 2026-10-25) was opened on attack-heavy evidence (ProxyEraseAgent removing image watermarks blind, 94.8% ASR) plus one text-watermark defense (SemField). WaveMark is new evidence on the **defense** side specifically for diffusion-model images: it embeds a watermark in the initial noise, encoded via wavelet-domain magnitude projection across spatial/orientation/scale "carriers," and reports 100% bit accuracy with no attack and over 88% bit accuracy under MarkNull/MarkNull-A — the same class of removal attack the deferred topic's ProxyEraseAgent evidence targets — beating all evaluated baselines.
+- **Technical summary:** See above; evaluated with Stable Diffusion 2.1 on SDP and MS-COCO Captions under 14 attacks total.
+- **Why it might matter:** If this measured robustness against modern removal attacks holds up, it changes the attack/defense balance the deferred topic is tracking (ProxyEraseAgent's 94.8% removal number was against *existing* watermarking systems, not against WaveMark).
+- **Evidence of adoption:** None — research paper only.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** None found (no repo link on the abstract/paper page beyond generic third-party aggregators).
+- **Paper:** https://arxiv.org/abs/2610.12952
+- **Code:** none
+- **Relationship to existing course material:** Updates `research/deferred/ai-content-watermarking.md` (adds a defense-side, image-modality data point; that topic's scope decision — anchor on foundational literature like SynthID/C2PA/Kirchenbauer et al. — still stands and is unaffected).
+- **Potential course lesson:** Same as the deferred topic's existing note — no change to placement recommendation.
+- **Confidence:** medium (single paper, no code, but concrete numbers against named SOTA attacks on a standard diffusion backbone)
+- **Recommendation:** Fold into the existing deferred topic's evidence list for its 2026-10-25 re-review; does not independently warrant a new topic file.
+
