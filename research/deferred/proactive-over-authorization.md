@@ -27,3 +27,4 @@ Independent replication. Could pair with agent-oversight-evasion as two distinct
 ## History
 
 - 2026-10-04 — WAIT — real benchmark and a clean non-adversarial framing, but single paper and the mitigation's utility cost isn't quantified — weekly/2026-W40.md — candidates C-20261002-03
+- 2026-10-18 — WAIT — its adversarial counterpart arrived (ASU: effect binding + trusted rendering for agent step-up authorization, Tamarin-proved, 10-runtime audit, released code) — strong and teachable but single preprint with authors' own caveats (flooding still 45–60%, second device adds nothing); keep 2026-11-22 and pair ASU with this topic's non-adversarial OverAct framing at ADD time — weekly/2026-W42.md — candidates C-20261016-03

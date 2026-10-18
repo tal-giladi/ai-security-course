@@ -147,6 +147,13 @@ Only as much classical security as AI security requires — no generic pentest c
   agents and per-branch capability constraints. New lesson in M17; depends on M05, M16, M17.1.
   Layer: Current (Dual LLM, CaMeL) → Emerging (branch steering, COBRA, Secure-CUA). Lab:
   `labs/lab-33-capability-flow`.
+- **22.2 Agent skills as a supply-chain trust boundary** (added 2026-10-18) — an installed skill
+  (metadata + `SKILL.md` prose + bundled scripts) is a new node in the 22.1 graph whose payload can
+  be authentic: prose, a cache≠source gap, an under-declared capability, or a cross-skill artifact.
+  Adds, on top of the 22.1 gate, a scanner, checked-hash loading, capability enforcement and
+  cross-skill provenance, each with its guarantee/FP/perf cost. New lesson in M22; depends on M22.1,
+  M17.1, M16.2, M13. Layer: Current (marketplace base-rate) → Emerging (cache/cross-skill attacks).
+  Maps to OWASP LLM04:2026. Lab: `labs/lab-34-skill-supply-chain`.
 
 ---
 
@@ -183,6 +190,7 @@ Only as much classical security as AI security requires — no generic pentest c
 | M26 Synthesis & standards | all | Current | `projects/` |
 | F.1 OWASP 2026 crosswalk & hidden context | M04, M14, M16, M26 | Current | pending (in-lesson reference code) |
 | 17.2 Injection defense by design (plan isolation, capabilities, branch steering) | M05, M16, M17 | Current→Emerging | `labs/lab-33-capability-flow` |
+| 22.2 Agent skills as a supply-chain trust boundary | M22.1, M17.1, M16.2, M13 | Current→Emerging | `labs/lab-34-skill-supply-chain` |
 
 *"sibling"* = provided by the LLM Research Engineer course; see `prerequisite-map.md`.
 

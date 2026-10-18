@@ -5,6 +5,19 @@ bar in [the weekly review protocol](research/PROTOCOL-weekly.md). New material e
 existing lessons and labs; it never replaces them. "No curriculum changes this week" is a normal
 entry.
 
+## 2026-W42 (2026-10-18)
+
+- **Added** new lesson [22.2 · Agent skills as a supply-chain trust boundary](lessons/module-22/lesson-02.md)
+  — an installed agent skill (metadata + `SKILL.md` prose + bundled scripts) is a new, authentic-but-
+  unsafe node in the 22.1 supply-chain graph. Four payload placements the verification gate passes
+  (prose; a bundled cache that differs from the inspected source; an under-declared capability; a
+  value handed off between two in-scope skills), and the structural controls that close each — a
+  scanner, checked-hash loading, runtime capability enforcement, and cross-skill provenance — with ASR
+  *and* utility measured at every layer and the provenance false-positive cost shown explicitly. Maps
+  to OWASP LLM04:2026 Supply Chain. Lab:
+  [Lab 34 · Agent skills as a supply-chain trust boundary](labs/lab-34-skill-supply-chain/README.md).
+  Nothing existing was changed. Review: [research/weekly/2026-W42.md](research/weekly/2026-W42.md).
+
 ## 2026-W41 (2026-10-11)
 
 - **Added** new lesson [17.2 · Prompt-injection defense by design: plan isolation, capabilities &

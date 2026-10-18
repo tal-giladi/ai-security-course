@@ -29,3 +29,4 @@ Released code or independent reproduction. Candidate for an M19/M22 provenance l
 
 - 2026-10-04 — WAIT — rigorous ablated integrity mechanism, but single paper, no code, authors unstated — weekly/2026-W40.md — candidates C-20261003-02
 - 2026-10-11 — WAIT — corroborating peer-reviewed workshop evidence that provenance must be bound to its origin, but still no code and no independent replication of the original contract mechanism — weekly/2026-W41.md — candidates C-20261008-04
+- 2026-10-18 — WAIT — two more independent groups (ExecWeave local-first typed execution graph; Matoi reusable consequence-evidence contract) converge on the same gap within ~6 weeks, strengthening but not resolving it; both single preprints, Matoi synthetic-tools-only and self-described as not production-ready, ExecWeave no attack-resistance numbers; keep 2026-11-29 — weekly/2026-W42.md — candidates C-20261016-10

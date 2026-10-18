@@ -24,3 +24,4 @@ A scope decision first: a lesson should be anchored on the FOUNDATIONAL, deploye
 ## History
 
 - 2026-10-11 — WAIT — a genuine coverage gap, but this week's evidence is three fresh preprints; an ADD should be built on the verified foundational literature and needs a placement/scope decision (M20 extension vs frontier update) — weekly/2026-W41.md — candidates C-20261010-03, C-20261011-01
+- 2026-10-18 — WAIT — four more preprints this week (WaveMark image robustness; TI-WM tokenizer-invariant text, with numbers; CamoMark watermark survival under Byzantine aggregation; PinIt key-free multi-bit message displacement, code released) deepen both attack and defense sides but do not change the scope decision; still to be built on verified foundational literature; next review 2026-10-25 as scheduled — weekly/2026-W42.md — candidates C-20261013-03, C-20261014-07, C-20261014-08, C-20261015-16

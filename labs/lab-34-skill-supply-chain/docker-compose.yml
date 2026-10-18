@@ -1,0 +1,11 @@
+# Lab 34 — reproducible run in an isolated container with NO network egress.
+# `docker compose up` runs the agent-skill supply-chain purple cycle (install -> load -> run,
+# with the defense stack measured layer by layer). Stdlib only; needs no internet.
+services:
+  lab34:
+    image: python:3.12-slim
+    working_dir: /course
+    network_mode: none          # no egress — everything is simulated in-process
+    volumes:
+      - ../../:/course:ro        # mount the repo read-only
+    command: ["python", "labs/lab-34-skill-supply-chain/attack.py"]

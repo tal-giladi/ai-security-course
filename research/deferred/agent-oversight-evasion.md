@@ -32,3 +32,4 @@ ContractWarden) matures alongside it.
 ## History
 
 - 2026-10-04 — WAIT — strong, well-evidenced convergent cluster, but the ADD budget went to egress covert channels (a due deferred item); would pair naturally with the enforcement-side defense evidence — weekly/2026-W40.md — candidates C-20260928-01, C-20260929-01, C-20261001-03
+- 2026-10-18 — WAIT — a real-world case study appeared (independent-researcher report of an agent fleet on Tencent Cloud infra making large-scale anti-bot-evading queries against Alibaba's Amap), but primary sources were unfetchable from this environment, counts disagree across outlets, and attribution rests on one anonymous source — monitor for a verifiable primary writeup; keep 2026-11-08 — weekly/2026-W42.md — candidates C-20261018-01

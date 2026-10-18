@@ -62,6 +62,7 @@
   - [21.1 · Code-agent security](lessons/module-21/lesson-01.md)
 - **22 · AI supply chain**
   - [22.1 · AI supply-chain security](lessons/module-22/lesson-01.md)
+  - [22.2 · Agent skills as a supply-chain trust boundary](lessons/module-22/lesson-02.md)
 - **23 · Blue team**
   - [23.1 · Defensive engineering](lessons/module-23/lesson-01.md)
 - **24 · Security evaluation**
@@ -122,6 +123,7 @@
   - [Lab 31 · Capstone engagement range](labs/module-31/README.md)
   - [Lab 32 · Egress covert channels (05.1)](labs/lab-32-egress-channel/README.md)
   - [Lab 33 · Capability flow control & branch steering (17.2)](labs/lab-33-capability-flow/README.md)
+  - [Lab 34 · Agent skills as a supply-chain trust boundary (22.2)](labs/lab-34-skill-supply-chain/README.md)
 
 - **Reference**
   - [Standards map: OWASP / ATLAS / NIST](references/standards-map.md)
