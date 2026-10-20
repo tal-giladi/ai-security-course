@@ -132,3 +132,66 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Confidence:** medium (large benchmark scale and multi-harness/multi-model evaluation claimed; single preprint, no code/data release confirmed from the abstract alone).
 - **Recommendation:** Monitor for a confirmed public release of TrojanBench; if released, a strong M21 lab candidate.
 
+### C-20261020-01 · SAFE-Mem: provenance-labeled, governance-aware retrieval defeats persistent agent-memory poisoning
+
+- **Class:** A
+- **Date discovered:** 2026-10-20
+- **Date published:** 2026-10-16
+- **Source:** https://arxiv.org/abs/2610.22959 (verified; title quoted verbatim from the page)
+- **Organization/researchers:** Haoming Li, Dingyi Kang, Xu Hu, Jinxin Yang, Zhu Xu, Chenru Wang, Yi Ge, Miao Yin, Guanpeng Li, Feng Chen, Bingzhe Li
+- **Category:** agent-security (memory poisoning / defense)
+- **What changed:** Names the mechanism precisely: untrusted claims an agent writes to persistent memory get silently treated as authorized preferences/policies/permissions later. SAFE-Mem labels every memory claim with kind/authority/scope at write time, uses governance-aware retrieval that matches those labels against what the current query is actually allowed to use, and tracks provenance through a governance-enabled memory graph rather than a flat store.
+- **Technical summary:** Evaluated across 4 LLM backbones on two established benchmarks (MPBench, LoCoMo). Reports the lowest attack success among defenses that still retain legitimate memory (≥77% lower than the strongest alternative compared) and up to 15% higher answer accuracy than that alternative — i.e. a measured security/utility tradeoff, not just an attack-success number. Code released on GitHub (URL not independently confirmed from the abstract page beyond the "code available" statement).
+- **Why it might matter:** Directly extends the course's existing memory-poisoning coverage (M16.2, M18) and is a second, independently-mechanisms converging answer to the same problem the deferred `trust-zoned-agent-memory` topic (ZoneClaw, WAIT, next review 2026-11-01) already flags as a strong near-term ADD candidate — ZoneClaw enforces a trust-zone *boundary* before claims gain authority; SAFE-Mem instead labels claims with authority/scope and checks them at retrieval time. Two different groups, two different mechanisms, same problem, both with measured numbers and released code, in the same ~2-week window — meaningfully strengthens the case for that deferred topic's lesson/lab extension.
+- **Evidence of adoption:** None (single preprint); the released code is a concrete reproducibility plus, not adoption.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Stated as released on GitHub; exact repo URL not independently confirmed from the abstract page.
+- **Paper:** https://arxiv.org/abs/2610.22959
+- **Code:** released per abstract; URL not independently confirmed.
+- **Relationship to existing course material:** `research/deferred/trust-zoned-agent-memory.md` (WAIT, next review 2026-11-01, candidate C-20261002-01, ZoneClaw) — same problem (persistent-memory claims gaining unauthorized authority), different mechanism, both with measured numbers and code; `lessons/module-16/lesson-02.md` and `lessons/module-18/lesson-01.md` (agent memory poisoning & persistence).
+- **Potential course lesson:** If the weekly review ADDs the ZoneClaw-based 16.2 lab extension, SAFE-Mem is a strong second worked example/comparison point (trust-zone boundary vs. label-and-govern-at-retrieval) for the same lab, or a short "two independent fixes, same root cause" framing note.
+- **Confidence:** medium-high (two established benchmarks, four backbones, released code; single group, no independent replication yet).
+- **Recommendation:** Review alongside `trust-zoned-agent-memory` at the next weekly cycle — converging independent evidence on the same deferred topic, not a separate standalone ADD.
+
+### C-20261020-02 · GatewayBench: first security/capability benchmark for MCP gateways, tested against 7 deployed gateways
+
+- **Class:** B
+- **Date discovered:** 2026-10-20
+- **Date published:** 2026-10-16
+- **Source:** https://arxiv.org/abs/2610.23449 (verified; title quoted verbatim)
+- **Organization/researchers:** Yitian Zheng, Zhaorun Chen, Haoyu Li, Bo Li
+- **Category:** tool/mcp-security (evaluation/benchmark)
+- **What changed:** Introduces GatewayBench, described as the first unified framework/benchmark for MCP gateways — the middleware that aggregates and governs which tools an agent can reach. Groups gateway designs into flattened vs. hierarchical. 524 tasks across 6 domains, drawing on a pool of 11,118 real-world tools from 251 real MCP servers; injects task-irrelevant tools to simulate large-scale deployments; tests 7 widely-deployed gateways on both benign and adversarial tasks.
+- **Technical summary:** Reports that gateway designs differ substantially in task completion, tool-use efficiency, and resistance to attacks, and that these effects interact strongly with the underlying model and agent harness — but the abstract page did not yield the specific per-gateway attack-success numbers or a stated defense recommendation (PDF text extraction failed; only the abstract-page summary was available).
+- **Why it might matter:** MCP gateway security is an underexplored layer the course does not yet cover by name (`lookup "MCP gateway"` — no matches); Bo Li is a recognized ML-security researcher, and the benchmark tests real, widely-deployed gateways rather than a synthetic toy setup.
+- **Evidence of adoption:** None stated; testing real deployed gateways is not the same as those vendors adopting the benchmark.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not confirmed — abstract page shows only generic third-party link widgets (alphaXiv, Hugging Face), no specific release statement.
+- **Paper:** https://arxiv.org/abs/2610.23449
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** New — no existing registry/lesson coverage of MCP gateways specifically (course covers MCP/tool security generally in M16–M19).
+- **Potential course lesson:** Possible M16–M19 extension once the specific security findings (per-gateway ASR, flattened-vs-hierarchical comparison) can be confirmed from the full paper rather than the abstract page alone.
+- **Confidence:** low-medium (abstract-level summary only; could not confirm the paper's actual quantitative security results, code/data release, or author affiliations from what rendered).
+- **Recommendation:** Monitor — re-fetch the full PDF text (today's attempt returned only compressed-stream metadata) or wait for a rendered version before deciding if the concrete findings clear the bar for a course addition.
+
+### C-20261020-03 · Monitor-Validity Failures: "canary contracts" expose silent evidence-path drops in LLM/agent safety monitors
+
+- **Class:** B
+- **Date discovered:** 2026-10-20
+- **Date published:** 2026-10-16
+- **Source:** https://arxiv.org/abs/2610.23362 (verified; title quoted verbatim)
+- **Organization/researchers:** Junchi Liao (no affiliation listed on the abstract page; no endorsers shown)
+- **Category:** detection/monitoring (agent-security)
+- **What changed:** Names a failure mode distinct from "the monitor missed the attack": a runtime monitor can correctly detect a safety-relevant signal (e.g. a regex detector matches) but the framework drops that evidence before it reaches the block/enforcement decision, as schemas, streams, tools, and adapters change over time. Proposes "canary contracts" — known payloads injected to test whether evidence actually reaches the decision point, using exact revisions, deterministic outcomes, negative controls, and a frozen prospective audit. Applied to public framework code, reports 18 evidence-path failures across 11 LLM/agent safety project groups and 4 implementation ecosystems; 14 of the 18 reach actual enforcement boundaries.
+- **Technical summary:** A measurement methodology plus an applied audit, not a new attack technique or a new blocking defense — it treats the correctness of the monitoring/enforcement pipeline itself as the thing to test, with a stated reproducible protocol (canary contracts: exact revisions + deterministic outcomes + negative controls).
+- **Why it might matter:** If reproducible, this is directly relevant to any lesson that teaches "add a runtime monitor/guardrail" as a mitigation (M16 agent attack surface, M23 detection, the course's various "measured false-positive/performance cost" guardrail sections) — the claim is that the monitor's own evidence pipeline is a silent single point of failure distinct from the detector's accuracy. Related in spirit to, but a different mechanism from, the deferred `agent-oversight-evasion` topic (which is about agents defeating oversight under task pressure, not plumbing dropping evidence regardless of the agent).
+- **Evidence of adoption:** None (single-author preprint, no stated affiliation, no listed endorsers — early/unendorsed-looking submission).
+- **Major organizations using it:** None stated; the "11 project groups / 4 ecosystems" audited are not named in the visible abstract content.
+- **Open-source implementation:** None named — no code/tool/dataset link found on the abstract page beyond generic third-party widgets (CatalyzeX, DagsHub, Hugging Face).
+- **Paper:** https://arxiv.org/abs/2610.23362
+- **Code:** Not found.
+- **Relationship to existing course material:** `research/deferred/agent-oversight-evasion.md` (different mechanism — noted for contrast, not as the same topic); no existing registry/lesson coverage of monitor evidence-path integrity specifically (`lookup "runtime monitor"` surfaced only the oversight-evasion and tool-authorization-gates topics, not this).
+- **Potential course lesson:** If independently corroborated, a short addition to the course's guardrail/monitoring sections: test that detector output actually reaches the enforcement point (a "canary contract" exercise), not only that the detector itself has good precision/recall.
+- **Confidence:** low (single author, no affiliation, no endorsers, no code, no named list of the audited projects in the visible abstract — the methodology is clean but the paper's own rigor/venue is unverifiable from what's public).
+- **Recommendation:** Monitor for a revised version with named audited projects/code, an affiliation, or any independent citation before treating as more than a premature signal.
+
