@@ -343,3 +343,108 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Confidence:** low-medium (single preprint, simulated users rather than real conversations, no code).
 - **Recommendation:** Monitor for code/replication or a real-conversation-data follow-up before considering for ADD.
 
+### C-20261022-01 · PerMIT: machine-checked integrity theorems + scalable community trust for persistent agent memory
+
+- **Class:** B
+- **Date discovered:** 2026-10-22
+- **Date published:** 2026-10-20
+- **Source:** https://arxiv.org/abs/2610.28987 (verified; title quoted verbatim)
+- **Organization/researchers:** Tanqiu Jiang, Min Bai, Sadat Shahriar, Wanyu Du, Sandesh Swamy
+- **Category:** agent-security (memory integrity / formal methods)
+- **What changed:** Proposes PerMIT, a persistent-memory architecture for LLM agents built on two integrity theorems, machine-checked in Lean 4: environment-derived memory can influence a sensitive action only after passing a human/LLM-verifier "gate," and only through what that gate displays — reducing every attack to one auditable confirmation decision. On top of that, confirmations accumulate as community-shared trust: items that gather enough independent endorsements become community-confirmed without re-verification by each new user.
+- **Technical summary:** On the "Trojan Hippo" benchmark, PerMIT shows no observed attack success with self-verification or lightweight verifiers. The authors separately prove and simulate a co-scaling property (more users → lower risk of promoting poisoned content and lower risk of wrongly evicting benign knowledge, without more per-user verification effort); on τ²-bench, communities of up to 90 simulated agents built shared knowledge with no directly-injected memory promoted, and the shared knowledge measurably helped new agents on held-out tasks. No code-release statement found on the abstract page.
+- **Why it might matter:** `research/deferred/trust-zoned-agent-memory.md` is WAIT with next review **2026-11-01** (9 days away) and its "what would change the decision" explicitly asks for independent replication or adoption beyond ZoneClaw. PerMIT is a mechanism-distinct second architecture for the same problem (formally-verified gate + community trust vs. ZoneClaw's hierarchical zones) — not a replication of ZoneClaw, but genuinely independent evidence that the "persistent-memory trust boundary" problem is drawing more than one serious architectural answer.
+- **Evidence of adoption:** None (single preprint); formal verification (Lean 4) and a released-benchmark evaluation are the strength, not deployment.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2610.28987
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** `research/deferred/trust-zoned-agent-memory.md` (WAIT, next review 2026-11-01, candidate C-20261002-01/ZoneClaw) — second, mechanism-distinct defense for the same attack surface; `lessons/module-16/lesson-02.md`, `lessons/module-18/lesson-01.md` (memory poisoning).
+- **Potential course lesson:** If the 2026-11-01 review ADDs this cluster, contrast ZoneClaw's zoning against PerMIT's gate-plus-community-trust as two different answers to "how much authority can environment-derived memory earn" in the same lesson/lab.
+- **Confidence:** medium (formal proofs + benchmark + scaling simulation, but single preprint, no code, no independent validation).
+- **Recommendation:** Flag directly at the `trust-zoned-agent-memory` 2026-11-01 review — timing lines up exactly, and this is a second serious architecture for the same deferred topic.
+
+### C-20261022-02 · Memory injection against deployed ChatGPT, Claude and Gemini: persistent cross-session compromise via personal memory, projects, skills, org instructions and MCP
+
+- **Class:** B
+- **Date discovered:** 2026-10-22
+- **Date published:** 2026-10-20
+- **Source:** https://arxiv.org/abs/2610.28810 (verified; title quoted verbatim: "Combining Long-Term Memory and LLMs Comes at a High Cost: From Prompt Injection to Persistent Compromise")
+- **Organization/researchers:** Pedro H. Barcha Correia, Matheus Azevedo de Sá, Paulo H. Gomes de Senna, Giovanni Mandel Martignago, Victor Takashi Hayashi, Charles Christian Miers, Marcos A. Simplicio Jr.
+- **Category:** agent-security (prompt injection, persistence, privacy)
+- **What changed:** Proposes a general "memory injection" threat model for LLMs with persistent memory, then runs it directly against three deployed commercial services — ChatGPT (Instant 5.3), Claude (Sonnet 4.6) and Gemini (3 Flash) — rather than a research sandbox. Attack surfaces used include personal memories, "projects," installed skills, organization-level instructions and MCP-connected resources.
+- **Technical summary:** Reports that, under their threat model, all NIST attack goals were achievable against every evaluated service, with attacker-controlled content persisting into fresh sessions: persistent disinformation, harmful-content generation and making the model falsely appear offline. For Claude specifically, shared-memory features across an organization let one compromised user's injection spread to and exfiltrate prompts from other users. The authors derive mitigations from their own threat model and report that roughly half are not implemented by the services tested. No code/dataset release stated.
+- **Why it might matter:** Directly on live, deployed major products rather than a lab benchmark — a stronger "implemented in real systems" signal than most single-preprint findings in the registry. Touches four separate registry threads at once: `trust-zoned-agent-memory` (persistence), `skill-trust-boundary` (skills as an injection surface, already ADDed in M22.2), `mcp-filesystem-capability-laundering` (MCP resources), and the general M16/M18 memory-poisoning material — but the specific finding (cross-user compromise via Claude's *shared*-memory feature) is new to all of them.
+- **Evidence of adoption:** None stated as a defense; the attack itself targets currently-deployed production features of three major vendors, which is the notable part.
+- **Major organizations using it:** Not applicable (this is an attack paper against OpenAI, Anthropic and Google products, not a defense those organizations have adopted).
+- **Open-source implementation:** Not stated.
+- **Paper:** https://arxiv.org/abs/2610.28810
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** `research/deferred/trust-zoned-agent-memory.md`, `research/accepted/skill-trust-boundary.md` (M22.2), `research/deferred/mcp-filesystem-capability-laundering.md`; `lessons/module-16/lesson-02.md`, `lessons/module-18/lesson-01.md`.
+- **Potential course lesson:** The cross-user shared-memory exfiltration mechanism (Claude org memory) is a concrete, citable real-product example worth a one-line addition wherever the course teaches multi-tenant leakage (M16/M28) — pending independent confirmation, since vendors have not corroborated this specific finding.
+- **Confidence:** medium (concrete attack against real deployed systems, clear taxonomy via NIST goals; but single preprint, no vendor confirmation, no code).
+- **Recommendation:** Monitor for vendor response/patch or independent reproduction; flag alongside `trust-zoned-agent-memory` and `skill-trust-boundary` at the next weekly review as corroborating real-system evidence for the persistence-and-skills threat model already taught.
+
+### C-20261022-03 · Compaction Laundering: forged user turns survive context-compaction and bypass provenance in production coding-agent harnesses
+
+- **Class:** B
+- **Date discovered:** 2026-10-22
+- **Date published:** 2026-10-21
+- **Source:** https://arxiv.org/abs/2610.29869 (verified; title quoted verbatim)
+- **Organization/researchers:** Arshan Dabirsiaghi (Pixee)
+- **Category:** agent-security (tool/provenance, coding agents)
+- **What changed:** Names "compaction laundering": when a long-running coding agent compresses its context (summarizes, discards the original, carries the summary forward), harnesses that flatten a typed conversation into one plain string (labeling turns as "User:", "Assistant:", etc.) lose message provenance before the summarizer runs — so an attacker who controls any content the agent reads can forge a user turn (e.g. a fake standing approval) that survives compaction and is treated as genuine.
+- **Technical summary:** Across 5 string-flattening harnesses (pi, opencode, Cline, Aider, OpenHands), the forged approval carried into memory 87–100% of the time at context windows up to ~908K tokens; across 4 role-typed harnesses (Codex, Gemini CLI, Qwen Code, Continue) the same attack succeeded 0% of the time, because they never lose message typing. In a live end-to-end run in the pi terminal interface, a laundered approval led the agent to execute an attacker-controlled install script in a sandbox ~50% of the time vs. 0% in a matched clean arm; the same channel can also steer the agent away from a file marked off-limits (potential code-review backdoor concealment). Proposes a code-level provenance check (catches 77% of laundering attempts, demotes 2% of legitimate summary content) and a cheaper fix (escape role labels at the serializer). No code-release or peer-review venue stated.
+- **Why it might matter:** A concrete, deterministic (not prompt-level) trust-boundary bug found by direct testing of 9 named, widely-used open-source coding-agent harnesses — closer to "implemented in major open-source stacks" than most single-preprint findings. Directly extends `research/deferred/execution-audit-provenance.md` (claim-anchored execution contracts) with a specific, measured provenance-loss mechanism and a measured fix.
+- **Evidence of adoption:** None (single-author report); the finding is itself about real, currently-shipped open-source agent harnesses, which is the strength.
+- **Major organizations using it:** Not stated; author affiliated with Pixee (an application-security company), unconfirmed as organizational endorsement.
+- **Open-source implementation:** Not stated.
+- **Paper:** https://arxiv.org/abs/2610.29869
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** `research/deferred/execution-audit-provenance.md` (WAIT, next review 2026-11-29) — directly relevant new evidence (a concrete provenance-destruction mechanism + a measured fix); `lessons/module-16`–`module-18` (tool-calling, memory/context).
+- **Potential course lesson:** A clean, demonstrable M16/M18 lab extension: flatten vs. role-typed context serialization on the same injected-approval scenario, matching the paper's own clean/attack-arm design.
+- **Confidence:** medium (concrete, reproducible-sounding methodology across 9 real harnesses with a measured defense; single author, no code or independent replication yet).
+- **Recommendation:** Flag at the `execution-audit-provenance` review (2026-11-29) and consider pulling forward given the directness of the finding and its fit to an existing course module.
+
+### C-20261022-04 · Correlated Failures of AI Approval Monitors: fail-prone-systems framing for multi-monitor agent approval, tested on frontier models
+
+- **Class:** B
+- **Date discovered:** 2026-10-22
+- **Date published:** 2026-10-21
+- **Source:** https://arxiv.org/abs/2610.29178 (verified; title quoted verbatim)
+- **Organization/researchers:** Luca Zanolini
+- **Category:** agent-security (oversight / monitoring, formal methods)
+- **What changed:** Applies the distributed-systems notion of "fail-prone systems" to ensembles of AI approval monitors that gate a consequential agent action (payment, message, code change): a decision rule is safe if it never lets a bad action through and live if it never blocks a good one. Monitors that share a base model or read a shared poisoned input can fail together, which vote-counting aggregation does not account for.
+- **Technical summary:** Twelve small open-weight monitors tested on payment approval under two pre-registered protocols, plus three closed frontier models (Claude Opus 5.5, GPT-6 Astra, Gemini 4 Argon) and open DeepSeek-V3.2 tested without pre-registration. Every reliable fraud-approval attack worked by compromising a single evidence source and affected only monitors reading that source. Small models and DeepSeek followed injected instructions in their data; the three closed frontier models mostly resisted this (Opus also resisted tailored persuasion). A source-counting (vs. vote-counting) aggregation rule blocked 0.9% of correct payments on held-out data vs. 7.4% for the best vote-counting rule at equal safety. The pre-registered worst-case test still failed once an attack collapsed the approvers onto a single shared source; adding a non-persuadable rule-engine monitor restored safety+liveness against the measured attacks.
+- **Why it might matter:** A genuinely new formal angle (safety/liveness, not just ASR) for multi-monitor oversight, tested against real current frontier models rather than only open-weight stand-ins — relevant to the course's oversight/approval-fatigue clusters.
+- **Evidence of adoption:** None (single preprint); testing against three named closed frontier models is the notable empirical anchor.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not stated.
+- **Paper:** https://arxiv.org/abs/2610.29178
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** `research/deferred/out-of-band-oversight-enforcement.md`, `research/deferred/agent-oversight-evasion.md`, `research/deferred/agent-tool-authorization-gates.md` (approval-based gates) — new evidence/framing for the oversight-monitor sub-theme of these WAIT topics.
+- **Potential course lesson:** The safety/liveness framing and the "count sources, not votes" mitigation are a clean addition wherever the course discusses multi-monitor or multi-reviewer agent oversight.
+- **Confidence:** medium (formal framing + real frontier-model testing; single preprint, no code, mixed pre-registered/non-pre-registered design).
+- **Recommendation:** Monitor alongside the oversight/approval-gate clusters; a good secondary citation once one of those topics is reviewed for ADD.
+
+### C-20261022-05 · CONCERT: detecting and reversing "utility-hijacking" poisoning of instruction-tuning data selectors
+
+- **Class:** B
+- **Date discovered:** 2026-10-22
+- **Date published:** 2026-10-21
+- **Source:** https://arxiv.org/abs/2610.29886 (verified; title quoted verbatim: "Characterizing and Defending Utility-Hijacking in Instruction-Tuning Data Selection")
+- **Organization/researchers:** Yahao Ren, Jian Lou, Huadi Zheng, Jiawei Duan
+- **Category:** poisoning/backdoor (data-selection-time, supply-chain adjacent)
+- **What changed:** Introduces "utility-hijacking": a supplier-side attack on instruction-data *selectors* (models that pick which fine-tuning examples to keep). A generate-and-rerank method creates many payload-bearing candidate records per instruction and submits only the top-scoring one, so top-k selection concentrates poison instead of filtering it out — a different attack surface from poisoning the training data directly.
+- **Technical summary:** Across 3 payload types (over-refusal, false-fact injection, insecure code), 6 selectors, and victims from Qwen2.5-7B to Qwen3-32B: refusal rate raised from 0% to 94%; up to 56/90 generated code samples insecure; false-fact enrichment scaled 2.84x–7.04x with the scoring model's size. Proposed defense CONCERT needs no content detector or poison labels: it flags suppliers selected far more often than chance, re-selects under the same budget keeping only records two dissimilar selectors both rank highly. On Qwen3-32B, CONCERT cut poison concentration from 6.67x to 0x (code) and 3.59x to 0.67x (facts), cut downstream harm 100%/75% respectively, with capability unchanged. No code-release stated.
+- **Why it might matter:** A new, specific mechanism (selector-time poisoning via adaptive reranking) distinct from the registry's existing `backdoor-persistence-and-trigger-variants.md` cluster (post-training survival) — this attacks the data-curation pipeline itself, with a paired, zero-label defense carrying real measured numbers.
+- **Evidence of adoption:** None (single preprint); the defense's label-free design and measured cost are the strength.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not stated.
+- **Paper:** https://arxiv.org/abs/2610.29886
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** `research/deferred/backdoor-persistence-and-trigger-variants.md` (related theme, distinct mechanism); `lessons/module-11/lesson-01.md` (backdoors/poisoning) — no existing registry entry for selector-time/data-curation poisoning specifically; new.
+- **Potential course lesson:** A possible M11 extension: "poisoning the curator, not just the corpus" — the generate-and-rerank mechanism and CONCERT's two-dissimilar-selectors-agree defense are both concrete enough to teach once independently checked.
+- **Confidence:** medium (clean attack+defense pairing with measured numbers across multiple models; single preprint, no code, no independent validation).
+- **Recommendation:** Monitor for code release or independent reproduction; candidate new WAIT topic (data-selector poisoning) rather than folding into the existing backdoor-persistence cluster, since the mechanism is genuinely distinct.
+
