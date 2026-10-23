@@ -448,3 +448,170 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Confidence:** medium (clean attack+defense pairing with measured numbers across multiple models; single preprint, no code, no independent validation).
 - **Recommendation:** Monitor for code release or independent reproduction; candidate new WAIT topic (data-selector poisoning) rather than folding into the existing backdoor-persistence cluster, since the mechanism is genuinely distinct.
 
+### C-20261023-01 · Data-Void Exploits in Web-Searching LLMs
+
+- **Class:** A
+- **Date discovered:** 2026-10-23
+- **Date published:** 2026-10-21
+- **Source:** https://arxiv.org/abs/2610.30365 (verified; title quoted verbatim)
+- **Organization/researchers:** Michele Guerra, Wuyeh Jobe, Sanjana Nambiar, Christina Pöpper, Azza Abouzied
+- **Category:** rag-security (web-search-grounded LLM answers; SEO/content poisoning adjacent)
+- **What changed:** Extends the SEO "data void" exploit (publishing content into search spaces where reliable coverage is thin, so a conspiracy/propaganda narrative becomes the most visible result) to web-searching LLMs, which synthesize a single answer from retrieved pages instead of returning a ranked list the user can evaluate. An attacker who controls even one page can get that page's narrative folded into the model's synthesized answer.
+- **Technical summary:** Tests three LLM web-search products (ChatGPT, Gemini, Sonar Pro/Perplexity) across three user-prompt tones (skeptical, excited, neutral), five known data-void strategies, hosting-domain visibility, and generative-optimization features. Attacker content appears in the synthesized answer in 31% of conditions overall, and a single attacker-controlled page can be enough — no need to dominate the result set the way classic SEO data-void attacks require. Extended version accepted at **NDSS 2027** (DOI 10.14722/ndss.2027.232247), one of the major venues this course's protocol treats as a strong source signal.
+- **Why it might matter:** A new, named attack surface (LLM answer-synthesis amplifies data-void poisoning instead of just surfacing it as one of many links) with a cross-model, cross-tone empirical design and a confirmed major-conference placement (NDSS) — stronger provenance than most single-preprint findings in the registry. Fits the course's RAG/retrieval-attack and agent-web-search material (no existing registry entry for this specific mechanism).
+- **Evidence of adoption:** None as a defense; the finding targets currently-deployed production web-search features of three major vendors (OpenAI, Google, Perplexity), which is the notable part.
+- **Major organizations using it:** Not applicable — attack paper against OpenAI/Google/Perplexity products, not an adopted defense.
+- **Open-source implementation:** Not stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2610.30365
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** No existing registry topic; related to `lessons/module-14` (RAG security) and the web-agent/tool-use modules — new mechanism, not a duplicate of any accepted/deferred/rejected topic.
+- **Potential course lesson:** M14 extension — "data voids as an LLM-search attack surface," contrasting classic SEO data-void manipulation with answer-synthesis amplification; the five-strategy taxonomy and cross-model/tone design are concrete enough to adapt into a lab.
+- **Confidence:** medium-high (NDSS 2027 acceptance, multi-model empirical design with a measured rate; still a single research group, no independent replication yet, no released code/dataset found).
+- **Recommendation:** Review for ADD or a new WAIT topic at the next weekly review — the NDSS placement and concrete, reproducible-sounding methodology clear this course's evidence bar better than most single-preprint B items.
+
+### C-20261023-02 · AgentTriage: a fourth independent, code-released mechanism for claim-anchored agent-execution provenance
+
+- **Class:** A
+- **Date discovered:** 2026-10-23
+- **Date published:** 2026-10-22
+- **Source:** https://arxiv.org/abs/2610.30738 (verified; title quoted verbatim: "AgentTriage: Replayable Security Diagnosis Across Heterogeneous Agent Runtimes")
+- **Organization/researchers:** Jie Ying, Xutao Zhang, Ningyuan Chen, Mengce Zheng, Jun Li, Zhongjie Zhu, Tiantian Zhu
+- **Category:** agent-security (tool/provenance, audit/diagnosis)
+- **What changed:** Proposes an "executable contract for replayable security diagnosis" across heterogeneous agent runtimes: a diagnosis is accepted only if every claim cites canonical runtime events, and the system must abstain when required evidence is missing. Runtime-specific overlays normalize native event logs into a typed provenance graph; a deterministic pipeline (not an LLM judge) binds claims to recorded evidence, so the same trace + overlay version + policy oracle always reproduces the same diagnosis.
+- **Technical summary:** Across 5 runtimes, one contract captured all 159 applicable executions; on 120 adjudicated cases, grounded joint diagnosis scored 0.858, required-evidence coverage 0.966, unsupported-claim rate 0.036, and joint diagnosis improved 0.175 over the strongest same-schema baseline (95% CI [0.092, 0.258]). **Open-source implementation and selected sanitized evidence released**: https://github.com/AsnGs/agenttriage-open-source.
+- **Why it might matter:** `research/deferred/execution-audit-provenance.md` is WAIT (next review 2026-11-29) and its own "What would change the decision" field names exactly this: released code or independent reproduction of a claim-anchored execution contract. AgentTriage is deterministic (not prompt-level), cites runtime evidence the way the deferred topic's original mechanism does, measures its own precision/coverage with a CI, and ships real code — it is the first candidate in that topic's history to clear the stated bar.
+- **Evidence of adoption:** None beyond the authors' own 5-runtime evaluation; the released code is the strength, not deployment elsewhere.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** https://github.com/AsnGs/agenttriage-open-source
+- **Paper:** https://arxiv.org/abs/2610.30738
+- **Code:** https://github.com/AsnGs/agenttriage-open-source
+- **Relationship to existing course material:** `research/deferred/execution-audit-provenance.md` (WAIT, next review 2026-11-29; candidates C-20261003-02, C-20261008-04, plus the 2026-10-18 ExecWeave/Matoi convergence) — directly satisfies that topic's stated reopening condition; also touches `lessons/module-19`/`module-22` (provenance, TrustPolicy) and yesterday's Compaction Laundering finding (C-20261022-03, same general "provenance surviving transformation" theme).
+- **Potential course lesson:** If the `execution-audit-provenance` cluster is ADDed, AgentTriage's released, runnable reference implementation is the most teachable code artifact the topic has produced so far — a natural base for an M19/M22 lab.
+- **Confidence:** medium-high (concrete measured numbers with a confidence interval, real released code, fits a pre-stated reopening condition; still a single preprint, no independent replication of AgentTriage itself yet).
+- **Recommendation:** Flag directly at (or ahead of) the `execution-audit-provenance` 2026-11-29 review — this is the strongest single piece of evidence that topic has received, since it is the first to ship code.
+
+### C-20261023-03 · Agent Mosaic: the "mosaic effect" — agents disclose prohibited composite conclusions assembled from individually-permitted facts
+
+- **Class:** B
+- **Date discovered:** 2026-10-23
+- **Date published:** 2026-10-21
+- **Source:** https://arxiv.org/abs/2610.30418 (verified; title quoted verbatim)
+- **Organization/researchers:** Daniel Ruiz, Luca Luceri, Emilio Ferrara
+- **Category:** agent-security (confidentiality / excessive disclosure, mixed-clearance environments)
+- **What changed:** Names and measures the "mosaic effect": an LLM agent with access to multiple individually-permitted documents infers and states a composite conclusion that is itself sensitive/prohibited, even though no single document it drew from was. This is a semantic-aggregation leak, distinct from per-document access-control bypass or prompt-injection-driven exfiltration.
+- **Technical summary:** 30 synthetic scenarios across cybersecurity, medical, and military settings; 10,800 answers collected from 3 agents in simulation plus 1,440 answers from live agents in two open-source harnesses. With benign, single-document-answerable queries, the best model still disclosed the prohibited composite conclusion in 7.08% of simulated answers (higher in live harnesses). Visible classification headers + explicit aggregation rules lowered but did not eliminate disclosure (32.37% of simulated answers still unsafe). Refusals were not a reliable proxy for confidentiality: many refusals still leaked the prohibited conclusion in the refusal text itself. No code/dataset release stated.
+- **Why it might matter:** A measured, named mechanism for a leak class the course's existing capability-flow/confidentiality material (`lessons/module-17/lesson-02.md`) does not yet cover — that material bounds *data flow* (who may read a message), not *semantic aggregation* (what an agent may infer and state from facts it was each separately allowed to read).
+- **Evidence of adoption:** None (single preprint); the live-harness replication (not just simulation) is the notable empirical anchor.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not stated.
+- **Paper:** https://arxiv.org/abs/2610.30418
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** `research/accepted/capability-flow-injection-defense.md` (M17.2, ADD 2026-10-18) — related theme (confidentiality bounds for agents) but a distinct mechanism (aggregation inference, not flow control) not covered by that lesson; new.
+- **Potential course lesson:** A possible M17 extension or new WAIT topic — "the mosaic effect: confidentiality bounds don't stop inference" — contrasting CaMeL/capability-flow control (which this course already teaches) with the harder, largely-unsolved problem of bounding what an agent may *conclude and state*.
+- **Confidence:** medium (concrete measured numbers across simulation and two live open-source harnesses; single preprint, no code, no independent validation, no proposed defense beyond the partial classification-header mitigation).
+- **Recommendation:** Open a new WAIT topic (mosaic-effect / aggregation-inference disclosure) rather than folding into `capability-flow-injection-defense`, since the mechanism is genuinely distinct from flow control; monitor for a follow-up defense paper.
+
+### C-20261023-04 · GeoTrace / GeoShift: structured-reasoning image geolocation attack and a matched user-side defense
+
+- **Class:** B
+- **Date discovered:** 2026-10-23
+- **Date published:** 2026-10-21
+- **Source:** https://arxiv.org/abs/2610.30439 (verified; title quoted verbatim: "Not Where You Think: Protecting Location Privacy Against Reasoning-Based Geolocation")
+- **Organization/researchers:** Shanghao Shi, Jian Xiao, Hao Li, Yuanhaur Chang, Yevgeniy Vorobeychik, Nathan Jacobs, Neal Patwari, Ning Zhang
+- **Category:** multimodal-attack (privacy; large-reasoning-model visual inference) + defense/guardrail
+- **What changed:** Shows that large reasoning models can localize ordinary photos (no metadata, no landmarks) via coarse-to-fine visual reasoning — broad scene features drive coarse localization, small editable local details drive precise localization. Proposes GeoShift, a defense that edits only the high-impact local clues (keeping stable scene features) to steer the model toward a visually plausible false location, rather than generically blurring or stripping the image.
+- **Technical summary:** 525 ordinary images (natural/urban/residential/human-centered, no landmarks or direct location indicators). Attack (GeoTrace), localization within 1 km: 25.71% (Gemini-3-Flash), 16.95% (GPT-5-mini). After the GeoShift defense, street-level localization success drops to 2.48% (GPT-5-mini) / 3.81% (Gemini-3-Flash); authors report the defense stays effective against adaptive attacks while preserving visual quality (no separate quantified visual-quality cost reported in the abstract). No code/dataset release stated.
+- **Why it might matter:** A new attack class for this course's multimodal-security module (M20) — visual-reasoning-based geolocation, not pixel-space adversarial perturbation or steganography — paired with a defense evaluated specifically against adaptive attackers, which is the kind of "measured cost" defense evidence the protocol asks for.
+- **Evidence of adoption:** None (single preprint).
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not stated.
+- **Paper:** https://arxiv.org/abs/2610.30439
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** `lessons/module-20/lesson-01.md` (multimodal security deep: pixel-space attacks, steganography) — new sub-topic (reasoning-based geolocation), not a duplicate; no existing registry entry.
+- **Potential course lesson:** M20 extension — image privacy against reasoning VLMs, with GeoTrace as the attack demo and GeoShift's "edit only the high-impact local clue" strategy as the paired defense exercise.
+- **Confidence:** medium (concrete attack+defense numbers against adaptive attacks; single preprint, no code, no independent validation, visual-quality cost not quantified).
+- **Recommendation:** Monitor for code release or a follow-up quantifying the visual-quality/utility cost of GeoShift; good secondary citation for M20 once available.
+
+### C-20261023-05 · AgentPhishing: conventional phishing benchmarks don't predict email-agent susceptibility to adapted attacks
+
+- **Class:** B
+- **Date discovered:** 2026-10-23
+- **Date published:** 2026-10-22
+- **Source:** https://arxiv.org/abs/2610.31404 (verified; title quoted verbatim)
+- **Organization/researchers:** Justin Tan, Miao Li, Ding Zhao
+- **Category:** agent-security (tool-using/email agents; social engineering)
+- **What changed:** Argues that an LLM email agent's phishing risk depends on whether it *complies* with an induced action, not just whether it flags a message as malicious — a distinction existing phishing-detection benchmarks don't capture. Introduces AgentPhishing (a benchmark for persuasive-phishing evasion + compliance) and PhishOpt, which optimizes a reusable email-generation "skill" against a specific target agent, then analyzes successful emails via Cialdini's persuasion principles to build a model-agnostic generation skill.
+- **Technical summary:** Nine LLM email agents evaluated; four of the nine combined a phishing-detection rate below 10% with a malicious-request compliance rate above 45%. Agents handled pre-existing/known phishing emails safely but remained vulnerable to attacks adapted to their own behavior via PhishOpt. No code/dataset release stated.
+- **Why it might matter:** A concrete demonstration that agent-specific red-teaming (optimizing against the target agent, not a static phishing corpus) finds real gaps that standard phishing evals miss — directly relevant to the course's agent-security and red-teaming material, and a reusable methodology (PhishOpt) rather than a one-off jailbreak.
+- **Evidence of adoption:** None (single preprint).
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not stated.
+- **Paper:** https://arxiv.org/abs/2610.31404
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** No existing registry entry for agent-targeted adaptive phishing; relates generally to the course's tool-use/agent-security modules and red-teaming material.
+- **Potential course lesson:** A red-teaming lab extension — build/adapt a PhishOpt-style loop against a toy email agent to show why static phishing-detection benchmarks overstate agent safety.
+- **Confidence:** medium (measured compliance numbers across 9 named agents; single preprint, no code, no independent validation).
+- **Recommendation:** Monitor for code release; candidate new WAIT topic (agent-adaptive social engineering) distinct from the course's existing phishing-detection material.
+
+### C-20261023-06 · TokenTrap ("Your Token Is Gone"): imposing inference cost on LLM-based scam systems as a defense
+
+- **Class:** B
+- **Date discovered:** 2026-10-23
+- **Date published:** 2026-10-22
+- **Source:** https://arxiv.org/abs/2610.30666 (verified; title quoted verbatim)
+- **Organization/researchers:** Fudu Xing, Kailong Wang, Tianlong Yu
+- **Category:** defense/guardrail (resource-exhaustion countermeasure against malicious LLM-based systems)
+- **What changed:** Inverts the usual framing: instead of defending an LLM-based agent against cost/denial-of-wallet attacks, TokenTrap is a defender-side tactic to impose inference cost on an attacker's LLM-based scam system (adaptive dialogue/memory/tools/multi-agent), diverting it into low-value, benign computation while withholding real credentials/payment info.
+- **Technical summary:** Three components: a library of token-consuming tasks tailored to the suspected scam system's architecture, a router that classifies the target as single-agent/hierarchical/flat-multi-agent, and a bounded task-presentation strategy (limits on tokens/rounds/time/safety). Over 50-round traces, token consumption was amplified 2,487.0x / 1,616.0x / 567.8x versus a no-task baseline across the three workflow types; router accuracy 85.67% on 300 architecture-labeled prompts. No code/dataset release stated.
+- **Why it might matter:** A genuinely novel, measured defense mechanism in a direction this course's registry does not yet cover — raising attacker cost/latency rather than detecting or blocking content — complementary to (and a mirror image of) the `agent-denial-of-wallet` deferred topic, which is about cost attacks *on* a defender's own agent.
+- **Evidence of adoption:** None (single preprint); the measured amplification factors and router accuracy are the strength.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not stated.
+- **Paper:** https://arxiv.org/abs/2610.30666
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** `research/deferred/agent-denial-of-wallet.md` (related theme, opposite direction — imposing cost vs. being cost-attacked); no existing registry entry for this specific countermeasure.
+- **Potential course lesson:** A blue-team counter-fraud extension — "weaponizing inference cost," pairing with the existing denial-of-wallet material to show the same cost mechanism used offensively and defensively.
+- **Confidence:** medium (concrete amplification/accuracy numbers; single preprint, no code, no independent validation, ethical/legal considerations of actively engaging suspected scam systems not addressed in the abstract).
+- **Recommendation:** Monitor for code release or independent reproduction; candidate new WAIT topic alongside `agent-denial-of-wallet`.
+
+### C-20261023-07 · "Protection Is Not One Event": a measured-endpoint taxonomy and testbed for RAG protection research
+
+- **Class:** B
+- **Date discovered:** 2026-10-23
+- **Date published:** 2026-10-21
+- **Source:** https://arxiv.org/abs/2610.30193 (verified; title quoted verbatim)
+- **Organization/researchers:** Peiyang Liu, Xi Wang, Di Liang, Youru Li, Zhi Cai, Wei Ye
+- **Category:** rag-security (survey/meta-analysis + testbed)
+- **What changed:** A systematic survey of 118 full-text-confirmed RAG defense papers (double-coded by 32 annotators, kappa = 0.867), arguing the field uses incompatible metrics/datasets/threat models because papers are organized by claimed mechanism (reranking, context rewriting) rather than by what outcome is actually measured. Proposes a taxonomy organized by *measured endpoint* instead (named families include content disclosure, formal privacy proxies, access control/suppression, corpus-use detection, pipeline integrity/attribution, plus two more not surfaced in the abstract).
+- **Technical summary:** Key gap findings: few studies use content disclosure/reconstruction as their primary endpoint; copyright-related work almost entirely targets corpus-use detection, not emitted-expression leakage; most evaluations use general QA datasets and non-adaptive attacks rather than sensitive data and adaptive multi-turn extraction. In the authors' own controlled testbed, a normalized 8-gram guard cut 20-token verbatim copying to 0.0%, but a 3-query adaptive attacker still recovered 48.3% of hidden facts on Qwen3-8B — a concrete illustration of the gap the survey argues the field under-measures. Authors state they release the taxonomy, dataset, coding protocols, and testbed (no direct repository link found on the abstract page).
+- **Why it might matter:** A rigorous, released-artifact meta-analysis (not a single attack/defense claim) that directly targets how to *read and compare* RAG defense claims — exactly the kind of "what does this defense actually guarantee" framing this course's non-negotiable pattern (guarantee / does-not-guarantee / attacker adapts / cost) already uses, with its own empirical testbed backing the central claim.
+- **Evidence of adoption:** None stated as deployed; the stated release of taxonomy + dataset + coding protocol + testbed is the strength if it materializes.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Stated as released by the authors; no repository URL found on the abstract page.
+- **Paper:** https://arxiv.org/abs/2610.30193
+- **Code:** Not confirmed (authors claim release; link not located).
+- **Relationship to existing course material:** Relates generally to the course's RAG-security teaching; no existing registry entry for a measured-endpoint taxonomy of RAG defenses specifically.
+- **Potential course lesson:** A strong candidate for strengthening the RAG-security module's existing "how to read a defense claim" framing, using the taxonomy's endpoint families and the verbatim-guard-vs-adaptive-attacker testbed result as a worked example — pending locating the actual released testbed/dataset.
+- **Confidence:** medium (rigorous methodology and a concrete testbed finding; single-group survey, release artifacts not yet located/verified).
+- **Recommendation:** Locate and verify the released taxonomy/dataset/testbed before the weekly review; if the release is real and usable, this is a good candidate for a module-14 teaching-material refresh rather than a new lab.
+
+### C-20261023-08 · Scaling Laws for Safety Probes
+
+- **Class:** B
+- **Date discovered:** 2026-10-23
+- **Date published:** 2026-10-22
+- **Source:** https://arxiv.org/abs/2610.30678 (verified; title quoted verbatim)
+- **Organization/researchers:** Yuchen Wu (University of Washington), Jerry Wei (Anthropic)
+- **Category:** detection/monitoring (safety-probe methodology)
+- **What changed:** Asks whether a safety probe's performance (trained on model activations to monitor for a harm area) can be predicted in advance from model size and label count, instead of discovering it only after retraining for each new model/harm area. Built six new safety-probe datasets (existing ones were too small or saturated) and trained two probe architectures across 20 base models from 5 families, with 32 to 10^6 labels per model.
+- **Technical summary:** Finds two scaling laws: (1) the minimum achievable probe error (1 − AUROC) follows a power law in model size; (2) error falls toward that floor as labels increase, with the rate of improvement growing with model size. Both laws hold across tasks/families/architectures, differing only in fitted constants. Fit on the smallest models in a family, the laws predict the next larger model's error within 0.02 in 72% of cases, and correctly identify whether more labels or a larger model is the cheaper path to a target error in 73% of cases; picking the worse of the two probe architectures via the laws costs only ~0.006 extra error on average. 62 pages, 23 figures, 33 tables.
+- **Why it might matter:** A methodology paper, not an attack or a point defense, but directly actionable for anyone building/maintaining safety-monitoring probes in production: it turns "retrain and hope" into a budgeted decision (more labels vs. a bigger model vs. architecture choice) with quantified prediction accuracy. No existing registry topic addresses probe-scaling methodology.
+- **Evidence of adoption:** None stated (single preprint); co-authorship includes an Anthropic researcher, which the protocol treats as a signal, not a criterion, for adoption.
+- **Major organizations using it:** None stated as adopting; Anthropic co-authored, not confirmed as using the method operationally.
+- **Open-source implementation:** Not stated.
+- **Paper:** https://arxiv.org/abs/2610.30678
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** No existing registry topic on safety-probe scaling/monitoring methodology specifically; relates generally to the course's detection/monitoring material.
+- **Potential course lesson:** A possible new detection/monitoring lesson or lab extension — "budgeting a safety probe," using the two scaling laws to decide label count vs. model size for a target error rate, with the paper's own prediction-accuracy figures as the worked example.
+- **Confidence:** medium (large, carefully scaled empirical study with quantified prediction accuracy; single preprint, no code, no independent replication).
+- **Recommendation:** Monitor for code/dataset release or independent replication; a good candidate new WAIT topic (safety-probe scaling methodology) for the monitoring/detection area of the registry.
