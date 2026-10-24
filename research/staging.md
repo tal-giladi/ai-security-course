@@ -615,3 +615,66 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** A possible new detection/monitoring lesson or lab extension — "budgeting a safety probe," using the two scaling laws to decide label count vs. model size for a target error rate, with the paper's own prediction-accuracy figures as the worked example.
 - **Confidence:** medium (large, carefully scaled empirical study with quantified prediction accuracy; single preprint, no code, no independent replication).
 - **Recommendation:** Monitor for code/dataset release or independent replication; a good candidate new WAIT topic (safety-probe scaling methodology) for the monitoring/detection area of the registry.
+
+### C-20261024-01 · AfterDeleteBench: deleting an LLM agent's memory record does not delete what its descendants (summaries, derived state) carry forward
+
+- **Class:** B
+- **Date discovered:** 2026-10-24
+- **Date published:** 2026-10-22
+- **Source:** https://arxiv.org/abs/2610.31366 (verified; title quoted verbatim)
+- **Organization/researchers:** Ehsan Saleh, Roozbeh Nahavandi, Sama Salarian, Raef Bassily, Andrew Perrault
+- **Category:** agent-security (memory / data-deletion compliance)
+- **What changed:** Many LLM agents keep persistent memory and derive further state from it (summaries, compositions). Deleting the *original* record does not remove information carried by its *descendants*. AfterDeleteBench is a controlled behavioral audit: an exposed-then-deleted agent is compared against an otherwise-matched never-exposed control, so post-deletion recovery can be attributed specifically to the earlier exposure rather than to chance or leakage elsewhere.
+- **Technical summary:** A single query recovers the deleted secret from Qwen2.5-7B-Instruct in roughly two-thirds of cases, vs. zero for matched never-exposed controls. Recovery does not require a surviving verbatim copy: when the full secret string is absent and only separately stored components remain under a public composition rule, exact reconstruction still succeeds in 62–99% of cases across Qwen, Mistral, and Phi-3. The paper also shows the response interface is part of the measurement system (format/parser mismatch can misscore a real leak as a failure), and separates reconstruction from write-back/fresh-session recall. A proposed mitigation, **provenance-aware closure**, eliminates observed recovery in the tested positive-baseline settings; a cheaper **exact-literal write filter** blocks re-insertion of the literal string but cannot erase information already derived and present elsewhere. No code/dataset release stated on the abstract page; no venue stated.
+- **Why it might matter:** A new mechanism the registry has no entry for (`lookup "deletion"` surfaces only unrelated agent-denial-of-wallet/semantic-cache-poisoning deletion mechanics; `lookup "memory persistence"` surfaces only the poisoning-side `trust-zoned-agent-memory` topic, a different problem). This is specifically about *removal*/right-to-delete failing for agent memory systems that derive state from what they're told to forget — directly relevant to the course's memory modules (M16, M18) from a compliance/privacy angle those lessons don't yet cover (they cover poisoning/persistence of *unwanted* content, not failure to erase *wanted-to-be-removed* content), and it ships both a measured attack and a measured, effective mitigation.
+- **Evidence of adoption:** None (single preprint, no deployment claim); the released benchmark design (exposed-vs-control audit methodology) is the strength, not deployment.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2610.31366
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** `lessons/module-16/lesson-02.md`, `lessons/module-18/lesson-01.md` (agent memory poisoning & persistence) — related module, distinct mechanism (deletion/erasure failure, not poisoning); no existing registry topic for post-deletion persistence specifically; new.
+- **Potential course lesson:** A possible M16/M18 extension or new lab exercise: audit whether "delete this memory" actually removes information an agent can still reconstruct from derived state (summaries, write-backs), using the exposed-vs-control design as the measurement pattern, and provenance-aware closure as the paired defense.
+- **Confidence:** medium (concrete measured attack numbers across 3 model families plus a measured, effective mitigation; single preprint, no code, no venue, no independent replication).
+- **Recommendation:** Open a new WAIT topic (agent-memory-deletion-persistence) distinct from `trust-zoned-agent-memory` (that topic is about poisoning/authority, this is about erasure/compliance); monitor for code release or independent replication before a weekly-review ADD.
+
+### C-20261024-02 · LLVMhammer: a Rowhammer bit-flip in the CPU's DRAM degrades GPU LLM-inference performance (and can corrupt outputs) via Triton's JIT compilation pipeline
+
+- **Class:** B
+- **Date discovered:** 2026-10-24
+- **Date published:** 2026-10-22
+- **Source:** https://arxiv.org/abs/2610.30798 (verified; title quoted verbatim: "Amplifying Latency and Cost of LLM Inference via Rowhammer Attack")
+- **Organization/researchers:** Mrityunjay Shukla, Shubham Roy, Biswabandan Panda
+- **Category:** infra-vuln/CVE (hardware fault attack on LLM-serving JIT compilation) / supply-chain adjacent
+- **What changed:** Most LLM-serving stacks compile GPU kernels just-in-time via Triton's MLIR/LLVM pipeline. The paper shows a Rowhammer-induced bit-flip in *CPU* DRAM (not the GPU) can corrupt a performance-critical optimization pass in that pipeline, causing Triton to emit a functionally-identical but slower kernel. Because Triton caches generated kernels on disk, one successful bit-flip causes *persistent* slowdown across every later inference call — and the target-independent compilation stages are shared across GPU vendors, making the mechanism vendor-agnostic.
+- **Technical summary:** Introduces Karnage, a tool that locates exploitable bit-flip sites in Triton's pipeline without manual inspection. Evaluated across Qwen2.5-7B-Instruct, Llama-3.1-8B-Instruct, Mistral-7B-Instruct-v0.3, and Deepseek-llm-7B-chat, on both NVIDIA RTX 4090 and AMD RX 7900 XTX. Reports a 4–16% inference-latency increase on a single-GPU server (stated to compound into real added operating cost at multi-GPU deployment scale), and separately shows the same class of bit-flip can corrupt LLM *outputs* across GPU vendors, reducing BERTScore to as low as 25%. No defense proposed; no code-release statement found on the abstract page; no venue stated.
+- **Why it might matter:** `research.py lookup "rowhammer"` returns no matches — a genuinely new attack surface for this course: a hardware fault-injection attack targeting the *compiler* that nearly every modern LLM-serving stack relies on (Triton underlies vLLM, HuggingFace, and most production inference servers), rather than the model weights, the prompt, or the network boundary this course's existing infra-security material focuses on. Demonstrated end-to-end on real hardware (two GPU vendors, four real open-weight models), not simulated.
+- **Evidence of adoption:** None (single preprint); the cross-vendor, multi-model empirical demonstration on real hardware is the strength, not deployment or adoption.
+- **Major organizations using it:** None stated; targets Triton, which is itself widely adopted across the industry as the de facto GPU-kernel JIT layer for LLM serving — the *target*, not an adopter of the attack.
+- **Open-source implementation:** Not stated.
+- **Paper:** https://arxiv.org/abs/2610.30798
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** No existing registry entry (`lookup "rowhammer"` — no matches). Tangentially related to the course's AI-supply-chain material (`lessons/module-13`, `module-22`) and to production-infra security generally, but this is a distinct mechanism (hardware fault injection into a shared JIT compiler, not a poisoned artifact or a network-reachable endpoint); new.
+- **Potential course lesson:** A possible frontier-update note or M13/M22 extension on hardware-level attacks against the LLM-serving stack itself — "the attack surface below the model" — though a real lab exercise would need actual Rowhammer-capable hardware, a nontrivial reproduction cost worth flagging if this ever reaches ADD.
+- **Confidence:** medium (rigorous-looking, reproducible-sounding methodology with a purpose-built tool, cross-vendor/cross-model real-hardware results; single preprint, no code, no independent replication, no proposed mitigation).
+- **Recommendation:** Open a new WAIT topic (llm-infra-hardware-fault-attacks); monitor for independent replication, a released tool/dataset, or a follow-up proposing a mitigation, before considering for ADD — note the hardware-reproduction cost as a practical constraint for any eventual lab.
+
+### C-20261024-03 · HiMark: hierarchical multi-bit LLM text watermarking — further evidence for the already-WAIT `ai-content-watermarking` topic, reviewing tomorrow (2026-10-25)
+
+- **Class:** B
+- **Date discovered:** 2026-10-24
+- **Date published:** 2026-10-22
+- **Source:** https://arxiv.org/abs/2610.30601 (verified; title quoted verbatim)
+- **Organization/researchers:** Ke Zhu, Yanli Chen, Ling Xiong, Gejian Zhao, Hanzhou Wu
+- **Category:** defense/guardrail (AI-content watermarking / provenance)
+- **What changed:** A hierarchical, controllable multi-bit watermarking framework for LLM-generated text. At embedding time, a hierarchical candidate-control mechanism (initial candidate sampling → layer-wise tournament elimination → support-based refinement → support-threshold filtering) picks which tokens carry which bits; at detection time, a model-agnostic evidence-aggregation mechanism accumulates multi-layer per-token support into robust multi-bit extraction.
+- **Technical summary:** Reports 90.01% watermark-extraction accuracy under a paraphrasing attack when 32 bits are embedded in a 300-token text, while the paper states text quality is maintained — framed as improving the extraction-accuracy/quality trade-off relative to prior multi-bit schemes. No code/dataset release stated on the abstract page; no venue stated.
+- **Why it might matter:** `research/deferred/ai-content-watermarking.md` is WAIT with **next review 2026-10-25 — tomorrow**. Its stated reopening condition is a scope decision (anchor on foundational/deployed literature, e.g. Kirchenbauer et al. 2023 and SynthID, not just a running pile of preprints) rather than more raw evidence volume, so this does not by itself resolve that decision — but it is exactly the kind of same-category multi-bit-watermarking-defense evidence that topic's history already tracks (TI-WM, PinIt, 2026-10-18), so it should be considered alongside them at tomorrow's scheduled review.
+- **Evidence of adoption:** None (single preprint).
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not stated.
+- **Paper:** https://arxiv.org/abs/2610.30601
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** `research/deferred/ai-content-watermarking.md` (WAIT, next review 2026-10-25, candidates C-20261010-03/C-20261011-01 plus the 2026-10-18 TI-WM/PinIt/WaveMark/CamoMark batch) — same topic, additional same-category evidence; no existing lesson coverage of watermarking in the course yet.
+- **Potential course lesson:** None independently; feeds the pending `ai-content-watermarking` scope decision as one more multi-bit-text-watermarking data point, not a standalone lesson candidate.
+- **Confidence:** medium (concrete extraction-accuracy number under a stated attack; single preprint, no code, no venue, no independent validation).
+- **Recommendation:** Add to `ai-content-watermarking`'s evidence list and flag at tomorrow's (2026-10-25) scheduled review — does not change the topic's status by itself (the reopening condition is a scope decision, not more preprints), but should be in the file the reviewer reads.
