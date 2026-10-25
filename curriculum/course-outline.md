@@ -154,6 +154,13 @@ Only as much classical security as AI security requires — no generic pentest c
   cross-skill provenance, each with its guarantee/FP/perf cost. New lesson in M22; depends on M22.1,
   M17.1, M16.2, M13. Layer: Current (marketplace base-rate) → Emerging (cache/cross-skill attacks).
   Maps to OWASP LLM04:2026. Lab: `labs/lab-34-skill-supply-chain`.
+- **F.2 MITRE ATT&CK v20: AI techniques & detecting AI-enabled exfiltration** (added 2026-10-25) —
+  the v20 Enterprise AI techniques (T1698/T1699 prompt injection, T1700 AI-Enabled Exfiltration,
+  T1608.007 AI Result Poisoning) crosswalked to ATLAS/OWASP 2026 and the course's labs; a
+  DET0927-style correlation analytic built, measured (recall per adaptation, FPR, PPV at a base rate),
+  broken by ride-along/encoding/session-split, and hardened with runtime provenance at a measured FP
+  cost. Frontier update; depends on M05, M16, M17.2, M23, M26, F.1. Layer: Current. Lab:
+  `labs/lab-35-attack-ai-detection`.
 
 ---
 
@@ -191,6 +198,7 @@ Only as much classical security as AI security requires — no generic pentest c
 | F.1 OWASP 2026 crosswalk & hidden context | M04, M14, M16, M26 | Current | pending (in-lesson reference code) |
 | 17.2 Injection defense by design (plan isolation, capabilities, branch steering) | M05, M16, M17 | Current→Emerging | `labs/lab-33-capability-flow` |
 | 22.2 Agent skills as a supply-chain trust boundary | M22.1, M17.1, M16.2, M13 | Current→Emerging | `labs/lab-34-skill-supply-chain` |
+| F.2 MITRE ATT&CK v20 AI techniques & AI-enabled exfiltration detection | M05, M16, M17.2, M23, M26, F.1 | Current (T1608.007 research: Emerging) | `labs/lab-35-attack-ai-detection` |
 
 *"sibling"* = provided by the LLM Research Engineer course; see `prerequisite-map.md`.
 

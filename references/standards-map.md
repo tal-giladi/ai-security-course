@@ -81,3 +81,18 @@ Rows added by the weekly curriculum review (`research/`); existing tables above 
 |---|---|---|---|
 | OWASP LLM01:2026 Prompt Injection / LLM03:2026 Excessive Agency — architectural (by-design) mitigation: plan isolation, capability flow control, per-branch bounds for computer-use agents | [17.2](../lessons/module-17/lesson-02.md) | lab-33 | 2026-10-11 |
 | OWASP LLM04:2026 Supply Chain / LLM03:2026 Excessive Agency — agent skills as a supply-chain trust boundary: authentic-but-unsafe skills (prose / cache≠source / under-declared capability / cross-skill artifact); scanner + checked-hash loading + capability enforcement + cross-skill provenance | [22.2](../lessons/module-22/lesson-02.md) | lab-34 | 2026-10-18 |
+| MITRE ATT&CK v20 T1698/T1699 Prompt Injection → T1700 AI-Enabled Exfiltration (+ T1608.007 AI Result Poisoning) — mapping findings to ATT&CK; DET0927-style correlation analytic vs adaptive exfiltration; provenance hardening and its FP cost | [F.2](../lessons/frontier/update-02.md) | lab-35 | 2026-10-25 |
+
+## MITRE ATT&CK v20 — AI techniques (added 2026-10-25)
+
+ATT&CK v20 (released 2026-10-13) added Enterprise techniques that name AI behavior directly. The
+ATLAS table above is unchanged; use ATT&CK IDs when a finding goes to a SOC, ATLAS IDs for the
+AI-specific technique, OWASP 2026 IDs for the weakness. Details, detection lab and guarantee boxes:
+[F.2](../lessons/frontier/update-02.md). IDs verified on attack.mitre.org, 2026-10-25.
+
+| ATT&CK ID | Name | Tactic | ATLAS | OWASP 2026 | Course lesson | Lab | Detection strategy in ATT&CK |
+|---|---|---|---|---|---|---|---|
+| T1699 | Direct Prompt Injection | Execution | AML.T0051.000 | LLM01:2026 | 04.1 | lab-04 | none listed |
+| T1698 | Indirect Prompt Injection | Execution | AML.T0051.001 | LLM01:2026 | 05.1, 06.1 | lab-05, lab-06 | none listed |
+| T1700 | AI-Enabled Exfiltration | Exfiltration | — | LLM02:2026, LLM03:2026 | 05.1 (+ ext.), 18.1, F.2 | lab-05, lab-18, lab-32, lab-35 | DET0927 |
+| T1608.007 | Stage Capabilities: AI Result Poisoning | Resource Development | — | LLM07:2026 | 14.1 (by analogy), F.2 | — | DET0922 (no target-side analytic) |

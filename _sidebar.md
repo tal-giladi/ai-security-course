@@ -74,6 +74,7 @@
   - [Capstone projects](projects/capstones.md)
 - **Frontier updates**
   - [F.1 · OWASP LLM Top 10 2026: crosswalk & hidden-context exposure](lessons/frontier/update-01.md)
+  - [F.2 · MITRE ATT&CK v20: AI techniques & detecting AI-enabled exfiltration](lessons/frontier/update-02.md)
 
 - OSAI track — advanced AI red teaming (OffSec AI-300 parity)
 - **Module 27 — Reconnaissance for AI targets**
@@ -124,6 +125,7 @@
   - [Lab 32 · Egress covert channels (05.1)](labs/lab-32-egress-channel/README.md)
   - [Lab 33 · Capability flow control & branch steering (17.2)](labs/lab-33-capability-flow/README.md)
   - [Lab 34 · Agent skills as a supply-chain trust boundary (22.2)](labs/lab-34-skill-supply-chain/README.md)
+  - [Lab 35 · ATT&CK v20 AI-enabled exfiltration detection (F.2)](labs/lab-35-attack-ai-detection/README.md)
 
 - **Reference**
   - [Standards map: OWASP / ATLAS / NIST](references/standards-map.md)

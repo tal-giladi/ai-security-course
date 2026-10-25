@@ -5,6 +5,20 @@ bar in [the weekly review protocol](research/PROTOCOL-weekly.md). New material e
 existing lessons and labs; it never replaces them. "No curriculum changes this week" is a normal
 entry.
 
+## 2026-W43 (2026-10-25)
+
+- **Added** frontier lesson [F.2 · MITRE ATT&CK v20: AI techniques & detecting AI-enabled
+  exfiltration](lessons/frontier/update-02.md). ATT&CK v20 (2026-10-13) adds T1698/T1699 (indirect
+  and direct prompt injection), T1700 (AI-Enabled Exfiltration, with detection strategy DET0927)
+  and T1608.007 (AI Result Poisoning). The lesson crosswalks them to ATLAS, OWASP 2026 and the
+  course's labs. The lab builds a DET0927-style correlation analytic, measures recall per attack
+  adaptation, FPR and PPV at a realistic base rate, breaks the analytic with a sanctioned-destination
+  ride-along, encoding and a session split, and hardens it with runtime provenance at a measured
+  false-positive cost. Lab:
+  [Lab 35 · ATT&CK v20 AI-enabled exfiltration detection](labs/lab-35-attack-ai-detection/README.md).
+  The standards map gained an ATT&CK v20 section. Nothing existing was changed. Review:
+  [research/weekly/2026-W43.md](research/weekly/2026-W43.md).
+
 ## 2026-W42 (2026-10-18)
 
 - **Added** new lesson [22.2 · Agent skills as a supply-chain trust boundary](lessons/module-22/lesson-02.md)
