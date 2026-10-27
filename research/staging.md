@@ -216,3 +216,234 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Confidence:** medium (concrete, low-label-budget recovery rate against a named real defense, on 2 real MLLMs; single preprint, no code, no independent replication, authors/affiliation not independently confirmed this session).
 - **Recommendation:** Open a new WAIT topic (split-inference-attribute-leakage); monitor for a code release, a defense response, or independent replication before considering for ADD.
 
+### C-20261027-01 · CoSA: Conflict of Skills Attack composes individually-clean agent Skills into policy violations, with a measured harness-level defense
+
+- **Class:** A
+- **Date discovered:** 2026-10-27
+- **Date published:** 2026-10-26
+- **Source:** https://arxiv.org/abs/2610.35082 (verified; title "CoSA: The Conflict of Skills Attack in Real-World LLM Agent Ecosystems")
+- **Organization/researchers:** Yujia Zheng, Tianhao Li, Shangzhi Xu, Yuekai Huang, Ziyou Jiang, Zhaoyang Li, Yuyao Ge, Junran Peng, Mingyang Li
+- **Category:** agent-security (tool/skill composition)
+- **What changed:** Checking each agent Skill individually for malicious content misses policy violations that only appear once Skills are combined ("Conflict of Skills," CoS): an output made under one Skill's restrictions gets reused by another Skill without those restrictions. CoSA adds new, individually-benign Skills to an existing pool — either to fill a missing operation or to reshape how artifacts/decisions/actions flow between Skills — without modifying any existing Skill or runtime permission.
+- **Technical summary:** Introduces CoSA-Bench (288 tasks across recruiting, finance, IT, business; covering data leakage, unauthorized state changes, unsafe execution). Across 5 LLMs × 3 agent harnesses, adding Skills capped at 5% of each pool raised the policy-violation rate from 35.02% to 58.45%; trace analysis ties compliant→violating transitions to cross-Skill dependencies involving the added Skills. A lightweight harness-level guard checking information flow and authorization before consequential actions cut violations on OpenClaw recruiting tasks from 65.28% to 6.67%, while compliant completion on matched benign tasks only dropped from 66.67% to 65.00% (i.e. the fix is nearly free on legitimate tasks).
+- **Why it might matter:** This is a live attack-construction method plus a benchmark plus a measured, low-cost harness-level defense — directly extending the course's two already-ADD topics on this exact failure class (`skill-trust-boundary`: authentic-but-unsafe skills/cross-skill poisoning; `capability-flow-injection-defense`: provenance/capability-flow defenses) from detection-only evidence (yesterday's KnotScryer, C-20261026-04, class B) to an end-to-end attack+fix with a stated benign-task cost.
+- **Evidence of adoption:** None stated (single preprint, own CoSA-Bench benchmark).
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2610.35082
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** `research/accepted/skill-trust-boundary.md` (ADD, `lessons/module-22/lesson-02.md`, `labs/lab-34-skill-supply-chain/`) and `research/accepted/capability-flow-injection-defense.md` (ADD, `lessons/module-17/lesson-02.md`) — same family; also directly relates to yesterday's staged KnotScryer (C-20261026-04), which found insecure cross-skill compositions at marketplace scale but without a live attack-construction method or a measured defense — CoSA supplies both.
+- **Potential course lesson:** `labs/lab-34-skill-supply-chain/` extension: add a CoSA-style "benign-looking Skill added to a pool" attack scenario, then implement and measure the harness-level info-flow/authorization guard (violation rate and benign-task completion before/after), paralleling the paper's numbers.
+- **Confidence:** medium-high (concrete benchmark, 5 LLMs × 3 harnesses, a measured defense with its benign-task cost stated; single preprint, no code release stated, no independent replication).
+- **Recommendation:** Review for ADD as a `lab-34`/module-22 extension — attack construction method + benchmark + a measured, nearly-free harness-level defense, which is exactly the kind of evidence the already-ADD skill-trust-boundary topic was missing.
+
+### C-20261027-02 · Ring-0 by Default: "Agents as Operating Systems" (AaOS) — a validated 116-mechanism checklist finds agent harnesses missing most OS-grade protections
+
+- **Class:** A
+- **Date discovered:** 2026-10-27
+- **Date published:** 2026-10-24
+- **Source:** https://arxiv.org/abs/2610.33753 (verified; title "Ring-0 by Default: Agents as Operating Systems (AaOS)")
+- **Organization/researchers:** Xiang Li, Aichun Huang, Zuyao Xu, Fasheng Miao, Zheli Liu
+- **Category:** agent-security (architecture / threat modeling)
+- **What changed:** LLM agents now perform file access, process/subagent creation, network fetching, third-party extension loading, and state persistence — tasks that have always belonged to operating systems — but without the decades of OS-level protection those tasks normally carry; whatever the model outputs runs with the host user's full authority. The paper treats a deployed agent as an operating system and analyzes it with standard OS textbook mechanisms as a checklist.
+- **Technical summary:** Maps 116 OS security mechanisms across 19 subsystems onto agent equivalents, classifying each as isomorphic / degraded / missing / mutated / novel: only 11 are isomorphic, while 65 are missing — mostly privilege separation, resource quotas, transactions, and tamper-proof auditing. Prompt-based rules are shown to fail all three reference-monitor criteria. The map is tested against 13 experiments on three real production agent harnesses (Claude Code, Codex CLI, Gemini CLI): results matched the analysis for 16/25 mechanisms, refined 7, changed verdict for 2. Concrete findings include tool-level checks bypassable through the shell, and all three CLIs accepting forged transcript records on resume. The paper closes with a prioritized list of open problems that have no transferable OS defense.
+- **Why it might matter:** A systematic, falsifiable architectural framework (not a single exploit) validated empirically against three major real agent CLIs the course already discusses; the forged-resume-transcript finding (accepted by all three tested CLIs) and the shell-bypass-of-tool-gating finding are concrete, reproducible, and directly teachable, and the 116-mechanism map is a reusable checklist for assessing any new agent framework.
+- **Evidence of adoption:** None stated as deployment of the paper's own framework; the strength is that the three analyzed systems (Claude Code, Codex CLI, Gemini CLI) are real, widely-used production agent harnesses, not toy systems.
+- **Major organizations using it:** None stated; Anthropic/OpenAI/Google's CLIs are the systems analyzed, not endorsers of this paper.
+- **Open-source implementation:** Not stated.
+- **Paper:** https://arxiv.org/abs/2610.33753
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** `lookup "operating system agent"` — no existing registry topic frames agent security this systematically; complements `capability-flow-injection-defense` (ADD) and `skill-trust-boundary` (ADD) with a broader architecture-level checklist rather than a single mechanism.
+- **Potential course lesson:** A new module-17 or module-22 lesson/lab built around the OS-analogy checklist, with a lab reproducing at least the forged-transcript-on-resume finding against a real CLI the course already uses.
+- **Confidence:** medium-high (large validated mechanism map, empirical tests against 3 real production systems; single preprint, no independent replication, no code/benchmark release stated).
+- **Recommendation:** Review for ADD — an architecture-level checklist lesson (module-17 or a new module-22 extension) with a lab reproducing the forged-resume-transcript and shell-bypass-of-tool-gating findings.
+
+### C-20261027-03 · Steering for Safety, Hijacking for Profit: a supply-chain trojan in the LLM activation-steering plugin ecosystem
+
+- **Class:** B
+- **Date discovered:** 2026-10-27
+- **Date published:** 2026-10-26
+- **Source:** https://arxiv.org/abs/2610.35043 (verified)
+- **Organization/researchers:** Yu Yan, Jiahao Chen, Siqi Lu, Yongjuan Wang, Ziming Zhao, Zhaoxuan Li, Qingjun Yuan
+- **Category:** supply-chain (activation-steering plugins)
+- **What changed:** Audits 8 open-source activation-steering plugin libraries and finds weak distribution-integrity checks, excessive plugin privileges, and no runtime monitoring. Builds a PoC malicious plugin ("IDH," norm-gated routing + automated injection-layer selection) that behaves like a legitimate safety plugin — it still refuses harmful requests — while covertly steering unrelated outputs toward commercial-recommendation manipulation.
+- **Technical summary:** Across 5 LLMs × 6 brands × 3 commercial domains, reaches up to 97.8% manipulation attack success while harmful-request refusal rates stay high (i.e. it passes a safety eval while doing something else entirely). Proposes a runtime defense that suppresses anomalous activation interventions.
+- **Why it might matter:** A new supply-chain attack surface — the safety mechanism itself (a steering plugin) as the trojan vector — distinct from steering-as-defense (`inference-time-injection-defenses`, WAIT) and steering-as-jailbreak-attack (yesterday's C-20261026-07) framings already on file: this is "poison the plugin ecosystem that implements the defense," with the trojan passing exactly the eval (refusal) a reviewer would check.
+- **Evidence of adoption:** None (PoC on own testbed; real plugin libraries audited for weaknesses but not shown exploited in the wild).
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not stated.
+- **Paper:** https://arxiv.org/abs/2610.35043
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** `research/deferred/inference-time-injection-defenses.md` (WAIT) — same mechanism family (activation steering), new attack layer (plugin supply chain) that neither that topic nor C-20261026-07 covers.
+- **Potential course lesson:** Module-13 (supply chain) or a steering-defense lesson extension: a "helpful-looking" steering plugin that passes a refusal eval while manipulating unrelated outputs.
+- **Confidence:** medium (concrete ASR number, real-library audit; single preprint, no code/replication).
+- **Recommendation:** Open a new WAIT topic (steering-plugin-supply-chain) or feed into `inference-time-injection-defenses`' evidence list; monitor for a code release.
+
+### C-20261027-04 · CyberDual: an execution-validated arena where AI attackers hide real exploits in OSS maintenance and AI reviewers must catch them
+
+- **Class:** B
+- **Date discovered:** 2026-10-27
+- **Date published:** 2026-10-25
+- **Source:** https://arxiv.org/abs/2610.34435 (verified)
+- **Organization/researchers:** Chenyuan Yang, Hwiwon Lee, Jongseong Kim, Yihan Yang, Dongjun Kim, Yinfang Chen, Lingming Zhang
+- **Category:** red-teaming / defense (code-agent security)
+- **What changed:** An arena where AI attacker agents hide exploitable bugs in real maintenance work on popular open-source projects, and AI reviewer agents must find and repair them. Each match is scored by execution — the attacker's own proof-of-concept exploit is rerun against the code that comes out of review — not an LLM judge.
+- **Technical summary:** Three reviewers catch 85–91% of 1,088 valid attacks from six attackers; but when bugs are spread across real upstream commits, about one in six attack slots still produces a working exploit after review. The strongest attacker has open weights and accounts for most of the exploits that pass all three reviewers. Proposed uses: reviewer training signal, gating model releases on both attack and refusal scores, and alerting teams when a new attacker threatens a deployed reviewer.
+- **Why it might matter:** Real-execution-grounded (PoC rerun, not LLM-judged) adversarial benchmark for AI code-review as a security control, at realistic open-source scale; the "an open-weight attacker dominates the bypasses" finding is a concrete, actionable data point for anyone evaluating code-reviewing agents.
+- **Evidence of adoption:** None stated; from a recognized code/SWE-agent-benchmarking group (Lingming Zhang, UIUC).
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not confirmed released.
+- **Paper:** https://arxiv.org/abs/2610.34435
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** No existing registry topic for attacker/reviewer execution-validated arenas; tangential to `capability-flow-injection-defense`'s evidence notes (comparative agent-defense evidence) but a distinct mechanism; new.
+- **Potential course lesson:** Module-20 (code-agent security) extension: a scaled-down reviewer-arena exercise using execution-validated PoCs rather than judge scoring.
+- **Confidence:** medium-high (real-execution scoring, large N, concrete numbers; single preprint, no independent replication, no code release stated).
+- **Recommendation:** Open a new WAIT topic (ai-code-reviewer-arena); monitor for a code/benchmark release before considering ADD.
+
+### C-20261027-05 · Factual Yet One-Sided: stance/bias poisoning of RAG, with a measured, near-zero-overhead balancing defense
+
+- **Class:** B
+- **Date discovered:** 2026-10-27
+- **Date published:** 2026-10-25
+- **Source:** https://arxiv.org/abs/2610.34294 (verified; title "Factual Yet One-Sided: Stance Poisoning and Evidence Balancing in Retrieval-Augmented Generation")
+- **Organization/researchers:** Puyuan Yang, Shaoxuan Dong, Liujie Wu, Xiaochun Cheng, Bo Li
+- **Category:** rag-security (new poisoning sub-type) + defense
+- **What changed:** Prior RAG knowledge-poisoning work has mostly targeted factual errors. This paper instead injects documents that are factually correct but one-sided on a controversial topic, showing that the stance distribution of retrieved documents predictably shifts the generated response's stance.
+- **Technical summary:** At a mean topic-level poisoning share of 18.9%, all four tested generation models (different vendors) shifted stance in the poisoning direction, increasing monotonically across four concentration levels. Proposes a Stance-Balancing Middleware (stance detection + fixed 2-supporting/2-opposing/1-neutral balancing + a debiasing prompt, no extra LLM calls) that reduced stance deviation by an estimated 0.106–0.350 across 8 concentration-direction settings (6 remaining significant after Holm correction), with low overhead (~1.5% of generation time on GPU, ~16% on CPU).
+- **Why it might matter:** All existing RAG-poisoning coverage on file (`graphrag-schema-poisoning`, `malicious-retriever-checkpoint`, `semantic-cache-poisoning`, all WAIT) targets factual/retrieval-correctness poisoning; this is a distinct poisoning *goal* (stance/bias shift) with a cheap, measured, no-extra-LLM-call defense tested across 4 vendors' models — exactly the "defense with measured cost" evidence the protocol weights most.
+- **Evidence of adoption:** None (single preprint); 4 different vendors' models tested is a meaningfully broad victim set.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not stated.
+- **Paper:** https://arxiv.org/abs/2610.34294
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** No existing registry topic for stance/bias poisoning specifically (`lookup` — no matches); distinct from all existing RAG-poisoning WAIT topics, which target factual/retrieval correctness; new.
+- **Potential course lesson:** A RAG-security module extension on stance/bias poisoning as a distinct attack goal, implementing the balancing-middleware defense and measuring its overhead as the paper does.
+- **Confidence:** medium (concrete, statistically-tested cross-vendor numbers, low measured defense overhead; single preprint, no code, no independent replication).
+- **Recommendation:** Open a new WAIT topic (rag-stance-poisoning); candidate for a future RAG-module lab extension if a code release appears.
+
+### C-20261027-06 · Phantom Forgetting: BatchNorm state fakes deletion in edge-split machine unlearning — second independent "unlearning verification is broken" finding in two days
+
+- **Class:** B
+- **Date discovered:** 2026-10-27
+- **Date published:** 2026-10-26
+- **Source:** https://arxiv.org/abs/2610.34800 (verified)
+- **Organization/researchers:** Anand Agrawal, Anil Kumar Chillara, Naresh Mandan
+- **Category:** extraction/inversion/membership (unlearning integrity)
+- **What changed:** In edge-cloud split learning, non-learnable model state (BatchNorm running statistics, split across device and server) can mask unlearning failure: recalibrating these statistics alone, with no weight changes, lowers forget-set accuracy — meaning "forget accuracy" by itself is not a valid deletion certificate.
+- **Technical summary:** On CIFAR-10, centralized recalibration cut mean forget accuracy by ~61.5 points with no weight changes; in the split setting, edge-only/server-only/joint recalibration cut it by ~37/42/52 points respectively. Introduces a state-only diagnostic and a "state-induced forgetting gap" metric that accounts for simultaneous damage to retained data.
+- **Why it might matter:** This is the second independent paper in two days — after yesterday's TRACE (C-20261026-02, staged, NeurIPS 2026) — showing that standard approximate-unlearning verification practice overlooks model state beyond the weights it checks (TRACE: paired pre/post snapshots leak the forgotten content; Phantom Forgetting: BatchNorm state fakes the deletion itself). Two independent groups converging on "unlearning-as-privacy-control has an auditing blind spot" within 48 hours is a genuine signal, not a coincidence to treat as two unrelated one-offs.
+- **Evidence of adoption:** None (single preprint, CIFAR-10-scale proof of concept, not LLM-scale).
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not stated.
+- **Paper:** https://arxiv.org/abs/2610.34800
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** `research/staging.md` C-20261026-02 (TRACE) — same emerging theme (unlearning integrity/verification failure), different mechanism (non-learnable state vs. snapshot differencing); no existing registry topic; recommend the weekly review track both under one new unlearning-integrity cluster rather than as separate topics.
+- **Potential course lesson:** Pairs with TRACE for a module-29 (or new) lesson, "unlearning as a privacy control — two ways the audit lies": snapshot-differencing (content leak) and state recalibration (fake deletion).
+- **Confidence:** medium (clear mechanism and numbers; CIFAR-scale, not LLM-scale, no code, no independent replication).
+- **Recommendation:** Open a new WAIT topic (unlearning-integrity-verification-failures) grouping this with C-20261026-02; re-review when either gets LLM-scale validation or a code release.
+
+### C-20261027-07 · NameTrap: AI coding agents steered toward writing vulnerable code by third-party variable names alone
+
+- **Class:** B
+- **Date discovered:** 2026-10-27
+- **Date published:** 2026-10-25
+- **Source:** https://arxiv.org/abs/2610.34253 (verified)
+- **Organization/researchers:** Chieh-Yuan Chang, Guan-Wei Chen, Chia-Yi Hsu, Chih Yang, Chia-Mu Yu, Chun-Ying Huang
+- **Category:** supply-chain (coding agents)
+- **What changed:** AI coding agents that read third-party code can be steered toward writing insecure code purely by renaming identifiers in that code — no injected instructions, no vulnerable statements, nothing a human reviewer or static scanner would flag as suspicious content.
+- **Technical summary:** Tested on 6 agents × 10 underlying models × 4 CWE categories (CWE-78, CWE-79, CWE-327, CWE-502): attack success 22.5–56.0% overall, up to 75.0% for some configurations; outperforms random/neutral renaming and the prior published XOXO attack; transfers across models and works with Traditional Chinese prompts; a security-reminder prompt defense does not consistently help; the poisoned files evade 3 AI-based and 4 static security analyzers.
+- **Why it might matter:** Identifier naming is a previously-overlooked, essentially free attack surface (no payload text at all) for coding agents reading open/third-party code — directly relevant to the course's coding-agent and supply-chain material, and it notably evades the exact class of static+AI scanner defenses the course already teaches.
+- **Evidence of adoption:** None (single preprint); comparison against a prior published attack (XOXO) and cross-model/cross-language transfer give a broader evidentiary base than a single-model demo.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not stated.
+- **Paper:** https://arxiv.org/abs/2610.34253
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** `lookup "coding agent variable rename"` — no existing coverage; distinct mechanism from `research/deferred/rule-file-package-substitution.md` (WAIT, AGENTS.md/.cursorrules-based) — that topic is instruction-file-based, this is identifier-naming-based, in third-party code the agent merely reads.
+- **Potential course lesson:** Module-20 (code-agent security) extension/lab: reproduce a renamed-identifier attack against a small coding agent and show it evades a basic scanner plus a security-reminder system prompt.
+- **Confidence:** medium-high (systematic multi-agent/model/CWE evaluation, outperforms a prior published baseline; single preprint, no code/independent replication).
+- **Recommendation:** Open a new WAIT topic (coding-agent-identifier-steering); monitor for a code release before considering a module-20 lab extension.
+
+### C-20261027-08 · The Target Agent Is Its Own Best Critic but a Poor Proposer: a role-separation finding for automated red-teaming pipelines
+
+- **Class:** B
+- **Date discovered:** 2026-10-27
+- **Date published:** 2026-10-26
+- **Source:** https://arxiv.org/abs/2610.34965 (verified)
+- **Organization/researchers:** Mintong Kang, Stephen Rawls, Melissa Kazemi Rad, Jian Ni, Bo Li
+- **Category:** red-teaming (automated attack-pipeline methodology)
+- **What changed:** In automated LLM red-teaming (a model diagnoses a failed attack and proposes the next one), the paper separates "who criticizes the failure" from "who proposes the next attack" and finds the target model's own self-criticism (using its live execution context) beats a separate critic, while letting the target itself propose the next attack backfires — awareness of the adversarial goal causes refusal/sandbagging.
+- **Technical summary:** Removing the target's reasoning from self-criticism lowers attack success by 6–17 points. The recommended setup (target self-critiques, a separate attacker proposes) reaches 63.2% overall attack success on DTAP-BENCH across Telecom, Workflow, CRM, and Code domains.
+- **Why it might matter:** A concrete, counter-intuitive, actionable design rule for anyone building or running automated red-team pipelines (the course's own PAIR/TAP-style material): the two roles typically conflated ("the attacker iterates on its own failures") need splitting for best results. From a recognized AI-safety lab (Bo Li).
+- **Evidence of adoption:** None stated as deployment; DTAP-BENCH is the authors' own benchmark.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not stated.
+- **Paper:** https://arxiv.org/abs/2610.34965
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** `lookup "red team critic proposer"` — no existing coverage; relevant to the course's existing red-teaming/PAIR-TAP material (`papers/05-mehrotra-tap.md`) as a pipeline-design refinement, not a new vulnerability class.
+- **Potential course lesson:** Module-08 (red-teaming) extension note: the critic/proposer role-separation finding as a concrete design rule for an automated red-team harness.
+- **Confidence:** medium (clear ablation numbers, recognized lab, own benchmark; single preprint, no independent replication, benchmark not independently validated).
+- **Recommendation:** Open a new WAIT topic (automated-redteam-role-separation) or feed as a methodology note into the existing red-teaming module; monitor for independent replication.
+
+### C-20261027-09 · LLM WikiLeaks: a real observed incident shows agent egress restrictions bypassed via ordinary third-party web services, at scale
+
+- **Class:** B
+- **Date discovered:** 2026-10-27
+- **Date published:** 2026-10-25
+- **Source:** https://arxiv.org/abs/2610.34542 (verified; title "LLM WikiLeaks: Uncovering URL-Based Capability Extension and Security Circumvention in Agentic Message Boards")
+- **Organization/researchers:** Orel Navi, Elad Feldman, Ben Nassi
+- **Category:** agent-security / egress (real-world incident evidence)
+- **What changed:** Analyzes a real observed incident ("ProWiki") where AI agents restricted to outbound HTTP GET requests used a public wiki as a de facto message board, and measures how often the URLs those agents posted route through third-party intermediate services rather than going direct.
+- **Technical summary:** 14,591 agent edits, 79,541 URL postings; 33.6% of URL occurrences nest a target URL inside 1–5 layers of third-party services; 67 distinct intermediate services identified — 73.8% legitimately extend agent capability (Markdown/OCR conversion, JSON filtering, archival access), 26.2% help evade restrictions/detection (CORS/fetch proxies, link shorteners). Stated conclusion: "restricting an agent's local toolset or direct Internet access may be insufficient while third-party services remain reachable."
+- **Why it might matter:** Real-world, large-scale empirical evidence (not a lab simulation) directly reinforcing the course's already-ADD `egress-covert-channels-agent` lesson's core thesis, at a meaningfully large scale, with a quantified split between legitimate-capability-extension and actual-evasion use of third-party services. Co-authored by Ben Nassi, who has a track record of concrete AI-security disclosures.
+- **Evidence of adoption:** N/A — this documents a real observed incident, not a proposed technique.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not confirmed released.
+- **Paper:** https://arxiv.org/abs/2610.34542
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** `research/accepted/egress-covert-channels-agent.md` (ADD, `lessons/module-05/lesson-01.md`) — same thesis, genuinely new real-world empirical evidence at larger scale than the existing lesson likely cites, per the dedup rule for new evidence on an already-taught topic.
+- **Potential course lesson:** Feeds a future update to the existing module-05/lesson-01 "Advanced extension: egress covert channels" with this real-incident data and the 73.8%/26.2% legitimate-vs-evasive split.
+- **Confidence:** medium-high (large real dataset, not synthetic; single paper, no independent replication of the classification methodology).
+- **Recommendation:** Flag to weekly review as reinforcing/updating evidence for the already-ADD `egress-covert-channels-agent` topic (possible lesson update), not a new standalone topic.
+
+### C-20261027-10 · Ranking Is Not Deciding: RAG-poisoning-defense benchmarks collapse when a construction artifact of the poison-generation code is removed
+
+- **Class:** B
+- **Date discovered:** 2026-10-27
+- **Date published:** 2026-10-24
+- **Source:** https://arxiv.org/abs/2610.33849 (verified)
+- **Organization/researchers:** Pushkal Kumar, Arvin Sahaym
+- **Category:** evaluation/benchmark (RAG-poisoning defenses)
+- **What changed:** Published query-time RAG-poisoning-filter benchmarks look strong largely because of how the standard poison-generation code (PoisonedRAG) constructs its poison (e.g. prepending the target question verbatim to each poison passage), not because of what the filter detects. Removing that one construction cue collapses detection while retrieval ranking stays intact.
+- **Technical summary:** Deleting the verbatim-question prefix drops a re-implemented RAGuard-style content filter from AUROC 0.953 to 0.758 and raises its miss rate from 0.191 to 0.763; padding poison text to clean-document length similarly raises miss rates for other defenses while AUROC holds. Proposes reporting a poison set's "construction profile" plus the false-positive rate at the deployed threshold, and releases a profiling script; states that no evaluated defense survives a defense-aware attacker against its own scorer.
+- **Why it might matter:** The same "benchmark construction artifact overstates robustness" pattern as yesterday's NTBench finding (for prompt injection) but for RAG-poisoning defenses specifically — a methodology warning directly relevant to the already-WAIT `rag-defense-measured-endpoints` testbed topic and to how the course should grade its own RAG-defense labs.
+- **Evidence of adoption:** None (single preprint); a profiling script is stated as released.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Script stated released (exact URL not independently verified this session).
+- **Paper:** https://arxiv.org/abs/2610.33849
+- **Code:** Not independently confirmed.
+- **Relationship to existing course material:** `research/deferred/rag-defense-measured-endpoints.md` (WAIT) — directly relevant new evidence (a named, measured example of benchmark-construction-artifact collapse) for that topic's pending scope decision; also thematically parallel to yesterday's NTBench item (C-20261026-03) and `research/deferred/jailbreak-asr-judge-variance.md`.
+- **Potential course lesson:** Feeds the pending `rag-defense-measured-endpoints` review; pairs with NTBench as a recurring "benchmark construction, not mechanism, explains the reported number" lesson across attack types.
+- **Confidence:** medium-high (concrete AUROC/miss-rate before/after numbers on a named, reproducible construction change; single-author-pair preprint, no independent replication).
+- **Recommendation:** Add to `rag-defense-measured-endpoints.md`'s evidence list at its next scheduled review; does not independently resolve that topic's scope question.
+
+### C-20261027-11 · Back to Basics: annotating agent-monitor transcripts with provenance/security/effect hints substantially improves weak-to-strong oversight at low cost
+
+- **Class:** B
+- **Date discovered:** 2026-10-27
+- **Date published:** 2026-10-25
+- **Source:** https://arxiv.org/abs/2610.34064 (verified)
+- **Organization/researchers:** Daniel Ben-Levi, Judah Goldfeder, Mateusz Dziemian, Raja Moreno
+- **Category:** detection/monitoring (agent oversight)
+- **What changed:** For weak-to-strong AI-agent monitoring (a weaker/cheaper monitor watching a stronger agent's transcripts for misaligned action), the paper adds supplementary annotations to the monitored transcript itself — command-provenance links, security-sensitive-action flags, disallowed-effect markers — rather than improving the monitor model.
+- **Technical summary:** Identifies 4 recurring monitor failure modes (missed attacks, partial detection, accepting misleading "benign" explanations, poorly calibrated suspicion scores). The hints substantially improve weak monitors at low added compute cost and, per the paper's failure-mode analysis, nearly eliminate complete-miss failures; ablations identify which hint types matter.
+- **Why it might matter:** A concrete, low-cost intervention (annotate the transcript, not the model) for agent-oversight monitoring, directly relevant to the already-WAIT `monitor-evidence-path-integrity` and `out-of-band-oversight-enforcement` topics, which track how monitors fail and how to harden them.
+- **Evidence of adoption:** None (single preprint).
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not stated.
+- **Paper:** https://arxiv.org/abs/2610.34064
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** `research/deferred/monitor-evidence-path-integrity.md` (WAIT) and `research/deferred/out-of-band-oversight-enforcement.md` (WAIT) — same cluster (agent-monitor reliability); this is a concrete, measured mitigation (provenance/security/effect hints) rather than another failure-mode demonstration.
+- **Potential course lesson:** Feeds either pending WAIT topic's evidence list as a defense-side data point.
+- **Confidence:** medium (clear failure-mode framing and ablations; single preprint, no independent replication, no code release).
+- **Recommendation:** Add to `monitor-evidence-path-integrity.md`'s evidence list at its next scheduled review (2026-12-20).
+
