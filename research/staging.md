@@ -594,3 +594,171 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Confidence:** medium-high (concrete multi-model demonstration — 10 frontier models — on a realistic agentic-wallet scenario, plus a formalized property and a prototype fix; single preprint, no code release, no independent replication).
 - **Recommendation:** Review for ADD as a lab-16 extension (self-approval bypass of email-OTP HITL gates + trusted-device fix); strong candidate given it directly breaks an existing taught mitigation with a multi-model demonstration.
 
+### C-20261030-01 · Scan Before You Install: Detecting and Mitigating Local and Composite Vulnerabilities in Skills
+
+- **Class:** A
+- **Date discovered:** 2026-10-30
+- **Date published:** 2026-10-27
+- **Source:** https://arxiv.org/abs/2610.37901 (verified)
+- **Organization/researchers:** Parth A. Gandhi, Avital Aviv, Prasanna N. Wudali, Yuval Elovici, Asaf Shabtai
+- **Category:** supply-chain
+- **What changed:** A six-module scanner (Content Extraction, Local Analysis, Composite Analysis, Validation, Reporting, Mitigation) for agent-"Skill" vulnerabilities, extending detection beyond single-skill flaws to composite/cross-skill interactions (shared resources, invocations, instruction-mediated dependencies) and following detection with automated mitigation (skill substitution, patches, configuration changes) rather than detection alone.
+- **Technical summary:** Local Analysis: 95.90% recall / 4.22% false-positive rate on a 556-case SkillTrustBench subset; F1 0.947 on 1,000-skill MalSkillBench, ahead of four compared scanners. Composite Analysis: F1 0.991 (98.7% precision / 99.6% recall) on SCR-Bench vs. 0.816–0.858 for three SkillsGuard configurations. Real-world GitHub study: three analysts confirmed 53/59 findings (89.8% precision) across 23 of the 75 most-starred skill repositories (1,587 skills scanned); mitigations prevented proof-of-concept attacks in all trials for 47/55 findings while preserving tested legitimate functionality; 10 medium/high-severity cases responsibly disclosed to maintainers. No code repository link confirmed on the abstract page.
+- **Why it might matter:** `lookup "skill scanner vulnerabilities"` surfaces the course's existing ADD lesson (module-22/lesson-02, topic `skill-trust-boundary`), which already teaches a scanner layer (SkillScan, EAV, SkillRelayGuard) with explicit guarantee/false-positive/cost framing. This paper is a new, more comprehensive scanner (composite/cross-skill analysis beyond prior single-skill tools, plus an automated mitigation step) that outperforms the SkillsGuard baseline, backed by a real-world disclosure study across top GitHub skill repositories — directly extends the already-ADDed topic with fresh, strongly-measured evidence.
+- **Evidence of adoption:** None stated; compared against (not adopted by) Cisco/NVIDIA scanners and SkillsGuard.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not confirmed (no repository link on the abstract page).
+- **Paper:** https://arxiv.org/abs/2610.37901
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** `lessons/module-22/lesson-02.md`, `labs/lab-34-skill-supply-chain/` (ADD topic `skill-trust-boundary`) — new, stronger composite-analysis scanner plus a mitigation step and a real disclosure study; extends, does not duplicate, the existing evidence base.
+- **Potential course lesson:** module-22/lesson-02 or lab-34 extension: add a composite/cross-skill detection exercise and an automated-mitigation step (skill substitution/patch) to the existing scanner exercise, citing the SCR-Bench composite-analysis numbers for the guarantee/cost table.
+- **Confidence:** medium-high (strong multi-benchmark numbers, real GitHub disclosure study with independent-analyst confirmation; no code release confirmed, single research group, not yet independently replicated).
+- **Recommendation:** Review for a module-22/lesson-02 / lab-34 extension (composite-skill scanning + automated mitigation); strong supporting evidence for the already-ADDed topic.
+
+### C-20261030-02 · CARI: Cross-Boundary Adversarial Runtime Injection in Coding-Agent Workflows
+
+- **Class:** A
+- **Date discovered:** 2026-10-30
+- **Date published:** 2026-10-28
+- **Source:** https://arxiv.org/abs/2610.38799 (verified)
+- **Organization/researchers:** Jie Fu, Shuang Wu, Ashish Kundu, Wendy Hui Wang, Yuan Hong
+- **Category:** agent-security
+- **What changed:** Identifies a coding-agent attack surface distinct from content the user asked the agent to read: unauthorized instructions smuggled through *runtime feedback* from a peer development component (backend service, test harness, CI job, deployment service) that has legitimate "diagnostic authority" over its own state but no action authority over the victim agent's files, credentials, shell, or environment — an "authority mismatch" existing mitigations don't enforce.
+- **Technical summary:** Ten instantiated attacks (resource exhaustion, information exposure, development-state manipulation) across four programming languages and five code-capable models: 2,845/3,000 trials (94.8%) succeed overall; against real product-level agents, 61.3% (Codex) and 58.7% (Claude Code). Measured defenses: generic prompt warnings were ineffective; explicit policy rules suppressed attacks but substantially over-refused legitimate actions. No new defense is proposed; the paper measures the failure/tradeoff of existing mitigation approaches.
+- **Why it might matter:** `lookup "coding agent runtime feedback injection authority mismatch"` finds no existing registry/course coverage of this specific channel (CI/test-harness/backend "diagnostic" feedback), distinct from the harness-default/tool-call-approval mechanisms the deferred `coding-agent-harness-mechanisms` topic already tracks. Tested against real production coding agents (Codex, Claude Code) with a large measured ASR and a measured defense over-refusal tradeoff — exactly the evidence this protocol weights most.
+- **Evidence of adoption:** None stated; the attacked systems are real products used as test subjects, not evidence of adoption of this work.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not confirmed.
+- **Paper:** https://arxiv.org/abs/2610.38799
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** `research/deferred/coding-agent-harness-mechanisms.md` (WAIT) — mechanism-distinct (runtime-feedback/diagnostic-channel injection vs. tool-call auto-approval/compaction laundering); also relevant to `lessons/module-17` (tool/MCP injection) and `module-21` (coding-agent supply chain). Not a duplicate.
+- **Potential course lesson:** module-17/21 extension or new lab: wire a fake CI/test-harness feedback channel into a coding-agent lab, demonstrate the authority-mismatch attack, then show the explicit-policy defense's over-refusal cost as the guarantee/cost tradeoff to teach.
+- **Confidence:** medium-high (large trial count, real product-level agents tested, measured defense failure/tradeoff; single preprint, no code confirmed, no independent replication).
+- **Recommendation:** Review for a module-17/21 extension or new lab on "peer-component runtime-feedback injection"; strong real-agent evidence. Also worth folding into `coding-agent-harness-mechanisms.md`'s evidence at its next review (2026-11-15).
+
+### C-20261030-03 · FlipJev: Fast Black-Box Red Teaming Finds Universal Adversarial Suffixes for Typed Decision Models
+
+- **Class:** A
+- **Date discovered:** 2026-10-30
+- **Date published:** 2026-10-28
+- **Source:** https://arxiv.org/abs/2610.38895 (verified)
+- **Organization/researchers:** Xiaogeng Liu, Xinyan Wang, Chaowei Xiao
+- **Category:** red-teaming
+- **What changed:** The registry already tracks a deferred topic (`typed-decision-judge-hijacking`, "Jev") from three independent groups probing a typed-decision judge in mid-October. This paper adds a fourth, methodologically distinct contribution: a fast, query-based black-box attack (no attacker LLM needed) that finds short, universal, cross-task-transferable adversarial suffixes against "Jev," while showing the model looks robust to common prompt-injection strategies — making the case that adaptive, optimization-based attacks (not just prompt-injection phrasing) must be part of evaluating typed-decision models.
+- **Technical summary:** 0/10,240 paired tests change a correct answer under common prompt-injection strategies. The query-based attack instead finds a universal suffix per dataset that flips 43% of unseen documents on average, and a suffix optimized on one task flips 90–100% of samples when transferred to other tasks, within minutes of query budget, across 12 datasets. Code released: github.com/SaFo-Lab/FlipJev; project page flipjev.github.io.
+- **Why it might matter:** `lookup "typed decision hijacking Jev"` confirms this directly extends `research/deferred/typed-decision-judge-hijacking.md` (WAIT, next review 2026-11-22), which already named the gap between "answered the typed question correctly" and "the app's use of that answer is safe." This supplies the kind of evidence that topic's "what would change the decision" section asked for: a new, reproducible (open-code), measured adaptive-attack methodology, plus a direct lesson in ASR-evaluation methodology (0% static-ASR looks safe, but a cheap adaptive attack reaches 90–100% transfer) that also reinforces the deferred `jailbreak-asr-judge-variance` topic.
+- **Evidence of adoption:** None stated (single preprint, research testbed against the "representative" typed decision model named Jev).
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Yes — github.com/SaFo-Lab/FlipJev (code + project page).
+- **Paper:** https://arxiv.org/abs/2610.38895
+- **Code:** github.com/SaFo-Lab/FlipJev
+- **Relationship to existing course material:** `research/deferred/typed-decision-judge-hijacking.md` (WAIT) — new, reproducible adaptive-attack evidence for the same named system/model family; also relevant to `research/deferred/jailbreak-asr-judge-variance.md`.
+- **Potential course lesson:** Candidate evidence for upgrading `typed-decision-judge-hijacking` toward ADD, or a standalone lesson/exercise on adaptive vs. static ASR evaluation (implement a toy query-based universal-suffix search, show the static-vs-adaptive ASR gap first-hand).
+- **Confidence:** medium-high (open code, concrete cross-dataset numbers, directly extends an already-tracked multi-group topic; single preprint, no independent replication of this specific attack yet).
+- **Recommendation:** Review alongside the existing `typed-decision-judge-hijacking` WAIT topic at its next review (2026-11-22) — this may be the evidence that tips it toward ADD, or at minimum should be added to that topic's evidence list regardless of this week's decision.
+
+### C-20261030-04 · Is it my preference? Role Grounding Attack against Agent's Memory via Social Interaction
+
+- **Class:** B
+- **Date discovered:** 2026-10-30
+- **Date published:** 2026-10-28
+- **Source:** https://arxiv.org/abs/2610.38209 (verified)
+- **Organization/researchers:** Haoran Bu, Yiting Shen, Litian Zhang, Ruihan Hu, Xi Zhang
+- **Category:** agent-security
+- **What changed:** Identifies a new agent-memory failure mode, "Role Grounding Misattribution": an agent that learns preferences from shared social-platform posts can misattribute a preference actually expressed by an attacker's agent (quoted inside a nested conversation in the post) to the victim's own user, because the agent fails to correctly ground *who* expressed the preference inside quoted/nested content.
+- **Technical summary:** Formalizes the Role Grounding Attack (RGA): a two-stage attack (memory formation via a published post quoting an attacker-user conversation; memory retrieval where the misattributed preference persists and shapes later decisions). Two instantiations: tool-selection manipulation (steers the victim toward an attacker-controlled tool) and privacy leakage (misattributes a task-requirement preference so the victim sends sensitive data in tool arguments). Evaluated across 5 mainstream memory systems x 6 LLMs; the abstract reports high attack success for both instantiations without exact figures in the summarized text. No defense is proposed beyond "stronger role grounding is needed"; no code/data release stated.
+- **Why it might matter:** Lookup confirms no existing registry/course coverage of this specific mechanism — it is distinct from `research/deferred/agent-memory-privacy-erasure.md` (disclosure amplification / deletion-non-erasure) and `research/deferred/trust-zoned-agent-memory.md` (persistent-memory attack on computer-use agents): this is about misattributing *whose* preference a memory record reflects, via social-platform content quoting nested conversations. Broad coverage (5 systems x 6 models) and a concrete, teachable two-stage structure make it worth monitoring, but the summary lacks exact ASR numbers and no code is released.
+- **Evidence of adoption:** None (single preprint, own testbed).
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not stated.
+- **Paper:** https://arxiv.org/abs/2610.38209
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** Mechanism-distinct from `research/deferred/agent-memory-privacy-erasure.md` and `research/deferred/trust-zoned-agent-memory.md`; new topic, no existing file.
+- **Potential course lesson:** Possible addition to agent-memory security material as a third distinct memory-attack class (misattribution via social content), if clustered with the other two deferred memory-privacy topics in a future weekly review.
+- **Confidence:** low-medium (broad model/system coverage; but no quantified ASR figures available from the abstract, no code, single preprint).
+- **Recommendation:** Monitor; re-check once full-paper numbers or code are available, and consider clustering with the other agent-memory deferred topics.
+
+### C-20261030-05 · Appreciation Teaches Unauthorized Execution: Self-Evolution Degrades the Robustness of Personal Agents to Indirect Prompt Injection
+
+- **Class:** B
+- **Date discovered:** 2026-10-30
+- **Date published:** 2026-10-29
+- **Source:** https://arxiv.org/abs/2610.39122 (verified)
+- **Organization/researchers:** Xinyan Wang, Xiaogeng Liu, Jun Shao, Chaowei Xiao
+- **Category:** agent-security
+- **What changed:** Studies whether personal agents that self-evolve from user feedback (skill evolution or RL from feedback) become measurably less robust to indirect prompt injection (IPI) over time, via a two-phase design: an adaptation phase where the agent completes a user-authorized task from external content and evolves from the resulting feedback, then a test phase where a third party plants a similar-looking task in new, unauthorized content.
+- **Technical summary:** Compared to a non-evolving base agent, on a real (unnamed) personal agent across multiple task domains: skill evolution raises average IPI attack success rate by 14.0 to 48.8 percentage points; reinforcement learning from feedback raises it by 3.0 to 39.3 points. Code released: github.com/SaFo-Lab/Evolve-IPI (same lab as C-20261030-03/FlipJev above).
+- **Why it might matter:** Lookup confirms no existing registry/course coverage of self-evolution/continual-learning as an IPI-robustness-degrading mechanism specifically (distinct from static IPI robustness, which the course already covers). This is a concrete, quantified, reproducible (code released) demonstration of a systemic risk in an increasingly common agent design pattern (agents that adapt from user feedback).
+- **Evidence of adoption:** None (single preprint; "a real personal agent" tested but not named).
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Yes — github.com/SaFo-Lab/Evolve-IPI.
+- **Paper:** https://arxiv.org/abs/2610.39122
+- **Code:** github.com/SaFo-Lab/Evolve-IPI
+- **Relationship to existing course material:** New angle on indirect-prompt-injection robustness (existing IPI material covers static robustness, not degradation from self-evolution); no existing registry topic.
+- **Potential course lesson:** Possible extension to whichever lesson covers IPI robustness testing: a before/after self-evolution ASR measurement exercise using the released Evolve-IPI code.
+- **Confidence:** medium (code released, concrete quantified deltas; single preprint, unnamed base agent/model, no independent replication).
+- **Recommendation:** Monitor; worth a closer look once the underlying agent/model and full experimental detail are confirmed, given the released code lowers the bar for independent reproduction.
+
+### C-20261030-06 · Where You Inject Matters: The Trust Region Effect in LLM Agents
+
+- **Class:** B
+- **Date discovered:** 2026-10-30
+- **Date published:** 2026-10-28
+- **Source:** https://arxiv.org/abs/2610.38867 (verified)
+- **Organization/researchers:** Chengquan Guo, Xiaodong Liu, Weiwei Yang, Mingqian Feng, Jialin Song, Qiyao Ma, Carolyn Buractaon, Christopher White, Bo Li, Jianfeng Gao (affiliations not stated on the abstract page — not independently re-verified this session).
+- **Category:** prompt-injection
+- **What changed:** Prior indirect-prompt-injection risk work largely varies injection *content*; this paper holds content fixed and varies *placement*, across three built agentic testbeds (tool use, coding, daily workflows), showing agents implicitly assign different trust to different regions of their environment — the "trust region effect."
+- **Technical summary:** Headline result: a GPT-5.4-powered agent followed an unsafe instruction placed in a repository documentation file (README/TODO) about 2.6x more often on average than the identical instruction placed in a code or data file. The authors also built learning-based attackers that jointly optimize injection content and placement, showing both factors compound. No defense is proposed; no code/data release stated.
+- **Why it might matter:** Lookup confirms no existing registry/course coverage of placement/trust-region effects specifically. The coding-specific finding (README/TODO trusted ~2.6x more than code/data files) is directly relevant to `research/deferred/rule-file-package-substitution.md` and `research/deferred/coding-agent-harness-mechanisms.md`, and to the accepted `capability-flow-injection-defense` topic, as a design input for where defenses most need to apply.
+- **Evidence of adoption:** None (single preprint, own testbeds).
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not stated.
+- **Paper:** https://arxiv.org/abs/2610.38867
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** `research/deferred/rule-file-package-substitution.md`, `research/deferred/coding-agent-harness-mechanisms.md`, `research/accepted/capability-flow-injection-defense.md` — mechanism-distinct (placement/trust-region effect, not a specific exploit or architectural defense); no existing registry topic covers this specific angle.
+- **Potential course lesson:** Possible extension to module-17/lesson-02 or a coding-agent lab: measure and teach the placement effect directly before teaching a trust-region-aware mitigation.
+- **Confidence:** medium (three testbeds, a concrete quantified headline number, a learning-based attacker extension; single preprint, no code, no independent replication).
+- **Recommendation:** Monitor; relevant cross-cutting evidence for several existing deferred/accepted injection-defense topics even if it doesn't become its own lesson.
+
+### C-20261030-07 · Jailbreak Connectivity: Towards Diverse, Transferable, and Universal Multimodal Large Language Model Jailbreak
+
+- **Class:** B
+- **Date discovered:** 2026-10-30
+- **Date published:** 2026-10-28
+- **Source:** https://arxiv.org/abs/2610.38091 (verified)
+- **Organization/researchers:** Xu Zhang, Ziqing Hu, Shuo Han, Ren Wang
+- **Category:** jailbreak
+- **What changed:** Proposes "Jailbreak Connectivity" (JC): effective adversarial images against multimodal LLMs are connected through low-loss regions in image space; the authors exploit this to optimize continuous adversarial paths rather than isolated point attacks, giving diverse, transferable, and distribution-level-universal jailbreak images.
+- **Technical summary:** On MM-SafetyBench: 84.01% average ASR on Qwen3-VL-8B-Instruct, 85.77% on InternVL3.5-8B, 97.95% on Gemma-3-12B-IT — exceeding the strongest compared baselines by up to 68.36 percentage points. In black-box transfer, improves on the FigStep baseline by 24.69 points against GPT-5.6 and 27.34 points against Gemini 3.1 Pro. No code release stated; no independent validation (single unreviewed preprint).
+- **Why it might matter:** Lookup confirms no existing registry/course coverage of the "low-loss-region path connectivity" framing for multimodal jailbreaks. The margin over strong baselines (up to 68pp) and black-box transfer to current frontier models is large enough to monitor, though per protocol guidance a single preprint's own ASR numbers without code or independent replication don't yet clear the A bar.
+- **Evidence of adoption:** None (single preprint).
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not confirmed.
+- **Paper:** https://arxiv.org/abs/2610.38091
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** New topic; no existing registry file on multimodal jailbreak path-connectivity specifically.
+- **Potential course lesson:** Possible evidence for a multimodal-jailbreak lesson extension if the margin and transfer results hold up under independent testing or code release.
+- **Confidence:** low-medium (large reported margins and cross-frontier-model black-box transfer; but single preprint, no code, no independent validation).
+- **Recommendation:** Monitor for code release or independent replication before treating the reported margins as established.
+
+### C-20261030-08 · PCM: A Proof-Carrying Message Protocol for Verifiable Multi-Agent Communication
+
+- **Class:** B
+- **Date discovered:** 2026-10-30
+- **Date published:** 2026-10-29
+- **Source:** https://arxiv.org/abs/2610.39109 (verified)
+- **Organization/researchers:** Bravish Ghosh (Cygnux Labs)
+- **Category:** agent-security
+- **What changed:** Proposes attaching verifiable evidence to every claim an AI agent sends to another agent: append-only Merkle-log records with inclusion proofs, plus delegated authority tied to a recorded human approval, so a receiving agent (or offline auditor) can check a claim's evidence without re-running or trusting the sender directly — framed against today's agent-to-agent (A2A) messaging, which the paper models as accepting fabricated claims unconditionally.
+- **Technical summary:** On a 926-message benchmark containing 712 planted lies across 16 lie classes: plain A2A messaging accepts all 712 lies; models of six deployed agent-communication protocols accept 504–712 of them; PCM accepts only 10 (1.4%, 95% CI 0.8–2.6%), all involving stale (not fabricated) evidence. Two independent verifier implementations agreed on all 926 verdicts; verification took about 1ms per message. Code, spec, conformance vectors and benchmark released: github.com/Cygnux-Labs/PCM-protocol (not independently inspected this session).
+- **Why it might matter:** Lookup confirms no existing registry/course coverage of this specific claim-verification mechanism for inter-agent messages, though it is closely related to `research/deferred/execution-audit-provenance.md` (claim-anchored execution contracts for tool-agent audit trails), which already tracks a cluster of provenance/audit-binding mechanisms and explicitly lists "released code" as part of what would change its decision. PCM is a mechanism-distinct addition to that cluster (multi-agent message-level proof-carrying vs. single-agent claim-to-execution-trace binding) with its own released code and a strong quantified contrast against both naive and modeled-deployed-protocol baselines.
+- **Evidence of adoption:** None stated (single-author/single-small-company preprint; same author as the Tracekit Box item in today's C table, suggesting a prolific individual/small-team contributor rather than a validated ecosystem standard).
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Yes — github.com/Cygnux-Labs/PCM-protocol (claimed; not independently verified this session).
+- **Paper:** https://arxiv.org/abs/2610.39109
+- **Code:** github.com/Cygnux-Labs/PCM-protocol
+- **Relationship to existing course material:** `research/deferred/execution-audit-provenance.md` (WAIT) — mechanism-distinct addition to the claim/execution-provenance-binding cluster it already tracks; also touches `research/deferred/agent-tool-authorization-gates.md` tangentially (delegated-authority-to-human-approval binding).
+- **Potential course lesson:** Candidate addition to `execution-audit-provenance.md`'s evidence list for its next review (2026-11-15); if independently replicated, a possible lab exercise implementing a minimal Merkle-log claim-verification check.
+- **Confidence:** medium (code+benchmark released, strong quantified contrast with modeled real-protocol baselines; single author/company, no independent validation, author's own benchmark and own modeled baselines).
+- **Recommendation:** Add to `execution-audit-provenance.md`'s evidence for its 2026-11-15 review; monitor for independent replication given this is a single author across two related preprints this week (PCM and Tracekit Box).
+
