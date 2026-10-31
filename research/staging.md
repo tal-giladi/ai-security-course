@@ -762,3 +762,131 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Confidence:** medium (code+benchmark released, strong quantified contrast with modeled real-protocol baselines; single author/company, no independent validation, author's own benchmark and own modeled baselines).
 - **Recommendation:** Add to `execution-audit-provenance.md`'s evidence for its 2026-11-15 review; monitor for independent replication given this is a single author across two related preprints this week (PCM and Tracekit Box).
 
+### C-20261031-01 · Understanding and Mitigating Role Spoofing in LLMs
+
+- **Class:** A
+- **Date discovered:** 2026-10-31
+- **Date published:** 2026-10-29
+- **Source:** https://arxiv.org/abs/2610.40396 (verified)
+- **Organization/researchers:** Ezra Edelman, Benjamin Edelman, Surbhi Goel, Eran Malach
+- **Category:** prompt-injection
+- **What changed:** Identifies and names "role spoofing": malicious text in a tool output (e.g. a poisoned webpage an agent visits) impersonating the user by exploiting role confusion — the finding (from Ye et al. 2026, cited) that LLMs attribute "who said what" partly from a message's style rather than its labeled role. Shows models track role from both content cues (semantics/writing style) and structural cues (control tokens/formatting), and that attacks combining fake structure + fake content are highly effective.
+- **Technical summary:** In a toy setting, adversarial training that teaches a model to ignore content-based injections mitigates content-based role-spoofing but leaves the model fully susceptible to structure-based spoofing — offered as an explanation for why frontier models, hardened against many injection attacks, remain vulnerable to role spoofing specifically. Proposes a detection method using linear probes trained to predict the true role of a span in a conversation from internal activations, reporting it is effective across different settings (exact numbers not reproducible verbatim here; see paper). No code/dataset repository linked on the abstract page.
+- **Why it might matter:** `research.py lookup` found no existing registry/course coverage of role spoofing or role-confusion-as-injection-vector specifically. This decomposes *why* a known injection vector (role confusion) succeeds into two independent sub-mechanisms (content vs. structure) with different failure modes under a standard defense (adversarial training), which is directly useful for teaching why "harden against content injection" isn't sufficient — and gives a concrete, activation-probe-based detector as a countermeasure.
+- **Evidence of adoption:** None (single preprint; "toy setting" experiments for the adversarial-training result).
+- **Major organizations using it:** None stated; authors include researchers affiliated with academic ML-theory groups (Surbhi Goel, Eran Malach are established learning-theory researchers), not a named lab/company release.
+- **Open-source implementation:** Not confirmed — no code link found on the abstract page.
+- **Paper:** https://arxiv.org/abs/2610.40396
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** New topic; related to but distinct from existing injection-defense coverage (`capability-flow-injection-defense` ADD topic, `learned-trust-delimiters` WAIT topic) — this paper is about the attack-side mechanism and a detection probe, not a prevention architecture.
+- **Potential course lesson:** Possible extension to the existing prompt-injection/role-confusion material (module covering agent tool-output handling) describing the content-vs-structure decomposition and the linear-probe detector as a teaching example, once code or further validation appears.
+- **Confidence:** medium-high (reputable learning-theory authors, builds explicitly on a cited precedent, mechanism explanation is specific and falsifiable; held back from "high" by toy-setting experiments and no code).
+- **Recommendation:** Review for ADD as an extension to injection-defense/agent-security material; monitor for code release or a non-toy-setting replication of the adversarial-training finding.
+
+### C-20261031-02 · TextSeal2: Distortion-Free LLM Watermarking with Copula Mixing and Memoryless Races
+
+- **Class:** A
+- **Date discovered:** 2026-10-31
+- **Date published:** 2026-10-29
+- **Source:** https://arxiv.org/abs/2610.40613 (verified)
+- **Organization/researchers:** Tom Sander, Pierre Fernandez, Itai Gat, et al. (code hosted under `facebookresearch` GitHub org, suggesting Meta FAIR; not independently confirmed as a stated affiliation on the page)
+- **Category:** defense/guardrail
+- **What changed:** Improves distortion-free LLM text watermarking (successor to "TextSeal") so the watermark signal survives speculative decoding without changing the acceptance rate, output diversity, or adding measurable latency. Replaces TextSeal's two-key coin-flip routing (which dilutes detection because the detector doesn't know which key was used) with merging any number of keys, including publicly shared ones, into a single virtual key via a Gaussian copula, and verifies keyed drafts under speculative decoding with an extra memoryless exponential race on leftover draft races — argued to reproduce exact block verification so the output distribution matches the unwatermarked target model exactly.
+- **Technical summary:** Evaluated on three LLMs: at equal output-token diversity, detects 8–22 percentage points more 100-token watermarked answers than TextSeal at a 10^-3 false-positive rate, and is comparable to a method called "textGrain" without needing post-logits optimization. Under speculative decoding specifically, detects 18 and 22 points more 200-token answers than TextSeal and textGrain respectively, at matched acceptance rate. Code released: github.com/facebookresearch/textseal (not independently inspected this session).
+- **Why it might matter:** This is new, concrete evidence for the already-WAIT `ai-content-watermarking` topic: a measured, code-released fix for a specific real deployment problem (watermark signal loss under speculative decoding, now standard in production LLM serving) with no added latency cost. It strengthens the case that text watermarking (the deferred topic's proposed FOUNDATIONAL anchor, Kirchenbauer et al. 2023 / SynthID-Text) has an active, well-resourced research lineage worth teaching, including the speculative-decoding interaction the course's inference-optimization material would need to cover.
+- **Evidence of adoption:** Code release under a major-lab GitHub org is suggestive but not itself adoption evidence; no stated production deployment.
+- **Major organizations using it:** Likely Meta (via `facebookresearch` code org) for the underlying research; not stated as deployed in any product.
+- **Open-source implementation:** Yes — github.com/facebookresearch/textseal (claimed; not independently verified this session).
+- **Paper:** https://arxiv.org/abs/2610.40613
+- **Code:** github.com/facebookresearch/textseal
+- **Relationship to existing course material:** `research/deferred/ai-content-watermarking.md` (WAIT) — direct new evidence (code-released, measured improvement, solves a stated production-relevant problem: speculative-decoding compatibility).
+- **Potential course lesson:** Strengthens the case for the already-proposed frontier-update lesson on watermarking (green-list text watermarking from scratch + SynthID/C2PA as deployed systems); TextSeal2's speculative-decoding fix would fit as an EMERGING extension once the FOUNDATIONAL lesson exists.
+- **Confidence:** medium-high (code released, specific measured numbers against a named predecessor and a named baseline; single preprint, no independent replication).
+- **Recommendation:** Add to `ai-content-watermarking.md`'s evidence list for its 2026-11-08 review.
+
+### C-20261031-03 · SEAL: Sealed Queries for Local Sanitization against Indirect Prompt Injection
+
+- **Class:** A
+- **Date discovered:** 2026-10-31
+- **Date published:** 2026-10-29
+- **Source:** https://arxiv.org/abs/2610.39758 (verified)
+- **Organization/researchers:** Doohyun Kim, Donghwa Kang, Mingyu Jun, Brent ByungHoon Kang
+- **Category:** defense/guardrail
+- **What changed:** Proposes SEAL, a local-inference defense against indirect prompt injection for local LLM agents: an offline-learned soft prompt plus a scoring readout sanitizes untrusted tool outputs using a frozen (unmodified) task model, before the agent acts on them. Scoring queries are built from trusted initial context plus the learned prompt, so the reference used to judge tool text is independent of the tool text itself; tokens are scored without cross-context normalization, and a "preservation regularization" term is used so the sanitizer deletes suspicious spans locally while keeping useful task evidence. Needs neither attacker-generated/defense-generated tokens nor a separate verifier model.
+- **Technical summary:** On the AgentDojo benchmark, SEAL reduces attack success rate from 34.6% to 0.1%, and raises "Joint" (task completion without attack success) from 51.4% to 77.5%, while using roughly 127x fewer defense-related tokens than PISanitizer, a cited state-of-the-art prompt-injection defense. Results reported to replicate on a second model backbone with the same training recipe (claimed applicability across model families) and the method is also evaluated on a second benchmark, AgentDyn. No code/dataset repository linked on the abstract page.
+- **Why it might matter:** A large, specific measured improvement (ASR nearly eliminated, task completion substantially higher, and a named ~127x efficiency gain) over a named SOTA defense on an established agent-security benchmark (AgentDojo) is exactly the kind of "defense with measured cost" evidence the protocol treats as A-worthy. It is directly relevant to (though mechanism-distinct from) the course's existing accepted injection-defense material.
+- **Evidence of adoption:** None stated (single preprint).
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not confirmed — no code link found on the abstract page.
+- **Paper:** https://arxiv.org/abs/2610.39758
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** Relates to `research/accepted/capability-flow-injection-defense.md` (ADD, Dual LLM/CaMeL-style defenses) and `research/deferred/learned-trust-delimiters.md` (WAIT) — SEAL is a distinct mechanism (learned sanitization via scoring queries against a frozen model, not capability-flow control or trained delimiters) attacking the same AgentDojo benchmark family.
+- **Potential course lesson:** Candidate extension to the capability-flow-injection-defense lesson/lab (module-17) as a comparison point — "defenses that sanitize untrusted content before the agent reads it" vs. the already-taught "control what the agent is allowed to do with it" — once code is available to verify the reported numbers.
+- **Confidence:** medium (strong, specific numbers against a named baseline on an established benchmark; held back from "high" by no code release and single-preprint status).
+- **Recommendation:** Review for ADD as an extension/comparison to module-17's injection-defense lesson; monitor for code release to verify the reported 127x efficiency and near-zero-ASR numbers.
+
+### C-20261031-04 · Judging Before Propagation: Task-Graph Contextual Integrity for Multi-Agent Privacy
+
+- **Class:** B
+- **Date discovered:** 2026-10-31
+- **Date published:** 2026-10-29
+- **Source:** https://arxiv.org/abs/2610.39532 (verified)
+- **Organization/researchers:** Hengyu Wu, Blaise Delattre, Yang Cao
+- **Category:** agent-security
+- **What changed:** Extends Contextual Integrity (CI) for multi-agent LLM systems from judging each disclosure in isolation (possibly with recipient history) to a task-graph-native formalization, Task-Graph Contextual Integrity (TG-CI), that also accounts for how a disclosed item propagates to downstream agents along a workflow. Models a workflow as a Multi-Agent Task Graph (MATG) and introduces two enforcement policies: "Full-Scope" (an item must be admissible across its entire downstream propagation scope) and "Auto-Region" (confines an item to its maximal admissible region via lightweight frontier gates).
+- **Technical summary:** Introduces MAPLE-Bench, a new benchmark of 144 cases varying MATG topology, disclosure history, compromised-agent placement, and item-level privacy policy. In the paper's primary configuration, TG-CI reduces mean unauthorized disclosure count by 85.8–94.1% relative to a Local-History CI baseline, while retaining 93.6–96.1% of that baseline's task accuracy; the two policies trade off privacy, cost and utility differently. No code or benchmark-access link found on the abstract page.
+- **Why it might matter:** `research.py lookup` found no existing coverage of task-graph-level/propagation-aware Contextual Integrity specifically. This is a genuinely new formal angle (propagation scope, not just recipient/history) on multi-agent privacy, with a purpose-built benchmark and large, specific measured numbers, directly relevant to several already-WAIT agent-memory/multi-agent-privacy topics.
+- **Evidence of adoption:** None (single preprint; benchmark not confirmed publicly accessible).
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not confirmed — MAPLE-Bench is named but no access link found.
+- **Paper:** https://arxiv.org/abs/2610.39532
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** Relates to `research/deferred/multi-agent-topology-leakage.md` and `research/deferred/agent-mosaic-aggregation-disclosure.md` (both WAIT) — TG-CI's propagation-scope formalism is a candidate unifying mechanism for both, but is mechanism-distinct from either's current evidence base.
+- **Why class B not A:** Strong numbers but single preprint, no code/benchmark access confirmed, no independent validation, and the course already has two related WAIT topics still waiting on their own "what would change the decision" bars (independent replication / released code) — this doesn't yet clear those bars for either.
+- **Potential course lesson:** Candidate addition to the evidence lists of both related deferred topics at their next reviews.
+- **Confidence:** medium (specific, large reported numbers and a purpose-built benchmark; no code, no independent validation).
+- **Recommendation:** Add to `multi-agent-topology-leakage.md` and `agent-mosaic-aggregation-disclosure.md` evidence for their next reviews; monitor for a MAPLE-Bench release.
+
+### C-20261031-05 · InferD: A Honeypot Framework for AI Inference Infrastructure
+
+- **Class:** B
+- **Date discovered:** 2026-10-31
+- **Date published:** 2026-10-29
+- **Source:** https://arxiv.org/abs/2610.39807 (verified)
+- **Organization/researchers:** Hicham Hammouchi, Gabriele Lenzini
+- **Category:** detection/monitoring
+- **What changed:** Proposes InferD, a low-interaction honeypot framework purpose-built for AI inference infrastructure (LLM serving stacks, commercial inference APIs, vector databases, agent orchestration gateways), motivated by the observation that such services are now scanned by commodity internet scanners within hours of deployment, while existing honeypot frameworks were designed for conventional network services. Organized around "deception without inference": every observable request (model inventories, token formats, tool-call protocols, authorization flows) is answered from static response pools, and nothing an adversary submits is ever actually executed. Decomposes emulation into four deception planes (transport, service protocol, vulnerability surface, agentic session) plus a provenance plane linking a planted credential to evidence of later model-mediated processing. The page lists a DOI (10.1145/3847352.3848091), suggesting conference/workshop publication alongside the preprint.
+- **Technical summary:** Architecture/framework paper; the abstract does not state quantified deployment results (e.g. observed scanner/attacker interaction counts) within what was retrievable this session. No code/dataset repository linked on the abstract page.
+- **Why it might matter:** `research.py lookup` found no existing coverage of AI-infrastructure-specific honeypots/deception. This is a new, well-motivated tooling category (deception engineering adapted to the specific observable surface of LLM-serving/agent infrastructure) relevant to the course's infra-security and detection/monitoring material, distinct from any existing registry topic.
+- **Evidence of adoption:** None stated; apparent conference/workshop acceptance (DOI present) but not independently confirmed as published yet, and no deployment/adoption evidence.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not confirmed — no code link found on the abstract page.
+- **Paper:** https://arxiv.org/abs/2610.39807
+- **Code:** Not confirmed.
+- **Relationship to existing course material:** New topic; no existing registry file on AI-infrastructure honeypots/deception specifically.
+- **Potential course lesson:** Possible addition to infra-security/detection material (e.g. a module covering monitoring of exposed LLM-serving/agent endpoints) once quantified deployment results or code are available.
+- **Confidence:** low-medium (well-motivated, specific architecture, apparent venue acceptance; no quantified results retrieved, no code, single preprint).
+- **Recommendation:** Monitor; re-check for the published (DOI-linked) version with full results and any code release.
+
+### C-20261031-06 · Surprise Alone Learns Lies: Evidence-Gated Continual Learning for LLMs from Streaming Claims
+
+- **Class:** B
+- **Date discovered:** 2026-10-31
+- **Date published:** 2026-10-29
+- **Source:** https://arxiv.org/abs/2610.39840 (verified)
+- **Organization/researchers:** Abdelkader Metales, Miriam Grabenheinrich
+- **Category:** poisoning/backdoor
+- **What changed:** Shows that continual-learning methods for LLMs which decide what to learn by "surprise" (keeping the least-predictable inputs) are unsafe against planted misinformation: a false claim about something the model already knows is, by construction, highly surprising, so a surprise-driven learner absorbs lies at a rate similar to random selection with the same training budget. Tests three candidate defenses/signals using LoRA-adapted students (Qwen2.5-1.5B, Qwen2.5-3B, Llama-3.2-3B) learning from streams of true/false claims about invented people and real CounterFact facts.
+- **Technical summary:** (1) A judge model that must approve each claim removes lies in proportion to its own accuracy, but real LLM judges are overly cautious and reject some unsourced truths and even legitimate source-backed updates. (2) Calibrated regression tests on unrelated knowledge slow learning without filtering lies. (3) The model's own prior (whether a claim contradicts what it already knows) separates lies-about-known-facts from true-new-facts well (AUC 0.78–0.83 across the three models) but not from legitimate updates of the same kind (AUC 0.53); it saves 43% of judge calls, but an attacker with model access could choose lies that pass this check. (4) Routing contradicted claims to trusted, attacker-unplantable sources recovers legitimate updates and gives the lowest poison rate of learned claims among the signals tested — but if an attacker can plant matching sources for 30% of lies, this combined system ends up worse than the judge alone. Code released: github.com/Metalesaek/sura-metales (not independently inspected this session).
+- **Why it might matter:** `research.py lookup` confirms no existing coverage of surprise-driven continual learning as a misinformation-poisoning vector specifically (distinct from the staged self-evolution/IPI-robustness entry, C-20261030-05, which is about skill-evolution degrading injection robustness, not continual-learning absorbing false facts). This is a concrete, quantified, code-released, adaptive-adversary-aware analysis (the paper explicitly shows its best defense can be beaten by an adapted attacker) of a growing agent-design pattern (agents/models that keep learning from streaming input).
+- **Evidence of adoption:** None (single preprint).
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Yes — github.com/Metalesaek/sura-metales (claimed; not independently verified this session).
+- **Paper:** https://arxiv.org/abs/2610.39840
+- **Code:** github.com/Metalesaek/sura-metales
+- **Relationship to existing course material:** New topic; distinct from the staged `C-20261030-05` self-evolution/IPI entry (different mechanism: misinformation absorption via surprise-based data selection, not injection-robustness degradation from skill/RL evolution).
+- **Why class B not A:** Code released and adaptive-attacker analysis are real strengths, but no single defense in the paper is a clean win (the strongest combined defense is shown to be beatable by an adapted attacker, and the paper's own framing is that "none of them decides on its own whether a claim is true") — useful nuance for teaching, but not yet a mature, adoptable mitigation.
+- **Potential course lesson:** Candidate for a new poisoning/backdoor topic file covering continual-learning/self-improving-agent misinformation absorption, as a companion to the existing self-evolution-IPI staged entry.
+- **Confidence:** medium (code released, specific quantified numbers including an adaptive-attacker result; single preprint, no independent validation).
+- **Recommendation:** Open a new topic file (or fold into a shared "self-evolving/continual-learning agent robustness" cluster with C-20261030-05) at the next weekly review; monitor for independent replication.
+
