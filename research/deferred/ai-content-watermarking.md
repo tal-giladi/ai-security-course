@@ -4,7 +4,7 @@
 - **Status:** WAIT
 - **Next review:** 2026-11-08
 - **Course change:** none
-- **Candidates:** C-20261010-03, C-20261011-01, C-20261024-03
+- **Candidates:** C-20261010-03, C-20261011-01, C-20261024-03, C-20261026-08, C-20261031-02
 
 ## Summary
 
@@ -18,6 +18,8 @@ Same-week preprints: ProxyEraseAgent removes invisible image watermarks blind vi
 - https://arxiv.org/abs/2610.12106 — 'Could LLM Watermark Detection Be Public?' (design, no results)
 - https://arxiv.org/abs/2610.30601 — HiMark hierarchical multi-bit text watermark (90.01% extraction under paraphrase, 32 bits / 300 tokens; no code). Added 2026-10-25.
 - FOUNDATIONAL anchors verified this run: https://arxiv.org/abs/2301.10226 — Kirchenbauer et al., 'A Watermark for Large Language Models', ICML 2023; Dathathri et al., 'Scalable watermarking for identifying large language model outputs', Nature 634:818–823 (2024), DOI 10.1038/s41586-024-08025-4 — SynthID-Text, deployed in Gemini, open-source at https://github.com/google-deepmind/synthid-text. Added 2026-10-25.
+- https://arxiv.org/abs/2610.32017 — SynMark: semantic-coordinate multi-bit code watermark, 82–84% bit accuracy under 100% identifier renaming (preprint, no code). Added 2026-11-01.
+- https://arxiv.org/abs/2610.40613 — TextSeal2 (Sander, Fernandez et al.; code claimed at github.com/facebookresearch/textseal): distortion-free watermark that survives speculative decoding at matched acceptance rate; +8–22pp detection vs TextSeal at FPR 1e-3 (preprint). Added 2026-11-01.
 
 ## What would change the decision
 
@@ -28,3 +30,4 @@ A scope decision first: a lesson should be anchored on the FOUNDATIONAL, deploye
 - 2026-10-11 — WAIT — a genuine coverage gap, but this week's evidence is three fresh preprints; an ADD should be built on the verified foundational literature and needs a placement/scope decision (M20 extension vs frontier update) — weekly/2026-W41.md — candidates C-20261010-03, C-20261011-01
 - 2026-10-18 — WAIT — four more preprints this week (WaveMark image robustness; TI-WM tokenizer-invariant text, with numbers; CamoMark watermark survival under Byzantine aggregation; PinIt key-free multi-bit message displacement, code released) deepen both attack and defense sides but do not change the scope decision; still to be built on verified foundational literature; next review 2026-10-25 as scheduled — weekly/2026-W42.md — candidates C-20261013-03, C-20261014-07, C-20261014-08, C-20261015-16
 - 2026-10-25 — WAIT — due today; the scope blocker is now resolved (foundational anchors verified: Kirchenbauer ICML 2023 green-list scheme, SynthID-Text Nature 2024 deployed + open-source; HiMark adds one more EMERGING multi-bit data point), but the week's single ADD went to ATT&CK v20; proposed placement for the eventual ADD: frontier update (provenance as a defense; removal/forgery/paraphrase as attacks) with a from-scratch green-list lab; next review 2026-11-08 — weekly/2026-W43.md — candidates C-20261024-03
+- 2026-11-01 — WAIT — evidence recorded ahead of the 2026-11-08 scheduled scope decision (not due this week) — weekly/2026-W44.md — candidates C-20261026-08, C-20261031-02

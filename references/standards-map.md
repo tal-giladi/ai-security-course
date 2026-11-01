@@ -82,6 +82,7 @@ Rows added by the weekly curriculum review (`research/`); existing tables above 
 | OWASP LLM01:2026 Prompt Injection / LLM03:2026 Excessive Agency — architectural (by-design) mitigation: plan isolation, capability flow control, per-branch bounds for computer-use agents | [17.2](../lessons/module-17/lesson-02.md) | lab-33 | 2026-10-11 |
 | OWASP LLM04:2026 Supply Chain / LLM03:2026 Excessive Agency — agent skills as a supply-chain trust boundary: authentic-but-unsafe skills (prose / cache≠source / under-declared capability / cross-skill artifact); scanner + checked-hash loading + capability enforcement + cross-skill provenance | [22.2](../lessons/module-22/lesson-02.md) | lab-34 | 2026-10-18 |
 | MITRE ATT&CK v20 T1698/T1699 Prompt Injection → T1700 AI-Enabled Exfiltration (+ T1608.007 AI Result Poisoning) — mapping findings to ATT&CK; DET0927-style correlation analytic vs adaptive exfiltration; provenance hardening and its FP cost | [F.2](../lessons/frontier/update-02.md) | lab-35 | 2026-10-25 |
+| OWASP Agentic Top 10 (2026) ASI06 Memory & Context Poisoning / MITRE ATLAS AML.T0080.000 AI Agent Context Poisoning: Memory — misattributed, laundered and cross-user memory writes; runtime-assigned trust zones + scope + promotion gate (persistence ≠ authority) | [16.2 ext.](../lessons/module-16/lesson-02.md) | lab-36 | 2026-11-01 |
 
 ## MITRE ATT&CK v20 — AI techniques (added 2026-10-25)
 

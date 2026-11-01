@@ -161,6 +161,13 @@ Only as much classical security as AI security requires — no generic pentest c
   broken by ride-along/encoding/session-split, and hardened with runtime provenance at a measured FP
   cost. Frontier update; depends on M05, M16, M17.2, M23, M26, F.1. Layer: Current. Lab:
   `labs/lab-35-attack-ai-detection`.
+- **16.2 extension — trust-zoned memory** (added 2026-11-01) — three ways a poisoned memory earns a
+  *trusted* source tag (misattributed role markers, self-note laundering, cross-user shared memory)
+  and the structural fix: runtime-assigned zones from the ingestion channel + scope + a promotion
+  gate, i.e. persistence ≠ authority; noninterference checked as a property, utility cost measured.
+  Appended to lesson 16.2 as an advanced extension; depends on M16.1, M16.2, M05, M15. Layer:
+  Current (OWASP ASI06, ATLAS AML.T0080.000) → Emerging (ZoneClaw, SAFE-Mem, PerMIT). Lab:
+  `labs/lab-36-trust-zoned-memory`.
 
 ---
 
@@ -199,6 +206,7 @@ Only as much classical security as AI security requires — no generic pentest c
 | 17.2 Injection defense by design (plan isolation, capabilities, branch steering) | M05, M16, M17 | Current→Emerging | `labs/lab-33-capability-flow` |
 | 22.2 Agent skills as a supply-chain trust boundary | M22.1, M17.1, M16.2, M13 | Current→Emerging | `labs/lab-34-skill-supply-chain` |
 | F.2 MITRE ATT&CK v20 AI techniques & AI-enabled exfiltration detection | M05, M16, M17.2, M23, M26, F.1 | Current (T1608.007 research: Emerging) | `labs/lab-35-attack-ai-detection` |
+| 16.2 ext. Trust-zoned agent memory | M16.1, M16.2, M05, M15 | Current→Emerging | `labs/lab-36-trust-zoned-memory` |
 
 *"sibling"* = provided by the LLM Research Engineer course; see `prerequisite-map.md`.
 

@@ -5,6 +5,20 @@ bar in [the weekly review protocol](research/PROTOCOL-weekly.md). New material e
 existing lessons and labs; it never replaces them. "No curriculum changes this week" is a normal
 entry.
 
+## 2026-W44 (2026-11-01)
+
+- **Added** an advanced extension to lesson [16.2 · Agent memory poisoning & stealth](lessons/module-16/lesson-02.md):
+  *trust-zoned memory*. It shows three ways a poisoned memory still earns a *trusted* source tag
+  (a quoted `User:` role marker, the agent's own note written after reading attacker text, and a
+  hostile peer writing to shared org memory). It then teaches the structural fix several groups
+  converged on in 2026: the runtime assigns each write a zone from the channel it arrived on, checks
+  scope, and lets a LOW claim gain authority only through a confirmed promotion, so persistence is
+  not authority. Noninterference is checked as a property, the utility and false-positive cost is
+  measured, and adaptive attacks show what zoning does not guarantee. Maps to OWASP Agentic ASI06
+  and MITRE ATLAS AML.T0080.000. Lab:
+  [Lab 36 · Trust-zoned agent memory](labs/lab-36-trust-zoned-memory/README.md). Nothing existing
+  was changed. Review: [research/weekly/2026-W44.md](research/weekly/2026-W44.md).
+
 ## 2026-W43 (2026-10-25)
 
 - **Added** frontier lesson [F.2 · MITRE ATT&CK v20: AI techniques & detecting AI-enabled

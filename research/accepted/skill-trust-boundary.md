@@ -4,7 +4,7 @@
 - **Status:** ADD
 - **Next review:** on new evidence
 - **Course change:** `lessons/module-22/lesson-02.md` (new lesson 22.2, added 2026-10-18); `labs/lab-34-skill-supply-chain/`; `_sidebar.md`; `curriculum/course-outline.md`; `references/standards-map.md`
-- **Candidates:** C-20261001-01, C-20261001-05, C-20261009-03, C-20261010-02, C-20261012-01, C-20261014-01, C-20261015-04, C-20261015-08
+- **Candidates:** C-20261001-01, C-20261001-05, C-20261009-03, C-20261010-02, C-20261012-01, C-20261014-01, C-20261015-04, C-20261015-08, C-20261026-04, C-20261027-01, C-20261030-01
 
 ## Summary
 
@@ -35,6 +35,9 @@ Multi-group, independently reproduced, with real-world adoption/incidents and me
 
 Earlier cluster evidence (TrustProbe, CoordPoison, APEX, Skill Constellations) recorded in the
 history below.
+- https://arxiv.org/abs/2610.32155 — KnotScryer: capability-flow graph over 13,598 real ClawHub skills finds 612 insecure compositions of individually-clean skills; 13.7% of chains made only of scanner-'safe' skills (preprint, no code stated). Confirms the 22.2 thesis that per-skill audit is insufficient. Added 2026-11-01.
+- https://arxiv.org/abs/2610.35082 — CoSA: adding benign-looking skills (≤5% of a pool) raises policy violations 35.0% → 58.5% across 5 LLMs × 3 harnesses; a harness-level info-flow/authorization guard cuts OpenClaw recruiting violations 65.3% → 6.7% at ~1.7pp benign-task cost (preprint, no code stated) — the same cross-skill-provenance control 22.2 teaches. Added 2026-11-01.
+- https://arxiv.org/abs/2610.37901 — Scan Before You Install (Elovici/Shabtai group): composite-skill scanner F1 0.991 on SCR-Bench vs 0.82–0.86 SkillsGuard; 53/59 analyst-confirmed findings in 23 of the 75 most-starred skill repos, 10 disclosed (preprint, no code link). Added 2026-11-01.
 
 ## What would change the decision
 
@@ -47,3 +50,4 @@ editing the lesson.
 - 2026-10-04 — WAIT — genuinely new attack surface, four independent groups, one measured defense with a stated utility cost; "skills" ship in mainstream agents, so likely to grow — but days old, no independent replication yet; ADD budget used on egress covert channels — weekly/2026-W40.md — candidates C-20261001-01, C-20261001-05
 - 2026-10-11 — WAIT — two further independent groups — the first measured defense with an FPR (EAV) and the first ecosystem-scale propagation measurement — make this the strongest attack-surface WAIT; still all single fresh preprints with unconfirmed code; due 2026-11-08 and a leading ADD candidate then — weekly/2026-W41.md — candidates C-20261009-03, C-20261010-02
 - 2026-10-18 — ADD — matured past the bar: multiple independent groups across attack (prose/cache/under-declaration/cross-skill) and defense (EAV, SkillRelayGuard) with released code and real marketplace base-rate measurement (6,309 and 31,132 and 98,380 skills), real industry incidents (ClawHavoc, ToxicSkills), 157 confirmed-malicious skills removed after responsible disclosure, and a mainstream standard (`SKILL.md`, 40+ platforms) with official security guidance. Framed as a supply-chain node (M22.2) extending the 22.1 gate, not a replacement. New lesson 22.2 + Lab 34 (9 tests; full suite 153 passed) — weekly/2026-W42.md — candidates C-20261012-01, C-20261014-01, C-20261015-04, C-20261015-08
+- 2026-11-01 — ADD — no course change: three more independent groups confirm the taught cross-skill thesis and the provenance-guard fix with measured numbers; a short 'measured at scale' note in 22.2 may be added if any of them releases code — weekly/2026-W44.md — candidates C-20261026-04, C-20261027-01, C-20261030-01

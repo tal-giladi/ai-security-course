@@ -126,6 +126,7 @@
   - [Lab 33 · Capability flow control & branch steering (17.2)](labs/lab-33-capability-flow/README.md)
   - [Lab 34 · Agent skills as a supply-chain trust boundary (22.2)](labs/lab-34-skill-supply-chain/README.md)
   - [Lab 35 · ATT&CK v20 AI-enabled exfiltration detection (F.2)](labs/lab-35-attack-ai-detection/README.md)
+  - [Lab 36 · Trust-zoned agent memory (16.2)](labs/lab-36-trust-zoned-memory/README.md)
 
 - **Reference**
   - [Standards map: OWASP / ATLAS / NIST](references/standards-map.md)
