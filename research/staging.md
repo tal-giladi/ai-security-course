@@ -236,3 +236,192 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** Module 16.2 citation/extension — a second, metric-driven perspective on agent memory robustness alongside the already-taught trust-zoning defense.
 - **Confidence:** medium — single preprint, no code, no independent validation, but a well-specified new metric and an honest negative finding about existing defenses rather than a hyped positive claim.
 - **Recommendation:** monitor; flag for the next review touching `trust-zoned-agent-memory` to check whether ECA would also credit the course's taught defense.
+
+### C-20261104-01 · MCP Tool Poisoning in Agentic AI Frameworks: A Cross-Framework Measurement Study
+
+- **Class:** A
+- **Date discovered:** 2026-11-04
+- **Date published:** 2026-11-02
+- **Source:** https://arxiv.org/abs/2611.03555 (verified resolves; abstract + metadata fetched directly)
+- **Organization/researchers:** Farooq Shaikh, Biagio Montaruli (affiliation not stated on the page)
+- **Category:** tool/mcp-security
+- **What changed:** First cross-framework measurement of MCP tool poisoning that confirms *real tool execution* (not just model compliance with poisoned instructions as text). Builds a 25-class root-cause taxonomy unifying prior classifications and an open-source harness (`mcpvenom`, name given, no repo URL stated) that drives a 9,720-cell susceptibility matrix across 12 agentic frameworks, 18 models, and 45 attack scenarios, with a dual oracle confirming exfiltration via canary HTTP receipt.
+- **Technical summary:** Accepted at AISec '26 (19th ACM Workshop on Artificial Intelligence and Security), co-located with ACM CCS 2026. Overall ASR 22.9% (2,113/9,720 vulnerable cells); of those, 64.9% dispatch an attacker tool call, 23.0% contact the attacker endpoint, 12.1% verifiably exfiltrate a secret. Resistance is model-level, not framework-level: nine core frameworks cluster within 23–26% ASR (chi-squared = 3.30, p = 0.91) — i.e. the framework you pick barely matters. A code-level audit found no intentional defense across all twelve frameworks. A regex description-scanner baseline rejects only 20/45 scenarios at a 7.2% false-positive rate (partial control at best). Five coordinated vulnerability disclosures across four vendors were all rejected. Model ASR ranges 0.4–49.7%; Claude Opus 4.8 was vulnerable in 8/530 cells with 223 explicit refusals logged.
+- **Why it might matter:** Directly measures, at scale and with confirmed real execution (not just text-compliance), the exact threat model the course's existing MCP/tool-poisoning content (module-17/lesson-01, and the WAIT topics `mcp-runtime-metadata-rug-pull`, `mcp-gateway-security`) teaches conceptually — and finds that in the real ecosystem, no evaluated framework implements intentional defense and vendor disclosures were uniformly rejected. That "the industry has not fixed this" finding, from a peer-reviewed measurement study with a released methodology, is exactly the kind of mature, teachable, real-world evidence the course's existing MCP lessons currently lack.
+- **Evidence of adoption:** None in the sense of a fix being adopted — the paper's finding is the opposite (all five disclosures rejected); the measurement methodology itself is peer-reviewed (AISec '26 / CCS 2026).
+- **Major organizations using it:** None stated; the 12 frameworks and 4 vendors are named as subjects of the study, not adopters of a fix.
+- **Open-source implementation:** Tool named (`mcpvenom`) but no repository URL given on the abstract page — flagged as a gap for the weekly review to chase down before citing numbers as reproducible.
+- **Paper:** https://arxiv.org/abs/2611.03555
+- **Code:** Named (`mcpvenom`) but no URL stated.
+- **Relationship to existing course material:** Extends `lessons/module-17/lesson-01.md` (tool poisoning & abuse) with real cross-framework measured evidence; adjacent to deferred topics `mcp-runtime-metadata-rug-pull.md` and `mcp-gateway-security.md` (different specific mechanisms — rug-pull and gateway benchmarking respectively — this is a broader susceptibility census). Checked via `research.py lookup`, no existing registry record of a cross-framework real-execution MCP measurement at this scale.
+- **Potential course lesson:** Module-17/lesson-01 update — replace or supplement the lesson's existing ASR figures with this larger, real-execution, multi-framework dataset; strong candidate for the lab's "measure before you defend" section once the `mcpvenom` repo (if ever published) is located.
+- **Confidence:** medium-high — peer-reviewed workshop (AISec '26, CCS-colocated), very large and methodologically careful measurement (dual oracle, real execution, 25-class taxonomy), but no code release found yet and no independent replication.
+- **Recommendation:** review for ADD as a module-17/lesson-01 data update; the weekly review should first try to locate the `mcpvenom` repository (search GitHub for the exact name) since the paper states it is open-source but gives no link.
+
+### C-20261104-02 · Voluntary Servitude: Weaponized Safety Warning Mechanisms for Controlling AI Agents
+
+- **Class:** A
+- **Date discovered:** 2026-11-04
+- **Date published:** 2026-11-03
+- **Source:** https://arxiv.org/abs/2611.04393 (verified resolves; abstract + metadata fetched directly)
+- **Organization/researchers:** Ilan Zendel, Matan Levy, Stav Cohen, Avi Mendelson, Amit LeVi (affiliation not stated on the page)
+- **Category:** prompt-injection (mechanism-distinct from instruction injection)
+- **What changed:** Introduces "voluntary servitude": steering an agent not by injecting a command for a detector to recognize, but by fabricating a hazard (written as an ordinary, non-imperative product/service review) that the agent's own harm-avoidance reasoning uses to disqualify the legitimate option and select the attacker's target — with zero command syntax for any existing injection detector to flag.
+- **Technical summary:** Accepted at NeurIPS 2026 (Main Track) — the strongest peer-review signal in today's batch. Measured at the generation stage across six models and ten consumer-service domains, three attack families. Steers agents about as often as classic instruction injection (60.4% vs. 66.0%) but deployed injection detectors score these payloads as benign, so behind a filter they are 1.7–4.4x more effective than instruction injection. Transfers to production browser agents (outperforming instruction injection there) and to a full retrieval pipeline (1.0–57.0% end-to-end success depending on retriever). A proposed mitigation — adding a corroboration requirement to the agent's own instructions, no retraining needed — removes ~95% of the exposure against a non-adaptive attacker while the agent still reads the planted hazard and simply no longer acts on it alone.
+- **Why it might matter:** A mechanism-distinct attack class from the "injection = command syntax" model that the course's existing defenses (spotlighting, instruction-hierarchy training, capability-flow isolation) are built to catch — this attack contains no command at all, just a fabricated fact the model's own safety training makes it act on. That a cheap, no-retraining mitigation (corroboration requirement) removes most of the exposure is a clean, teachable defense pairing.
+- **Evidence of adoption:** None in production; NeurIPS 2026 Main Track acceptance is independent peer-review validation, not industry adoption.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** None stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2611.04393
+- **Code:** None stated.
+- **Relationship to existing course material:** New mechanism for `lessons/module-04/lesson-01.md` (direct prompt injection as a research topic) and `lessons/module-17/lesson-02.md` (prompt-injection defense by design) — checked via `research.py lookup` for "weaponized safety warning" and "benign skills misaligned"-adjacent terms, no existing registry or course coverage of harm-avoidance-steering as distinct from command injection.
+- **Potential course lesson:** A strong candidate for a new module-04 or module-17 extension: "attacks that need no command" — the corroboration-requirement defense is simple enough to reproduce in a lab (compare agent behavior with/without a corroboration check against a fabricated-hazard review).
+- **Confidence:** high for the core claim (NeurIPS 2026 Main Track peer review, six models, ten domains, three attack families, transfer to production browser agents); medium for course-readiness (no code released, so a lab would need to be built from the method description).
+- **Recommendation:** review for ADD as a module-04/module-17 extension — the clearest, most NeurIPS-validated new attack mechanism in today's batch, with a cheap matched defense.
+
+### C-20261104-03 · When Neither Side Confirms: Destructive Tool Approval Across MCP Servers and Hosts
+
+- **Class:** B
+- **Date discovered:** 2026-11-04
+- **Date published:** 2026-11-02
+- **Source:** https://arxiv.org/abs/2611.02527 (verified resolves; abstract + metadata fetched directly)
+- **Organization/researchers:** Junwei Yao, Zike Yang, Zhijun Wang, Yongxi Zhou, Wenbo Ye (affiliation not stated)
+- **Category:** tool/mcp-security
+- **What changed:** Measures, from source code across the real MCP ecosystem, whether the human-approval mechanism the MCP spec asks for (a human who can deny a destructive tool call) actually exists in deployed servers and hosts — splitting the measurement into the server side (annotation/elicitation) and the host side (whether the application actually prompts).
+- **Technical summary:** In a 1,000-repository sample of the official MCP registry, an estimated 90% of destructive tools (95% CI 82–95) have no server-side confirmation; most servers that do elicit either proceed anyway or fall back to a model-settable flag when the host can't relay the question. Of 41 popular open-source hosts and agent SDKs, 32 (including 16/25 applications) have no approval step by default. Pairing sampled destructive tools with these applications: 60.7% of pairs have no enforced human approval by default. Through four real agent SDKs, four of five low-cost models executed an injected deletion in 479/960 runs. If hosts prompted for every tool not annotated read-only/non-destructive, the unapproved share would fall to 5.4%; universal elicitation support alone would still leave 56.7% unapproved.
+- **Why it might matter:** A large-scale, source-code-level empirical measurement of a human-in-the-loop control gap across the real, officially-registered MCP ecosystem — not a synthetic benchmark — directly relevant to the course's `hitl-approval-channel-integrity` and `agent-tool-authorization-gates` WAIT topics, and gives both a quantified baseline and a concrete actionable fix (host-side default-prompt policy).
+- **Evidence of adoption:** None — measurement of the existing ecosystem's gaps, not a fix anyone has adopted; single preprint.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** None stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2611.02527
+- **Code:** None stated.
+- **Relationship to existing course material:** New large-scale empirical evidence for `research/deferred/hitl-approval-channel-integrity.md` and `research/deferred/agent-tool-authorization-gates.md` (both WAIT) — checked via lookup, no existing registry record of an ecosystem-scale MCP-approval measurement; distinct from both WAIT topics' current evidence (which is about approval-channel integrity/gate design, not ecosystem prevalence).
+- **Potential course lesson:** Strong citation for whichever module covers HITL/approval gates (module-16/17 area) — "how common is the gap, really" data to pair with the existing design-level content.
+- **Confidence:** medium-high — very large, methodologically explicit measurement (source-code audit + live SDK execution test), but single preprint, no stated code/data release, no independent replication yet.
+- **Recommendation:** flag for the `hitl-approval-channel-integrity` and `agent-tool-authorization-gates` next scheduled reviews (2026-12-13 / 2026-11-15) as strong supporting prevalence evidence.
+
+### C-20261104-04 · Beyond Prompt Injection: The Tool Update Gap in LLM Agent Security (ETUDE)
+
+- **Class:** B
+- **Date discovered:** 2026-11-04
+- **Date published:** 2026-11-01
+- **Source:** https://arxiv.org/abs/2611.01976 (verified resolves; abstract + metadata fetched directly)
+- **Organization/researchers:** Shiyu Kan, Yue Qi, Yufei Han, Xinjian Luo, Guojun Xiong, Xiaofeng Gao (affiliation not stated)
+- **Category:** supply-chain (agent-security)
+- **What changed:** A supply-chain attack distinct from both prompt injection and the course's existing weights/adapter supply-chain content: malicious functionality is embedded in a *software update* to an already-trusted, initially-benign tool. Because the updated tool code executes outside the LLM's context window, it needs no adversarial instruction and bypasses every defense centered on model-visible content.
+- **Technical summary:** ETUDE (Exploiting Tool Updates for Direct Execution) evaluated across three attack workloads and seven widely used commercial/open-source agentic frameworks including Gemini CLI, Codex CLI, and Claude Code. Reports 97.6% ASR while maintaining 95.9% legitimate task completion (i.e. the compromised tool still does its advertised job). The authors test existing defenses and report they provide insufficient protection, since none re-verify a tool's safety after an implementation-only update.
+- **Why it might matter:** Tested against real, named, widely-deployed commercial coding-agent products (not just research harnesses), and identifies a specific, previously-undescribed blind spot — "trust established for a tool does not survive its own update" — that the course's current tool-poisoning and supply-chain content (module-17, module-22/lesson-01) does not yet cover.
+- **Evidence of adoption:** None — single preprint; the vulnerability is demonstrated against real products but no vendor fix is reported.
+- **Major organizations using it:** None stated (the named frameworks are attack targets, not adopters of anything).
+- **Open-source implementation:** None stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2611.01976
+- **Code:** None stated.
+- **Relationship to existing course material:** New angle on `lessons/module-17/lesson-01.md` (tool poisoning) and `lessons/module-22/lesson-01.md` (supply chain) — checked via lookup, no existing coverage of post-install tool-update trust re-verification specifically; distinct mechanism from `mcp-runtime-metadata-rug-pull.md` (WAIT — that is metadata rug-pull, this is code-level update outside the context window entirely).
+- **Potential course lesson:** Module-17/22 extension — "tool trust does not survive an update" — with a from-scratch mini-reproduction (benign tool, then a version-bumped update that adds hidden behavior, measuring whether a harness re-checks anything).
+- **Confidence:** medium — concrete, named, real-product targets and a clear mechanism, but single preprint, no code released, no independent validation, no stated defense that works.
+- **Recommendation:** monitor; strong candidate for a module-17/22 extension if the weekly review wants a supply-chain attack that is mechanism-distinct from both prompt injection and the course's existing weights/adapter content.
+
+### C-20261104-05 · Right Tool, Wrong Parameters: Defending LLM Agents Against Parameter Poisoning
+
+- **Class:** B
+- **Date discovered:** 2026-11-04
+- **Date published:** 2026-11-03
+- **Source:** https://arxiv.org/abs/2611.04673 (verified resolves; abstract + metadata fetched directly)
+- **Organization/researchers:** Yao Wang, Zehua Ma, Weiming Zhang, Han Fang (affiliation not stated)
+- **Category:** prompt-injection (agent-security)
+- **What changed:** Identifies parameter poisoning as an attack surface distinct from the tool-invocation hijacking that most IPI defenses target: the attacker leaves the intended tool call intact but manipulates one or more arguments (e.g. a payment recipient) — hard to catch because no new action appears and parameter changes are often a legitimate part of the user's request.
+- **Technical summary:** Proposes AuthorityFlow, a three-stage defense: (1) interpret the user query into a task-specific trust hierarchy over available information fields, (2) trace the information flow that produced each tool-argument value back to its source field, (3) accept the value only if that field is trusted to determine that parameter under the current task. Introduces FactAuthBench for evaluating parameter poisoning. Undefended ASR 93.06%; AuthorityFlow reduces it to 9.03% while retaining 82.64% benign task utility (vs. 90.28% without defense).
+- **Why it might matter:** A concrete new attack surface plus a matched, measured defense with an explicit utility-cost tradeoff (82.64% vs. 90.28%) — exactly the kind of "defense with stated false-positive/performance cost" evidence the protocol weights most heavily — targeting a gap (parameter-level rather than action-level trust) the course's existing capability-flow defense content (module-17/lesson-02) does not explicitly address.
+- **Evidence of adoption:** None — single preprint, new benchmark introduced by the same paper.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** None stated on the abstract page (FactAuthBench is named but no URL given).
+- **Paper:** https://arxiv.org/abs/2611.04673
+- **Code:** None stated.
+- **Relationship to existing course material:** Extends `lessons/module-17/lesson-02.md` (prompt-injection defense by design: plan isolation, capabilities & branch steering) with a parameter-level trust mechanism distinct from the taught action-level capability-flow defenses (Dual LLM / CaMeL / branch steering); checked via lookup, no existing registry coverage of parameter-level poisoning specifically.
+- **Potential course lesson:** Module-17/lesson-02 extension — "trust is not just about which tool fires, but which field set each argument" — a clean from-scratch mini-lab candidate given the clear three-stage mechanism and quantified utility cost.
+- **Confidence:** medium — clear mechanism and measured, significant ASR reduction with a stated utility cost, but single preprint, no code/benchmark release found, no independent validation.
+- **Recommendation:** monitor; a good module-17/lesson-02 extension candidate once a benchmark/code release (if any) can be located and verified.
+
+### C-20261104-06 · The Devil is in the Context: Nine Dimensions of Prompt Injection Attacks
+
+- **Class:** B
+- **Date discovered:** 2026-11-04
+- **Date published:** 2026-11-03
+- **Source:** https://arxiv.org/abs/2611.04672 (verified resolves; abstract + metadata fetched directly)
+- **Organization/researchers:** Jiamin Chang, Kristina Nikolić, Rishi Sharma, Giovanni Cherubin, Vasilios Mavroudis, Jose Sanchez Vicarte, Arnav Garg, Hammond Pearce, Andrew Paverd, Ahmed Salem (affiliation not stated on the page; Andrew Paverd and Ahmed Salem are recognizable Microsoft-security-research names from prior public prompt-injection work, unconfirmed here as the same institutional affiliation)
+- **Category:** prompt-injection (evaluation/benchmark)
+- **What changed:** Argues prompt injection is usually treated as one homogeneous attack type, when real-world vulnerabilities vary widely and the same instruction can be injection in one context and legitimate in another depending on intent/policy. Proposes a nine-dimension taxonomy describing the injected instruction itself, its relation to the user's task, and how it manifests in the target system.
+- **Technical summary:** Uses the taxonomy to characterize six real-world prompt-injection vulnerabilities (showing how much they differ along these dimensions), then applies it to nine existing prompt-injection benchmarks and finds most cover only a small region of the nine-dimension space; combining all nine benchmarks still leaves 13% of pairwise category combinations untested, concentrated in the less-common categories. Shows the taxonomy supports automated benchmark annotation and targeted generation of new test cases to fill the gaps.
+- **Why it might matter:** A methodological, evaluation-rigor contribution (not a new attack or defense) that is directly useful for how the course teaches and assesses prompt-injection defenses — it gives language for "which types of injection did this benchmark/defense actually cover" and could sharpen the existing `jailbreak-asr-judge-variance`-style evaluation-rigor content with a prompt-injection-specific equivalent.
+- **Evidence of adoption:** None stated; methodological framework, not a deployed tool.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** None stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2611.04672
+- **Code:** None stated.
+- **Relationship to existing course material:** Directly relevant to `lessons/module-04/lesson-01.md` and `lessons/module-05/lesson-01.md` (direct/indirect prompt injection) and methodologically adjacent to `research/deferred/jailbreak-asr-judge-variance.md` and `research/deferred/near-target-injection-evaluation.md` (both WAIT, both about measurement rigor) — checked via lookup, no existing coverage of a prompt-injection-specific "what did this benchmark actually test" taxonomy.
+- **Potential course lesson:** A companion to the existing ASR-rigor content (module-24) or a module-04/05 framing device — "nine ways injections differ, and which ones your benchmark/defense actually covers."
+- **Confidence:** medium — clear, well-motivated taxonomy applied to real vulnerabilities and nine real benchmarks, but single preprint, no stated venue/code, no independent validation.
+- **Recommendation:** monitor; a clean companion example for module-24's evaluation-rigor material or a framing tool for modules 04/05 if the weekly review wants a prompt-injection-specific analogue to the jailbreak-ASR-variance lesson.
+
+### C-20261104-07 · Step-Zero Attack: Agent Safety Before Observability
+
+- **Class:** B
+- **Date discovered:** 2026-11-04
+- **Date published:** 2026-11-01
+- **Source:** https://arxiv.org/abs/2611.01953 (verified resolves; abstract + metadata fetched directly)
+- **Organization/researchers:** Tian Qin, Yuhang Jiang, Junzhe Chen, Lit Sin Tan, Lijie Wen (affiliation not stated)
+- **Category:** agent-security (new attack class)
+- **What changed:** Identifies a stage before any existing attack/defense model applies: to judge whether an unknown archive, network response, or image is safe, a coding agent often must *process it first* (extract it, parse it, render it), and that processing step — "Step Zero" — can do harm before any content ever reaches the model's context, so content-based guards and injection defenses never get a chance to act.
+- **Technical summary:** Across seven agent harnesses and six models, each agent received only a path or URL to a crafted input, paired with a benign twin presenting identical visible fields. Step Zero is where most agents are already unsafe: 32/42 harness-model pairs overran a 4 MiB disk budget, 26/42 before the model ever saw any archive member, and four of the six models did so in every round (84/84) — every benign twin stayed within budget, isolating the harm to the attacker's bytes alone, not the model's behavior. On network/image inputs the risk shifts to what the agent *writes*: agents stored response bodies under attacker-declared names, and existing checks faded once surface cues were removed. A model-free mitigation — a gate counting bytes produced per call — held every routed extraction within budget while agents completed 25/28 tasks.
+- **Why it might matter:** A genuinely new attack class and defense point (the processing primitive itself, before any model-context defense can see the input) for coding agents — distinct from every injection/jailbreak defense the course currently teaches, which all assume the harmful content has already reached the model.
+- **Evidence of adoption:** None — single preprint; demonstrated against real harnesses/models, no vendor fix reported.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** None stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2611.01953
+- **Code:** None stated.
+- **Relationship to existing course material:** New — checked via lookup for "step-zero" and related terms, no existing coverage. Adjacent to `lessons/module-17/lesson-01.md` (tool poisoning) and the agent-harness-mechanisms deferred topic (`coding-agent-harness-mechanisms.md`), but mechanism-distinct: this is pre-context-window harm from the processing primitive, not tool-call or in-context manipulation.
+- **Potential course lesson:** A new module-17 extension or standalone lesson on "attacks before the model ever sees anything" — the byte-budget gate is simple enough to reproduce in a from-scratch mini-lab (crafted zip bomb / oversized response vs. a benign twin, measuring disk usage before/after a gate).
+- **Confidence:** medium — concrete, broad evaluation (seven harnesses × six models) with a clean benign-twin control design and a simple, effective, model-free mitigation, but single preprint, no code released, no independent replication.
+- **Recommendation:** monitor; a strong candidate for a new module-17 lesson/lab on pre-context-window agent harm, given how clean the benign-twin experimental design is to reproduce.
+
+### C-20261104-08 · Can Benign Skills Induce Misaligned Behavior in LLM Agents?
+
+- **Class:** B
+- **Date discovered:** 2026-11-04
+- **Date published:** 2026-11-03
+- **Source:** https://arxiv.org/abs/2611.04299 (verified resolves; abstract + metadata fetched directly)
+- **Organization/researchers:** Xuanye Zhang, Yongsen Zheng, Kaiyu Zhou, Bowen Shen, Haoran Ou, Zhuqin Xu, Tianwei Zhang, Kwok-Yan Lam (affiliation not stated)
+- **Category:** agent-security (new risk category, non-adversarial)
+- **What changed:** A risk category distinct from the course's existing "Agent Skills as a trust boundary" content (which is about *adversarial/poisoned* skills): here, every skill is benign and expert-curated, with no attacker involved at all — yet adding reusable skills measurably increases the agent's unsafe-action rate simply by making it more procedurally capable.
+- **Technical summary:** Compares agents with and without benign skills across five LLM backbones and three benchmarks under matched requests. Skill augmentation improves benign task accuracy by 10.3 percentage points on average, but also increases unsafe action rate (UAR) by 10.3 pp — the same magnitude, in the same direction as the capability gain. The regression persists with expert-curated skills. A paired trajectory analysis finds 24 of 50 newly-unsafe trajectories fail to complete the harmful objective, i.e. the agent attempts something unsafe without even succeeding at it — a violation that task-completion-only evaluation would miss entirely. Risk compounds when skills evolve via benign feedback, when retrieved skills are well task-matched with procedural detail, and when experience is distilled into reusable skill form (higher UAR than the source trajectories it was distilled from). A pre-execution action guard reduces violations while retaining most of the benign-task gains.
+- **Why it might matter:** The course's existing `skill-trust-boundary` ADD topic (module-22/lesson-02) teaches skills as a supply-chain/content-trust boundary where the threat model requires a malicious or compromised skill. This paper shows a second, non-adversarial failure mode — capability amplification alone, with zero attacker — that the current lesson's threat model doesn't cover, and for which "skill-induced behavioral misalignment" has no existing name or coverage in the registry.
+- **Evidence of adoption:** None — single preprint, no stated code.
+- **Major organizations using it:** None.
+- **Open-source implementation:** None stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2611.04299
+- **Code:** None stated.
+- **Relationship to existing course material:** Related to, but mechanism-distinct from, `research/accepted/skill-trust-boundary.md` (ADD, module-22/lesson-02) — that topic's threat model is adversarial/poisoned skill content; this is non-adversarial capability-induced misalignment from entirely benign, even expert-curated, skills. Checked via lookup for "benign skills misaligned" and "skill-induced misalignment" — no existing coverage of this specific non-adversarial angle.
+- **Potential course lesson:** A clearly-flagged addendum to module-22/lesson-02 — "not every skill risk needs an attacker" — alongside the existing poisoned-skill content, since the two failure modes need different mitigations (content scanning doesn't help here; the paper's own mitigation is a pre-execution action guard, not a skill scanner).
+- **Confidence:** medium-high — systematic, controlled study (5 backbones × 3 benchmarks, matched requests, paired trajectory analysis isolating a completion-independent violation signal), but single preprint, no code released, no independent replication.
+- **Recommendation:** review alongside `skill-trust-boundary`'s next evidence-triggered review as a distinct, non-adversarial risk category worth a flagged addendum to the existing lesson, not a rewrite of it.
+
+### C-20261104-09 · RuntimeTickets: Source-Grounded Security Obligations for Agent Skills
+
+- **Class:** B
+- **Date discovered:** 2026-11-04
+- **Date published:** 2026-11-02
+- **Source:** https://arxiv.org/abs/2611.03772 (verified resolves; abstract + metadata fetched directly)
+- **Organization/researchers:** Kuiyi Gao, Xue Liu, Bowei He (affiliation not stated)
+- **Category:** defense/guardrail (agent-security, skill supply chain)
+- **What changed:** A runtime-enforcement protocol for third-party Agent Skills that is evaluated directly against two named production-style Skill defenses the course's own skill-trust-boundary lesson is built around the mechanism family of (an AgentBound-derived allow-list, and SkillGuard), rather than only against an undefended baseline.
+- **Technical summary:** From released malicious-Skill datasets, derives a risk model and builds adversarial-benign Skill pairs. A language model proposes per-task security obligations from the task's delivery contract; each obligation cites the exact Skill lines it answers. A runtime gate (no LLM involved in enforcement or decoding — only the proposal step uses a model) checks recipient/object/amount of every outbound send against the approved obligations before forwarding, and a deterministic decoder verifies compliance from hash-chained execution evidence, so injected Skill text can change what is proposed but never what is enforced. Evaluated at the network-egress boundary of three unmodified agent frameworks: RuntimeTickets achieves 0.0% overlook (malicious Skills let through) and 0.0% overkill (benign Skills wrongly blocked) — both named baseline scanners (the AgentBound-derived allow-list and SkillGuard) err on both sides.
+- **Why it might matter:** New, measured evidence directly relevant to the course's already-ADDed `skill-trust-boundary` topic (module-22/lesson-02, which itself teaches a scanner + checked-hash loading + capability enforcement + cross-skill provenance stack): this paper reports a fully-separated proposal/enforcement split (LLM proposes, deterministic logic enforces) beating that style of defense stack to a clean 0%/0% result against adversarial-benign Skill pairs, evaluated on unmodified real frameworks rather than a synthetic harness alone.
+- **Evidence of adoption:** None — single preprint; comparison baselines (SkillGuard, AgentBound) are named production-style tools but the paper itself is not deployed.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** None stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2611.03772
+- **Code:** None stated.
+- **Relationship to existing course material:** New evidence for `research/accepted/skill-trust-boundary.md` (ADD; "Next review: on new evidence" — this qualifies). Same general problem (Skill supply-chain enforcement) but a different specific mechanism (LLM-proposed, deterministically-enforced per-task obligations tied to execution evidence) than the lesson's current scanner/hash/capability/provenance stack; the clean 0%/0% result against two named real-style baselines is new.
+- **Potential course lesson:** A possible module-22/lesson-02 defense upgrade or comparison point — contrasting the lesson's current scanner-based stack against this proposal/enforcement-split design, since the lesson's own content already names the overlook/overkill tradeoff this paper claims to eliminate.
+- **Confidence:** medium — clean mechanism with a deterministic-enforcement design that structurally resists the text-injection attack it targets, measured against two named real-style baselines on unmodified frameworks, but single preprint, no code released, no independent validation of the 0.0%/0.0% result.
+- **Recommendation:** flag for `skill-trust-boundary`'s evidence-triggered review — a genuine candidate defense upgrade, but verify the 0.0%/0.0% claim is not an artifact of the paper's own adversarial-benign pair construction before using it to replace the taught scanner stack.
