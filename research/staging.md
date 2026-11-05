@@ -425,3 +425,87 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** A possible module-22/lesson-02 defense upgrade or comparison point — contrasting the lesson's current scanner-based stack against this proposal/enforcement-split design, since the lesson's own content already names the overlook/overkill tradeoff this paper claims to eliminate.
 - **Confidence:** medium — clean mechanism with a deterministic-enforcement design that structurally resists the text-injection attack it targets, measured against two named real-style baselines on unmodified frameworks, but single preprint, no code released, no independent validation of the 0.0%/0.0% result.
 - **Recommendation:** flag for `skill-trust-boundary`'s evidence-triggered review — a genuine candidate defense upgrade, but verify the 0.0%/0.0% claim is not an artifact of the paper's own adversarial-benign pair construction before using it to replace the taught scanner stack.
+
+### C-20261105-01 · When File Ingestion Misleads Language Models: Measuring and Mitigating Divergences in Office Documents
+
+- **Class:** B
+- **Date discovered:** 2026-11-05
+- **Date published:** 2026-11-04
+- **Source:** https://arxiv.org/abs/2611.05806 (verified resolves; abstract fetched directly)
+- **Organization/researchers:** Penghui Li (sole listed author; affiliation not stated on the page)
+- **Category:** prompt-injection (mechanism-distinct: content-smuggling via format/extraction divergence, not injected text)
+- **What changed:** Identifies that LLM applications almost never read the Office document a human sees — they read text pulled from the underlying OOXML by an extractor library, and that extraction can diverge from the human-visible rendering in both directions (content hidden from humans but read by the model, and content visible to humans but dropped by the extractor). This divergence alone is an attack surface, with no injected instruction required.
+- **Technical summary:** Analyzes widely used OOXML extractors and finds 19 channels where hidden-from-human content reaches the model and 12 where visible content is dropped. Builds five attacks on these gaps and tests them against four chat assistants and four coding agents; every target was misled by at least one attack. Proposes Prism, a defense that reconstructs the human-visible view from the OOXML specification before the extracted text reaches the model, and reports it generalizes to attack payloads not seen during its construction.
+- **Why it might matter:** A new, mechanism-distinct document-ingestion attack surface for the course's indirect-prompt-injection and RAG-security content (module-05/module-14-15): it requires no injected command text at all, defeating any defense that only looks for adversarial instructions in the text the model receives, since the divergence happens before that text is even assembled. Tested against real, named-category products (chat assistants and coding agents), not a synthetic harness alone.
+- **Evidence of adoption:** None — single-author preprint; demonstrated against real product categories, no vendor fix reported.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** None stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2611.05806
+- **Code:** None stated.
+- **Relationship to existing course material:** New — checked via lookup for "office document injection" and related terms; only a coincidental unrelated phrase match in `lessons/module-06/lesson-01.md`. Adjacent to the course's indirect-injection content (module-05) and RAG-ingestion content (module-14/15) but mechanism-distinct from both: this is pre-injection content-smuggling via the extraction/rendering gap, not an instruction hidden in text the model already receives.
+- **Potential course lesson:** A strong, cleanly reproducible module-05 or module-14/15 extension/lab: construct a benign-looking .docx with hidden-run or off-screen OOXML content, show a chat assistant act on it while a human reviewer would never see it, then reproduce a minimal version of the Prism-style "rebuild the human view before reading" defense.
+- **Confidence:** medium — concrete, broad mechanism (19+12 extractor channels catalogued), tested against 8 real target applications across two product categories with a working defense, but single author, no venue stated, no code released, no independent replication.
+- **Recommendation:** monitor; a strong module-05/14-15 lab candidate given how mechanically simple the core attack (craft OOXML content invisible to a human renderer) is to reproduce from scratch, independent of whether Prism's code ever surfaces.
+
+### C-20261105-02 · Extracting System Prompt of LLM Services in Complex (Agentic) Settings: Hierarchical Optimization and Reliable Evaluation Metrics (ExtraHerO)
+
+- **Class:** B
+- **Date discovered:** 2026-11-05
+- **Date published:** 2026-11-03
+- **Source:** https://arxiv.org/abs/2611.04803 (verified resolves; abstract fetched directly)
+- **Organization/researchers:** Shuaidong Li, Chenhao Lin, Xinshan Yang, Chao Shen, Yufei Chen, Zhengyu Zhao (affiliation not stated on the page)
+- **Category:** prompt-injection (system-prompt leakage / extraction attack)
+- **What changed:** Argues existing system-prompt extraction attacks degrade against current production services because (a) real system prompts are now long and structurally organized rather than short free text, and (b) in agentic settings the attacker often sees only post-processed output (e.g. the agent's actions), not raw model text. Proposes ExtraHerO, which rebuilds the prompt hierarchically against a structural template and iteratively refines its adversarial queries, plus a new "adversarial utility" metric arguing that current prompt-fidelity metrics (e.g. simple text-similarity scores) can mislead about how usable an extracted prompt actually is.
+- **Technical summary:** Reports its largest gains specifically on agents (vs. plain chat services), where the output-only-visibility problem is worst for prior extraction methods. No numerical ASR/fidelity figures were obtainable from the abstract page alone (would need the full PDF).
+- **Why it might matter:** Directly extends the course's existing system-prompt-leakage content (`lessons/frontier/update-01.md`, `lessons/module-04/lesson-01.md`, OWASP LLM07 mapping in `references/standards-map.md`) with an attack-side method specifically adapted to today's longer, structured system prompts and agentic (output-only) settings, plus a methodological critique of fidelity metrics that is useful independent of the specific attack.
+- **Evidence of adoption:** None — single preprint.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** None stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2611.04803
+- **Code:** None stated.
+- **Relationship to existing course material:** Extends `lessons/frontier/update-01.md` / `lessons/module-04/lesson-01.md` (system-prompt leakage, OWASP LLM07) with an attack-side method matched to modern long/structured prompts and agentic settings; distinct from the deferred `multiturn-prompt-extraction-defense.md` (AdvGuard, WAIT, next review 2026-12-27), which is a *detection* method for multi-turn extraction attempts rather than an extraction attack or evaluation-metric critique — checked via lookup, no existing coverage of the specific attack mechanism or the fidelity-metric critique.
+- **Potential course lesson:** A module-04/frontier-update extension on "extraction attacks adapted to structured prompts and agentic output-only visibility," pairing naturally with a mention of the fidelity-metric critique when discussing how to measure extraction success honestly.
+- **Confidence:** medium — clear motivation and a named new evaluation metric addressing a real measurement gap, but single preprint, no code/venue stated, no quantitative figures confirmed beyond the abstract summary, no independent validation.
+- **Recommendation:** monitor; worth a closer read of the full PDF before the weekly review to pull concrete ASR numbers, given the fidelity-metric critique alone is a useful addition to the course's extraction-measurement discussion regardless of the specific attack's maturity.
+
+### C-20261105-03 · ScamWorld: An Interactive Environment for Evaluating Web Agents Against Online Fraud
+
+- **Class:** B
+- **Date discovered:** 2026-11-05
+- **Date published:** 2026-11-03 (v1); v2 2026-11-04
+- **Source:** https://arxiv.org/abs/2611.04879 (verified resolves; abstract fetched directly)
+- **Organization/researchers:** Yutao Wu, Xiao Liu, Ming Wen, Hanxun Huang, Jun Wang, Xingjun Ma (affiliation not stated on the page)
+- **Category:** agent-security (red-teaming/evaluation; victim-side, distinct from attacker-side phishing generation)
+- **What changed:** A reconstructed-scam-website benchmark environment (not a live/real fraud target) that reproduces documented fraud signals across scenarios, fraud mechanisms, and languages, to test whether an autonomous web agent acting on a user's behalf will fall for a scam and take a harmful action (payment, credential or wallet disclosure) rather than whether it can detect/generate phishing content.
+- **Technical summary:** Evaluated web agents built on six frontier LLMs; baseline deception rates ranged 11–35% across models. Agents were more willing to make payments than to submit credentials or wallet information. Some agents noticed suspicious signals but proceeded anyway — in some cases treating the user's original instruction as implicit approval to accept extra terms the scam site imposed. Code released: https://github.com/wuyoscar/scamworld-bench.
+- **Why it might matter:** A released, reproducible benchmark for a specific agent-security failure mode (an agent acting as a victim of fraud despite tool-use/task-completion working as designed) that is mechanism-distinct from the course's existing `agent-adaptive-phishing` WAIT topic (which is about an attacker optimizing phishing content against agent-side detection, i.e. the attack-generation side) — this is the complementary victim-side measurement, with code available for reproduction now.
+- **Evidence of adoption:** None in production; released code is independent-reproduction evidence, not adoption.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** https://github.com/wuyoscar/scamworld-bench
+- **Paper:** https://arxiv.org/abs/2611.04879
+- **Code:** https://github.com/wuyoscar/scamworld-bench
+- **Relationship to existing course material:** Mechanism-distinct complement to `research/deferred/agent-adaptive-phishing.md` (WAIT, next review 2026-12-20, scope: attacker optimizes phishing generation against agent detection) — this paper instead measures whether agents commit harmful actions as victims of pre-existing scam content; checked via lookup for "scam web agent," no existing registry coverage of this victim-side angle.
+- **Potential course lesson:** A module covering agent-as-principal risk (acting on the user's behalf against adversarial environments) — pairs well with `agent-adaptive-phishing` once both are reviewed together, since one is the generation side and one is the susceptibility side of the same general threat.
+- **Confidence:** medium — released, reproducible code and a multi-model (6 frontier LLMs) evaluation, but single preprint, no venue stated, deception-rate effect sizes (11–35%) are moderate rather than dramatic, no independent replication yet.
+- **Recommendation:** monitor; code availability makes this a good candidate to actually try reproducing before the weekly review, and to discuss jointly with `agent-adaptive-phishing` as the two halves (generate vs. fall for) of the same fraud-against-agents threat model.
+
+### C-20261105-04 · SafeStart: Mitigating the Overlooked Safety Cost of Active Expert Reduction in MoE LLM Serving
+
+- **Class:** B
+- **Date discovered:** 2026-11-05
+- **Date published:** 2026-11-04
+- **Source:** https://arxiv.org/abs/2611.06147 (verified resolves; abstract fetched directly)
+- **Organization/researchers:** Erfan Baghaei Potraghloo, Saeid Shokoufa, Seyedarmin Azizi, Arya Fayyazi, Souvik Kundu, Mehdi Kamal, Massoud Pedram (affiliation not stated on the page)
+- **Category:** defense/guardrail (serving-infrastructure safety; mechanism-distinct from training-time safety alignment)
+- **What changed:** Identifies that active-expert-reduction serving methods for Mixture-of-Experts LLMs (routing each token through fewer experts to speed up inference) measurably weaken refusal behavior under jailbreak prompts — a safety cost that is a side effect of a pure serving/efficiency optimization, not of any adversarial training-data or prompt manipulation, and that the standard efficiency benchmarks (e.g. MMLU accuracy) do not surface.
+- **Technical summary:** Across nine MoE models, three were significantly affected: harmful-compliance rate under jailbreak rose 18.4 points (Qwen1.5-MoE), 9.5 (OLMoE), and 6.6 (DeepSeek-V2-Lite) under expert reduction, while MMLU accuracy dropped under two points (i.e. the standard quality benchmark looks fine while safety silently degrades). SafeStart mitigates this by running all experts for the prompt and the first eight generated tokens before switching to the reduced set, implemented as a fused kernel in vLLM; it keeps ≥85% of the offline-decode speedup (15–28% baseline speedup at batch size 8 on one RTX A6000 from running ~two-thirds of experts) while holding the jailbreak-compliance change to -2.1 to +1.3 points across three reduction methods on the three affected models. On a held-out 889-request evaluation, undefended truncation raised harmful compliance 5.8–21.4 points; SafeStart limited the rise to 0.6–2.6 points.
+- **Why it might matter:** A measured, quantified defense with an explicit performance-cost tradeoff (≥85% speedup retained, safety degradation held near the baseline model's own level) for a safety-vs-efficiency interaction the course's existing content doesn't cover: the attack surface here is a legitimate serving optimization silently eroding safety training's effect, not an adversarial input. Directly useful to an LLM infrastructure/security engineer evaluating whether to adopt an inference speedup.
+- **Evidence of adoption:** None — single preprint; no stated production use of SafeStart itself, though the vulnerability (expert-reduction serving) it addresses is a widely used efficiency technique.
+- **Major organizations using it:** None stated for SafeStart; active-expert-reduction serving generally is a known industry efficiency pattern (not attributed to a specific named deployer in the abstract).
+- **Open-source implementation:** None stated on the abstract page (vLLM fused-kernel implementation described but no repository URL given).
+- **Paper:** https://arxiv.org/abs/2611.06147
+- **Code:** None stated.
+- **Relationship to existing course material:** New — checked via lookup; the only match was an unrelated staging.md entry (`research/staging.md` C-20261103-09, "Characterizing Recoverable Expert-Utilization Signatures," which strengthens the different `moe-router-membership-inference` WAIT topic — a privacy/membership-inference side channel from routing telemetry, mechanism-distinct from SafeStart's safety-behavior-degradation-from-serving-optimization finding). No existing registry coverage of serving-time safety degradation from expert reduction.
+- **Potential course lesson:** A new topic for whichever module covers production serving/deployment safety considerations (adjacent to but distinct from alignment-training content) — "efficiency optimizations can silently undo safety training, and standard quality benchmarks won't tell you" — with the vLLM-kernel-level defense as a concrete, quantified mitigation example.
+- **Confidence:** medium — concrete, quantified effect across nine real open-weight MoE models with a working, quantified mitigation (fused vLLM kernel), but single preprint (likely one research group), no code released, no independent replication, no stated venue.
+- **Recommendation:** monitor; a clean standalone candidate for a serving-safety topic given the quantified cost/benefit numbers on both the attack and defense sides, even without released code.
