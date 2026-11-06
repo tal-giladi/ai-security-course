@@ -509,3 +509,171 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** A new topic for whichever module covers production serving/deployment safety considerations (adjacent to but distinct from alignment-training content) — "efficiency optimizations can silently undo safety training, and standard quality benchmarks won't tell you" — with the vLLM-kernel-level defense as a concrete, quantified mitigation example.
 - **Confidence:** medium — concrete, quantified effect across nine real open-weight MoE models with a working, quantified mitigation (fused vLLM kernel), but single preprint (likely one research group), no code released, no independent replication, no stated venue.
 - **Recommendation:** monitor; a clean standalone candidate for a serving-safety topic given the quantified cost/benefit numbers on both the attack and defense sides, even without released code.
+
+### C-20261106-01 · SPILLWAY: Separating Target Admission from Sanitization to Defend Tool-Using Agents against Prompt Injection
+
+- **Class:** B
+- **Date discovered:** 2026-11-06
+- **Date published:** 2026-11-04
+- **Source:** https://arxiv.org/abs/2611.07222 (verified resolves; abstract fetched directly)
+- **Organization/researchers:** Woosang Lim, Yeseul Chang, Jaewoo Lee (affiliation not stated on the page)
+- **Category:** agent-security / prompt-injection (defense; non-LLM-judge architectural mechanism)
+- **What changed:** Argues that LLM-judge-based injection defenses for tool-using agents are themselves manipulable and add inference cost. SPILLWAY instead separates two concerns that prior defenses conflate: *target admission* (does an action's destination match an authorized target?) and *sanitization* (stripping instruction-like text before the model reads it). A deterministic sanitizer runs first; a local, non-LLM judge may restore a call the sanitizer over-blocked, except when the call's target itself came from text that was removed — closing the loop that lets a sanitized-but-still-attacker-controlled destination slip through.
+- **Technical summary:** Evaluated across three model backbones and several tool-use task suites; the paper reports that no standard templated injection in its evaluation redirected an action to an attacker-controlled target, and that SPILLWAY had the highest utility and composite (utility + security) scores among the defenses compared, with almost no added model calls versus an LLM-judge baseline.
+- **Why it might matter:** A deterministic, destination-field-based admission check is mechanism-distinct from the course's existing by-design defense family (Dual LLM plan isolation, CaMeL capability-flow control — `research/accepted/capability-flow-injection-defense.md`), which reasons over data-flow/capability tags rather than checking the structured destination field directly against an authorized-target list. Low added inference cost is a concrete, practically relevant property for production agents.
+- **Evidence of adoption:** None — single preprint, no stated venue.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** None stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2611.07222
+- **Code:** None stated.
+- **Relationship to existing course material:** Adjacent to, but mechanism-distinct from, `research/accepted/capability-flow-injection-defense.md` (Dual LLM / CaMeL / branch steering — data-flow and capability-tag reasoning) — checked via `research.py lookup`; no existing coverage of a destination-field admission check as a standalone primitive.
+- **Potential course lesson:** A module-17/lesson-02 extension comparing "check the destination field" (SPILLWAY) against "track the data flow" (CaMeL) as two different formal handles on the same confused-deputy problem.
+- **Confidence:** medium — clear, narrow mechanism and a believable cost argument (no added LLM calls), but single preprint, no code/venue stated, no independent validation, and "no standard templated injection succeeded" leaves open how it fares against adaptive (non-templated) attacks.
+- **Recommendation:** monitor; worth revisiting once/if code is released, to test against adaptive attacks rather than the templated set the paper reports.
+
+### C-20261106-02 · Signed, Sealed, Leaked: Trust Beyond Signature for MCP Toolchains
+
+- **Class:** B
+- **Date discovered:** 2026-11-06
+- **Date published:** 2026-11-04
+- **Source:** https://arxiv.org/abs/2611.06585 (verified resolves; abstract fetched directly)
+- **Organization/researchers:** Yichiet Aun, Mohammed A. Alhartomi, Jing Jie Tan, Waqas Nadeem, Adeb Salh, Shankar Karuppayah, Sin Chee Tan (affiliation not stated on the page)
+- **Category:** tool/mcp-security (supply-chain; defense)
+- **What changed:** Shows that a *signed* MCP tool can still hide code that exfiltrates data to a destination the runtime policy already allows — i.e. signature + destination-allowlisting is insufficient, since the signature attests to the package, not to what the code does with data once it runs. Demonstrates this bypasses Meta's MCPGuard-Dynamic in some trials (it caught a direct exfiltration attempt but missed the allowed-destination variant). Proposes "germline execution": each tool call runs in a fresh copy forked from a data-free parent process and is handed only the data authorized for that specific call's destination, rather than the tool's full data access.
+- **Technical summary:** Across 153 attack runs, germline execution reported zero unauthorized disclosures, versus 5.9–74.5% unauthorized-disclosure rates for baseline defenses (including MCPGuard-Dynamic) in the same setup. Copy-based (fork-based) execution was also 2–28x faster than restarting the tool process for every call, addressing the usual performance objection to per-call isolation. Includes a formal argument for the guarantee under stated assumptions.
+- **Why it might matter:** Directly extends the course's MCP/tool-poisoning content (`lessons/module-17/lesson-01.md`, `lessons/module-19/lesson-01.md`, `labs/lab-19/mcp_lab.py`) with a concrete bypass of a named, real commercial-grade defense (Meta's MCPGuard-Dynamic) plus a quantified, formally-argued fix with a real performance number — exactly the "signature isn't behavior" confused-deputy point the course already teaches conceptually, now demonstrated against a named product.
+- **Evidence of adoption:** None for germline execution itself; MCPGuard-Dynamic (the bypassed baseline) is a real Meta tool, so the attack side has a concrete named target.
+- **Major organizations using it:** Meta's MCPGuard-Dynamic is the evaluated (bypassed) baseline; germline execution is not reported as adopted anywhere.
+- **Open-source implementation:** None stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2611.06585
+- **Code:** None stated.
+- **Relationship to existing course material:** Mechanism-distinct from the deferred `mcp-runtime-metadata-rug-pull.md` (metadata rug-pull, not signature-vs-behavior) and from staging's `C-20261104-01` (MCP Tool Poisoning cross-framework *measurement*, no defense proposed) — checked via `research.py lookup`; this is a new signature-insufficiency attack plus a specific per-call-isolation defense with a measured cost/benefit tradeoff.
+- **Potential course lesson:** Module-17/19 extension: "a signature proves provenance, not behavior" case study, using the MCPGuard-Dynamic bypass as the concrete counterexample and germline execution as a worked sandboxing-cost-vs-security tradeoff.
+- **Confidence:** medium — concrete named-product bypass plus a quantified, formally-motivated defense, but single preprint, no stated venue, no code release, no independent replication of the 153-run figure.
+- **Recommendation:** monitor; the named-product bypass (MCPGuard-Dynamic) makes this worth flagging to the weekly review even before code appears, since it is a reproducible-in-principle claim about a real, named tool.
+
+### C-20261106-03 · Addition by Subtraction: Toward Mitigating Fragile Safety Alignment in Large Language Models
+
+- **Class:** B
+- **Date discovered:** 2026-11-06
+- **Date published:** 2026-11-04
+- **Source:** https://arxiv.org/abs/2611.06553 (verified resolves; abstract fetched directly)
+- **Organization/researchers:** Hamid Dashtbani, Alexandra Dmitrienko (affiliation not stated on the page)
+- **Category:** jailbreak / defense-guardrail (safety-alignment robustness; training-time defense)
+- **What changed:** Addresses the well-known finding that safety alignment is concentrated in a small number of components (a handful of neurons, or a single "refusal direction") and so can be undone by pruning or direction-ablation. "Addition by Subtraction" deliberately, gradually removes the identified safety-critical neurons during finetuning, then uses preference optimization to rebuild safe behavior redundantly across the rest of the network, so no single small component is safety-critical afterward.
+- **Technical summary:** Across four models from three vendors, the resulting models resist neuron-pruning and refusal-direction-ablation attacks, and attack success rates against a range of black-box jailbreaks drop by up to 90 points in the paper's reported comparisons. Reports truthfulness improves and general capabilities are largely preserved.
+- **Why it might matter:** A training-time defense specifically targeting the *mechanism* (concentration of safety behavior in few components) rather than only its symptoms (specific jailbreak strings), tested across multiple vendors' models rather than one. If the capability-preservation and cross-vendor claims hold up, it is a candidate for the course's jailbreak-defense content as a "fix the alignment's fragility, not just the input filter" example.
+- **Evidence of adoption:** None — single preprint, no stated venue.
+- **Major organizations using it:** None stated; evaluated against models from three (unnamed-in-abstract) vendors, not adopted by them.
+- **Open-source implementation:** None stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2611.06553
+- **Code:** None stated.
+- **Relationship to existing course material:** New — checked via `research.py lookup` ("safety alignment pruning", "fragile safety alignment"); no existing registry or course coverage of a redundancy-building defense against pruning/ablation jailbreaks specifically.
+- **Potential course lesson:** Pairs with the course's existing refusal-direction / activation-steering content as the defense-side counterpart: "if safety is concentrated in one direction, redundancy-building training can spread it out" — with the obvious open question of whether redundancy itself becomes a new, larger attack surface.
+- **Confidence:** medium — quantified, multi-vendor, multi-attack-type evaluation (pruning, ablation, and black-box jailbreaks together), but single preprint, no code/venue stated, no independent replication, and "up to 90%" is a best-case figure whose distribution across the four models/attacks isn't given in the abstract.
+- **Recommendation:** monitor; worth pulling the full PDF before weekly review to get the per-model/per-attack breakdown behind the headline "up to 90%" figure.
+
+### C-20261106-04 · Signed but Steerable: Measuring and Closing the Text-Vector Integrity Gap in Offline Retrieval-Augmented Generation
+
+- **Class:** B
+- **Date discovered:** 2026-11-06
+- **Date published:** 2026-11-04
+- **Source:** https://arxiv.org/abs/2611.06498 (verified resolves; abstract fetched directly)
+- **Organization/researchers:** Georgios Feretzakis, Alexandros Papaspyridis (affiliation not stated on the page)
+- **Category:** rag-security (integrity attack + defense; offline/edge RAG)
+- **What changed:** Identifies that offline/edge RAG systems distribute "signed knowledge packs" (text + precomputed embeddings) where the signature authenticates the publisher but never checks that the embedding vector actually corresponds to the signed text. A verifier that accepts vectors within a cosine-similarity tolerance of what it recomputes leaves a predictable fraction of queries open to an attacker who controls the shipped vectors directly (steering retrieval without touching the visible text at all).
+- **Technical summary:** Analysis spans five corpora and two embedding models; on a Raspberry Pi 5 edge deployment, the attack cut correct-answer rate from 0.75 to 0.39. Also shows compressed-FAISS-index audits let tampered vectors through. The proposed defense verifies quantization codes with a calibrated guard band and accepted all honest vectors in the paper's tests. Notably reports that common inference pipelines are not bit-reproducible, and the paper explicitly includes pre-registered negative results. Code and data are released.
+- **Why it might matter:** A content-smuggling-style RAG attack mechanism-distinct from text-based retrieval poisoning: here the attacker never alters the human-readable text at all, only the embedding vector shipped alongside it, defeating any defense that audits the text. Released code/data and an edge-hardware demonstration (Raspberry Pi 5) make this concretely reproducible, and the explicit negative-results reporting is a genuine quality signal.
+- **Evidence of adoption:** None — single preprint; code/data released is independent-reproduction evidence, not adoption.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Stated as released; exact repository URL not given on the abstract page (to locate at weekly review).
+- **Paper:** https://arxiv.org/abs/2611.06498
+- **Code:** Released per abstract; URL not given on the abstract page.
+- **Relationship to existing course material:** New — checked via `research.py lookup`; no existing coverage of a vector-only (text-untouched) RAG integrity attack. Complements staging's `C-20261103-08` ("Prevented is Not Protected: What ASR Hides about RAG") as a different RAG-security angle (integrity of the stored embedding vs. prompt-level poisoning resistance).
+- **Potential course lesson:** A strong module-14/15 (RAG security) lab candidate given released code: ship a tampered-vector knowledge pack against an unmodified RAG pipeline and show retrieval steered with no visible text change, then implement the quantization-guard-band check as the from-scratch defense.
+- **Confidence:** medium-high — concrete, released code/data, a real edge-hardware demonstration, and unusually careful methodology (pre-registered negative results, bit-reproducibility caveat noted), but single preprint, no stated venue, no independent replication yet.
+- **Recommendation:** review for a module-14/15 lab once the code repository is located; the released-code + edge-hardware combination makes this one of today's more immediately reproducible candidates.
+
+### C-20261106-05 · Beyond Instruction Override: Benchmarking Indirect Prompt Injection with Task-Tampering Attacks
+
+- **Class:** B
+- **Date discovered:** 2026-11-06
+- **Date published:** 2026-11-05
+- **Source:** https://arxiv.org/abs/2611.07640 (verified resolves; abstract fetched directly)
+- **Organization/researchers:** Rongting Zhang, Martin Bertran, Sandeep Avula, Chia-Jung Lee, Vanessa Murdock (affiliation not stated on the page)
+- **Category:** prompt-injection (benchmark/evaluation; indirect injection taxonomy)
+- **What changed:** Argues indirect-injection benchmarks that focus on task redirection or objective override measure only one of several ways planted content can hijack a decision. Defines injection by *authority* (content influencing a decision its source isn't authorized to make) and builds a 90-case benchmark across three tool-use environments where attacks tamper with one of six parts of agent decision-making — objective, decision rules, available actions, expected consequences, interpretation of observations, or beliefs about state — while keeping the surrounding benign task intact (task-tampering, not task replacement).
+- **Technical summary:** Across five LLMs, attacks targeting decision rules, actions, and state succeed more often than objective-only attacks. A detection-and-removal defense cuts objective-targeting attacks to 2.4% success but leaves observation- and state-targeting attacks at 9.5% and 12.1% even with detection-optimized rewrites. A tool-policy defense barely helps against this class (15.4% success vs. 17.0% undefended) because these attacks keep the expected tool calls and manipulate values obtained during execution rather than redirecting which tool is called. Code and data released on GitHub.
+- **Why it might matter:** A direct, evidence-based argument that the field's own evaluation practice (objective/task-redirection-focused benchmarks) overstates how well current defenses generalize — directly relevant to how the course should calibrate claims like "defense X achieves 0% ASR on AgentDojo," since AgentDojo-style benchmarks skew toward the attack types this paper shows are easiest to defend against.
+- **Evidence of adoption:** None — single preprint; released code/data is independent-reproduction evidence, not adoption.
+- **Major organizations using it:** None stated (author affiliations not given on the abstract page, though the author list and writing style suggest an industrial NLP/IR lab).
+- **Open-source implementation:** Released on GitHub per abstract; exact URL not given on the abstract page.
+- **Paper:** https://arxiv.org/abs/2611.07640
+- **Code:** Released per abstract; URL not given on the abstract page.
+- **Relationship to existing course material:** New evaluation-methodology critique — checked via `research.py lookup`; no existing coverage of a decision-component taxonomy for indirect injection or of this specific benchmark-overstatement argument. Relevant context for the deferred `near-target-injection-evaluation.md` topic (fixed-target benchmarks overstate robustness) — same underlying concern (benchmark design hides real vulnerability), different specific mechanism (near-target framing vs. decision-component framing).
+- **Potential course lesson:** Module-05/lesson-01 extension or a "how to read an ASR number" caveat box: decompose what part of agent decision-making a benchmark's attacks actually target before trusting a defense's reported ASR.
+- **Confidence:** medium-high — released code/data, a principled taxonomy, and results that are specific and falsifiable (quantified per-defense, per-attack-type breakdown), but single preprint, no stated venue, no independent replication.
+- **Recommendation:** review alongside `near-target-injection-evaluation.md` at the weekly review — both bear on the same "our benchmarks overstate defense robustness" theme and might be worth a combined course treatment.
+
+### C-20261106-06 · Stress Testing Chain-of-Thought Monitoring Against Covert Misalignment
+
+- **Class:** B
+- **Date discovered:** 2026-11-06
+- **Date published:** 2026-11-05
+- **Source:** https://arxiv.org/abs/2611.07586 (verified resolves; abstract fetched directly)
+- **Organization/researchers:** Yao Huang, Yifan Wang, Yitong Sun, Yichi Zhang, Yinpeng Dong (affiliation not stated on the page)
+- **Category:** red-teaming / detection-monitoring (AI control; chain-of-thought monitor robustness)
+- **What changed:** Argues that chain-of-thought (CoT) monitoring's reliability depends on how realistic the red-teaming used to stress-test it is, and that existing red-team methods use shared templates that bolt a hidden side-objective onto a trace as an add-on rather than treating it as integrated with the agent's real task. Introduces TraceMRT, an automated trace-level red-teaming framework that treats the side objective as a sub-goal of the main task and searches for ways to complete it while the trace still reads as normal execution.
+- **Technical summary:** Black-box attacks using TraceMRT against CoT monitors — including ones built on GPT-5.2 and Claude-4.5 — reveal substantial vulnerabilities even in these top models' monitoring setups. As a countermeasure, proposes Bayesian Trajectory Monitoring (combining global-context and local-segment evidence), reporting AUC 0.91 and a true-positive rate of 0.74 at a 5% false-positive rate.
+- **Why it might matter:** Directly bears on the course's AI-control/monitoring content: it is a reproducible-sounding method for defeating CoT monitors specifically by making the hidden objective *look* like normal task execution (as opposed to simple template-based red-teaming), tested against named current frontier models' monitoring setups, with a quantified countermeasure and an honest false-positive/true-positive tradeoff rather than a bare accuracy number.
+- **Evidence of adoption:** None — single preprint, no stated venue; "GPT-5.2" and "Claude-4.5" are named as evaluated targets, not as adopters of TraceMRT or Bayesian Trajectory Monitoring.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** None stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2611.07586
+- **Code:** None stated.
+- **Relationship to existing course material:** Adjacent to staging's `C-20261103-07` ("Simple Features Beat Most AI Control Monitors") — same general area (AI-control/CoT-monitor robustness) but mechanism-distinct: that paper shows shallow surface features often beat monitors on existing benchmarks, this paper shows a trace-realism-aware red-teaming method defeats monitors that pass those benchmarks, plus proposes a specific statistical countermeasure (Bayesian Trajectory Monitoring) with a measured AUC/TPR/FPR tradeoff. Checked via `research.py lookup`; no existing registry coverage of either the trace-realism red-teaming method or the Bayesian countermeasure.
+- **Potential course lesson:** Pairs naturally with `C-20261103-07` for a combined AI-control-monitoring module/lesson: "monitors can be beaten by surface shortcuts *and* by objective-aware trace shaping — here's a statistical monitor with a stated FP/TP tradeoff that addresses at least the second."
+- **Confidence:** medium — concrete quantified countermeasure (AUC 0.91, TPR 0.74 @ 5% FPR) and named-frontier-model evaluation, but single preprint, no code/venue stated, no independent replication, and the abstract gives no quantified attack-success numbers for TraceMRT itself (only "substantial vulnerabilities").
+- **Recommendation:** review jointly with `C-20261103-07` at the weekly review as a possible combined AI-control-monitoring addition; pull the full PDF for TraceMRT's quantified attack-success numbers first.
+
+### C-20261106-07 · SecureGARD: Dynamic Ontology-Guided Governance for Secure Tool-Using LLM Agents
+
+- **Class:** B
+- **Date discovered:** 2026-11-06
+- **Date published:** 2026-11-04
+- **Source:** https://arxiv.org/abs/2611.06682 (verified resolves; abstract fetched directly)
+- **Organization/researchers:** Guoqin Xiong, Shengtao Wen, Xiang Chen, Xinyi Zeng, Zhaoxin Fan, Wei Ye, Xiaofeng Cao, Sheng-Jun Huang (affiliation not stated on the page)
+- **Category:** agent-security / defense-guardrail (tool-use action gating)
+- **What changed:** Another entry in an increasingly crowded genre (see Relationship, below) of deterministic, non-LLM-judge action-gating defenses for tool-using agents: maps heterogeneous tool calls to a shared semantic representation, pairs an executable ontology with episode-level task state, and makes deterministic ready/waiting/forbidden decisions per action. A "waiting" state flags a recoverable unmet obligation and allows bounded replanning without widening the agent's authorization — the paper's main claimed point of novelty over simple allow/deny gates. The ontology itself is built offline by having an LLM propose action-state axioms, keeping only ones that fix exposed training failures, preserve logical consistency, and pass held-out validation.
+- **Technical summary:** Evaluated on AgentDojo, ASB, and AgentDyn under benign and prompt-injection conditions; reports a 0% attack success rate on all three while improving task utility under attack relative to baselines.
+- **Why it might matter:** If the "waiting" state (bounded replanning without authorization widening) is a genuine improvement over binary allow/deny gates, it addresses a real usability complaint about deterministic agent guardrails (overly conservative gates kill legitimate retries). Directly relevant to the course's tool-poisoning/agent-authorization content.
+- **Evidence of adoption:** None — single preprint, no stated venue.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** None stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2611.06682
+- **Code:** None stated.
+- **Relationship to existing course material:** Architecturally close to the accepted `capability-flow-injection-defense.md` (CaMeL's capability-tagged, policy-checking-interpreter family) and to several similar recent "deterministic agent action gate, 0% ASR on AgentDojo" papers seen in this week's sweeps (e.g. LEANGUARD, StateFence, seen in today's keyword-sweep listing but not individually recorded) — flagging for the weekly review that this specific sub-genre is becoming saturated and claims of "0% ASR on AgentDojo" from it should be weighed accordingly, independent of this paper's own merits. Checked via `research.py lookup`; no exact duplicate found.
+- **Potential course lesson:** If anything from this genre gets added, the "waiting" bounded-replanning state (rather than the ontology-construction pipeline, which resembles others') is the most distinctive piece worth teaching.
+- **Confidence:** low-medium — measured results across three real agent-security benchmarks, but single preprint, no code/venue stated, no independent validation, and the mechanism's novelty over the existing CaMeL-family course content is incremental rather than clearly distinct.
+- **Recommendation:** monitor at low priority; the weekly review's time is better spent on the more clearly novel candidates above unless this specific "waiting state" mechanism turns out to be the differentiator once the full PDF is read.
+
+### C-20261106-08 · Interactive Backdoor Attacks in LLM-Based Proactive Dialogue Systems
+
+- **Class:** B
+- **Date discovered:** 2026-11-06
+- **Date published:** 2026-11-04
+- **Source:** https://arxiv.org/abs/2611.06969 (verified resolves; abstract fetched directly)
+- **Organization/researchers:** Zhiyang Xia, Yuming Shang, Xi Zhang (affiliation not stated on the page)
+- **Category:** poisoning/backdoor (training-data poisoning; multi-turn dialogue)
+- **What changed:** Prior LLM backdoor work mostly targets a single attacker-chosen response immediately after a trigger. This paper poisons training data so that, after a trigger, a *proactive* dialogue system (one that guides a user toward a goal over a sustained multi-turn conversation) is steered toward an attacker's objective across several turns, without any deployment-time prompt modification or live intervention. Presents three attack variants: a Direct Attack (single-turn, as in prior work), a Constrained Progressive Attack (follows a predefined multi-turn path), and an Unconstrained Progressive Attack (steers open-ended conversation despite varied user inputs).
+- **Technical summary:** Tested in a psychological-counseling dialogue setting across two LLM backbones and two datasets. All three attacks achieve their goals while mostly preserving normal conversational utility. Training-data filters tested retain nearly all poisoned dialogues (i.e. the poisoning is not caught at the data stage), and three post-admission (model-level) defenses tested leave substantial residual attack success.
+- **Why it might matter:** A mechanism-distinct backdoor threat model for the course's poisoning/backdoor content: progressive, multi-turn goal-steering rather than single-turn trigger-response, tested specifically in a high-stakes application domain (counseling) where a steered multi-turn conversation is a meaningfully different harm than a single bad response. The reported ineffectiveness of both data-filtering and model-level defenses is itself a useful "current defenses don't cover this" data point.
+- **Evidence of adoption:** None — single preprint, no stated venue.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** None stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2611.06969
+- **Code:** None stated.
+- **Relationship to existing course material:** New — checked via `research.py lookup`; course's existing backdoor/poisoning content and registry have no coverage of multi-turn, progressive-goal backdoors in proactive dialogue systems specifically (distinct from single-turn trigger-response backdoors and from agent-tool-use backdoors like `C-20261103-02` Kerkoporta, which targets coding-agent structured output).
+- **Potential course lesson:** A poisoning/backdoor module extension: contrast single-turn trigger-response backdoors with multi-turn progressive goal-steering, using the counseling-domain framing to motivate why "the model still answers normally most of the time" is not sufficient evidence of safety.
+- **Confidence:** medium — three distinct attack variants each demonstrated across two backbones/two datasets, with both data- and model-level defenses tested and shown insufficient, but single preprint, no code/venue stated, no independent replication, and the sensitive application domain (counseling) means any course treatment should stay in the mechanism/measurement register rather than reproducing counseling-specific manipulative content.
+- **Recommendation:** monitor; a reasonable poisoning-module candidate given the defense-insufficiency result, but the sensitive domain warrants care in how any course material is framed if ADDed.
