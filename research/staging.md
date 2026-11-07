@@ -677,3 +677,66 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** A poisoning/backdoor module extension: contrast single-turn trigger-response backdoors with multi-turn progressive goal-steering, using the counseling-domain framing to motivate why "the model still answers normally most of the time" is not sufficient evidence of safety.
 - **Confidence:** medium — three distinct attack variants each demonstrated across two backbones/two datasets, with both data- and model-level defenses tested and shown insufficient, but single preprint, no code/venue stated, no independent replication, and the sensitive application domain (counseling) means any course treatment should stay in the mechanism/measurement register rather than reproducing counseling-specific manipulative content.
 - **Recommendation:** monitor; a reasonable poisoning-module candidate given the defense-insufficiency result, but the sensitive domain warrants care in how any course material is framed if ADDed.
+
+### C-20261107-01 · Decision Models as Retrieval Gates Against Injection and Pollution
+
+- **Class:** B
+- **Date discovered:** 2026-11-07
+- **Date published:** 2026-11-05
+- **Source:** https://arxiv.org/abs/2611.08325 (verified resolves; abstract fetched directly)
+- **Organization/researchers:** Mahdi Ghadamyari, Reza Habibi (affiliation not stated on the page)
+- **Category:** rag-security (defense; retrieval-time gating against both injection and pollution)
+- **What changed:** Tests whether small, open-weight "decision models" (models that answer a typed yes/no-style question about a passage without generating free text) can screen retrieved web passages for two distinct threats at once: hidden instructions aimed at the agent, and synthetic/fake pages planted to pollute a retrieval pool. A Kev-4B gate reads each candidate passage's raw HTML (not just its extracted text) before it reaches the generator.
+- **Technical summary:** On a 1,000-question indirect-injection benchmark over forum-style pages, attack success falls from 27.9% (no defense) to 13.6% (published mitigations: sanitisation, normalisation, citation prompting) to 5.7% with the gate added; the gate costs 76ms/passage and misflags 4/186 benign pages that themselves contain instructions meant for human readers; clean-query task accuracy stays within one point (85.6% to 86.2%). On a separate 200-query pollution testbed (two-thirds fake candidate pages), pre-filtering the candidate pool keeps fake-page exposure at 0.5% and accuracy at 83% versus 28% undefended; filtering only after the top-10 are already chosen is too late. An LLM-judge baseline ranks attacks slightly better (AUROC 0.99 vs 0.94) but costs roughly 10x more, and gates that read raw HTML catch more attacks than gates given only plain text.
+- **Why it might matter:** A single mechanism addressing two of the course's RAG-security threat models (indirect injection and pollution/poisoning of the retrieval pool) with a non-LLM-judge, measured-cost gate — directly extends `lessons/module-14/lesson-01.md` and the RAG lab with a concrete latency/false-positive/accuracy tradeoff, and the "HTML beats plain text" and "judge model only before top-k is chosen" findings are both actionable, falsifiable design points rather than a bare accuracy number.
+- **Evidence of adoption:** None — single preprint, no stated venue; "every model is open-weight" is a reproducibility note, not an adoption claim.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not stated on the abstract page (open-weight base models named; gate implementation/code release not mentioned).
+- **Paper:** https://arxiv.org/abs/2611.08325
+- **Code:** None stated.
+- **Relationship to existing course material:** New — checked via `research.py lookup` ("decision model retrieval gate injection pollution"); no existing registry or course coverage of a decision-model retrieval gate addressing both injection and pollution together. Complements staging's `C-20261103-08` ("Prevented is Not Protected: What ASR Hides about RAG") and `C-20261106-04` (vector-only RAG integrity attack) as a third, defense-side RAG-security angle.
+- **Potential course lesson:** Module-14/15 RAG lab extension: implement a from-scratch HTML-aware decision-model gate, measure its own latency/FP/accuracy tradeoff against the course's existing sanitisation baseline, and contrast "filter before top-k" vs "filter after top-k" for pollution specifically.
+- **Confidence:** medium — concrete, quantified, two-threat-model evaluation with stated costs, but single preprint, no stated venue, no code release confirmed, no independent replication, and the "decision model" family (Kev, and Jev/Clef seen in a related paper this week) is proprietary/recently-released tooling whose training data and generalization are not independently verifiable.
+- **Recommendation:** review for a module-14/15 lab extension; worth checking whether Kev-4B's weights are actually public before committing a lab to it.
+
+### C-20261107-02 · KeHoSu: Keyed Homoglyph Substitution for Authenticated Text Provenance over Copy-Paste Channels
+
+- **Class:** B
+- **Date discovered:** 2026-11-07
+- **Date published:** 2026-11-05
+- **Source:** https://arxiv.org/abs/2611.08046 (verified resolves; abstract fetched directly)
+- **Organization/researchers:** Andrei Alexandru Drăghici, Sediola Ruko, Briland Hitaj, Dorjan Hitaj (affiliation not stated on the page)
+- **Category:** supply-chain / defense-guardrail (text provenance/attribution; distinct from generation-time LLM watermarking)
+- **What changed:** Most LLM-text watermarking targets detection ("was this AI-generated?"). KeHoSu instead targets attribution over the one channel redistributed text actually survives on — copy-paste, which strips document metadata but keeps Unicode code points. It turns the confusable-character substitutions used in homoglyph *attacks* into a keyed attribution channel: which visually-identical variant is chosen for each carrier letter encodes bits of a platform+user+truncated-auth-tag identifier, and the scheme is shown invariant to sentence reordering and robust to partial quotation (depends only on retained length, not position).
+- **Technical summary:** The paper formally characterizes the code-point channel's capacity, removability, and detectability and derives an achievable region relating the three; empirically, the mark survives copy-paste across 18 common platforms, correctly attributing a majority of excerpts to the right account at ~178 letters (~2 sentences) of LLM-generated text and ~167 letters (~1 sentence) of standard English prose.
+- **Why it might matter:** This is new evidence for the course's existing deferred topic `research/deferred/ai-content-watermarking.md` (status WAIT, next review 2026-11-08 — tomorrow), which has so far tracked generation-time text/image/audio watermarking (green-list schemes, SemField, HiMark, TextSeal2, SynthID-Text). KeHoSu is mechanism-distinct from all of those: it attributes via character-level substitution applied to already-existing text rather than steering token probabilities during generation, and it is specifically engineered to survive the copy-paste redistribution channel the deferred topic's foundational anchors (Kirchenbauer, SynthID-Text) do not address.
+- **Evidence of adoption:** None — single preprint; no code/data release stated on the abstract page.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2611.08046
+- **Code:** None stated.
+- **Relationship to existing course material:** Flagged per protocol rule 5 (genuinely new evidence for a deferred topic) — `research/deferred/ai-content-watermarking.md`, next review scheduled 2026-11-08. New mechanism (keyed homoglyph substitution for attribution, not generation-time token-probability watermarking); checked via `research.py lookup` ("homoglyph provenance attribution watermark") with no prior registry hit.
+- **Potential course lesson:** If `ai-content-watermarking.md` is ADDed, this is a strong candidate for the "attribution over a lossy real-world channel" angle, paired with the existing homoglyph-*attack* framing the course likely already has for Unicode-confusable injection carriers.
+- **Confidence:** medium — formal capacity/removability/detectability characterization plus an 18-platform empirical survival test, but single preprint, no stated venue, no code/data release, no independent replication, and no adversarial-removal evaluation reported (i.e. no stated test of whether a motivated attacker who knows the scheme can strip or forge the mark).
+- **Recommendation:** surface to tomorrow's scheduled `ai-content-watermarking.md` review (2026-11-08) as new evidence; the weekly review should judge whether it changes the deferred topic's scope question or is simply added to its EMERGING evidence list.
+
+### C-20261107-03 · Towards Interpreting Any Residual Stream Direction by Scaling Activation Inversion
+
+- **Class:** B
+- **Date discovered:** 2026-11-07
+- **Date published:** 2026-11-05
+- **Source:** https://arxiv.org/abs/2611.08465 (verified resolves; abstract fetched directly)
+- **Organization/researchers:** Celeste De Schamphelaere, Juan J. Vazquez, Ari Spiesberger, Tomáš Gavenčiak, Gavin Leech, Euan Ong, Jiahai Feng (affiliation not stated on the page)
+- **Category:** detection/monitoring (mechanistic-interpretability forensics tool; applied to backdoor-payload recovery among other uses)
+- **What changed:** Introduces Maximally-Activating Example Metamodels (MAEMs): a second language model trained with a label-free RL objective to generate text that strongly activates a *given* residual-stream direction in a subject model, rather than relying on scanning a fixed corpus for text that happens to activate it. The generated exemplar can be verified by a forward pass on the subject model, making the explanation grounded rather than merely plausible-sounding.
+- **Technical summary:** A Qwen3.6-27B MAEM inverts held-out activations better than corpus search or a natural-language autoencoder baseline, beats 10M-token corpus search on a majority of held-out languages/domains, activates 89% of held-out SAE features, identifies concepts behind steering vectors about as well as the NLA baseline, and — most relevant here — recovers the payloads of LoRA backdoors more often than corpus search does.
+- **Why it might matter:** A generalizable interpretability tool whose backdoor-payload-recovery result is a concrete, measured forensics capability (not a bare "we found it" claim) relevant to the course's poisoning/backdoor defense content: it offers a way to recover what a suspected backdoored direction actually does without needing the trigger or a matching corpus example in hand.
+- **Evidence of adoption:** None — single preprint, no stated venue.
+- **Major organizations using it:** None stated.
+- **Open-source implementation:** Not stated on the abstract page.
+- **Paper:** https://arxiv.org/abs/2611.08465
+- **Code:** None stated.
+- **Relationship to existing course material:** New — checked via `research.py lookup` ("LoRA backdoor detection interpretability", "sparse autoencoder SAE feature"); no existing registry or course coverage of interpretability-based backdoor-payload recovery as a detection mechanism (course's poisoning/backdoor content to date is attack- and training-defense-focused, not interpretability-forensics-focused).
+- **Potential course lesson:** A possible module-13 (poisoning/backdoor) or module-23 (detection) extension: "recovering what a backdoor does without the trigger," using the LoRA-backdoor-recovery result as the worked example, framed carefully as one data point among the paper's several interpretability benchmarks rather than as the paper's main claim.
+- **Confidence:** low-medium — broad, multi-benchmark interpretability evaluation (SAE features, steering vectors, inner-monologue verbalisation) with the backdoor result as one of several applications rather than the central claim, single preprint, no code/venue stated, no independent replication, and no quantified backdoor-recovery rate given in the abstract (only "more often than corpus search").
+- **Recommendation:** monitor; worth pulling the full PDF for the quantified LoRA-backdoor-recovery numbers before deciding whether this is a teaching-grade example or just a notable capability to track.
