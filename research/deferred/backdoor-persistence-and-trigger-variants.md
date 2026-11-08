@@ -4,7 +4,7 @@
 - **Status:** WAIT
 - **Next review:** 2026-11-22
 - **Course change:** none
-- **Candidates:** C-20261007-02, C-20261007-03, C-20261008-06, C-20261021-06
+- **Candidates:** C-20261007-02, C-20261007-03, C-20261008-06, C-20261021-06, C-20261103-02, C-20261106-08, C-20261107-03
 
 ## Summary
 
@@ -16,6 +16,9 @@ A same-week cluster of three structurally different backdoor mechanisms: Persist
 - https://arxiv.org/abs/2610.07645 — SkillPoison (code: https://github.com/DEEP-JLU/SkillPoison)
 - https://arxiv.org/abs/2610.07723 — answer-side backdoors (no code)
 - https://arxiv.org/abs/2610.27533 — BenchDoor: poisoned datasets that genuinely raise benchmark scores (incentive to adopt) and implant backdoors; 82.33–100% ASR at 2–10% poisoning; >=90.33% after decontamination; no code. Added 2026-10-25.
+- Kerkoporta (C-20261103-02): structured-output backdoors in reasoning coding agents; strong reported numbers, single preprint, no code, affiliations unconfirmed. Added 2026-11-08.
+- Interactive backdoors in proactive dialogue systems (C-20261106-08): three variants, data- and model-level defenses shown insufficient; sensitive (counseling) domain; single preprint, no code. Added 2026-11-08.
+- Scaling activation inversion (C-20261107-03): interpretability method that recovers LoRA backdoor triggers more often than corpus search; no quantified recovery rate in the abstract; detection-side evidence only. Added 2026-11-08.
 
 ## What would change the decision
 
@@ -25,3 +28,4 @@ Independent reproduction of any one mechanism, or a measured defense. The most t
 
 - 2026-10-11 — WAIT — three days-old single preprints, no defenses, no replication; strong conceptual value for 11.1 later — weekly/2026-W41.md — candidates C-20261007-02, C-20261007-03, C-20261008-06
 - 2026-10-25 — WAIT — adds an incentive-driven adoption mechanism that survives decontamination; single preprint without code; keep 2026-11-22 — weekly/2026-W43.md — candidates C-20261021-06
+- 2026-11-08 — WAIT — three new single-preprint variants (no code); date unchanged — weekly/2026-W45.md — candidates C-20261103-02, C-20261106-08, C-20261107-03

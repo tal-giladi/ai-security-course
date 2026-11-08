@@ -4,7 +4,7 @@
 - **Status:** WAIT
 - **Next review:** 2026-11-15
 - **Course change:** none
-- **Candidates:** C-20260930-01, C-20260930-02, C-20261026-07, C-20261027-03, C-20261031-03
+- **Candidates:** C-20260930-01, C-20260930-02, C-20261026-07, C-20261027-03, C-20261031-03, C-20261103-06, C-20261106-01
 
 ## Summary
 
@@ -22,6 +22,8 @@ M05/M06/M20/M24 and the guarantee-box "defense with a stated cost + how it erode
 - https://arxiv.org/abs/2610.32182 — Depth-dependent safety geometry in VLMs: early-vision-layer steering controls refusal 6% ↔ 96% on Qwen3-VL-4B (NeurIPS 2026 workshop, no code). Caution: the steering lever used as a defense also works as an attack. Added 2026-11-01.
 - https://arxiv.org/abs/2610.35043 — Steering-plugin supply chain: audit of 8 activation-steering plugin libraries; a PoC plugin keeps refusing harmful requests while steering unrelated outputs (up to 97.8% manipulation ASR) (preprint, no code). A steering defense is itself a supply-chain component. Added 2026-11-01.
 - https://arxiv.org/abs/2610.39758 — SEAL sealed-query local sanitization of tool outputs with a frozen model: AgentDojo ASR 34.6% → 0.1%, joint utility 51.4% → 77.5%, ~127× fewer defense tokens than PISanitizer (preprint, no code). Added 2026-11-01.
+- Steering trojans (C-20261103-06): second sighting of the activation-steering supply-chain trojan (first logged as C-20261027-03); real audited libraries, no code. Added 2026-11-08.
+- SPILLWAY (C-20261106-01): separates target admission from sanitization, no extra LLM calls; only templated injections tested, no adaptive evaluation, no code. Added 2026-11-08.
 
 ## What would change the decision
 
@@ -32,3 +34,4 @@ CounterSteer also needs model-internals access the course's toy shim may need to
 
 - 2026-10-04 — WAIT — thorough single-paper evaluations from known researchers, but no independent replication; ADD budget used — weekly/2026-W40.md — candidates C-20260930-01, C-20260930-02
 - 2026-11-01 — WAIT — the cluster grows (sanitization, steering) and gains attack-side cautions; none has code or replication yet; keep scheduled review — weekly/2026-W44.md — candidates C-20261026-07, C-20261027-03, C-20261031-03
+- 2026-11-08 — WAIT — two single-preprint data points; due 2026-11-15 as scheduled — weekly/2026-W45.md — candidates C-20261103-06, C-20261106-01

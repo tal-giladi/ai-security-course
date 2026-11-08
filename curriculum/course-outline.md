@@ -168,6 +168,14 @@ Only as much classical security as AI security requires — no generic pentest c
   Appended to lesson 16.2 as an advanced extension; depends on M16.1, M16.2, M05, M15. Layer:
   Current (OWASP ASI06, ATLAS AML.T0080.000) → Emerging (ZoneClaw, SAFE-Mem, PerMIT). Lab:
   `labs/lab-36-trust-zoned-memory`.
+- **24.1 extension — evaluating prompt-injection detectors** (added 2026-11-08) — a detector's
+  number belongs to a distribution: one fixed threshold evaluated on in-distribution, curated and
+  external hard-benign (over-defense), obfuscated and agent-format (tool-output) splits; ranking
+  (recall@low-FPR) vs calibration (rates at the shipped threshold); PPV at a base rate; hard-negative
+  and agent-format fixes with their side effects; non-imperative steering as the limit of detection.
+  Appended to lesson 24.1 as an advanced extension; depends on M24.1, M23, M05, M17.2. Layer:
+  Current (InjecGuard, PromptShield, PIDS-Bench) → Emerging (agent-format re-evaluation,
+  non-imperative steering). Lab: `labs/lab-37-injection-detector-eval`.
 
 ---
 
@@ -207,6 +215,7 @@ Only as much classical security as AI security requires — no generic pentest c
 | 22.2 Agent skills as a supply-chain trust boundary | M22.1, M17.1, M16.2, M13 | Current→Emerging | `labs/lab-34-skill-supply-chain` |
 | F.2 MITRE ATT&CK v20 AI techniques & AI-enabled exfiltration detection | M05, M16, M17.2, M23, M26, F.1 | Current (T1608.007 research: Emerging) | `labs/lab-35-attack-ai-detection` |
 | 16.2 ext. Trust-zoned agent memory | M16.1, M16.2, M05, M15 | Current→Emerging | `labs/lab-36-trust-zoned-memory` |
+| 24.1 ext. Evaluating prompt-injection detectors | M24.1, M23, M05, M17.2 | Current→Emerging | `labs/lab-37-injection-detector-eval` |
 
 *"sibling"* = provided by the LLM Research Engineer course; see `prerequisite-map.md`.
 

@@ -127,6 +127,7 @@
   - [Lab 34 · Agent skills as a supply-chain trust boundary (22.2)](labs/lab-34-skill-supply-chain/README.md)
   - [Lab 35 · ATT&CK v20 AI-enabled exfiltration detection (F.2)](labs/lab-35-attack-ai-detection/README.md)
   - [Lab 36 · Trust-zoned agent memory (16.2)](labs/lab-36-trust-zoned-memory/README.md)
+  - [Lab 37 · Evaluating prompt-injection detectors (24.1)](labs/lab-37-injection-detector-eval/README.md)
 
 - **Reference**
   - [Standards map: OWASP / ATLAS / NIST](references/standards-map.md)

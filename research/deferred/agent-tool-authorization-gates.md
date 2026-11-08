@@ -4,7 +4,7 @@
 - **Status:** WAIT
 - **Next review:** 2026-11-15
 - **Course change:** none
-- **Candidates:** C-20260928-02, C-20260930-06, C-20261003-01, C-20261001-04, C-20261005-03, C-20261008-04, C-20261019-04, C-20261021-01, C-20261026-06, C-20261028-03
+- **Candidates:** C-20260928-02, C-20260930-06, C-20261003-01, C-20261001-04, C-20261005-03, C-20261008-04, C-20261019-04, C-20261021-01, C-20261026-06, C-20261028-03, C-20261104-03
 
 ## Summary
 
@@ -27,6 +27,7 @@ contrasted. Sapien is the most course-aligned (extends lab-16 + the AgentDojo pa
 - https://arxiv.org/abs/2610.23077 — approval-token reuse across services (token possession treated as authorization); competition traces, 8/9 reruns. Added 2026-10-25.
 - https://arxiv.org/abs/2610.31914 — Incomparable Minima: in real Microsoft Graph (22,305 bindings) and Google API (23,852 methods) tables, 29.8–33.3% / 3.2% of tasks have no smallest sufficient grant; 'did the agent request minimal privilege' can be ill-defined (single author, no code). Added 2026-11-01.
 - https://arxiv.org/abs/2610.36108 — Log-To-Leak: an injected extra MCP tool call after the last legitimate call leaks data (62.6–100% ASR, 18 server/agent pairs) while task success changes ≤6.6pp; a naive instruction detector false-flags 85.5% of benign tool descriptions; authors recommend host-controlled authorization of follow-on calls (preprint, no code). Added 2026-11-01.
+- When Neither Side Confirms (C-20261104-03): source audit + live SDK test of MCP servers and hosts — destructive tools often confirmed by neither side; large prevalence measurement, single preprint, no data release. Also relevant to hitl-approval-channel-integrity. Added 2026-11-08.
 
 ## What would change the decision
 
@@ -41,3 +42,4 @@ guarantee box; do not teach all four.
 - 2026-10-18 — WAIT — four more mechanism-distinct entries this week (KedgeFlow idempotency/replay with code; CreepScope privilege-creep lifecycle metric; DelegateGuard formal attenuation at Enron scale; revocation-completeness C0–C5 on real Keycloak/AWS) — the cluster keeps broadening rather than converging, and 22.2's structural controls now cover part of the ground; a future ADD still needs one lead mechanism with code + approval-fatigue/lifecycle measurement beyond 17.2/22.2; keep 2026-11-15 — weekly/2026-W42.md — candidates C-20261014-05, C-20261015-09, C-20261015-10, C-20261015-18
 - 2026-10-25 — WAIT — a peer-reviewed impossibility result with code reframes the cluster (per-action gates cannot see cross-execution violations) and supplies the guarantee-box line any future ADD must carry; still no single lead gate with replication; keep 2026-11-15 — weekly/2026-W43.md — candidates C-20261019-04, C-20261021-01
 - 2026-11-01 — WAIT — a measurement-validity finding for the 'minimal privilege' yardstick plus a concrete follow-on-call attack; still no single gate to teach; keep scheduled review — weekly/2026-W44.md — candidates C-20261026-06, C-20261028-03
+- 2026-11-08 — WAIT — strong prevalence evidence; due 2026-11-15 as scheduled — weekly/2026-W45.md — candidates C-20261104-03

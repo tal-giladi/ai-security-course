@@ -5,6 +5,20 @@ bar in [the weekly review protocol](research/PROTOCOL-weekly.md). New material e
 existing lessons and labs; it never replaces them. "No curriculum changes this week" is a normal
 entry.
 
+## 2026-W45 (2026-11-08)
+
+- **Added** an advanced extension to lesson [24.1 · Security evaluation](lessons/module-24/lesson-01.md):
+  *evaluating prompt-injection detectors*. A detector's number belongs to a distribution and a
+  threshold. The extension evaluates one fixed threshold on in-distribution, curated and external
+  hard-benign (over-defense), obfuscated and agent-format (tool-output) data. It separates ranking
+  (recall at low FPR) from calibration (rates at the shipped threshold) and converts results to PPV
+  at a realistic base rate. It shows that hard-negative and agent-format training each fix one
+  error while moving another, and that steering text with no instruction in it gets past every
+  detector. Built on InjecGuard, PromptShield, PIDS-Bench and a 2026 re-evaluation of 15 detectors
+  on agent benchmarks. Maps to OWASP LLM01:2026 and NIST AI RMF Measure. Lab:
+  [Lab 37 · Evaluating prompt-injection detectors](labs/lab-37-injection-detector-eval/README.md).
+  Nothing existing was changed. Review: [research/weekly/2026-W45.md](research/weekly/2026-W45.md).
+
 ## 2026-W44 (2026-11-01)
 
 - **Added** an advanced extension to lesson [16.2 · Agent memory poisoning & stealth](lessons/module-16/lesson-02.md):

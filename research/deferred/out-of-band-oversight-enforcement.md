@@ -2,7 +2,7 @@
 
 - **Topic ID:** out-of-band-oversight-enforcement
 - **Status:** WAIT
-- **Next review:** 2026-11-08
+- **Next review:** 2026-12-06
 - **Course change:** none
 - **Candidates:** C-20260929-02, C-20261001-02, C-20261022-04
 
@@ -31,3 +31,4 @@ arc, once at least one side has independent validation.
 
 - 2026-10-04 — WAIT — measured, two-sided overhead numbers fit the guarantee-box pattern, but single-group prototypes, no independent validation; pair with agent-oversight-evasion — weekly/2026-W40.md — candidates C-20260929-02, C-20261001-02
 - 2026-10-25 — WAIT — a useful formal framing (count sources, not votes) with frontier-model testing; single author, no code; keep 2026-11-08 — weekly/2026-W43.md — candidates C-20261022-04
+- 2026-11-08 — WAIT — due today; no independent replication, code or adoption appeared since 2026-10-25; still best added together with agent-oversight-evasion as one M23 arc — weekly/2026-W45.md — candidates none (due review)

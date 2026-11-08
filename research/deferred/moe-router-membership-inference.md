@@ -4,7 +4,7 @@
 - **Status:** WAIT
 - **Next review:** 2026-11-22
 - **Course change:** none
-- **Candidates:** C-20261010-01
+- **Candidates:** C-20261010-01, C-20261103-09
 
 ## Summary
 
@@ -13,6 +13,7 @@ Adding aggregated expert-routing features to an output-signal MIA ensemble raise
 ## Evidence
 
 - https://arxiv.org/abs/2610.10616 — single preprint; code not confirmed.
+- Expert-utilization signatures (C-20261103-09): fine-tuned MoE models carry recoverable expert-routing signatures; adjacent evidence, not the reproduction this file asks for. Added 2026-11-08.
 
 ## What would change the decision
 
@@ -21,3 +22,4 @@ Code release and an independent reproduction, or evidence that production APIs e
 ## History
 
 - 2026-10-11 — WAIT — consistent but modest effect, single preprint, exposure of router telemetry in real APIs unestablished — weekly/2026-W41.md — candidates C-20261010-01
+- 2026-11-08 — WAIT — adjacent evidence only; due 2026-11-22 as scheduled — weekly/2026-W45.md — candidates C-20261103-09

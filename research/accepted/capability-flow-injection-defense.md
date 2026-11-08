@@ -4,7 +4,7 @@
 - **Status:** ADD
 - **Next review:** on new evidence
 - **Course change:** `lessons/module-17/lesson-02.md` (new lesson 17.2, added 2026-10-11); `labs/lab-33-capability-flow/`; `_sidebar.md`; `curriculum/course-outline.md`; `references/standards-map.md`
-- **Candidates:** C-20261005-02, C-20261008-03
+- **Candidates:** C-20261005-02, C-20261008-03, C-20261106-07
 
 ## Summary
 
@@ -20,6 +20,7 @@ The architectural family of prompt-injection defenses: plan isolation (Dual LLM:
 - https://arxiv.org/abs/2610.03089 — Zingrillo, Foerster, Shumailov, Zhao, Mullins (2026): branch steering; STEER-Bench 101 tasks/9 domains; 94.4% ASR standard CUAs, 89.5% vanilla Dual-LLM CUAs; COBRA 0% ASR at 97% benign utility. EMERGING, single preprint. Verified.
 - https://arxiv.org/abs/2610.09469 — Secure-CUA, Choudhary et al. (2026): action transactions + masking; 53.55% vs 55.12% (vanilla) vs 13.17% (CaMeL-CUA) benign success on 400 WebArena tasks. Concurrent independent work. EMERGING. Verified.
 - Teaching adoption (search result, not fetched — host unreachable from this environment): CaMeL listed as a reading on the MIT 6.858 (2026) course site.
+- SecureGARD (C-20261106-07): ontology-guided governance with a waiting state for tool-using agents; incremental over the taught CaMeL-family content; single preprint, no code. Added 2026-11-08.
 
 ## What would change the decision
 
@@ -29,3 +30,4 @@ n/a — ADDed. Independent reproduction of branch steering or a released STEER-B
 
 - 2026-10-11 — ADD — the course had no coverage of the by-design injection-defense family (Dual LLM / CaMeL / information-flow control), which is mature and independently implemented (Google/ETH, Microsoft FIDES, multi-org Design Patterns); two independent same-week CUA papers supply a measured failure mode and defenses that make the guarantee boundaries teachable. New lesson 17.2 + Lab 33 (10 tests; full suite 144 passed) — weekly/2026-W41.md — candidates C-20261005-02, C-20261008-03
 - 2026-10-18 — ADD stands; new comparative evidence noted for a future 17.2 extension (not edited this week): SA-CUA (arXiv:2610.18508) claims to beat the taught CaMeL-CUA on utility at 0% ASR; Kairos (arXiv:2610.18457) mediates effects at the boundary for unmodified agents (AgentDojo 47.0%→2.7% at undefended utility); "authority envelope" (arXiv:2610.15138) enforces task-scope service-side for browser-agent OAuth/webhook flows. Deferred to a comparison update once numbers/code are verified — weekly/2026-W42.md — candidates C-20261015-05, C-20261015-06, C-20261015-07
+- 2026-11-08 — ADD — no course change: incremental variant of the taught capability-flow defense — weekly/2026-W45.md — candidates C-20261106-07

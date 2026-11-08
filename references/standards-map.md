@@ -83,6 +83,7 @@ Rows added by the weekly curriculum review (`research/`); existing tables above 
 | OWASP LLM04:2026 Supply Chain / LLM03:2026 Excessive Agency — agent skills as a supply-chain trust boundary: authentic-but-unsafe skills (prose / cache≠source / under-declared capability / cross-skill artifact); scanner + checked-hash loading + capability enforcement + cross-skill provenance | [22.2](../lessons/module-22/lesson-02.md) | lab-34 | 2026-10-18 |
 | MITRE ATT&CK v20 T1698/T1699 Prompt Injection → T1700 AI-Enabled Exfiltration (+ T1608.007 AI Result Poisoning) — mapping findings to ATT&CK; DET0927-style correlation analytic vs adaptive exfiltration; provenance hardening and its FP cost | [F.2](../lessons/frontier/update-02.md) | lab-35 | 2026-10-25 |
 | OWASP Agentic Top 10 (2026) ASI06 Memory & Context Poisoning / MITRE ATLAS AML.T0080.000 AI Agent Context Poisoning: Memory — misattributed, laundered and cross-user memory writes; runtime-assigned trust zones + scope + promotion gate (persistence ≠ authority) | [16.2 ext.](../lessons/module-16/lesson-02.md) | lab-36 | 2026-11-01 |
+| OWASP LLM01:2026 Prompt Injection / NIST AI RMF Measure — evaluating injection detectors at a fixed threshold across distributions: over-defense on curated vs external hard-benign text, obfuscation, agent-format (tool-output) shift, ranking vs calibration, PPV at a base rate | [24.1 ext.](../lessons/module-24/lesson-01.md) | lab-37 | 2026-11-08 |
 
 ## MITRE ATT&CK v20 — AI techniques (added 2026-10-25)
 

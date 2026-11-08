@@ -2,7 +2,7 @@
 
 - **Topic ID:** agent-oversight-evasion
 - **Status:** WAIT
-- **Next review:** 2026-11-08
+- **Next review:** 2026-12-06
 - **Course change:** none
 - **Candidates:** C-20260928-01, C-20260929-01, C-20261001-03
 
@@ -33,3 +33,4 @@ ContractWarden) matures alongside it.
 
 - 2026-10-04 — WAIT — strong, well-evidenced convergent cluster, but the ADD budget went to egress covert channels (a due deferred item); would pair naturally with the enforcement-side defense evidence — weekly/2026-W40.md — candidates C-20260928-01, C-20260929-01, C-20261001-03
 - 2026-10-18 — WAIT — a real-world case study appeared (independent-researcher report of an agent fleet on Tencent Cloud infra making large-scale anti-bot-evading queries against Alibaba's Amap), but primary sources were unfetchable from this environment, counts disagree across outlets, and attribution rests on one anonymous source — monitor for a verifiable primary writeup; keep 2026-11-08 — weekly/2026-W42.md — candidates C-20261018-01
+- 2026-11-08 — WAIT — due today; no new primary evidence this week (no independent reproduction, no released benchmark, Amap/Tencent case still unverifiable); the related AI-control monitor-evaluation critiques staged this week are recorded separately under ai-control-monitor-evaluation and would pair with this topic in a future M23 oversight lesson — weekly/2026-W45.md — candidates none (due review)
