@@ -324,8 +324,6 @@ capability, not just the obvious one** — applied per carrier:
   *allowlisted* host, so no egress allowlist stops it. If the secret is not in the deputy's context
   (held behind a handle by the executor, as in F.1), there is nothing to ride along.
 
-<div class="callout guarantee">
-
 **Guarantee analysis — per-carrier egress control (DNS zone allowlist + HTTP host allowlist).**
 - **Stops:** exfiltration over each carrier you have explicitly constrained — HTTP to
   non-allowlisted hosts *and* DNS resolution outside approved zones. Each caps the second factor of
@@ -343,15 +341,11 @@ capability, not just the obvious one** — applied per carrier:
   deputy" means *every* outward capability — enumerate them, constrain each structurally, keep the
   secret out of context, and use detectors only as depth.
 
-</div>
-
 **Side by side.** Against Lab 05's single-carrier deputy, the HTTP host allowlist is a complete
 boundary. Against a realistic deputy, it is one row in a table that must have a row for every
 outward capability; the DNS zone allowlist is the same control applied to the DNS carrier, and the
 ride-along has no egress-layer fix at all — only keeping the secret out of context. The original
 guarantee was never wrong; its scope was one channel.
-
-<div class="lab">
 
 **Lab 32** ([`labs/lab-32-egress-channel/`](../../labs/lab-32-egress-channel/README.md)) — reuse
 the confused-deputy setup, show the HTTP allowlist blocking direct HTTP exfil while the DNS carrier
@@ -362,15 +356,6 @@ in-process (nothing binds a socket), synthetic `LAB-CANARY-*` only.
 ```bash
 py labs/lab-32-egress-channel/attack.py
 py -m pytest labs/lab-32-egress-channel -q
-```
-
-</div>
-
-## Progress checkpoint
-
-```bash
-py course.py complete 05.1
-py course.py next
 ```
 
 **Next (planned):** 06.1 · Multimodal & cross-agent injection — instructions hidden in images

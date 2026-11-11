@@ -249,8 +249,6 @@ The lever moved from something the attacker controls ($m$) to something the defe
 can measure ($\pi$, the human confirmation rate, and $\varepsilon$, the channel-classification
 error). That move is the whole point of the technique.
 
-<div class="callout guarantee">
-
 **Guarantee analysis — trust-zoned memory (runtime-assigned zones + scope + promotion gate).**
 - **What it guarantees:** content that arrives through a LOW channel, including any note written by a
   process tainted by that content, cannot drive a sensitive action unless it is promoted. This holds
@@ -269,8 +267,6 @@ error). That move is the whole point of the technique.
   learned from external content need one confirmation each.
 - **Performance cost:** zone assignment and scope checks are a constant per write and per retrieval.
   The real cost is human attention per promotion.
-
-</div>
 
 **Side by side.**
 
@@ -292,8 +288,6 @@ Context Poisoning**. MITRE ATLAS covers it as **AML.T0080 AI Agent Context Poiso
 against the OWASP resource page and several secondary sources on 2026-11-01; the official ATLAS
 site could not be reached from the review environment.
 
-<div class="lab">
-
 **Lab 36** ([`labs/lab-36-trust-zoned-memory/`](../../labs/lab-36-trust-zoned-memory/README.md)):
 the four attacks against flat, source-tagged and zoned memory; utility tasks with their measured
 costs; a differential noninterference check; and the adaptive attacks zoning does not stop. CPU-only,
@@ -304,8 +298,6 @@ addresses only. Runs in about 2 minutes.
 py labs/lab-36-trust-zoned-memory/attack.py
 py -m pytest labs/lab-36-trust-zoned-memory -q
 ```
-
-</div>
 
 ### Exercise
 
@@ -321,7 +313,7 @@ py -m pytest labs/lab-36-trust-zoned-memory -q
    that assumption costs you.
 
 <details><summary>Hint</summary>
-For (2), lineage needs every write path to propagate <code>derived_from</code>. The attacker's best
+For (2), lineage needs every write path to propagate `derived_from`. The attacker's best
 target is any helper that builds a new claim from scratch.
 </details>
 
@@ -335,21 +327,3 @@ zoned policy is a minimal version. *Limits:* one group, under review.
 **Companions.** SAFE-Mem (arXiv:2610.22959) for governance labels and scope. CarryoverBench
 (arXiv:2610.28425, EMNLP 2026) for peer-reviewed evidence that planted memory re-fires without decay.
 Role Grounding Attack (arXiv:2610.38209) for misattribution.
-
-### Assessment
-
-<details><summary>Why can source tags not stop the misattributed-preference attack, while zoning can?</summary>
-The tag is derived from the claim's content (the quoted <code>User:</code> role marker), which the
-attacker writes. The zone is derived from the ingestion channel (a web read), which the runtime
-observes and the attacker cannot change.
-</details>
-
-<details><summary>Zoned memory has 0 noninterference violations. Name two harms it still allows.</summary>
-A compromised HIGH channel acting with full authority, and a false LOW fact steering the agent's
-answers (data integrity). A rubber-stamping human approving promotions is a third.
-</details>
-
-<details><summary>Using the worked example, what single quantity should a team measure in production to bound residual memory-poisoning risk under zoning?</summary>
-The promotion approval rate on attacker-originated claims ($\pi$), together with the
-channel-misclassification rate ($\varepsilon$). Together they set $p_{\text{zone}} = p(\pi+\varepsilon)$.
-</details>

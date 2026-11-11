@@ -193,8 +193,6 @@ fixed ensemble — true adaptivity means an attacker who studies *your* defense.
 
 ## Advanced extension: evaluating prompt-injection detectors (added 2026-11-08)
 
-<div class="prereq">
-
 **Prerequisites.** This lesson's ROC/AUC, base-rate PPV and Wilson CI sections; [23.1](../module-23/lesson-01.md)
 (the keyword detector as a probabilistic control); [05.1](../module-05/lesson-01.md) (indirect
 injection through tool outputs); [17.2](../module-17/lesson-02.md) (controls that do not depend on
@@ -203,8 +201,6 @@ fixed threshold, several benign and attack distributions, and false positives me
 as recall. **Why this matters:** detectors (Prompt Guard-style classifiers, guard models, "LLM
 firewalls") are the most widely deployed injection control, and their published numbers come almost
 entirely from in-distribution test splits.
-
-</div>
 
 The toolkit above still holds: ASR with CIs, ROC-AUC, base-rate PPV, adaptive evaluation. This
 extension applies it to one control the course keeps meeting, the prompt-injection **detector**. It
@@ -316,26 +312,16 @@ both findings that way.
 
 ### Attack / Defense model
 
-<div class="callout red">
-
 **Attacker moves against a detector.** (1) Move to a format the detector did not train on, such as a
 tool output, an email body or a document. (2) Remove the trigger vocabulary through paraphrase,
 leetspeak or spacing. (3) Remove the imperative entirely and plant a fact that the agent's own
 reasoning acts on. (4) Make the defender pay: if over-defense is high, operators raise the threshold
 or allow-list sources, and that opens a gap.
 
-</div>
-
-<div class="callout blue">
-
 **Defender moves.** Hard-negative augmentation (cuts curated over-defense), agent-format training
 data (fixes ranking on tool outputs), and per-deployment threshold calibration on *your own* benign
 traffic (fixes calibration). Above all, do not make the detector the only control: put it in front of
 17.2's capability flow control, which bounds what a missed injection can do.
-
-</div>
-
-<div class="callout guarantee">
 
 **Guarantee analysis — a prompt-injection detector, hardened with hard negatives and agent-format data.**
 - **What it guarantees:** nothing in the worst case. It is a probabilistic control. On distributions
@@ -354,10 +340,6 @@ traffic (fixes calibration). Above all, do not make the detector the only contro
   naive Bayes is microseconds), plus the ongoing cost of collecting and labelling benign traffic
   from every new source to recalibrate.
 
-</div>
-
-<div class="callout guarantee">
-
 **Guarantee analysis — the evaluation protocol (meta).**
 - **What it guarantees:** a detector number tied to a stated distribution and threshold, with
   over-defense visible as its own metric and a PPV that reflects deployment.
@@ -367,8 +349,6 @@ traffic (fixes calibration). Above all, do not make the detector the only contro
 - **False-positive cost:** none for users. The cost falls on the evaluator, who must build and label
   several benign sets.
 - **Performance cost:** one scoring pass per split. The real cost is data collection.
-
-</div>
 
 **Side by side** (Lab 37, shipped thresholds, Wilson CIs in the lab output).
 
@@ -389,8 +369,6 @@ low-FPR evaluation (InjecGuard, PromptShield, Prompt Guard 2's reporting). EMERG
 re-evaluation (2026) and non-imperative steering. Maps to OWASP **LLM01:2026 Prompt Injection** and
 NIST AI RMF **Measure**; ATT&CK T1698/T1699 and ATLAS AML.T0051 are the techniques being detected.
 
-<div class="lab">
-
 **Lab 37** ([`labs/lab-37-injection-detector-eval/`](../../labs/lab-37-injection-detector-eval/README.md)):
 the 23.1 keyword detector and a from-scratch naive-Bayes detector, evaluated at fixed thresholds on
 in-distribution, curated and external hard-benign, obfuscated, agent-format and fabricated-hazard
@@ -401,8 +379,6 @@ stdlib only. The strings are inert (`LAB-CANARY-*`, `PINEAPPLE-OK`, `*.test`). R
 py labs/lab-37-injection-detector-eval/evaluate.py
 py -m pytest labs/lab-37-injection-detector-eval -q
 ```
-
-</div>
 
 ### Exercise
 
@@ -422,7 +398,7 @@ py -m pytest labs/lab-37-injection-detector-eval -q
    base rate and one sentence on which 17.2 control bounds what it misses.
 
 <details><summary>Hint (step 2)</summary>
-<code>required_n(0.24, p_bar=0.48)</code> gives the per-condition $n$. Generate new tool-output
+`required_n(0.24, p_bar=0.48)` gives the per-condition $n$. Generate new tool-output
 templates. Copying the existing ones only makes the test split easier, not larger.
 </details>
 
@@ -443,40 +419,6 @@ trigger-word bias. Liu, "Passing the Test You Trained On" ([arXiv:2610.03448](ht
 code released) for agent-format transfer. PromptShield ([arXiv:2501.15145](https://arxiv.org/abs/2501.15145))
 for the low-FPR argument. Voluntary Servitude ([arXiv:2611.04393](https://arxiv.org/abs/2611.04393))
 for steering without a command (EMERGING).
-
-### Assessment
-
-<details><summary>A vendor reports F1 0.98 for its injection detector. What two questions do you ask first?</summary>
-On which distribution, at which threshold? Then: what is the false-positive rate on benign text that
-uses trigger words, from a source the vendor did not write? (Also: what is recall on your deployment
-format, such as tool outputs?)
-</details>
-
-<details><summary>Hard-negative augmentation drove curated FPR to 0.00. Why is that not evidence the over-defense problem is solved?</summary>
-The hard negatives and the curated set come from the same template family, so the fix is measured on
-its own home turf. An external benign set still shows FPR 0.25 in the lab, and PIDS-Bench reports the
-same pattern.
-</details>
-
-<details><summary>A detector has recall@1%FPR = 1.00 on tool outputs but flags 20% of benign tool outputs in production. Explain.</summary>
-Recall@1%FPR re-chooses the threshold on that split. It shows the ranking is perfect. Production uses
-one fixed threshold, which is miscalibrated for tool-output scores. Recalibrate on your own benign
-traffic, and report recall and FPR at the threshold you ship.
-</details>
-
-<details><summary>Why can no amount of detector training catch the fabricated-hazard payload, and what control applies instead?</summary>
-It contains no instruction and no attack vocabulary; it is a plausible false fact. Detectors key on
-text shape. The controls that apply act on the decision instead: a corroboration requirement before
-a safety claim changes a choice (proposed in the paper, EMERGING), and 17.2's capability bounds on
-what the steered action can do.
-</details>
-
-## Progress checkpoint
-
-```bash
-py course.py complete 24.1
-py course.py next
-```
 
 **Next:** 25.1 · Automated red teaming — attack generation, mutation/fuzzing, search/optimization,
 attacker/defender models, and automated exploit chains (building on M08 and this harness).
