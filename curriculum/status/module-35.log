@@ -1,0 +1,15 @@
+lesson-01 done — 35.1 Agentic vulnerability discovery: the iFinder case study (id 35.1, running 40)
+lesson-01 done — lesson-01.quiz.yaml, 4 questions, correct spread [0,1,2,3]
+module quiz done — assessments/module-35-quiz.md + module-35-quiz.quiz.yaml, 9 questions,
+  correct spread [0,1,2,3,0,1,2,3,2]
+lab done — labs/module-35/ shipped: README.md, validator.py, fixtures.py, audit.py, exercise.py,
+  test_lab35.py, docker-compose.yml. CPU, no network, defensive only (no packets/exploit).
+  py labs/module-35/audit.py -> prints code-vs-spec audit table + safe/unsafe handler contrast
+  py -m pytest labs/module-35 -q -> 11 passed (0.02 s)
+fact-check done — research/fact-checks/module-35-itrue-ifinder.md; CVE-2026-8233 and CVE-2026-8232
+  verified real on NVD; CVE-2026-36884 and CVE-2025-66776 confirmed NON-EXISTENT (not cited)
+sidebar NOT edited — new "Stage 13" block for this module is in curriculum/inbox/itrue-lesson-integration.md
+  for the main session to merge (another worker holds uncommitted changes to _sidebar.md et al.)
+glossary NOT edited — new terms (iTrue, iFinder, code-specification cross-check, PFCP, PDR,
+  uniqueness invariant) are in the inbox file for the main session to merge
+standards-map / BUILD_PROGRESS / PUBLISHING_WARNING NOT edited — proposed additions in the inbox file

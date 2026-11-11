@@ -1,0 +1,60 @@
+- id: q1
+  question: >-
+    You are handed an agentic vulnerability-discovery tool that reads your source and runs
+    generated PoCs in a container. Before pointing it at anything, what is the first governance step?
+  options:
+    - Scope its filesystem and network, run it against disposable targets you own, and treat output as candidates to confirm
+    - Grant it broad filesystem and network access so its findings are complete
+    - Trust its "no vulnerabilities" output as a clean bill of health to save a manual review
+    - Skip sandboxing because it only reads code and never changes it
+  correct: 0
+  explanation: >-
+    The tool executes code in a testbed and inherits agentic risks (tool misuse, unexpected code
+    execution), so it must be sandboxed and exercised on disposable targets first. Its recall is
+    bounded by its seed patterns, so a zero means "unmatched," never "absent" — findings are
+    candidates to confirm, not a certificate.
+- id: q2
+  question: >-
+    A discovery tool reports recall 68.2% against 22 known flaws and precision 75.0% over all its
+    reports. A teammate concludes "it misses a quarter of everything." What is the correct reading?
+  options:
+    - A precision figure above 75% guarantees that recall must also be at least 75% on the unknown flaws in the wild
+    - Recall uses the fixed 22-flaw ground truth while precision uses all output, so they are different denominators that cannot be merged
+    - Recall and precision here share a single common denominator, so both numbers end up describing the very same 22 known flaws
+    - A recall of 68.2% simply means that 68.2% of all the reports the tool emitted were false positives
+  correct: 1
+  explanation: >-
+    Recall is computed only against the known ground-truth set, while precision is computed over
+    everything the tool emits, including confirmed-new findings. They have different denominators,
+    so "misses a quarter of everything" conflates two measurements. Recall bounds coverage of the
+    known set; it says nothing about the universe of unknown flaws.
+- id: q3
+  question: >-
+    In the published ablation, adding the Vetting (code-specification cross-check) stage cut false
+    positives from 62 to 19 but left recall at 68.2%. Why does recall not improve?
+  options:
+    - Because the Vetting Agent re-runs the Discovery Agent with a larger context window
+    - Because the cross-check lowers precision in exchange for higher recall
+    - Because a downstream judge can only prune candidates, never discover a flaw the Discovery stage did not flag
+    - Because recall is capped by the testbed, which only executes a fixed number of PoCs
+  correct: 2
+  explanation: >-
+    Recall is fixed by the generator — the Discovery Agent decides what can ever be found. The
+    Vetting Agent only expands context to the full 3GPP procedure and reclassifies context-blind
+    false positives as validated-elsewhere. A pruning judge buys precision, not recall; that is the
+    M24 rule applied to a discovery pipeline.
+- id: q4
+  question: >-
+    Two handlers each take a rule identifier from an internal-peer message. The secure fix for the
+    session-hijack class is to do what when an identifier already exists in the session?
+  options:
+    - Keep both and sort the rules by precedence so the higher-priority one wins
+    - Allocate a new buffer for the duplicate so no existing state is overwritten
+    - Log the duplicate and continue, since the peer is on an internal interface
+    - Reject the duplicate, enforcing the uniqueness invariant on the identifier within the session
+  correct: 3
+  explanation: >-
+    The root cause is missing uniqueness validation: a reused identifier can override the legitimate
+    rule. Enforcing the uniqueness invariant — rejecting the duplicate at the handler — closes the
+    class. Sorting by precedence is exactly the behavior that lets a duplicate take over, and
+    "trust the internal peer" is the implicit trust error itself.

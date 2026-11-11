@@ -1,0 +1,137 @@
+- id: q1
+  question: >-
+    An unguided LLM asked to "find vulnerabilities in this core-network code" returned severe
+    hallucinations and no usable result, yet a prompt-only baseline fed the six detection patterns
+    reached 28.2% precision. What does this contrast establish?
+  options:
+    - The patterns alone carry much of the signal; structure is a separate, additional gain
+    - The model is useless for security work regardless of how it is prompted
+    - Precision below 30% means the baseline also hallucinated everything
+    - Detection patterns are only useful once an exploitation testbed is attached
+  correct: 0
+  explanation: >-
+    The jump from "no usable result" to 28.2% precision comes purely from feeding the distilled
+    patterns, so the patterns carry real signal on their own. The further jump to 75% comes from the
+    multi-agent structure. Two separable contributions — patterns and pipeline — is exactly what the
+    baseline comparison is designed to show.
+- id: q2
+  question: >-
+    The Discovery Agent flags a snippet because the required check is not in the lines it is reading.
+    Many such flags are false. What is the single reason, and which stage addresses it?
+  options:
+    - The model cannot read Go source code at all, so the Vetting Agent first recompiles the whole project into C
+    - The real check often sits in an earlier protocol state's handler, invisible in the snippet, so vetting expands context to the whole procedure
+    - The containerized testbed runs far too slowly, so the Exploitation Agent simply caches earlier results to keep the pipeline moving
+    - The seed pattern set is far too large to use, so the Preprocessing stage aggressively prunes it before discovery even begins
+  correct: 1
+  explanation: >-
+    A single snippet cannot see a validation performed two messages earlier in the same procedure.
+    The code-specification cross-check maps the candidate to its 3GPP procedure, finds the
+    prerequisite messages' handlers, and re-evaluates with that context — removing context-blind
+    false positives (62 to 19 in the ablation).
+- id: q3
+  question: >-
+    A security lead says "iFinder found 84 bugs that fuzzers missed, so it beats fuzzing." Reading
+    the study honestly, what is wrong with that statement?
+  options:
+    - Fuzzers cannot find any bugs in stateful protocols, so the comparison is unfair to iFinder
+    - Nothing — the study ran iFinder and three fuzzers head-to-head on all seven targets
+    - The study did not compare against fuzzing or static analysis, so a head-to-head "beats" claim is unsupported
+    - The 84 findings were all memory-safety bugs that fuzzers routinely find
+  correct: 2
+  explanation: >-
+    The study positions iFinder as reaching stateful, logic flaws that crash-oriented fuzzers tend
+    to miss, but it does not run a head-to-head comparison against fuzzing or static analysis on
+    these targets. "Beats fuzzing" is therefore a claim the evaluation does not license — a
+    consistent hypothesis, not a measured result.
+- id: q4
+  question: >-
+    You want to reuse the study's most portable idea in your own review of a message-driven service.
+    Which artifact generalizes best, and how do you apply it?
+  options:
+    - The containerized testbed itself, by shipping a full copy of it alongside every manual code review that you perform
+    - The Claude Agent SDK itself, by requiring that every reviewer on the whole team adopt the exact same underlying model
+    - The specific commercial-core CVE numbers, by filing each one of them directly against your own quite unrelated service
+    - The triple of information element, dangerous operation and missing validation — name the untrusted field, the use, and the absent check
+  correct: 3
+  explanation: >-
+    The detection-pattern triple is protocol- and language-agnostic by design. For any message-driven
+    handler, name the untrusted field, name the dangerous operation performed on it, and name the
+    validation that should precede it; an empty third slot is a finding. That is a reusable review
+    discipline, independent of the specific tool.
+- id: q5
+  question: >-
+    A handler receives a mandatory field that is absent and dereferences it, or fires a
+    process-ending assertion on a malformed value. Which validation classes close this availability
+    (DoS) class at the trust boundary?
+  options:
+    - Syntactic validation (mandatory-field presence, length/bounds) plus bounded allocation with graceful rejection
+    - Mutual TLS on the interface, which makes field validation unnecessary
+    - Semantic uniqueness checks on rule identifiers only
+    - Rate limiting at the network edge, which removes the need for in-handler checks
+  correct: 0
+  explanation: >-
+    The DoS class is syntactic and resource-availability: check mandatory fields and lengths/bounds
+    before using them, and allocate within capacity, rejecting gracefully instead of asserting and
+    dying. Transport security and rate limiting are deployment-layer complements, not substitutes for
+    validating the message the handler acts on.
+- id: q6
+  question: >-
+    Even after runtime PoC-validation, 12 false positives remained. The study explains that a PoC the
+    Exploitation Agent calls "successful" can still be an FP. Why?
+  options:
+    - Because the containerized testbed randomly drops roughly one in every five proof-of-concept runs that it attempts
+    - Because the PoC may crash a real but unintended site; the agent checks only that a crash occurred, not where
+    - Because the Exploitation Agent is capped at just five refinement iterations and therefore gives up on the candidate far too early
+    - Because a false positive here is defined solely as any proof-of-concept that merely manages to compile cleanly without errors
+  correct: 1
+  explanation: >-
+    The Exploitation Agent confirms that the expected runtime effect — typically a crash — happened,
+    but does not verify that the crash site matches the specific candidate. A PoC that triggers a
+    different, real flaw earlier on the execution path still "succeeds," so it is counted as a false
+    positive for the intended candidate. Even a runtime judge has a precision ceiling.
+- id: q7
+  question: >-
+    A teammate wants to cite one of the study's CVEs in a report and copies an ID from a news
+    article. What is the correct practice, given the lesson's note on the CVE numbering?
+  options:
+    - News-article identifiers are authoritative sources, so you may copy them straight into the report without any further checking
+    - Any identifier that falls in the 2026 CVE range is automatically valid, so a separate NVD lookup is never really needed
+    - Resolve each CVE to its own NVD record before citing it, because some IDs printed in early coverage do not exist on NVD
+    - Cite the arXiv number in place of a CVE whenever possible, because CVE identifiers are simply never reliable enough to trust
+  correct: 2
+  explanation: >-
+    The lesson flags that early press coverage printed CVE IDs with no NVD record. Always resolve a
+    CVE to its NVD entry (product, score, vector, publish date) before citing it; the study names
+    CVE-2026-8233 (and companion CVE-2026-8232) on Dotouch XproUPF, both verifiable on NVD, while the
+    other roughly 79 CVEs are real but not individually numbered in the paper.
+- id: q8
+  question: >-
+    Which statement best captures what "implicit trust error (iTrue)" names, and why it is called
+    systemic rather than a set of isolated bugs?
+  options:
+    - A memory-safety bug class that is unique to the C language exactly as it is written and used in Open5GS
+    - A misconfiguration in cloud load balancers that accidentally exposes the internal N4 signalling interface to external attackers on the Internet
+    - A flaw that only ever appears once two separate commercial 5G cores are federated together and begin sharing session state
+    - A component acting on an internal peer's message without validating its format, semantics, or resource availability, recurring across seven cores
+  correct: 3
+  explanation: >-
+    An iTrue is the implementation-level habit of trusting an internal peer's message and skipping
+    syntactic, semantic, or resource-availability validation — a legacy of the "walled garden"
+    assumption. Its recurrence across seven cores in C, C++ and Go, and across both GTP-C and PFCP,
+    is the evidence that it is a specification-to-implementation gap, not isolated coding mistakes.
+- id: q9
+  question: >-
+    Your team adopts an agentic discovery tool and it reports "no findings" on a service. How should
+    that result be recorded, given the tool's recall of 68.2% and pattern-bounded coverage?
+  options:
+    - As proof the service is free of the vulnerability classes in scope
+    - As a reason to remove the service from the manual review queue
+    - As "no candidates matched the current pattern set" — coverage information, not a certificate of absence
+    - As evidence the tool is broken, since a real service always has findings
+  correct: 2
+  explanation: >-
+    Recall is bounded by the seed pattern set, so a zero means the tool matched nothing it was taught
+    to look for — not that nothing is there. Record it as coverage information and keep the manual
+    review; a discovery tool is for finding problems, never for certifying their absence (the same
+    M24/M25 discipline as automated red teaming).
