@@ -114,8 +114,34 @@ Each of these passed an obvious first check and failed only in the importer:
 - **Legacy F.1 → module 32.** `lessons/frontier/update-01.md` tripped "module page outside
   lessons/module-NN/lesson-MM.md layout". Moved to `lessons/module-32/lesson-01.md` (id `32.1`).
 - Answer positions balanced across A–D in every quiz file.
+- **Module 34 advanced track is additive, not a fork.** Advanced learners asked for GPU-track
+  content alongside the existing CPU toy-model labs, so modules 7 and 25 are untouched. Module 34
+  is a new "Stage 12 — Advanced track (GPU, optional)" appended after module 33; no existing
+  lesson, module number or running number was renumbered, per §1 (paths are stable ids).
+- **Two existing files were edited, both required.** `_sidebar.md` (appended one stage block —
+  §3 says a lesson not listed there is never imported, so unregistered content is dead) and
+  `PUBLISHING_WARNING.md` (item 1 claimed *every* lab targets a synthetic app or in-process mock,
+  which module 34 makes false; item 1 was amended and a new item 7 documents the real-model and
+  weight-edit scope). No other existing file was touched.
 
 ## Open questions for Tal
 
 - Set the course row's adapter to **`course-creator`** in the Academy. The bespoke `ai-security`
   adapter can stay but is no longer the right one — see the adapter note above.
+- **Free or paid for module 34?** It is the only module requiring a paid GPU, and the README's cost
+  table is the first thing a reviewer hits. Everything it teaches is reachable free via the module 7
+  and 25 toy labs, so nothing is locked behind it — but the classification is yours to make.
+- **Target model resolved: `zai-org/GLM-5.3-Flash`** (Tal's call, this session). MIT weights, 320B
+  total / 18B active MoE, ~328 GB at FP8, so the lab is tiered: A = full FP8 on 8x80GB or 4xH200
+  (the only tier that reproduces the published numbers), B = community 4-bit (pipeline runs, numbers
+  do not transfer), C = small open-weight model (the script default, free, learns the algebra).
+  Lessons, the lab brief and `PUBLISHING_WARNING.md` item 7 were all updated to match.
+- **Free or paid for module 34, restated with the real numbers.** Anthropic's own figures are
+  ~2,200 GPU-hours / ~$4,400 for the flagship ablation and ~600 GPU-hours / ~$1,200 for Flash by an
+  experienced team. That is a days-long, multi-thousand-dollar commitment on top of 8x80GB of VRAM,
+  which is a different proposition from "some students have a GPU". Everything remains reachable free
+  via tier C and the module 7/25 toy labs, so nothing is locked behind the decision — but the
+  free/paid classification should be made with the tier-A price in mind, not the old 24 GB estimate.
+- **Overlap with `research/deferred/agentic-jailbreak-taxonomy.md`.** Both cover prefill and
+  persona framing. Decide which topic owns "safeguard circumvention" before either is adopted as
+  course content.

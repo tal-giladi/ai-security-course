@@ -1,0 +1,58 @@
+- id: q1
+  question: >-
+    You fit the single-direction probe on held-out prompts and get an AUC of 0.58. What should
+    happen next?
+  options:
+    - Ablate anyway, because the estimated direction is still a reasonable place to start
+    - Move to a different layer band and continue without mentioning the probe result
+    - Stop, and report that this checkpoint does not fit the single-direction claim
+    - Enlarge the prompt set and recompute the direction before drawing any conclusion
+  correct: 2
+  explanation: >-
+    The probe is the test of the assumption the whole method rests on, and 0.58 means refusal is not
+    linearly decodable from this axis for this model. Editing anyway produces a degraded model that
+    looks like a successful removal, which is the one outcome the experiment must not be able to
+    produce.
+- id: q2
+  question: >-
+    An ablation drops the refusal rate from 95% to 5%, and the general capability metric collapses
+    at the same time. What is the correct reading of this result?
+  options:
+    - The experiment is inconclusive, because a damaged model complies without any refusal removed
+    - The finding is stronger, since a less capable model resists further attacks equally well
+    - Report the refusal number on its own, since capability is a separate and less important question
+    - The direction was misidentified, so choose a later layer band and rerun the whole procedure
+  correct: 0
+  explanation: >-
+    A model that complies because it is broken is not a model whose safeguards were removed, and the
+    two are indistinguishable from refusal rate alone. That is precisely why the capability control
+    is run beside every refusal measurement and reported in the same table.
+- id: q3
+  question: >-
+    Your first ablation removes most refusal behaviour. You re-estimate the direction on the
+    ablated model and ablate again, and about 70% of refusal returns. What does that number tell you?
+  options:
+    - The first ablation was miscalibrated, since a true single direction should vanish completely
+    - It contradicts the single-direction finding, since two estimates should have been identical
+    - The model is simply degrading over rounds, so the trend will continue without bound
+    - Refusal persists in weaker representations, making the iteration count the real cost
+  correct: 3
+  explanation: >-
+    Removing the dominant axis does not remove the function, so the model re-expresses it along a
+    weaker neighbouring direction. Planning a control against round one therefore understates the
+    attacker's effort, and the number of rounds is the figure worth reporting.
+- id: q4
+  question: >-
+    A team publishes model weights under an acceptable-use policy that prohibits removing safety
+    behaviours. How should they characterise the residual risk?
+  options:
+    - The policy prevents the attack, since weight editing is now a clearly prohibited use
+    - Policy does not reduce the capability, so exposure is fixed once weights are public
+    - Capability results should stay out of the model card so nobody is invited to try this
+    - Access controls suffice, because redistribution of a published checkpoint is detectable
+  correct: 1
+  explanation: >-
+    Once a checkpoint is downloadable, the edit is reproducible by anyone with a GPU, and the
+    published method plus its cost estimate are enough to do it. Terms of service still matter for
+    legal recourse, but they do not change what an attacker can do, and they should not be counted
+    as a technical mitigation.

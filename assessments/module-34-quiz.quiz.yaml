@@ -1,0 +1,142 @@
+- id: q1
+  question: >-
+    Your team measures 95% refusal on a sampled set of harmful requests and reports it as the
+    model's safety posture. Which gap in the claim matters most before anyone ships?
+  options:
+    - The scorer measures phrasing, not refusal, and its errors hide real compliance
+    - The sample came from a public benchmark rather than from your own production traffic
+    - No interval was reported, so the true rate could be several points lower than stated
+    - Only harmful requests were measured, so benign false positives went unrecorded
+  correct: 0
+  explanation: >-
+    A string scorer counts refusal phrasing rather than refusals, and its errors land in the
+    dangerous direction, where a cooperative-sounding response is scored as a refusal. The missing
+    interval matters, but it only bounds an estimate of the wrong quantity.
+- id: q2
+  question: >-
+    A vendor says their API model "resists reasoning prefill attacks" and cites internal testing.
+    What is the strongest objection to relying on that claim?
+  options:
+    - Prefill was superseded by ablation, which removes refusals more efficiently
+    - Reasoning models emit their reasoning block too late for an injected prefix to bind
+    - Prefill is not expressible against their endpoint, so nothing was tested
+    - The claim is fair, but it should ship alongside the scoring method behind it
+  correct: 2
+  explanation: >-
+    Prefill requires an interface that accepts an assistant-turn prefix. If the endpoint does not
+    offer one, no amount of internal testing establishes anything, and the right engineering
+    response is to keep the surface closed rather than to keep testing.
+- id: q3
+  question: >-
+    Your evaluator reports engagement by checking whether the model produced a refusal string.
+    You switch to scoring whether the model attempted the action, and engagement rises. Which
+    reading is most defensible?
+  options:
+    - The behavioural scorer is stricter by construction, so the rise is a measurement artefact
+    - The two scorers measure different things and the gap shows what the old one concealed
+    - The string scorer was right, since declining to act is itself a form of refusal
+    - Scoring the action measures the behaviour the evaluation set out to measure
+  correct: 3
+  explanation: >-
+    A string scorer measures whether the model declined in words, which is a property of the
+    phrasing rather than of the behaviour. A gap between the two is evidence about the old metric,
+    not noise to be averaged away.
+- id: q4
+  question: >-
+    You ablate a model and find it refuses 4% of your harmful-prompt sample while scoring normally
+    on your capability benchmark. A colleague calls this a successful safeguard evaluation. What is
+    wrong?
+  options:
+    - Nothing, since intact capability with low refusal is exactly the intended outcome
+    - You ablated your own weights, so this characterises a release, not a served model
+    - The refusal figure lacks an interval, so four percent cannot be compared with anything
+    - Capability holding steady is expected on this model and needs no separate verification
+  correct: 1
+  explanation: >-
+    The measurement shows a weight holder can strip the behaviour cheaply, which is a finding
+    about weights you distribute rather than about a model you serve through an API. Reporting it
+    as a safeguard evaluation inverts what the result means.
+- id: q5
+  question: >-
+    Your organisation is choosing between a hosted frontier API and an open-weight model it can
+    host itself. Which factor most directly determines the safeguard exposure of each option?
+  options:
+    - The hosted API hides the reasoning block and withholds weights, removing two classes
+    - The open model can be fine-tuned on your data, so its refusals will match your domain
+    - The open model is auditable by your team, so its refusal behaviour is fully verifiable
+    - Both expose the same classes, because the model's training decides its safeguards
+  correct: 0
+  explanation: >-
+    Abstention requires either the weights or a controllable continuation point, and the hosted
+    API withholds both while an open checkpoint you host hands over the weights by definition.
+    Auditability is a real benefit of the open option, but it is not what sets the exposure.
+- id: q6
+  question: >-
+    You are choosing between two mitigations: adding a detector for cover-story framing, or
+    removing assistant-turn prefix support from your endpoint. Which statement is correct?
+  options:
+    - The detector is better, because framing is the strongest class against open models
+    - They are equivalent, since both cut engagement by a similar amount in testing
+    - Removing the surface eliminates a class outright, which no filter can guarantee
+    - Neither matters, because the weight-edit class survives either mitigation
+  correct: 2
+  explanation: >-
+    Removing prefix support makes continuation attacks inexpressible, which no detector can
+    guarantee, and it costs no false positives. A framing detector is defeatable by rephrasing and
+    misfires on legitimate security work, so the two are not comparable on a shared scale.
+- id: q7
+  question: >-
+    A published report gives you engagement rates for four conditions and publishes none of the
+    prompts, targets or harness. How should you use it?
+  options:
+    - Reproduce the rates exactly, since the four conditions are described precisely
+    - Use it for method and magnitude, then build your own evaluation instead
+    - Discard it, since results without artifacts cannot be checked by anyone else
+    - Reuse its conditions verbatim, since matching them is what makes a comparison fair
+  correct: 1
+  explanation: >-
+    The transferable content is the experimental design, the arms and the scorer choice; the
+    withheld artifacts mean the specific rates cannot be replayed. Building an evaluation against
+    your own deployment is what turns the claim into something you can check yourself.
+- id: q8
+  question: >-
+    You publish open weights and rely on an acceptable-use policy to prohibit removing safety
+    behaviours. Which assessment is accurate?
+  options:
+    - The policy is a real control, because violations are defined and can be detected
+    - The policy reduces exposure, provided the model card omits its own refusal numbers
+    - The policy is enforceable at every mirror, since licences follow the copied file
+    - The policy is legal recourse, not a technical control on the capability
+  correct: 3
+  explanation: >-
+    Licences do not travel with a copied checkpoint and do not stop an attacker with a GPU, so the
+    capability to remove the behaviour is fixed the moment the weights are public. Policy still
+    matters for legal recourse, but counting it as a technical mitigation is the error.
+- id: q9
+  question: >-
+    Your first ablation removes most refusal behaviour. You re-estimate the direction on the
+    modified model and ablate again, and much of it returns. What should a defender take from this?
+  options:
+    - Round two is the realistic threat, so remediation has to be budgeted for it
+    - The first direction was estimated wrongly and should be recomputed from scratch
+    - Refusal is single-direction, so a second estimate should have matched the first
+    - The second round only matters if the model was fine-tuned after the first ablation
+  correct: 0
+  explanation: >-
+    The behaviour survives removal of the dominant direction by reappearing along a weaker one, so
+    the cost to an attacker is a sequence rather than a single script. Planning a control around
+    round one understates what an attacker with a GPU will spend.
+- id: q10
+  question: >-
+    A model ablated at round two refuses 8% and has lost six points of general capability. How
+    should this configuration be reported to a decision-maker?
+  options:
+    - A clean success, since an eight percent refusal rate is strong on its own terms
+    - A failed run, because any capability loss disqualifies the configuration outright
+    - A lead needing validation, since the capability cost weakens the comparison
+    - Equivalent to stock, since six points is inside the capability metric's own noise
+  correct: 2
+  explanation: >-
+    The two numbers move together and the reader needs both: refusal bought with lost capability is
+    a different trade from refusal bought for free, and the second round suggests the cheap case may
+    not exist. Presenting either figure alone misleads in a different direction.

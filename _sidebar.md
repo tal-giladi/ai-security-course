@@ -129,6 +129,12 @@
   - [37 · Oversight the agent cannot edit](lessons/module-33/lesson-01.md)
   - [Module 33 quiz](assessments/module-33-quiz.md)
 
+- Stage 12 — Advanced track (GPU, optional)
+- **Module 34 — Advanced safeguard evaluation**
+  - [38 · The safeguard surface](lessons/module-34/lesson-01.md)
+  - [39 · Running refusal ablations on an open-weight model](lessons/module-34/lesson-02.md)
+  - [Module 34 quiz](assessments/module-34-quiz.md)
+
 - Reference
 - [Standards map: OWASP / ATLAS / NIST](references/standards-map.md)
 - [External tools & fallbacks](references/tools-and-fallbacks.md)

@@ -1,0 +1,17 @@
+# Lab-local ignore rules. The repo root .gitignore already covers *.safetensors / *.gguf / *.bin /
+# *.pt, but it does not know about downloaded repositories or parquet shards, and this lab is
+# explicitly forbidden from committing weights or datasets.
+
+# `hf download` output: model weights, tokenizers, dataset parquet/TSV shards.
+hf-cache/
+
+# Runtime dataset copies, if you ever point the harness at a local path instead.
+data/
+
+# Ablated-model output: a model with the refusal behaviour removed — a weaponised artefact that
+# must never be published.
+out/
+
+# Local scratch produced by the harness.
+*.jsonl
+*.log

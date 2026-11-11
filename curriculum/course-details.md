@@ -9,8 +9,8 @@ Not imported into the Academy — this is what Tal uses to register the course a
 | Repo root | `C:\Users\TalGiladi\OneDrive\repos\course-creator\ai-security-course` |
 | Import adapter | `course-creator` (the general contract) |
 | Free or paid | **Paid** — it is a practitioner/research-grade security course with a capstone engagement, aimed at working engineers. Tal decides. |
-| Format | Markdown lessons (34) + per-module multiple-choice quizzes (32 modules) + downloadable lab code per module + a capstone engagement brief |
-| Estimated time | ~40 h reading, ~90 h hands-on |
+| Format | Markdown lessons (39) + per-module multiple-choice quizzes (37 modules) + downloadable lab code per module + a capstone engagement brief |
+| Estimated time | ~41 h reading, ~95 h hands-on. Module 34 (advanced track) adds ~47 min reading and ~5 h hands-on, plus compute cost — see below. |
 | Pass mark | 70% on every quiz |
 
 ## Risk notice
@@ -19,6 +19,11 @@ Not imported into the Academy — this is what Tal uses to register the course a
 > on your own machine, using synthetic secrets and local sinks. Nothing here targets a real system,
 > a real credential or a third party's data, and no payload is weaponized. You are responsible for
 > having written authorisation before testing any system you do not own.
+>
+> Module 34 additionally downloads and modifies a real open-weight model
+> (`zai-org/GLM-5.3-Flash`, MIT-licensed) that you host locally, and can consume substantial paid GPU
+> time. It still targets no third-party service and embeds no harmful corpus. See
+> `PUBLISHING_WARNING.md` item 7 before publishing.
 
 ## One-line summary
 
@@ -37,8 +42,12 @@ or AI Security Architect. It assumes the
 
 - The sibling **LLM Research Engineer** course, or equivalent working knowledge of transformers,
   training, RLHF, embeddings, RAG and tool-calling agents.
-- Comfort with Python (all labs are Python, stdlib-first, CPU-only) and with reading attacker code.
+- Comfort with Python. Every lab except module 34 is stdlib-first and runs CPU-only, offline.
 - Docker for the labs that use it; every lab states whether it needs it, and most do not.
+- **For module 34 only** (the paid advanced track): a GPU machine with 24 GB+ of VRAM for tiers B/C,
+  or 8×80 GB / 4×H200 for tier A, plus a budget for the run. Anthropic's own figures for a GLM-5.3
+  ablation are ~600–2,200 GPU-hours and ~$1,200–$4,400. The lab README has a cost table; nothing in
+  the rest of the course needs a GPU, and modules 7 and 25 teach the same algebra for free.
 - Reading ability in English. The papers are read in English.
 
 ## What you will learn
@@ -61,6 +70,10 @@ or AI Security Architect. It assumes the
   section.
 - **Run a professional engagement** — reconnaissance through reporting, using the capstone
   environment and the engagement-report template.
+- **Evaluate safeguards properly, at the scale that matters** (advanced track) — classify a
+  circumvention technique by the deployment surface it requires, score compliance behaviourally
+  rather than by string match, replicate a refusal-direction ablation on a 320B open-weight model with
+  a capability control, and report the iteration count an adaptive attacker actually faces.
 - **Keep up** — the course ships with a daily research and weekly curriculum-review pipeline, so
   the content tracks new findings rather than going stale.
 
@@ -74,3 +87,21 @@ or AI Security Architect. It assumes the
   `course-creator`. The old adapter can stay in the codebase; nothing else uses it.
 - GitHub Pages is enabled and the repo is fully usable as plain markdown, so nothing a learner
   needs depends on docsify, JavaScript or the progress script.
+- **The repo is public but the course is now paid — module 34 is the first thing that makes that a
+  problem.** Every paid module up to now was CPU-only and its "lab code" was a few hundred lines of
+  Python that is arguably the marketing. `labs/module-34/` is different: it is a working refusal-
+  ablation pipeline against a specific named open-weight model, and the Academy serves lab code as a
+  **downloadable zip**. If `tal-giladi/ai-security-course` stays public, the module 34 lab zip is
+  fetchable by anyone, as are the lesson markdowns via GitHub Pages — so the paywall does not hold for
+  the one module it was presumably introduced for. Three options, in the order I would weigh them:
+  1. **Split** — publish modules 0–33 as the free course, move module 34 to a separate private repo
+     imported as its own paid course. Cleanest commercially, but it breaks the single `_sidebar.md`
+     and the stable lesson-id path `34.1`, and instructions §1 forbids renaming published paths.
+  2. **Keep it public and say so** — treat module 34 as marketing that happens to be real, and make
+     the tiered cost table the pitch ("$20 to learn it, $4,400 to reproduce the finding"). Defensible
+     if you intend the course to stay primarily a public portfolio.
+  3. **Make the repo private** — the course-details table says the Academy import then needs a token.
+     Simplest to operate, and it also changes the docsify/portfolio story, so it is a real trade.
+  Whatever you pick, note that `PUBLISHING_WARNING.md` is written on the assumption that the same
+  markdown publishes on the Pages build — that stays true in all three cases, but only option 1 or 3
+  keeps the lab zip from being freely downloadable.

@@ -1,0 +1,57 @@
+- id: q1
+  question: >-
+    Your refusal dashboard matches known refusal templates. After a fine-tune, the model begins
+    most answers with "Happy to help — here's what I'd do:" and your refusal rate reads higher
+    than before. What happened?
+  options:
+    - The dashboard is measuring phrasing, and the reported improvement is not a real change
+    - The model is better aligned, since an enthusiastic opening usually precedes a helpful reply
+    - The keyword list needs more variants before any number on the dashboard can be trusted
+    - Refusal scoring should be retired in favour of a general capability benchmark
+  correct: 0
+  explanation: >-
+    The scorer counts refusal strings, not refusals, so a cooperative opener hides the behaviour
+    you are trying to detect and the metric moves in the wrong direction. This is the false
+    negative that motivates a behavioural scorer, which asks whether the model took the action.
+- id: q2
+  question: >-
+    A vendor states that their hosted model "resists refusal ablation." What is the strongest
+    objection to that claim?
+  options:
+    - Ablation needs thousands of GPU-hours, so no vendor could reasonably have tested it
+    - Without published weights, the claim concerns an attack their interface cannot express
+    - Ablation damages general capability, so refusal and capability stay entangled afterwards
+    - The vendor should have run ablation locally and released the resulting refusal rates
+  correct: 1
+  explanation: >-
+    Ablation is a weight edit, so a hosted endpoint that does not hand over weights cannot be
+    attacked this way regardless of how the model was trained. The claim is therefore about an
+    unavailable surface, not about resistance, and cannot be verified from outside at all.
+- id: q3
+  question: >-
+    You measure a refusal rate of 96% on 50 samples and a colleague says the 95% interval is
+    about plus or minus 3%. What is the problem?
+  options:
+    - There is no problem, since 50 samples settles a binary outcome adequately
+    - Wilson intervals are only valid for proportions below one half of the sample
+    - Near the boundary the interval is asymmetric and wider than naive bounds suggest
+    - You should compute the interval on the logit scale before converting back to a rate
+  correct: 2
+  explanation: >-
+    The naive standard error assumes an interior proportion and collapses at 0 and 1, which is
+    exactly where refusal measurements live. Wilson's interval stays sensible there, and at
+    n=50 the uncertainty around 96% is wide enough to change a release decision.
+- id: q4
+  question: >-
+    An evaluation reports 97% refusal, and you compute a scorer gap of 4% in the direction where
+    the string scorer refuses while the model actually complies. What is the right next step?
+  options:
+    - Publish both figures side by side, since the behavioural scorer is stricter by definition
+    - Increase the sample size until the two scorers converge, since the gap is sampling noise
+    - Publish the lower refusal rate instead, since the conservative figure is the honest one
+    - Inspect the disagreeing cases, since your current metric is understating real compliance
+  correct: 3
+  explanation: >-
+    The gap in that direction is a measurement bug rate: cases your existing reporting called safe
+    that were not. It is not noise to be averaged away but evidence that the metric itself needs
+    replacing before any claim built on it means anything.

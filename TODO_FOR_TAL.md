@@ -80,6 +80,29 @@ the codebase; nothing uses it.
 
 ## Still open
 
+### Needs a decision from Tal (module 34, added 2026-09-30)
+
+- **The repo is public but the course is paid, and module 34 is the first module where that
+  actually costs something.** The Academy serves lab code as a downloadable zip, so
+  `labs/module-34/` — a working refusal-ablation pipeline against a named open-weight model — is
+  freely fetchable today from a public GitHub repo, as are the lesson markdowns via Pages. Options
+  and my ordering are in `curriculum/course-details.md` → *Notes for Tal*: split module 34 into a
+  private paid repo, keep it public and sell tier A on the cost table, or make the repo private
+  (import then needs a token).
+- **`lessons/frontier/update-01.md` is untracked, unreadable, and is not a duplicate.**
+  `BUILD_PROGRESS.md` records it as moved to `lessons/module-32/lesson-01.md`, but the two files
+  differ in size (24,111 vs 21,132 bytes), so ~3 KB may have been lost in that move. I could not
+  read it at all — OneDrive reports it as not hydrated locally and both `read` and `grep` fail with
+  a cloud-provider error. I did not delete it or guess. **Sync OneDrive, then decide whether it is a
+  stale draft or orphaned content.**
+- **`labs/lab-16/` is a stale duplicate** of the existing (and fine) `labs/module-16/`. It also
+  fails pytest collection with `OSError: [Errno 22]` on this host, which is why the repo-wide suite
+  needs `--ignore=labs/lab-16`. Untracked, so nothing is lost — safe to delete.
+- **Overlap between module 34 and `research/deferred/agentic-jailbreak-taxonomy.md`** — both cover
+  prefill and persona framing. Decide which owns "safeguard circumvention" before adopting either.
+
+### Optional follow-ups
+
 Nothing blocking. Optional follow-ups, in rough value order:
 
 - **Deepen the depth-first modules.** Most modules have one flagship lesson; the flagship is
