@@ -9,6 +9,11 @@
 - **Module 1 — AppSec primitives**
   - [02 · AppSec primitives AI systems inherit](lessons/module-01/lesson-01.md)
   - [Module 1 quiz](assessments/module-01-quiz.md)
+- Stage 1 — LLM security foundations
+- **Module 2 — LLM security foundations**
+  - [03 · Where the boundaries really are](lessons/module-02/lesson-01.md)
+  - [04 · The inference API attack surface](lessons/module-02/lesson-02.md)
+  - [Module 2 quiz](assessments/module-02-quiz.md)
 
 - Stage 2 — Prompt injection
 - **Module 4 — Direct prompt injection**
