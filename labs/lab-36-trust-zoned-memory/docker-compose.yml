@@ -1,0 +1,10 @@
+# Lab 36 — reproducible run in an isolated container with NO network egress.
+# `docker compose up` runs the trust-zoned-memory purple cycle. Stdlib only; needs no internet.
+services:
+  lab36:
+    image: python:3.12-slim
+    working_dir: /course
+    network_mode: none          # no egress — everything is in-process
+    volumes:
+      - ../../:/course:ro        # mount the repo read-only
+    command: ["python", "labs/lab-36-trust-zoned-memory/attack.py"]

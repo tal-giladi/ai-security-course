@@ -5,6 +5,81 @@ bar in [the weekly review protocol](research/PROTOCOL-weekly.md). New material e
 existing lessons and labs; it never replaces them. "No curriculum changes this week" is a normal
 entry.
 
+## 2026-W45 (2026-11-08)
+
+- **Added** an advanced extension to lesson [24.1 · Security evaluation](lessons/module-24/lesson-01.md):
+  *evaluating prompt-injection detectors*. A detector's number belongs to a distribution and a
+  threshold. The extension evaluates one fixed threshold on in-distribution, curated and external
+  hard-benign (over-defense), obfuscated and agent-format (tool-output) data. It separates ranking
+  (recall at low FPR) from calibration (rates at the shipped threshold) and converts results to PPV
+  at a realistic base rate. It shows that hard-negative and agent-format training each fix one
+  error while moving another, and that steering text with no instruction in it gets past every
+  detector. Built on InjecGuard, PromptShield, PIDS-Bench and a 2026 re-evaluation of 15 detectors
+  on agent benchmarks. Maps to OWASP LLM01:2026 and NIST AI RMF Measure. Lab:
+  [Lab 37 · Evaluating prompt-injection detectors](labs/lab-37-injection-detector-eval/README.md).
+  Nothing existing was changed. Review: [research/weekly/2026-W45.md](research/weekly/2026-W45.md).
+
+## 2026-W44 (2026-11-01)
+
+- **Added** an advanced extension to lesson [16.2 · Agent memory poisoning & stealth](lessons/module-16/lesson-02.md):
+  *trust-zoned memory*. It shows three ways a poisoned memory still earns a *trusted* source tag
+  (a quoted `User:` role marker, the agent's own note written after reading attacker text, and a
+  hostile peer writing to shared org memory). It then teaches the structural fix several groups
+  converged on in 2026: the runtime assigns each write a zone from the channel it arrived on, checks
+  scope, and lets a LOW claim gain authority only through a confirmed promotion, so persistence is
+  not authority. Noninterference is checked as a property, the utility and false-positive cost is
+  measured, and adaptive attacks show what zoning does not guarantee. Maps to OWASP Agentic ASI06
+  and MITRE ATLAS AML.T0080.000. Lab:
+  [Lab 36 · Trust-zoned agent memory](labs/lab-36-trust-zoned-memory/README.md). Nothing existing
+  was changed. Review: [research/weekly/2026-W44.md](research/weekly/2026-W44.md).
+
+## 2026-W43 (2026-10-25)
+
+- **Added** frontier lesson [F.2 · MITRE ATT&CK v20: AI techniques & detecting AI-enabled
+  exfiltration](lessons/frontier/update-02.md). ATT&CK v20 (2026-10-13) adds T1698/T1699 (indirect
+  and direct prompt injection), T1700 (AI-Enabled Exfiltration, with detection strategy DET0927)
+  and T1608.007 (AI Result Poisoning). The lesson crosswalks them to ATLAS, OWASP 2026 and the
+  course's labs. The lab builds a DET0927-style correlation analytic, measures recall per attack
+  adaptation, FPR and PPV at a realistic base rate, breaks the analytic with a sanctioned-destination
+  ride-along, encoding and a session split, and hardens it with runtime provenance at a measured
+  false-positive cost. Lab:
+  [Lab 35 · ATT&CK v20 AI-enabled exfiltration detection](labs/lab-35-attack-ai-detection/README.md).
+  The standards map gained an ATT&CK v20 section. Nothing existing was changed. Review:
+  [research/weekly/2026-W43.md](research/weekly/2026-W43.md).
+
+## 2026-W42 (2026-10-18)
+
+- **Added** new lesson [22.2 · Agent skills as a supply-chain trust boundary](lessons/module-22/lesson-02.md)
+  — an installed agent skill (metadata + `SKILL.md` prose + bundled scripts) is a new, authentic-but-
+  unsafe node in the 22.1 supply-chain graph. Four payload placements the verification gate passes
+  (prose; a bundled cache that differs from the inspected source; an under-declared capability; a
+  value handed off between two in-scope skills), and the structural controls that close each — a
+  scanner, checked-hash loading, runtime capability enforcement, and cross-skill provenance — with ASR
+  *and* utility measured at every layer and the provenance false-positive cost shown explicitly. Maps
+  to OWASP LLM04:2026 Supply Chain. Lab:
+  [Lab 34 · Agent skills as a supply-chain trust boundary](labs/lab-34-skill-supply-chain/README.md).
+  Nothing existing was changed. Review: [research/weekly/2026-W42.md](research/weekly/2026-W42.md).
+
+## 2026-W41 (2026-10-11)
+
+- **Added** new lesson [17.2 · Prompt-injection defense by design: plan isolation, capabilities &
+  branch steering](lessons/module-17/lesson-02.md) — the Dual LLM pattern (what plan isolation
+  guarantees: control-flow integrity), CaMeL-style capability flow control (data-flow bounds, its
+  documented blind spots and measured cost), and branch steering against computer-use agents with
+  per-branch capability constraints, each with ASR *and* utility measured. Lab:
+  [Lab 33 · Capability flow control & branch steering](labs/lab-33-capability-flow/README.md).
+  Nothing existing was changed. Review: [research/weekly/2026-W41.md](research/weekly/2026-W41.md).
+
+## 2026-W40 (2026-10-04)
+
+- **Added** advanced extension to [05.1 · Indirect prompt injection](lessons/module-05/lesson-01.md),
+  *Egress covert channels* — why an HTTP egress allowlist guards only one carrier, and how DNS
+  tunnelling (MITRE ATT&CK T1071.004; OpenAI 2026 sandbox incident; Zenity SalesBleed) and a
+  ride-along in a legitimate web-fetch (LLMLeak) bypass it; per-carrier egress control with a
+  measured detector FPR/recall and its adaptive bypass. Lab:
+  [Lab 32 · Egress covert channels](labs/lab-32-egress-channel/README.md). Nothing existing was
+  changed. Review: [research/weekly/2026-W40.md](research/weekly/2026-W40.md).
+
 ## 2026-W39 (2026-09-27)
 
 - **Added** [32.1 · OWASP LLM Top 10 2026: crosswalk & hidden-context exposure](lessons/module-32/lesson-01.md)

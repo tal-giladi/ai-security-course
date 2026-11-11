@@ -137,6 +137,45 @@ Only as much classical security as AI security requires — no generic pentest c
 - **F.1 OWASP LLM Top 10 2026: crosswalk & hidden-context exposure** (added 2026-09-27) — the
   2025→2026 ID crosswalk and LLM08:2026 Hidden Context Exposure measured per context slot.
   Depends on M04, M14, M16, M26. Layer: Current. Lab: pending (reference code in the lesson).
+- **05.1 extension — egress covert channels** (added 2026-10-04) — DNS tunnelling and
+  legitimate-tool ride-along carriers that bypass an HTTP-only egress allowlist; per-carrier egress
+  control, measured detector FPR/recall, adaptive bypass. Appended to lesson 05.1 as an advanced
+  extension; depends on M05, M01. Layer: Current (MITRE ATT&CK T1071.004). Lab: `labs/lab-32-egress-channel`.
+- **17.2 Prompt-injection defense by design: plan isolation, capabilities & branch steering**
+  (added 2026-10-11) — the Dual LLM pattern and CaMeL-style capability flow control (what each
+  provably guarantees, what it does not, measured cost), then branch steering against computer-use
+  agents and per-branch capability constraints. New lesson in M17; depends on M05, M16, M17.1.
+  Layer: Current (Dual LLM, CaMeL) → Emerging (branch steering, COBRA, Secure-CUA). Lab:
+  `labs/lab-33-capability-flow`.
+- **22.2 Agent skills as a supply-chain trust boundary** (added 2026-10-18) — an installed skill
+  (metadata + `SKILL.md` prose + bundled scripts) is a new node in the 22.1 graph whose payload can
+  be authentic: prose, a cache≠source gap, an under-declared capability, or a cross-skill artifact.
+  Adds, on top of the 22.1 gate, a scanner, checked-hash loading, capability enforcement and
+  cross-skill provenance, each with its guarantee/FP/perf cost. New lesson in M22; depends on M22.1,
+  M17.1, M16.2, M13. Layer: Current (marketplace base-rate) → Emerging (cache/cross-skill attacks).
+  Maps to OWASP LLM04:2026. Lab: `labs/lab-34-skill-supply-chain`.
+- **F.2 MITRE ATT&CK v20: AI techniques & detecting AI-enabled exfiltration** (added 2026-10-25) —
+  the v20 Enterprise AI techniques (T1698/T1699 prompt injection, T1700 AI-Enabled Exfiltration,
+  T1608.007 AI Result Poisoning) crosswalked to ATLAS/OWASP 2026 and the course's labs; a
+  DET0927-style correlation analytic built, measured (recall per adaptation, FPR, PPV at a base rate),
+  broken by ride-along/encoding/session-split, and hardened with runtime provenance at a measured FP
+  cost. Frontier update; depends on M05, M16, M17.2, M23, M26, F.1. Layer: Current. Lab:
+  `labs/lab-35-attack-ai-detection`.
+- **16.2 extension — trust-zoned memory** (added 2026-11-01) — three ways a poisoned memory earns a
+  *trusted* source tag (misattributed role markers, self-note laundering, cross-user shared memory)
+  and the structural fix: runtime-assigned zones from the ingestion channel + scope + a promotion
+  gate, i.e. persistence ≠ authority; noninterference checked as a property, utility cost measured.
+  Appended to lesson 16.2 as an advanced extension; depends on M16.1, M16.2, M05, M15. Layer:
+  Current (OWASP ASI06, ATLAS AML.T0080.000) → Emerging (ZoneClaw, SAFE-Mem, PerMIT). Lab:
+  `labs/lab-36-trust-zoned-memory`.
+- **24.1 extension — evaluating prompt-injection detectors** (added 2026-11-08) — a detector's
+  number belongs to a distribution: one fixed threshold evaluated on in-distribution, curated and
+  external hard-benign (over-defense), obfuscated and agent-format (tool-output) splits; ranking
+  (recall@low-FPR) vs calibration (rates at the shipped threshold); PPV at a base rate; hard-negative
+  and agent-format fixes with their side effects; non-imperative steering as the limit of detection.
+  Appended to lesson 24.1 as an advanced extension; depends on M24.1, M23, M05, M17.2. Layer:
+  Current (InjecGuard, PromptShield, PIDS-Bench) → Emerging (agent-format re-evaluation,
+  non-imperative steering). Lab: `labs/lab-37-injection-detector-eval`.
 
 ---
 
@@ -172,6 +211,11 @@ Only as much classical security as AI security requires — no generic pentest c
 | M25 Automated red teaming | M08, M24 | Current | `lab/attack-tools` |
 | M26 Synthesis & standards | all | Current | `projects/` |
 | F.1 OWASP 2026 crosswalk & hidden context | M04, M14, M16, M26 | Current | pending (in-lesson reference code) |
+| 17.2 Injection defense by design (plan isolation, capabilities, branch steering) | M05, M16, M17 | Current→Emerging | `labs/lab-33-capability-flow` |
+| 22.2 Agent skills as a supply-chain trust boundary | M22.1, M17.1, M16.2, M13 | Current→Emerging | `labs/lab-34-skill-supply-chain` |
+| F.2 MITRE ATT&CK v20 AI techniques & AI-enabled exfiltration detection | M05, M16, M17.2, M23, M26, F.1 | Current (T1608.007 research: Emerging) | `labs/lab-35-attack-ai-detection` |
+| 16.2 ext. Trust-zoned agent memory | M16.1, M16.2, M05, M15 | Current→Emerging | `labs/lab-36-trust-zoned-memory` |
+| 24.1 ext. Evaluating prompt-injection detectors | M24.1, M23, M05, M17.2 | Current→Emerging | `labs/lab-37-injection-detector-eval` |
 
 *"sibling"* = provided by the LLM Research Engineer course; see `prerequisite-map.md`.
 

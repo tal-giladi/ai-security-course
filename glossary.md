@@ -93,3 +93,9 @@ module that teaches the idea in depth rather than repeating it here.
 - **Trust tag / write provenance** — recording each memory's source (user/trusted_tool/untrusted); never elevate untrusted.
 - **vec2text** — method reconstructing fluent text from black-box embeddings (Morris et al. 2023).
 - **Workflow corruption** — injected content re-plans a workflow (adds/re-orders subtasks).
+- **Code-specification cross-check** — the vetting step in iFinder (M35): map a flagged code site to its 3GPP procedure, pull in the prerequisite messages' handlers, and re-evaluate feasibility with that expanded context. Removes context-blind false positives (62 → 19 in the ablation) without changing recall.
+- **iFinder** — an LLM multi-agent system (Discovery → Vetting → Exploitation, on the Claude Agent SDK) that discovered 84 implicit-trust vulnerabilities in open-source cellular cores (USENIX Security 2026). M35's case study for agentic vulnerability discovery.
+- **Implicit trust error (iTrue)** — a component acting on an internal-peer message without validating its format, semantics, or implied resource availability; a recurring specification-to-implementation gap in cellular cores. Root cause of the DoS and session-hijack classes in M35.
+- **PDR (Packet Detection Rule)** — a PFCP forwarding rule identified by a PDR ID within a session; the uniqueness of that ID is the invariant whose absence underlies the session-hijack class (M35).
+- **PFCP (Packet Forwarding Control Protocol)** — 3GPP TS 29.244, the N4 control-plane protocol between SMF and UPF. One of the two protocols (with GTP-C) where iFinder found iTrues (M35).
+- **Uniqueness invariant** — a semantic validation that an identifier (e.g. a session/rule ID) is not reused within its scope; enforcing it by rejecting duplicates closes the session-hijack class (M35).
