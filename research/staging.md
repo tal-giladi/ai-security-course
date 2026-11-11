@@ -173,3 +173,66 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** a dated example in 22.2's detection layer (static-scanner FP rate on benign skills; dynamic evidence as the main gain).
 - **Confidence:** medium — workshop paper, small test set (140), no code.
 - **Recommendation:** record as supporting evidence on the accepted topic; consider pairing with the ModelShield/pickle-scanner review as a "static vs behavioural scanning" theme.
+
+### C-20261111-01 · Agent-swarm adaptive prompt injection (Google DeepMind): frontier models that look robust on public benchmarks fall to an automated multi-agent attacker
+
+- **Class:** B
+- **Date discovered:** 2026-11-11
+- **Date published:** 2026-11-09
+- **Source:** https://arxiv.org/abs/2611.11861 (verified resolves; abstract via arXiv API and HTML full text read)
+- **Organization/researchers:** Google DeepMind — Alexey Kurakin, Vishal Karande, Alex Bie, Chongyang Shi, Shuang Song, Saeed Mahloujifar, Abdullatif Köksal, Jamie Hayes
+- **Category:** prompt-injection (adaptive attack; automated red-teaming)
+- **What changed:** An "Agentic Optimizer" (8 teams × 2 attacker agents, each team seeded with a strategy from a shared database, per-team and global leaderboards, shared whiteboards, 20 evaluations per agent / 320 total) searches for indirect injections in tool output. The evaluation set uses *random non-malicious* tool calls as attacker goals, so it measures instruction-hierarchy adherence rather than the model's knowledge of what "looks malicious".
+- **Technical summary:** (From the full text.) 100 synthetic tool-use scenarios built from 249 tools across 53 domains; success = target tool name and arguments matched. Strongest attacker (Gemini 4 Argon), full budget, attack resistance rate (ARR = 100% − ASR): Gemini 3.6 Flash 1%, 3.7 Flash 6%, 3.8 Flash 10%, Gemini 4 Argon 66%; Kimi K3, GLM-5.3, DeepSeek-V4.1-Flash 1% each. Gemini models evaluated with out-of-model prompt-injection mitigations disabled. ARR@150 defender queries for Gemini 4 Argon: 87%. Stronger attacker models lower defender ARR. On AgentDojo scenarios the optimizer succeeds on 6/80 vs 2/80 for a baseline attacker. The authors conclude prompt injection is "quite far from solved" and that defenses should not rely on model hardening alone (defense in depth; system designs such as CaMeL/FIDES cited). No code or data release stated.
+- **Why it might matter:** A frontier-lab primary source for the course's "the attacker moves second / evaluate against adaptive attacks" message, applied to model-level instruction-hierarchy training (and to its own lab's models). The benign-goal dataset design is a teachable evaluation idea: it removes the "refuses because the goal looks malicious" confound, which makes ASR a cleaner measure of instruction hierarchy.
+- **Evidence of adoption:** none external; internal red-teaming use is implied by the authors, not documented.
+- **Major organizations using it:** Google DeepMind (authors).
+- **Open-source implementation:** none
+- **Paper:** https://arxiv.org/abs/2611.11861
+- **Code:** none
+- **Relationship to existing course material:** New evidence for `research/deferred/automated-agent-redteaming.md` (WAIT, next review 2026-11-22) and `research/deferred/inference-time-injection-defenses.md`. Course: instruction hierarchy and adaptive evaluation in M05/M07–M08 and M25 automated red teaming; system-level defenses in `research/accepted/capability-flow-injection-defense.md`.
+- **Potential course lesson:** an M25 exercise: a tiny local "swarm" (several scripted attacker loops sharing a leaderboard file) against a toy tool agent with a benign-goal injection set (inert marker = calling an unrelated harmless tool); compare ASR of a single static payload vs the iterated search, then add a deterministic tool-call policy and re-measure.
+- **Confidence:** medium — strong authors and real models, but a single preprint on the authors' own synthetic set, mitigations disabled for Gemini, no code.
+- **Recommendation:** attach as evidence to `automated-agent-redteaming` at its 2026-11-22 review; it strengthens the case for an adaptive-evaluation exercise but does not by itself justify ADD.
+
+### C-20261111-02 · "Suppression is not erasure": every tested LoRA-backdoor weight-editing defense rebounds to 91.7–100% ASR after 5-sample reactivation
+
+- **Class:** B
+- **Date discovered:** 2026-11-11
+- **Date published:** 2026-11-09
+- **Source:** https://arxiv.org/abs/2611.12807 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Junsheng Fu, Shuangshuang Gao (affiliation not stated on the abs page)
+- **Category:** poisoning/backdoor (defense evaluation; supply-chain adapters)
+- **What changed:** Audits subspace-projection defenses for backdoored third-party LoRA adapters across Qwen2.5 0.5B–7B, InternLM2.5 and Spark. Constructive part: module-wise rank-1 trigger-difference projection drops ASR 60.4% → 0.0% (70.3% → 0.0% on a 1,000-sample uncontaminated suite) in under 5 s, and a trigger-free calibration with benign polite suffixes also reaches 0.0% (spectral-gap argument). Main result is negative: static ASR reduction is not parameter erasure.
+- **Technical summary:** Under 5-sample few-shot reactivation fine-tuning, standard projections, Fine-Pruning, ANP, SVD truncation and a dual-end projection all rebound to 91.7–100.0% ASR within one epoch (the authors' own single-round dual variant 48.7%), all reaching 100.0% by epoch 2, with first-epoch loss up to 5.7× lower than training the backdoor from scratch; a Haar orthogonal-rotation control is used to argue the residual structure is retained.
+- **Why it might matter:** A measured "what the defense does NOT guarantee" result for the course's malicious-LoRA material (lab-13): a defense that zeroes static ASR can leave a dormant backdoor that a tiny downstream fine-tune revives, which is exactly the `.callout.guarantee` distinction the course teaches. CPU-scale models (0.5B) make it potentially reproducible in a lab.
+- **Evidence of adoption:** none.
+- **Major organizations using it:** n/a.
+- **Open-source implementation:** none found on the abs page.
+- **Paper:** https://arxiv.org/abs/2611.12807
+- **Code:** none
+- **Relationship to existing course material:** New evidence for `research/deferred/backdoor-persistence-and-trigger-variants.md` (WAIT, next review 2026-11-22; persistence through post-training is its central theme). Course: `lessons/module-13/lesson-01.md`, `labs/lab-13/` (malicious LoRA), M11 backdoors.
+- **Potential course lesson:** a lab-13 extension: project out the backdoor direction of a toy backdoored adapter (ASR → ~0), then fine-tune on 5 poisoned samples and plot the rebound; guarantee callout "static ASR ≠ erasure".
+- **Confidence:** medium-low — single preprint, no code; numbers from the abstract only.
+- **Recommendation:** monitor; attach to the backdoor-persistence topic for its 2026-11-22 review (pairs naturally with PersistBD as "backdoors survive both post-training and weight-editing defenses").
+
+### C-20261111-03 · Shibboleth traps: honeypot services that fingerprint the LLM and harness behind an agentic attacker (90% top-1 over 15 models)
+
+- **Class:** B
+- **Date discovered:** 2026-11-11
+- **Date published:** 2026-11-09
+- **Source:** https://arxiv.org/abs/2611.12386 (verified resolves; abstract via arXiv API; Comments field "v0.1")
+- **Organization/researchers:** Dario Pasquini, Reworr, Giuseppe Ateniese, Manish Bhatt, Sergej Epp (affiliations not stated on the abs page)
+- **Category:** detection/monitoring (defensive deception; attribution of agentic attacks)
+- **What changed:** Modular honeypot services that make an informative interaction a precondition for obtaining the resource an attacking agent wants, eliciting model self-declarations and characteristic writing *without* needing a successful prompt injection; plus indirect probes of harness behaviour (how tool output secrets are masked, command time limits, tool-call scheduling) observed only through the agent's subsequent requests.
+- **Technical summary:** Combined declarative + behavioural inference distinguishes 15 candidate models at 90% average top-1 accuracy (behavioural classifiers evaluated on held-out harnesses or task families); fixed probe rules identify the harness among four at 92%. When instructed to conceal identity, declarations become uninformative but behavioural evidence remains.
+- **Why it might matter:** The defender-side mirror of the deferred `agent-execution-fingerprinting` topic (there the attacker profiles the defender's agent): a second, independent group showing that black-box behaviour fingerprints models/harnesses even under identity spoofing. Also fits the blue-team deception angle of `research/deferred/ai-infra-honeypots.md`.
+- **Evidence of adoption:** none.
+- **Major organizations using it:** n/a.
+- **Open-source implementation:** none found on the abs page.
+- **Paper:** https://arxiv.org/abs/2611.12386
+- **Code:** none
+- **Relationship to existing course material:** Evidence for `research/deferred/agent-execution-fingerprinting.md` (AgentTrace, next review 2026-12-27) and `research/deferred/ai-infra-honeypots.md`. Course: `lessons/module-27/lesson-01.md` (recon/fingerprinting, `labs/module-27/`).
+- **Potential course lesson:** a module-27 purple-team twist: a local honeypot service gated on a "describe yourself" step against the course's scripted agent, then measure how much a concealment instruction degrades declarative vs behavioural attribution.
+- **Confidence:** low-medium — "v0.1" preprint, abstract only, no code.
+- **Recommendation:** monitor; attach to `agent-execution-fingerprinting` as an independent second method (one of the two things that topic waits on is independent support).
