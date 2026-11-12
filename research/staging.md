@@ -236,3 +236,24 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** a module-27 purple-team twist: a local honeypot service gated on a "describe yourself" step against the course's scripted agent, then measure how much a concealment instruction degrades declarative vs behavioural attribution.
 - **Confidence:** low-medium — "v0.1" preprint, abstract only, no code.
 - **Recommendation:** monitor; attach to `agent-execution-fingerprinting` as an independent second method (one of the two things that topic waits on is independent support).
+
+### C-20261112-01 · "Isolation Is Not Confidentiality": geometric (embedding-transform) access control in RAG isolates policies but leaks embeddings, admits query forgery and reveals policy membership
+
+- **Class:** B
+- **Date discovered:** 2026-11-12
+- **Date published:** 2026-11-10
+- **Source:** https://arxiv.org/abs/2611.14061 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Steve Nouyep, Maxime Puys, Sébastien Salva (affiliation not stated on the abs page)
+- **Category:** rag-security
+- **What changed:** A unified security analysis of "search-preserving geometric" access control for multi-policy vector databases, where embeddings are transformed per policy so that protected representations stay retrievable without crossing policy boundaries. Four objectives are separated (policy isolation, representation confidentiality, query-forgery resistance, policy-membership hiding) and tested against two adversaries: a curious cloud provider that sees stored protected representations, and a curious user holding aligned (original, protected) embedding pairs.
+- **Technical summary:** Evaluating the available implementations of the proposing works across three encoders: retrieval utility and policy isolation hold, but the other three properties do not. A curious user recovers original embeddings from a few hundred aligned pairs and can forge policy-compatible queries (cost grows with encoder dimension for secret per-policy transforms); policy-dependent geometry leaks policy membership even when unauthorized retrieval is blocked. Conclusion: the four objectives are distinct and the mechanism only delivers the first.
+- **Why it might matter:** A clean "what it guarantees / what it does NOT guarantee" case for a defense class that sits exactly between 15.1 (multi-tenant retrieval as broken access control) and 29 (embeddings are recoverable data): transforming vectors per tenant is not encryption, and a few hundred known pairs undo it (a known-plaintext-style linear recovery the course can implement from scratch).
+- **Evidence of adoption:** none stated; it evaluates academic proposals, not a named production vector DB.
+- **Major organizations using it:** n/a.
+- **Open-source implementation:** none found on the abs page.
+- **Paper:** https://arxiv.org/abs/2611.14061
+- **Code:** none
+- **Relationship to existing course material:** `lessons/module-15/lesson-01.md` + `labs/module-15/` (multi-tenant retrieval leakage); `lessons/module-29/lesson-01.md` + `labs/module-29/` (embedding inversion). No registry topic found (`lookup` for "access control", "multi-tenant", "embedding inversion"). New topic.
+- **Potential course lesson:** a lab-15/lab-29 bridge exercise: apply a secret per-tenant orthogonal transform to toy embeddings, show isolation holds, then recover the transform by least squares from N known pairs and plot recovery error vs N and dimension; guarantee callout "isolation ≠ confidentiality".
+- **Confidence:** low-medium — single preprint, abstract only, no code; "a few hundred pairs" is not quantified per encoder in the abstract.
+- **Recommendation:** monitor; promote if a production vector DB ships this kind of transform-based isolation or a second group confirms the recovery result.

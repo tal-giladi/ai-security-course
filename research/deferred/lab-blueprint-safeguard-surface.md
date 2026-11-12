@@ -1,8 +1,10 @@
 # Lab blueprint — Safeguard surface: refusal direction, prefill, and cover story
 
 - **Topic ID:** lab-blueprint-safeguard-surface
-- **Status:** WAIT (blocked on course-content review, see *Blockers*)
+- **Status:** WAIT
+- **Blocked on:** course-content review, see *Blockers*
 - **Next review:** 2026-10-30
+- **Course change:** none
 - **Companion note:** `research/deferred/glm-5-3-safeguard-bypass-taxonomy.md` (taxonomy + evidence)
 - **Candidates:** C-20260930-02
 
