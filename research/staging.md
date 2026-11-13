@@ -257,3 +257,87 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** a lab-15/lab-29 bridge exercise: apply a secret per-tenant orthogonal transform to toy embeddings, show isolation holds, then recover the transform by least squares from N known pairs and plot recovery error vs N and dimension; guarantee callout "isolation ≠ confidentiality".
 - **Confidence:** low-medium — single preprint, abstract only, no code; "a few hundred pairs" is not quantified per encoder in the abstract.
 - **Recommendation:** monitor; promote if a production vector DB ships this kind of transform-based isolation or a second group confirms the recovery result.
+
+### C-20261113-01 · Lazarus: editing fewer than ten dormant FFN neurons turns a terminal agent into a sleeper agent, with no training
+
+- **Class:** B
+- **Date discovered:** 2026-11-13
+- **Date published:** 2026-11-11
+- **Source:** https://arxiv.org/abs/2611.15118 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Yuchen Zeng, Giorgio Severi, Blake Bullwinkel, Eric Horvitz, Dimitris Papailiopoulos (affiliation not stated on the abs page)
+- **Category:** poisoning/backdoor
+- **What changed:** A training-free weight-editing backdoor for agent models. Dormant neurons in the final feed-forward block are set in closed form so that, when a trigger string appears anywhere in the agent's context, each neuron promotes one payload token through its residual-stream contribution; a P-token payload needs about P neurons, chained. Weights can optionally be refined in isolation with a few hundred gradient steps.
+- **Technical summary:** On Nemotron-Terminal-8B, 7 of 12,000+ neurons, fitted on 23 trigger/no-trigger trajectories, emit the payload on at least 98.8% of triggered test trajectories with no observed payload leakage on the evaluated benign trajectories; Qwen3.6-27B and Gemma-4-31B-IT are reported equally vulnerable. Defense side: agent-built detectors with no reference model flag 91.4% of edited test checkpoints at a 9.7% FP rate. The authors state the core mechanism was found autonomously by an AI coding agent (author claim). The abstract's illustrative payload is a shell download-and-execute command; recorded as described, nothing run.
+- **Why it might matter:** The course's backdoor material (11.1, Sleeper Agents paper guide) frames sleeper agents as a *training-time* poisoning problem. Lazarus is a supply-chain/insider threat with a much lower bar: a handful of edited neurons, no data pipeline access, structurally local and therefore also detectable by weight diffing/structure. It pairs with staging C-20261111-02 (weight-editing *defenses* rebound) to make "weights are code: audit and diff them" a measurable claim, with a stated detector FP cost.
+- **Evidence of adoption:** none (single preprint, 50 pages, no venue stated).
+- **Major organizations using it:** n/a.
+- **Open-source implementation:** none found on the abs page.
+- **Paper:** https://arxiv.org/abs/2611.15118
+- **Code:** none
+- **Relationship to existing course material:** `lessons/module-11/lesson-01.md` (backdoors, sleeper-agent threat model, neuron pruning as removal), `papers/11-hubinger-sleeper.md`, `lessons/module-13/lesson-01.md` / `lessons/module-22/lesson-01.md` (artifact supply chain). Registry: adjacent to `research/deferred/backdoor-persistence-and-trigger-variants.md` and `research/deferred/cryptographic-hidden-backdoor.md` (different mechanism: closed-form neuron edit, not training). Staging: C-20261111-02. New topic.
+- **Potential course lesson:** an 11.1 / lab-11 extension on a tiny CPU transformer: write one dormant MLP neuron by hand so a trigger token promotes an inert marker token, then detect it by diffing activation statistics against the base checkpoint and by a no-reference "dormant-neuron with huge unembedding projection" heuristic; measure detector FP on benign fine-tunes.
+- **Confidence:** medium-low — strong numbers and a measured detector, but single group, abstract only, no code.
+- **Recommendation:** monitor; review alongside C-20261111-02 and `backdoor-persistence-and-trigger-variants` on 2026-11-22. Promote on code release or independent reproduction.
+
+### C-20261113-02 · QHijack-LoRA: an adapter that is benign on the full-precision base and hijacks decisions once the base is quantized
+
+- **Class:** B
+- **Date discovered:** 2026-11-13
+- **Date published:** 2026-11-11
+- **Source:** https://arxiv.org/abs/2611.14978 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Jiayang Li, Tianqing Zhu, Huan Huo, Heng Xu, Shang Wang, Wanlei Zhou (affiliation not stated on the abs page)
+- **Category:** supply-chain
+- **What changed:** An adapter-only attack that exploits the base model's natural quantization residual: a four-objective training procedure keeps the LoRA adapter dormant on the full-precision base and activates decision hijacking (content-moderation / function-selection tasks) when the same trusted base is quantized for deployment, without modifying the base or knowing the victim's quantization config (trained across several quantization methods, with reweighting and residual-direction augmentation for unseen configs). Proposes a cross-precision paired audit (test the adapter in its deployment precision).
+- **Technical summary:** Abstract states the threat and method but gives no ASR, FP or audit-cost numbers. Extends earlier quantization-conditioned behaviour work on whole models (Egashira et al., "Exploiting LLM Quantization", https://arxiv.org/abs/2405.18137) to third-party adapters on an untouched trusted base.
+- **Why it might matter:** A concrete instance of "what you audit/sign is not what you run": an audit done in fp16 gives no assurance about the int4 deployment. Directly bears on the deferred `quantized-model-signing-verifiability` topic and on the course's LoRA-as-untrusted-artifact line (13.1, 22.1).
+- **Evidence of adoption:** none (submitted to IEEE TIFS, author-stated).
+- **Major organizations using it:** n/a.
+- **Open-source implementation:** none found on the abs page.
+- **Paper:** https://arxiv.org/abs/2611.14978
+- **Code:** none
+- **Relationship to existing course material:** `research/deferred/quantized-model-signing-verifiability.md` (WAIT, next review 2026-11-22): new evidence for the same "artifact vs deployed form" gap, though not its stated reopen condition (re-derivation reproduction). Course: `lessons/module-13/lesson-01.md` (merged LoRA can carry a sleeper backdoor), `lessons/module-22/lesson-01.md` (adapter row: "signing, behavioral vetting").
+- **Potential course lesson:** a 22.1 guarantee-box line plus a CPU toy: evaluate a toy adapter at fp32 and at simulated int8/int4 rounding, show behaviour diverges near decision boundaries; the defense is the paired cross-precision audit.
+- **Confidence:** low-medium — mechanism plausible and has whole-model precedent, but no numbers in the abstract, no code.
+- **Recommendation:** monitor; attach to `quantized-model-signing-verifiability` at its 2026-11-22 review as supporting evidence.
+
+### C-20261113-03 · OverServe: benign-looking MCP status tools plus completion-confirmation prompts amplify SaaS-agent API usage up to 93.88×
+
+- **Class:** B
+- **Date discovered:** 2026-11-13
+- **Date published:** 2026-11-10
+- **Source:** https://arxiv.org/abs/2611.14808 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Ruiheng Yu, Oteo Mamo, Siyu Gan, Weikuan Yu, Mulong Luo (affiliation not stated on the abs page)
+- **Category:** tool/mcp-security
+- **What changed:** A malicious tenant co-designs an MCP "status" tool (returns accurate status, terminates normally) with a prompt that makes the agent keep re-checking an unfinished condition, so the agent continues consuming provider resources after the business task is done. A multi-agent framework constructs service-specific tool–prompt pairs, with separate tool and prompt review to select candidates.
+- **Technical summary:** Evaluated on Qwen, Nemotron, DeepSeek and Sonnet over selected tasks from nine benchmarks: every OverServe run still passes the original task checks; maximum API-request amplification 93.88×; tested tool specs trigger no alerts in the evaluated MCP scanners. No defense with measured cost in the abstract.
+- **Why it might matter:** A second, independent group on agent resource-exhaustion, via a different mechanism from the deferred topic (completion-decision exploitation, not re-billed retained tool output). Shows why task-success checks and static tool-spec scanners do not catch cost attacks: the fix is a budget/step cap, which 14.2's denial-of-wallet lab already teaches.
+- **Evidence of adoption:** none (single preprint, no venue stated).
+- **Major organizations using it:** n/a.
+- **Open-source implementation:** none found on the abs page.
+- **Paper:** https://arxiv.org/abs/2611.14808
+- **Code:** none
+- **Relationship to existing course material:** `research/deferred/agent-denial-of-wallet.md` (WAIT, next review 2026-11-22; reopen on released code or independent reproduction: this is an independent group on the attack class, not a reproduction of that mechanism). Course: `lessons/module-14/lesson-02.md` + `labs/module-14/denial_of_wallet.py` (DOW-BENCH).
+- **Potential course lesson:** a lab-14.2 variant: a local "status" tool that always says "pending" plus a confirm-until-done prompt against the course's scripted agent; measure call amplification with and without a step/token budget and a "same tool, same args, same result" loop detector, and the FP cost of that detector on legitimate polling tasks.
+- **Confidence:** low-medium — single preprint, abstract only, "maximal" amplification is a best case.
+- **Recommendation:** monitor; attach to `agent-denial-of-wallet` at its 2026-11-22 review.
+
+### C-20261113-04 · "One Fabrication Is Enough": one fake news article flips 74–82% of opposing LLM forecasts; the two strongest retrieval-time defenses are bypassed and cost 29% of clean decisions
+
+- **Class:** B
+- **Date discovered:** 2026-11-13
+- **Date published:** 2026-11-11
+- **Source:** https://arxiv.org/abs/2611.15102 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Zeyu Zhang, Bradly C. Stadie (affiliation not stated on the abs page)
+- **Category:** rag-security
+- **What changed:** Weakest-attacker open-web RAG poisoning: the attacker knows only the forecasting question and publishes fabricated articles, with no access to the model, retriever or queries. Measures reach on stock and real prediction-market questions, plus a two-article "opposite directions" variant that destroys attacker-independent calibration.
+- **Technical summary:** Once in context, one article reverses 74–82% of opposing forecasts on every frontier model tested; architectures of two leading deployed forecasting systems retrieve the fabricated article in ~90% of runs. Aggregate accuracy barely moves (the harm is invisible to accuracy metrics). Defenses: passage filtering and partitioned retrieval each stop the one-article attack but fall to a one-prompt change; combined they stop both bypasses at four articles but sixteen distorted copies beat them, while changing 29% of clean decisions and discarding 39% of genuine news. Partitioned retrieval needs index control that open-web systems lack.
+- **Why it might matter:** The attack itself is PoisonedRAG-style (already taught in 14.1); what is new is a measured defense cost and an adaptive bypass for the strongest published retrieval-time defenses, plus the point that accuracy-based evaluation hides directional manipulation. That is exactly the "measured endpoint" evidence the deferred RAG-defense topic tracks.
+- **Evidence of adoption:** none (single preprint, no venue stated).
+- **Major organizations using it:** n/a.
+- **Open-source implementation:** none found on the abs page.
+- **Paper:** https://arxiv.org/abs/2611.15102
+- **Code:** none
+- **Relationship to existing course material:** `lessons/module-14/lesson-01.md` + `labs/module-14/rag.py` + `papers/15-zou-poisonedrag.md` (attack already taught → the attack alone would be D). New evidence for `research/deferred/rag-defense-measured-endpoints.md` (WAIT, next review 2026-12-20).
+- **Potential course lesson:** a 14.1 guarantee-box example: filter + partitioned retrieval vs N poisoned copies, with the clean-decision change rate and genuine-document discard rate as the false-positive cost; an exercise showing accuracy unchanged while forecast direction follows the attacker.
+- **Confidence:** low-medium — clear numbers, single group, abstract only, no code.
+- **Recommendation:** monitor; attach to `rag-defense-measured-endpoints` as a defense-cost data point.
