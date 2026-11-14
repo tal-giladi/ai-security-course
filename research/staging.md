@@ -341,3 +341,45 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** a 14.1 guarantee-box example: filter + partitioned retrieval vs N poisoned copies, with the clean-decision change rate and genuine-document discard rate as the false-positive cost; an exercise showing accuracy unchanged while forecast direction follows the attacker.
 - **Confidence:** low-medium — clear numbers, single group, abstract only, no code.
 - **Recommendation:** monitor; attach to `rag-defense-measured-endpoints` as a defense-cost data point.
+
+### C-20261114-01 · CapLite: small-model agents cannot be trusted to write their own CaMeL/Progent-style security artifacts; a schema-derived write-integrity policy blocks every attack in 13,935 AgentDojo episodes
+
+- **Class:** B
+- **Date discovered:** 2026-11-14
+- **Date published:** 2026-11-12
+- **Source:** https://arxiv.org/abs/2611.17115 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Zimo Xu, Wenzhuo Liu, Hideki Nakayama (affiliation not stated on the abs page)
+- **Category:** defense/guardrail
+- **What changed:** Two results. (1) Negative: enforcement defenses that ask the agent's own model to write the security artifact (CaMeL program, Progent privilege policy, IPIGuard dependency graph, DRIFT constraint list) break on small models: across 15 open-weight models (13 in the 1.7B–12B range) the model-written artifacts admit attacks on 14 (Progent), 13 (IPIGuard) and 11 (DRIFT) of the models, and CaMeL programs fail to run in up to 68% of episodes. (2) CapLite: the policy is derived from the tool schemas instead of written by the model; write calls are committed before any tool result is read, and a write is admitted only if every argument that decides whom/what it affects (recipient, amount, object, destination) is stated in the user's request.
+- **Technical summary:** Stated guarantee is write integrity only: injected text cannot add a write or redirect a write's target. No attack succeeded in 13,935 attacked AgentDojo episodes. Utility under attack 29.0% vs CaMeL 27.2%; 17.1k tokens per episode (18% of CaMeL's, and fewer than the undefended agent). Not covered by the guarantee (from the stated design): reads/exfiltration through arguments the user did state, tasks whose write targets legitimately come from tool output (those writes are refused, which is the utility cost).
+- **Why it might matter:** The course teaches CaMeL-style capability flow in 17.2 / lab-33 with a frontier-model planner implicitly assumed. This is measured evidence that the "model writes the policy, code enforces it" pattern inherits the model's weakness on small models, and a cheap, fully deterministic alternative whose guarantee and false-positive cost (refused writes, ~29% utility under attack) fit the course's guarantee-box pattern exactly.
+- **Evidence of adoption:** none (single preprint, no venue stated).
+- **Major organizations using it:** n/a.
+- **Open-source implementation:** none found on the abs page.
+- **Paper:** https://arxiv.org/abs/2611.17115
+- **Code:** none
+- **Relationship to existing course material:** `research/accepted/capability-flow-injection-defense.md` (taught: `lessons/module-17/lesson-02.md`, `labs/lab-33-capability-flow/`). New evidence on the same accepted topic (a small-model failure mode of the taught defenses plus a schema-derived variant), not a re-litigation. Adjacent: `research/deferred/agent-tool-authorization-gates.md`.
+- **Potential course lesson:** a 17.2 extension / lab-33 variant: add a "user-stated target arguments only" write gate to `capflow.py`, run the existing attacks, and measure the refused-legitimate-write rate on benign tasks as the false-positive cost; contrast with a CaMeL plan written by a deliberately weak planner.
+- **Confidence:** medium-low — large episode count and a clear, checkable guarantee, but single group, abstract only, no code.
+- **Recommendation:** monitor; consider as a 17.2 extension if code is released or the "SLM-written artifacts fail" result is reproduced.
+
+### C-20261114-02 · Bait: USD 20 of harmful agentic RL through an RL-as-a-service API strips safety alignment; probing the user-supplied reward function blocks it, with code
+
+- **Class:** B
+- **Date discovered:** 2026-11-14
+- **Date published:** 2026-11-12
+- **Source:** https://arxiv.org/abs/2611.16369 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Tiansheng Huang, Ananth Balashankar, Virat Shejwalkar, Santosh Pande, Ling Liu (affiliation not stated on the abs page; git-disl is the Georgia Tech DiSL group's GitHub org)
+- **Category:** poisoning/backdoor
+- **What changed:** Moves the harmful fine-tuning threat from supervised fine-tuning-as-a-service to agentic RL-as-a-service: a user supplies a toxic environment / reward function, and a few rounds of agentic RL through the service API (the repo's `tinker/` folder targets the Tinker API) remove the model's safety alignment for about USD 20 (author claim). Defense (Bait): before training, the provider probes the submitted reward function to detect whether it rewards harmful behaviour, and refuses / mitigates learning from it while still learning from benign rewards.
+- **Technical summary:** Abstract claims the degraded model then helps with harmful tasks such as exploiting software vulnerabilities; Bait "sufficiently mitigates" harmful reward learning while preserving benign agentic RL, and an adaptive attacker who knows Bait "cannot perfectly subvert it" (author claim; no FP / utility numbers in the abstract). Code released.
+- **Why it might matter:** RL fine-tuning APIs are a new provider-side attack surface; the defense is a provider-side gate on the *reward function*, an artifact the course does not yet treat as untrusted input. It is also the adaptive-attack evidence the deferred FTaaS-defense topic said was missing, though from the defense's own authors.
+- **Evidence of adoption:** none (single preprint, no venue stated). The targeted service class (RL fine-tuning APIs) is real and documented by its vendors.
+- **Major organizations using it:** n/a.
+- **Open-source implementation:** https://github.com/git-disl/Bait (verified exists; one commit; `tinker/` attack code and `main_exp/` defense; not cloned or run)
+- **Paper:** https://arxiv.org/abs/2611.16369
+- **Code:** https://github.com/git-disl/Bait
+- **Relationship to existing course material:** `research/deferred/finetuning-as-a-service-defense.md` (WAIT, next review 2026-11-22; reopen on an independent adaptive-attack evaluation and a CPU-scale path, plus the missing "harmful fine-tuning" prerequisite). This is a different group with its own adaptive analysis, but of its own defense, not of SLDR. Adjacent: staging C-20261108-01 (Inkling RL behaviour), `lessons/module-11/lesson-01.md`, `lessons/module-13/lesson-01.md`.
+- **Potential course lesson:** a 13.1 / 11.1 extension on "the training job is the attack": a CPU toy where a policy is trained with a user-supplied reward, and the provider gate probes the reward on a fixed harmful/benign probe set before training; measure gate FP on benign reward functions and bypass by a reward that conditions on probe-like inputs.
+- **Confidence:** low-medium — code released and an established harmful-fine-tuning group, but abstract numbers are qualitative and the adaptive analysis is the authors' own.
+- **Recommendation:** monitor; attach to `finetuning-as-a-service-defense` at its 2026-11-22 review (widen it to "fine-tuning/RL-as-a-service alignment removal").
