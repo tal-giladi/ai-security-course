@@ -146,3 +146,19 @@
     essentially zero false positives once the window is set sensibly. Nothing in it constrains what
     a permitted request contains, which is why the residual section still needs egress and
     scrubbing.
+- id: q10
+  question: >-
+    Legal asks whether the company's text watermark detector can serve as the only control for
+    showing which content its model generated, to meet a marking duty and to support abuse cases.
+    What is the best answer?
+  options:
+    - Yes, because the detector's false-positive rate is bounded by the z-test threshold.
+    - Yes, as long as the watermark key is rotated every quarter to prevent stealing.
+    - No, because watermarks only work on images and metadata is required for text.
+    - No, because it misses short or edited text, and stolen green lists allow forgery.
+  correct: 3
+  explanation: >-
+    The threshold bounds false positives only for text written without knowledge of the green
+    lists. Recall falls with length, entropy and editing, and forgery is possible once the lists
+    leak, so the watermark belongs in a layered design with output logging and metadata, as lesson
+    23.2 shows. Key rotation slows stealing but does not fix recall.

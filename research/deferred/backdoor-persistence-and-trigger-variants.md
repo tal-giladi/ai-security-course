@@ -4,7 +4,7 @@
 - **Status:** WAIT
 - **Next review:** 2026-11-22
 - **Course change:** none
-- **Candidates:** C-20261007-02, C-20261007-03, C-20261008-06, C-20261021-06, C-20261103-02, C-20261106-08, C-20261107-03
+- **Candidates:** C-20261007-02, C-20261007-03, C-20261008-06, C-20261021-06, C-20261103-02, C-20261106-08, C-20261107-03, C-20261111-02
 
 ## Summary
 
@@ -19,6 +19,7 @@ A same-week cluster of three structurally different backdoor mechanisms: Persist
 - Kerkoporta (C-20261103-02): structured-output backdoors in reasoning coding agents; strong reported numbers, single preprint, no code, affiliations unconfirmed. Added 2026-11-08.
 - Interactive backdoors in proactive dialogue systems (C-20261106-08): three variants, data- and model-level defenses shown insufficient; sensitive (counseling) domain; single preprint, no code. Added 2026-11-08.
 - Scaling activation inversion (C-20261107-03): interpretability method that recovers LoRA backdoor triggers more often than corpus search; no quantified recovery rate in the abstract; detection-side evidence only. Added 2026-11-08.
+- https://arxiv.org/abs/2611.12807 — Suppression is not erasure: projection/Fine-Pruning/ANP/SVD defenses on backdoored LoRA adapters (Qwen2.5 0.5B–7B and others) drop ASR to 0 but rebound to 91.7–100% within one epoch of 5-sample fine-tuning (preprint, no code). Added 2026-11-15.
 
 ## What would change the decision
 
@@ -29,3 +30,4 @@ Independent reproduction of any one mechanism, or a measured defense. The most t
 - 2026-10-11 — WAIT — three days-old single preprints, no defenses, no replication; strong conceptual value for 11.1 later — weekly/2026-W41.md — candidates C-20261007-02, C-20261007-03, C-20261008-06
 - 2026-10-25 — WAIT — adds an incentive-driven adoption mechanism that survives decontamination; single preprint without code; keep 2026-11-22 — weekly/2026-W43.md — candidates C-20261021-06
 - 2026-11-08 — WAIT — three new single-preprint variants (no code); date unchanged — weekly/2026-W45.md — candidates C-20261103-02, C-20261106-08, C-20261107-03
+- 2026-11-15 — WAIT — a measured 'static ASR is not erasure' result for weight-editing backdoor defenses (rebound to 91.7–100% after 5-sample reactivation); single preprint, no code; scheduled review 2026-11-22 unchanged — weekly/2026-W46.md — candidates C-20261111-02

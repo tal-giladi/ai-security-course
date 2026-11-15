@@ -2,7 +2,7 @@
 
 - **Topic ID:** coding-agent-harness-mechanisms
 - **Status:** WAIT
-- **Next review:** 2026-11-15
+- **Next review:** 2026-12-20
 - **Course change:** none
 - **Candidates:** C-20261007-01, C-20261022-03, C-20261030-02
 
@@ -25,3 +25,4 @@ Full-PDF per-mechanism numbers confirmed, an artifact release, and ideally a sec
 - 2026-10-11 — WAIT — highly relevant measurement but about fast-changing product defaults, one preprint, exact cost numbers not yet verified — weekly/2026-W41.md — candidates C-20261007-01
 - 2026-10-25 — WAIT — a concrete, deterministic harness-level provenance bug with a measured fix — strengthens the case for a measured M21 harness-mechanism extension; single author, no code; keep 2026-11-15 — weekly/2026-W43.md — candidates C-20261022-03
 - 2026-11-01 — WAIT — a new, mechanism-distinct channel (authority mismatch in runtime feedback) with real-product numbers; no defense proposed and no code; review at the scheduled date together with the cluster — weekly/2026-W44.md — candidates C-20261030-02
+- 2026-11-15 — WAIT — due today; no artifact release or second measurement of harness defaults appeared; product defaults change fast, so the finding must be re-dated before teaching — weekly/2026-W46.md — candidates none (due review)

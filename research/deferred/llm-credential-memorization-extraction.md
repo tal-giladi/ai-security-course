@@ -2,7 +2,7 @@
 
 - **Topic ID:** llm-credential-memorization-extraction
 - **Status:** WAIT
-- **Next review:** 2026-11-15
+- **Next review:** 2026-12-27
 - **Course change:** none
 - **Candidates:** C-20260930-03
 
@@ -27,3 +27,4 @@ synthetic LAB-CANARY leaked-secrets corpus (never real extraction).
 ## History
 
 - 2026-10-04 — WAIT — relevant and on real named systems, but single paper, numbers unverified, and names a product in the course's own toolchain — must verify the primary before teaching — weekly/2026-W40.md — candidates C-20260930-03
+- 2026-11-15 — WAIT — due today; the maintainer check of the full PDF and vendor statements is still outstanding and no replication appeared; teachable only in a synthetic-canary form — weekly/2026-W46.md — candidates none (due review)

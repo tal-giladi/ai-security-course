@@ -1,11 +1,11 @@
 # Lab blueprint — Safeguard surface: refusal direction, prefill, and cover story
 
 - **Topic ID:** lab-blueprint-safeguard-surface
-- **Status:** WAIT
-- **Blocked on:** course-content review, see *Blockers*
-- **Next review:** 2026-10-30
-- **Course change:** none
-- **Companion note:** `research/deferred/glm-5-3-safeguard-bypass-taxonomy.md` (taxonomy + evidence)
+- **Status:** ADD
+- **Blocked on:** resolved — Module 34 shipped (see Course change)
+- **Next review:** on new evidence
+- **Course change:** `lessons/module-34/lesson-01.md` (34.1 The safeguard surface) and `lessons/module-34/lesson-02.md` (34.2), with `labs/module-34/`; added directly by the maintainer during the Academy migration (merged 2026-11-11), outside the weekly review; recorded here by the 2026-W46 reconciliation
+- **Companion note:** `research/accepted/glm-5-3-safeguard-bypass-taxonomy.md` (taxonomy + evidence)
 - **Candidates:** C-20260930-02
 
 ## Provenance — read this before citing anything below
@@ -145,3 +145,4 @@ CPU-only, safe to publish, and safe to let students modify.
 ## History
 
 - 2026-09-30 — WAIT — blueprint drafted from taxonomy note; four labs reconstructed against published technique literature; blocked on course-content review and module numbering — daily/2026-09-30.md — candidates C-20260930-02
+- 2026-11-15 — ADD — reconciliation, no course change this week: the topic was overdue (2026-10-30) and is already taught in Module 34 (34.1/34.2, in `_sidebar.md`), which the maintainer added outside the weekly process; status recorded so the registry matches the course — weekly/2026-W46.md — candidates none (due review)

@@ -5,6 +5,20 @@ bar in [the weekly review protocol](research/PROTOCOL-weekly.md). New material e
 existing lessons and labs; it never replaces them. "No curriculum changes this week" is a normal
 entry.
 
+## 2026-W46 (2026-11-15)
+
+- **Added** a new lesson [23.2 · Watermarking and provenance of AI-generated text](lessons/module-23/lesson-02.md)
+  to Module 23 (blue team). You build a green-list text watermark from scratch (keyed green lists,
+  a logit bias and a one-sided z-test) and measure what its detector promises: the threshold bounds
+  the false-positive rate on unmarked text, while recall depends on length, entropy and editing.
+  Then you attack it two ways: removal by editing, and forgery by *watermark stealing* (learning the
+  green lists from outputs alone), which is the failure that breaks attribution. You also measure
+  the defender's context-width trade-off. Built on Kirchenbauer et al. (ICML 2023, ICLR 2024),
+  Jovanović et al. (ICML 2024), Krishna et al. (NeurIPS 2023) and SynthID-Text; maps to the EU AI Act
+  Art. 50 marking duty. Lab: [Lab 23.2 · Text watermarking](labs/module-23/watermark/README.md);
+  the Module 23 quiz gained one question. Nothing existing was changed (later sidebar running
+  numbers moved up by one). Review: [research/weekly/2026-W46.md](research/weekly/2026-W46.md).
+
 ## 2026-W45 (2026-11-08)
 
 - **Added** an advanced extension to lesson [24.1 · Security evaluation](lessons/module-24/lesson-01.md):

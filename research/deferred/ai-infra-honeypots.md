@@ -21,3 +21,4 @@ Published deployment data. It would extend 30.1 / 23.1.
 ## History
 
 - 2026-11-01 — WAIT — single fresh source without independent replication or adoption; promising but not yet mature enough to teach (see weekly report for the six answers) — weekly/2026-W44.md — candidates C-20261031-05
+- 2026-11-15 — WAIT — related defensive-deception evidence (Shibboleth traps, recorded under agent-execution-fingerprinting); no change to this topic's condition; review date unchanged — weekly/2026-W46.md — candidates C-20261111-03 (cross-reference)

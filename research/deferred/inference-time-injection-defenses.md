@@ -2,7 +2,7 @@
 
 - **Topic ID:** inference-time-injection-defenses
 - **Status:** WAIT
-- **Next review:** 2026-11-15
+- **Next review:** 2026-12-20
 - **Course change:** none
 - **Candidates:** C-20260930-01, C-20260930-02, C-20261026-07, C-20261027-03, C-20261031-03, C-20261103-06, C-20261106-01
 
@@ -35,3 +35,4 @@ CounterSteer also needs model-internals access the course's toy shim may need to
 - 2026-10-04 — WAIT — thorough single-paper evaluations from known researchers, but no independent replication; ADD budget used — weekly/2026-W40.md — candidates C-20260930-01, C-20260930-02
 - 2026-11-01 — WAIT — the cluster grows (sanitization, steering) and gains attack-side cautions; none has code or replication yet; keep scheduled review — weekly/2026-W44.md — candidates C-20261026-07, C-20261027-03, C-20261031-03
 - 2026-11-08 — WAIT — two single-preprint data points; due 2026-11-15 as scheduled — weekly/2026-W45.md — candidates C-20261103-06, C-20261106-01
+- 2026-11-15 — WAIT — due today; no replication or code for CounterSteer, SEAL or SPILLWAY; note that Render Before Reading is already taught as 20.2 (in the course), so a future ADD here concerns activation steering or sanitization only — weekly/2026-W46.md — candidates none (due review)

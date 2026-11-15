@@ -4,7 +4,7 @@
 - **Status:** ADD
 - **Next review:** on new evidence
 - **Course change:** `lessons/module-22/lesson-02.md` (new lesson 22.2, added 2026-10-18); `labs/lab-34-skill-supply-chain/`; `_sidebar.md`; `curriculum/course-outline.md`; `references/standards-map.md`
-- **Candidates:** C-20261001-01, C-20261001-05, C-20261009-03, C-20261010-02, C-20261012-01, C-20261014-01, C-20261015-04, C-20261015-08, C-20261026-04, C-20261027-01, C-20261030-01, C-20261104-08, C-20261104-09
+- **Candidates:** C-20261001-01, C-20261001-05, C-20261009-03, C-20261010-02, C-20261012-01, C-20261014-01, C-20261015-04, C-20261015-08, C-20261026-04, C-20261027-01, C-20261030-01, C-20261104-08, C-20261104-09, C-20261110-03
 
 ## Summary
 
@@ -40,6 +40,7 @@ history below.
 - https://arxiv.org/abs/2610.37901 — Scan Before You Install (Elovici/Shabtai group): composite-skill scanner F1 0.991 on SCR-Bench vs 0.82–0.86 SkillsGuard; 53/59 analyst-confirmed findings in 23 of the 75 most-starred skill repos, 10 disclosed (preprint, no code link). Added 2026-11-01.
 - Benign skills inducing misaligned behavior (C-20261104-08): non-adversarial risk category, 5 backbones x 3 benchmarks; single preprint, no code. Added 2026-11-08.
 - RuntimeTickets (C-20261104-09): source-grounded, deterministically enforced security obligations for skills; 0.0%/0.0% claim unverified, no code. Added 2026-11-08.
+- https://arxiv.org/abs/2611.10830 — agent-skill scanners measured (AIDC 2026 @ ACSAC, author-stated): Cisco Skill Scanner recall 0.91 at 33/60 benign FPs; static+sandbox+LLM pipeline 5/60 FPs; dynamic evidence gives the largest ablation gain (no code). Added 2026-11-15.
 
 ## What would change the decision
 
@@ -54,3 +55,4 @@ editing the lesson.
 - 2026-10-18 — ADD — matured past the bar: multiple independent groups across attack (prose/cache/under-declaration/cross-skill) and defense (EAV, SkillRelayGuard) with released code and real marketplace base-rate measurement (6,309 and 31,132 and 98,380 skills), real industry incidents (ClawHavoc, ToxicSkills), 157 confirmed-malicious skills removed after responsible disclosure, and a mainstream standard (`SKILL.md`, 40+ platforms) with official security guidance. Framed as a supply-chain node (M22.2) extending the 22.1 gate, not a replacement. New lesson 22.2 + Lab 34 (9 tests; full suite 153 passed) — weekly/2026-W42.md — candidates C-20261012-01, C-20261014-01, C-20261015-04, C-20261015-08
 - 2026-11-01 — ADD — no course change: three more independent groups confirm the taught cross-skill thesis and the provenance-guard fix with measured numbers; a short 'measured at scale' note in 22.2 may be added if any of them releases code — weekly/2026-W44.md — candidates C-20261026-04, C-20261027-01, C-20261030-01
 - 2026-11-08 — ADD — no course change: two more preprints (a non-adversarial risk and a candidate defense upgrade); revisit only if code or replication appears — weekly/2026-W45.md — candidates C-20261104-08, C-20261104-09
+- 2026-11-15 — ADD — supporting evidence only, no course change: measured FP cost of an open-source skill scanner (33/60 benign flagged) and a dynamic-evidence pipeline (5/60); workshop paper, 140 skills, no code — weekly/2026-W46.md — candidates C-20261110-03

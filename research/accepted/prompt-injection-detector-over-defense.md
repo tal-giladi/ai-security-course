@@ -4,7 +4,7 @@
 - **Status:** ADD
 - **Next review:** on new evidence
 - **Course change:** `lessons/module-24/lesson-01.md` (advanced extension "evaluating prompt-injection detectors", added 2026-11-08); `labs/lab-37-injection-detector-eval/`; `_sidebar.md`; `curriculum/course-outline.md`; `references/standards-map.md`
-- **Candidates:** C-20260926-02, C-20261005-04
+- **Candidates:** C-20260926-02, C-20261005-04, C-20261109-04
 
 ## Summary
 
@@ -25,6 +25,7 @@ tested detector reaches F1≥0.95 with hard-benign FPR≤0.10.
 - https://arxiv.org/abs/2501.15145 — CURRENT anchor: PromptShield (Jacob, Alzahrani, Hu, Alomair, Wagner; ACM CODASPY 2025): deployable detectors must be evaluated in the low-FPR regime. Added 2026-11-08.
 - https://huggingface.co/meta-llama/Llama-Prompt-Guard-2-86M — adoption: Meta's deployed detector reports Recall@1%FPR (97.5% for 86M, English) and lists distribution sensitivity and adaptive attacks as limitations (vendor claim). Added 2026-11-08.
 - https://arxiv.org/abs/2611.04393 — Voluntary Servitude (NeurIPS 2026): deployed injection detectors score non-imperative fabricated-hazard payloads as benign (1.7–4.4x more effective than instruction injection behind a filter); used as the EMERGING limit-of-detection example. Added 2026-11-08.
+- https://arxiv.org/abs/2611.08834 — prompt-injection guards on legal contracts: 11 open-weight guards, document-level FPR up to 92.39%, a five-regex baseline not Pareto-dominated, frontier-verified cascade 6.5x cheaper (preprint, no code). Added 2026-11-15.
 
 ## What would change the decision
 
@@ -35,3 +36,4 @@ Promoted to ADD on 2026-11-08. Reopen for a course change only if a released, wi
 - 2026-09-27 — WAIT — important measurement result for a defense class the course lacks a lesson on, but a single 2-week-old paper with no released benchmark; ADD budget used — weekly/2026-W39.md — candidates C-20260926-02
 - 2026-10-11 — WAIT — independent corroboration of the central claim by a different method (benchmark transfer, not hard-benign FPR) — the strongest WAIT this week and the leading ADD candidate for its due review on 2026-11-08 (a module-24 "evaluating injection detectors" extension); not added now because the weekly ADD budget went to 17.2 — weekly/2026-W41.md — candidates C-20261005-04
 - 2026-11-08 — ADD — due today and the leading ADD candidate: four independent lines of work (InjecGuard 2024 with code, PromptShield CODASPY 2025, PIDS-Bench IEEE Access 2026, Liu 2026 with code) plus Prompt Guard 2's own Recall@1%FPR reporting establish a settled, teachable evaluation principle — a detector number belongs to a distribution and a threshold. Added as a 24.1 advanced extension with Lab 37 (16 tests; full suite 188 passed) — weekly/2026-W45.md — candidates none new (due review; cites C-20261104-02, recorded under fabricated-hazard-steering)
+- 2026-11-15 — ADD — supporting evidence only, no course change: a hard-benign domain (legal contracts) with document-level FPR up to 92% and a regex floor; single preprint, no code — weekly/2026-W46.md — candidates C-20261109-04

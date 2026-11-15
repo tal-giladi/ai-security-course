@@ -92,41 +92,42 @@
 - Stage 9 — Defending and measuring
 - **Module 23 — Blue team**
   - [27 · Defensive engineering](lessons/module-23/lesson-01.md)
+  - [28 · Watermarking and provenance of AI-generated text](lessons/module-23/lesson-02.md)
   - [Module 23 quiz](assessments/module-23-quiz.md)
 - **Module 24 — Security evaluation**
-  - [28 · Security evaluation](lessons/module-24/lesson-01.md)
+  - [29 · Security evaluation](lessons/module-24/lesson-01.md)
   - [Module 24 quiz](assessments/module-24-quiz.md)
 - **Module 25 — Automated red teaming**
-  - [29 · Automated red teaming](lessons/module-25/lesson-01.md)
+  - [30 · Automated red teaming](lessons/module-25/lesson-01.md)
   - [Module 25 quiz](assessments/module-25-quiz.md)
 - **Module 26 — Purple-team synthesis**
-  - [30 · Purple-team synthesis, standards & capstones](lessons/module-26/lesson-01.md)
+  - [31 · Purple-team synthesis, standards & capstones](lessons/module-26/lesson-01.md)
   - [Module 26 quiz](assessments/module-26-quiz.md)
 
 - Stage 10 — Practitioner track (OffSec AI-300 parity)
 - **Module 27 — Reconnaissance for AI targets**
-  - [31 · Reconnaissance for AI targets](lessons/module-27/lesson-01.md)
+  - [32 · Reconnaissance for AI targets](lessons/module-27/lesson-01.md)
   - [Module 27 quiz](assessments/module-27-quiz.md)
 - **Module 28 — Multi-agent systems & A2A**
-  - [32 · Attacking multi-agent systems & A2A protocols](lessons/module-28/lesson-01.md)
+  - [33 · Attacking multi-agent systems & A2A protocols](lessons/module-28/lesson-01.md)
   - [Module 28 quiz](assessments/module-28-quiz.md)
 - **Module 29 — Embedding attacks**
-  - [33 · Attacking embeddings: inversion & extraction](lessons/module-29/lesson-01.md)
+  - [34 · Attacking embeddings: inversion & extraction](lessons/module-29/lesson-01.md)
   - [Module 29 quiz](assessments/module-29-quiz.md)
 - **Module 30 — AI infrastructure & deployment**
-  - [34 · AI infrastructure & deployment exploits](lessons/module-30/lesson-01.md)
+  - [35 · AI infrastructure & deployment exploits](lessons/module-30/lesson-01.md)
   - [Module 30 quiz](assessments/module-30-quiz.md)
 - **Module 31 — Capstone engagement**
-  - [35 · Full-spectrum AI red-team engagement](lessons/module-31/lesson-01.md)
+  - [36 · Full-spectrum AI red-team engagement](lessons/module-31/lesson-01.md)
   - [Module 31 quiz](assessments/module-31-quiz.md)
 
 - Stage 12 — Advanced track (GPU, optional)
 - **Module 34 — Advanced safeguard evaluation**
-  - [38 · The safeguard surface](lessons/module-34/lesson-01.md)
-  - [39 · Running refusal ablations on an open-weight model](lessons/module-34/lesson-02.md)
+  - [39 · The safeguard surface](lessons/module-34/lesson-01.md)
+  - [40 · Running refusal ablations on an open-weight model](lessons/module-34/lesson-02.md)
   - [Module 34 quiz](assessments/module-34-quiz.md)
 - **Module 35 — Agentic vulnerability discovery**
-  - [40 · Agentic vulnerability discovery: the iFinder case study](lessons/module-35/lesson-01.md)
+  - [41 · Agentic vulnerability discovery: the iFinder case study](lessons/module-35/lesson-01.md)
   - [Module 35 quiz](assessments/module-35-quiz.md)
 
 - Reference

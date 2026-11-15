@@ -2,7 +2,7 @@
 
 - **Topic ID:** agent-tool-authorization-gates
 - **Status:** WAIT
-- **Next review:** 2026-11-15
+- **Next review:** 2026-12-20
 - **Course change:** none
 - **Candidates:** C-20260928-02, C-20260930-06, C-20261003-01, C-20261001-04, C-20261005-03, C-20261008-04, C-20261019-04, C-20261021-01, C-20261026-06, C-20261028-03, C-20261104-03
 
@@ -43,3 +43,4 @@ guarantee box; do not teach all four.
 - 2026-10-25 — WAIT — a peer-reviewed impossibility result with code reframes the cluster (per-action gates cannot see cross-execution violations) and supplies the guarantee-box line any future ADD must carry; still no single lead gate with replication; keep 2026-11-15 — weekly/2026-W43.md — candidates C-20261019-04, C-20261021-01
 - 2026-11-01 — WAIT — a measurement-validity finding for the 'minimal privilege' yardstick plus a concrete follow-on-call attack; still no single gate to teach; keep scheduled review — weekly/2026-W44.md — candidates C-20261026-06, C-20261028-03
 - 2026-11-08 — WAIT — strong prevalence evidence; due 2026-11-15 as scheduled — weekly/2026-W45.md — candidates C-20261104-03
+- 2026-11-15 — WAIT — due today; the cluster still broadens rather than converging on one lead gate with code and replication; CapLite (recorded on capability-flow-injection-defense) adds a schema-derived write gate in the same family; 17.2 and 22.2 already cover the structural core — weekly/2026-W46.md — candidates none (due review; cross-reference C-20261114-01)

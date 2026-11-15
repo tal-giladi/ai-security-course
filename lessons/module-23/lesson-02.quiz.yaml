@@ -1,0 +1,59 @@
+- id: q1
+  question: >-
+    A green-list watermark uses $\gamma = 0.25$. A 100-token text has 45 green tokens. What does the
+    detector conclude at a threshold of $z \ge 4$?
+  options:
+    - Not flagged, because 45% green is below the 50% a watermark needs.
+    - Flagged, because $z = (45-25)/\sqrt{100 \cdot 0.25 \cdot 0.75} \approx 4.6$.
+    - Not flagged, because 100 tokens is too short for any z-test to be valid.
+    - Flagged, because any green count above 25 exceeds the expected value.
+  correct: 1
+  explanation: >-
+    Under the null hypothesis the expected green count is 25 with standard deviation about 4.33, so
+    45 green tokens give $z \approx 4.62$ and $p \approx 2\times10^{-6}$. A count just above 25 is
+    ordinary noise; the test asks how many standard deviations above chance the count is.
+- id: q2
+  question: >-
+    Your team must decide whether watermark detection can be used as evidence that a specific user
+    generated a phishing email with your API. Which property of the scheme is the main obstacle?
+  options:
+    - The detector's false-positive rate on human text grows with the length of the email.
+    - Short emails cannot carry a watermark at all, so every phishing email of that kind is missed.
+    - Once green lists are stolen from API outputs, text the model never wrote can test as watermarked.
+    - Distortion-free schemes cannot be detected without access to the user's account.
+  correct: 2
+  explanation: >-
+    Forgery breaks attribution: once green lists leak through outputs, as watermark-stealing attacks
+    showed, a positive detection no longer means the model wrote the text. The honest
+    false-positive rate is fixed by the threshold, not by length, and short text lowers recall
+    rather than making marking impossible.
+- id: q3
+  question: >-
+    You raise the context width $h$ from 1 to 3 to resist watermark stealing. What should you expect
+    to measure in the retest?
+  options:
+    - Forgery gets much harder at equal budget, but edits now remove the watermark more easily.
+    - Forgery gets harder, and robustness to paraphrasing improves because more context is hashed.
+    - Neither attack changes much, because the secret key and the vocabulary stay the same size.
+    - The false-positive rate on human text rises, because there are more green lists to match.
+  correct: 0
+  explanation: >-
+    The number of contexts grows as $|V|^h$, so the attacker needs far more observations to estimate
+    green lists. But each substituted token now disturbs the green lists of the next $h$ positions,
+    so edits randomise up to $(1+h)\varepsilon$ of the scored tokens. The threshold, and so the
+    honest false-positive rate, is unchanged.
+- id: q4
+  question: >-
+    A provider watermarks all output. Detection works well on essays but often misses generated
+    shell scripts of the same length. What is the most likely reason?
+  options:
+    - Shell scripts use a different tokenizer, so the green lists are computed over the wrong vocabulary.
+    - The detector's threshold was tuned on essays and must be lowered separately for code.
+    - Code is usually edited by users, which always removes the watermark.
+    - Code is low-entropy, so the green bias barely changes which token gets chosen.
+  correct: 3
+  explanation: >-
+    The bias can only move probability mass that is available. When the next token is nearly
+    certain, adding $\delta$ to a green alternative changes little, so the green rate stays close to
+    $\gamma$ and $z$ grows slowly. Lowering the threshold would raise the false-positive rate on all
+    text.

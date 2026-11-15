@@ -38,6 +38,7 @@ module that teaches the idea in depth rather than repeating it here.
 - **FGSM** — the fast gradient sign method: one gradient step on the loss to produce an adversarial example. Module 09.
 - **GCG (Greedy Coordinate Gradient)** — the optimization-based jailbreak that searches a suffix token-by-token to maximise the probability of an unsafe completion. Module 07.
 - **Gradient** — the derivative of the model's loss with respect to its inputs or weights; what makes white-box attacks possible.
+- **Green list** — the keyed, context-dependent subset of the vocabulary a text watermark favours; its size fraction is γ. Module 23.2.
 - **Guardrail** — a filter placed around a model (input or output). Probabilistic, evadable, and with a false-positive cost.
 - **Indirect prompt injection** — an injection delivered through content the model reads (documents, web pages, tool results, memory) rather than typed by the user. Module 05.
 - **Information per noise** — the recon objective: maximise mutual information about the config subject to a detection-cost budget (a knapsack).
@@ -92,6 +93,8 @@ module that teaches the idea in depth rather than repeating it here.
 - **Trust graph** — directed graph where edges are "who accepts messages/tasks from whom"; every edge is an injection channel.
 - **Trust tag / write provenance** — recording each memory's source (user/trusted_tool/untrusted); never elevate untrusted.
 - **vec2text** — method reconstructing fluent text from black-box embeddings (Morris et al. 2023).
+- **Watermark (text)** — a keyed bias in a model's token choices (e.g. a green list per context) that a key holder can detect statistically; bounds false positives on unmarked text but misses short, low-entropy or edited text. Module 23.2.
+- **Watermark stealing** — estimating a watermark's green lists from its outputs alone, which enables forgery (spoofing) and cheaper removal (scrubbing). Module 23.2.
 - **Workflow corruption** — injected content re-plans a workflow (adds/re-orders subtasks).
 - **Code-specification cross-check** — the vetting step in iFinder (M35): map a flagged code site to its 3GPP procedure, pull in the prerequisite messages' handlers, and re-evaluate feasibility with that expanded context. Removes context-blind false positives (62 → 19 in the ablation) without changing recall.
 - **iFinder** — an LLM multi-agent system (Discovery → Vetting → Exploitation, on the Claude Agent SDK) that discovered 84 implicit-trust vulnerabilities in open-source cellular cores (USENIX Security 2026). M35's case study for agentic vulnerability discovery.

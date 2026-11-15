@@ -2,7 +2,7 @@
 
 - **Topic ID:** execution-audit-provenance
 - **Status:** WAIT
-- **Next review:** 2026-11-15
+- **Next review:** 2026-12-20
 - **Course change:** none
 - **Candidates:** C-20261003-02, C-20261008-04, C-20261023-02, C-20261030-08
 
@@ -34,3 +34,4 @@ Released code or independent reproduction. Candidate for an M19/M22 provenance l
 - 2026-10-18 — WAIT — two more independent groups (ExecWeave local-first typed execution graph; Matoi reusable consequence-evidence contract) converge on the same gap within ~6 weeks, strengthening but not resolving it; both single preprints, Matoi synthetic-tools-only and self-described as not production-ready, ExecWeave no attack-resistance numbers; keep 2026-11-29 — weekly/2026-W42.md — candidates C-20261016-10
 - 2026-10-25 — WAIT — first entry in the cluster with released code and CIs, meeting part of the stated reopening condition (code); still no independent replication; pulled forward to 2026-11-15 — weekly/2026-W43.md — candidates C-20261023-02
 - 2026-11-01 — WAIT — mechanism-distinct multi-agent addition to the provenance cluster with code; single author, own baselines; keep scheduled review — weekly/2026-W44.md — candidates C-20261030-08
+- 2026-11-15 — WAIT — due today; no independent reproduction of the claim-anchored contract appeared this week; AgentTriage and PCM have code but are not reproductions — weekly/2026-W46.md — candidates none (due review)

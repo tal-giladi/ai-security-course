@@ -5,64 +5,65 @@ Every topic the weekly review has decided on, so nothing is reconsidered without
 
 | Status | Topic | Next review | Course change | Last decision |
 |---|---|---|---|---|
-| ADD | [Agent "Skills" as a trust boundary (authentic-but-unsafe skills, cross-skill poisoning)](research/accepted/skill-trust-boundary.md) | on new evidence | `lessons/module-22/lesson-02.md` (new lesson 22.2, added 2026-10-18); `labs/lab-34-skill-supply-chain/`; `_sidebar.md`; `curriculum/course-outline.md`; `references/standards-map.md` | 2026-11-08 |
+| ADD | [Agent "Skills" as a trust boundary (authentic-but-unsafe skills, cross-skill poisoning)](research/accepted/skill-trust-boundary.md) | on new evidence | `lessons/module-22/lesson-02.md` (new lesson 22.2, added 2026-10-18); `labs/lab-34-skill-supply-chain/`; `_sidebar.md`; `curriculum/course-outline.md`; `references/standards-map.md` | 2026-11-15 |
+| ADD | [AI-generated content watermarking and watermark removal](research/accepted/ai-content-watermarking.md) | on new evidence | `lessons/module-23/lesson-02.md` (new lesson 23.2, added 2026-11-15) + `lesson-02.quiz.yaml`; `labs/module-23/watermark/`; `assessments/module-23-quiz.quiz.yaml` (q10 appended) and `assessments/module-23-quiz.md` (review link); `_sidebar.md` (entry 28, later running numbers shifted by one); `curriculum/course-outline.md`; `references/standards-map.md`; `glossary.md` | 2026-11-15 |
 | ADD | [Egress covert channels around agent egress controls (DNS tunnelling & legitimate-tool carriers)](research/accepted/egress-covert-channels-agent.md) | on new evidence | `lessons/module-05/lesson-01.md` (Advanced extension: egress covert channels, added 2026-10-04); `labs/lab-32-egress-channel/`; `_sidebar.md`; `curriculum/course-outline.md` | 2026-11-01 |
+| ADD | [GLM-5.3 safeguard-bypass taxonomy — refusal ablation, thinking-prefill, cover-story](research/accepted/glm-5-3-safeguard-bypass-taxonomy.md) | on new evidence | `lessons/module-34/lesson-01.md` (34.1 The safeguard surface) and `lessons/module-34/lesson-02.md` (34.2), with `labs/module-34/`; added directly by the maintainer during the Academy migration (merged 2026-11-11), outside the weekly review; recorded here by the 2026-W46 reconciliation | 2026-11-15 |
+| ADD | [Lab blueprint — Safeguard surface: refusal direction, prefill, and cover story](research/accepted/lab-blueprint-safeguard-surface.md) | on new evidence | `lessons/module-34/lesson-01.md` (34.1 The safeguard surface) and `lessons/module-34/lesson-02.md` (34.2), with `labs/module-34/`; added directly by the maintainer during the Academy migration (merged 2026-11-11), outside the weekly review; recorded here by the 2026-W46 reconciliation | 2026-11-15 |
 | ADD | [MITRE ATT&CK v20 AI techniques (T1698/T1699/T1700/T1608.007) and AI-enabled exfiltration detection](research/accepted/mitre-attack-v20-ai-techniques.md) | on new evidence | lessons/frontier/update-02.md (F.2); labs/lab-35-attack-ai-detection/; references/standards-map.md (appended row + ATT&CK v20 section); curriculum/course-outline.md (appended line + dependency row); _sidebar.md | 2026-10-25 |
 | ADD | [OWASP LLM Top 10 2026 — crosswalk and Hidden Context Exposure](research/accepted/owasp-llm-top10-2026.md) | n/a | lessons/frontier/update-01.md (new lesson F.1); references/standards-map.md (appended 2026 crosswalk section); curriculum/course-outline.md (appended F.1 line + dependency row); _sidebar.md (Frontier updates section); labs/module-32/ (shipped 2026-09-27, see below). | 2026-09-27 |
-| ADD | [Prompt-injection defense by design: Dual LLM plan isolation, CaMeL capability flow control, and branch steering in computer-use agents](research/accepted/capability-flow-injection-defense.md) | on new evidence | `lessons/module-17/lesson-02.md` (new lesson 17.2, added 2026-10-11); `labs/lab-33-capability-flow/`; `_sidebar.md`; `curriculum/course-outline.md`; `references/standards-map.md` | 2026-11-08 |
-| ADD | [Prompt-injection detector over-defense and distribution shift (PIDS-Bench)](research/accepted/prompt-injection-detector-over-defense.md) | on new evidence | `lessons/module-24/lesson-01.md` (advanced extension "evaluating prompt-injection detectors", added 2026-11-08); `labs/lab-37-injection-detector-eval/`; `_sidebar.md`; `curriculum/course-outline.md`; `references/standards-map.md` | 2026-11-08 |
-| ADD | [Trust-zoned memory for computer-use agents (persistent-memory attack)](research/accepted/trust-zoned-agent-memory.md) | on new evidence | `lessons/module-16/lesson-02.md` (section *Advanced extension: trust-zoned memory*, added 2026-11-01); `labs/lab-36-trust-zoned-memory/`; `_sidebar.md`; `curriculum/course-outline.md`; `references/standards-map.md` | 2026-11-08 |
+| ADD | [Prompt-injection defense by design: Dual LLM plan isolation, CaMeL capability flow control, and branch steering in computer-use agents](research/accepted/capability-flow-injection-defense.md) | on new evidence | `lessons/module-17/lesson-02.md` (new lesson 17.2, added 2026-10-11); `labs/lab-33-capability-flow/`; `_sidebar.md`; `curriculum/course-outline.md`; `references/standards-map.md` | 2026-11-15 |
+| ADD | [Prompt-injection detector over-defense and distribution shift (PIDS-Bench)](research/accepted/prompt-injection-detector-over-defense.md) | on new evidence | `lessons/module-24/lesson-01.md` (advanced extension "evaluating prompt-injection detectors", added 2026-11-08); `labs/lab-37-injection-detector-eval/`; `_sidebar.md`; `curriculum/course-outline.md`; `references/standards-map.md` | 2026-11-15 |
+| ADD | [Trust-zoned memory for computer-use agents (persistent-memory attack)](research/accepted/trust-zoned-agent-memory.md) | on new evidence | `lessons/module-16/lesson-02.md` (section *Advanced extension: trust-zoned memory*, added 2026-11-01); `labs/lab-36-trust-zoned-memory/`; `_sidebar.md`; `curriculum/course-outline.md`; `references/standards-map.md` | 2026-11-15 |
 | WAIT | [Adversarial slowdown of speculative decoding (Speedbumps)](research/deferred/speculative-decoding-dos.md) | 2026-12-06 | none | 2026-10-11 |
 | WAIT | [AdvGuard: graph-based detection of coordinated multi-turn system-prompt extraction](research/deferred/multiturn-prompt-extraction-defense.md) | 2026-12-27 | none | 2026-11-08 |
 | WAIT | [Agent memory privacy: disclosure amplification and deletion that does not erase](research/deferred/agent-memory-privacy-erasure.md) | 2026-12-06 | none | 2026-10-25 |
 | WAIT | [Agent-adapted phishing against email agents (AgentPhishing / PhishOpt)](research/deferred/agent-adaptive-phishing.md) | 2026-12-20 | none | 2026-10-25 |
 | WAIT | [Agents as fraud victims (earn-then-exploit, scam environments)](research/deferred/agent-fraud-susceptibility.md) | 2026-12-20 | none | 2026-11-08 |
 | WAIT | [Agents as operating systems: missing OS-grade protections in agent harnesses (AaOS)](research/deferred/agent-os-protection-gap.md) | 2026-12-13 | none | 2026-11-01 |
-| WAIT | [Agents defeat runtime oversight under ordinary task/goal pressure](research/deferred/agent-oversight-evasion.md) | 2026-12-06 | none | 2026-11-08 |
+| WAIT | [Agents defeat runtime oversight under ordinary task/goal pressure](research/deferred/agent-oversight-evasion.md) | 2026-11-29 | none by the weekly review. NOTE: `lessons/module-33/lesson-01.md` (33.1 Oversight the agent cannot edit, with `labs/module-33/`) already teaches this topic (EvasionBench, trace tampering, AISI GPT-6 Astra, ScopeBench); it was added during the Academy migration and is not yet linked in `_sidebar.md` | 2026-11-15 |
 | WAIT | [AI-chat front-ends leaking conversation content to third-party trackers](research/deferred/ai-chat-frontend-tracker-leakage.md) | 2026-12-13 | none | 2026-11-01 |
-| WAIT | [AI-generated content watermarking and watermark removal](research/deferred/ai-content-watermarking.md) | 2026-11-15 | none | 2026-11-08 |
 | WAIT | [Attack reuse and defense revision after disclosure (Tensor Trust evidence)](research/deferred/attack-disclosure-reuse.md) | 2026-12-27 | none | 2026-11-01 |
 | WAIT | [Attribute leakage from 'protected' features in edge-cloud split multimodal inference](research/deferred/split-inference-attribute-leakage.md) | 2026-12-27 | none | 2026-11-01 |
 | WAIT | [Automated repository poisoning against coding agents (TrojanForge / TrojanBench)](research/deferred/coding-agent-repo-poisoning.md) | 2026-12-06 | none | 2026-10-25 |
-| WAIT | [Autonomous repository-to-runtime agent red-teaming (AgentXploit)](research/deferred/automated-agent-redteaming.md) | 2026-11-22 | none | 2026-11-01 |
+| WAIT | [Autonomous repository-to-runtime agent red-teaming (AgentXploit)](research/deferred/automated-agent-redteaming.md) | 2026-11-22 | none | 2026-11-15 |
 | WAIT | [Backdoored retriever checkpoint hijacks agentic search](research/deferred/malicious-retriever-checkpoint.md) | 2026-11-22 | none | 2026-10-04 |
-| WAIT | [Backdoors that survive post-training or evade input-centric defenses (PersistBD, SkillPoison, answer-side triggers)](research/deferred/backdoor-persistence-and-trigger-variants.md) | 2026-11-22 | none | 2026-11-08 |
-| WAIT | [Black-box extraction of memorized credentials from commercial LLMs](research/deferred/llm-credential-memorization-extraction.md) | 2026-11-15 | none | 2026-10-04 |
-| WAIT | [Claim-anchored execution contracts for tool-agent audit trails](research/deferred/execution-audit-provenance.md) | 2026-11-15 | none | 2026-11-01 |
-| WAIT | [Context-aware Pickle VM-state scanning (DITTO / PickleBench)](research/deferred/pickle-scanner-defense.md) | 2026-11-22 | none | 2026-10-11 |
+| WAIT | [Backdoors that survive post-training or evade input-centric defenses (PersistBD, SkillPoison, answer-side triggers)](research/deferred/backdoor-persistence-and-trigger-variants.md) | 2026-11-22 | none | 2026-11-15 |
+| WAIT | [Black-box extraction of memorized credentials from commercial LLMs](research/deferred/llm-credential-memorization-extraction.md) | 2026-12-27 | none | 2026-11-15 |
+| WAIT | [Claim-anchored execution contracts for tool-agent audit trails](research/deferred/execution-audit-provenance.md) | 2026-12-20 | none | 2026-11-15 |
+| WAIT | [Context-aware Pickle VM-state scanning (DITTO / PickleBench)](research/deferred/pickle-scanner-defense.md) | 2026-11-22 | none | 2026-11-15 |
 | WAIT | [Context-span invisibility as a distillable backdoor (code-review evasion)](research/deferred/context-span-invisibility-backdoor.md) | 2026-11-22 | none | 2026-10-18 |
 | WAIT | [Cross-lingual evasion of the guardrail layer itself](research/deferred/cross-lingual-guard-evasion.md) | 2026-11-22 | none | 2026-10-18 |
 | WAIT | [Cryptographically-hidden model capabilities (provably hard to elicit)](research/deferred/cryptographic-hidden-backdoor.md) | 2026-11-22 | none | 2026-10-18 |
 | WAIT | [Data-void poisoning of web-searching LLMs (ATT&CK T1608.007)](research/deferred/ai-search-result-poisoning.md) | 2026-12-06 | none | 2026-10-25 |
 | WAIT | [Decode-time provenance binding vs steganographic injection in MCP pipelines](research/deferred/decode-time-provenance-binding.md) | 2026-12-13 | none | 2026-11-01 |
 | WAIT | [Defending web applications against AI agents and agentic browsers](research/deferred/web-defense-against-agents.md) | 2027-01-03 | none | 2026-11-08 |
-| WAIT | [Denial-of-wallet via retained/re-billed tool output](research/deferred/agent-denial-of-wallet.md) | 2026-11-22 | none | 2026-10-04 |
-| WAIT | [Deterministic tool-call authorization gates (provenance / typed / stateful)](research/deferred/agent-tool-authorization-gates.md) | 2026-11-15 | none | 2026-11-08 |
+| WAIT | [Denial-of-wallet via retained/re-billed tool output](research/deferred/agent-denial-of-wallet.md) | 2026-11-22 | none | 2026-11-15 |
+| WAIT | [Deterministic tool-call authorization gates (provenance / typed / stateful)](research/deferred/agent-tool-authorization-gates.md) | 2026-12-20 | none | 2026-11-15 |
 | WAIT | [End-to-end visual perturbation attacks on web agents (WebMirage)](research/deferred/webagent-visual-perturbation.md) | 2026-11-22 | none | 2026-10-11 |
 | WAIT | [Evaluating AI-control / sabotage monitors (label leakage, covert misalignment stress tests)](research/deferred/ai-control-monitor-evaluation.md) | 2026-12-13 | none | 2026-11-08 |
 | WAIT | [Execution-validated attacker/reviewer arenas for AI code review](research/deferred/ai-code-reviewer-arena.md) | 2026-12-27 | none | 2026-11-01 |
 | WAIT | [Fabricated-hazard steering ("voluntary servitude"): injection without a command](research/deferred/fabricated-hazard-steering.md) | 2026-12-20 | none | 2026-11-08 |
 | WAIT | [File-ingestion divergence: what the model reads vs what the human sees in Office documents](research/deferred/document-parser-divergence.md) | 2026-12-20 | none | 2026-11-08 |
-| WAIT | [Fingerprinting the model behind a black-box agent from execution traces](research/deferred/agent-execution-fingerprinting.md) | 2026-12-27 | none | 2026-11-01 |
-| WAIT | [GLM-5.3 safeguard-bypass taxonomy — refusal ablation, thinking-prefill, cover-story](research/deferred/glm-5-3-safeguard-bypass-taxonomy.md) | 2026-10-30 | none yet. Candidate input for the red-team safeguard-measurement unit | 2026-09-30 |
+| WAIT | [Fingerprinting the model behind a black-box agent from execution traces](research/deferred/agent-execution-fingerprinting.md) | 2026-12-27 | none | 2026-11-15 |
+| WAIT | [Geometric (embedding-transform) access control in RAG: isolation is not confidentiality](research/deferred/rag-embedding-transform-access-control.md) | 2027-01-10 | none | 2026-11-15 |
 | WAIT | [GraphRAG schema-level (auxiliary-structure) poisoning](research/deferred/graphrag-schema-poisoning.md) | 2026-11-22 | none | 2026-10-11 |
 | WAIT | [Image-returning multimodal RAG datastore extraction (ImmRAG)](research/deferred/multimodal-rag-extraction.md) | 2026-11-29 | none | 2026-10-04 |
 | WAIT | [Inalienable human-in-the-loop: approval channels the agent can reach are not approval](research/deferred/hitl-approval-channel-integrity.md) | 2026-12-13 | none | 2026-11-01 |
-| WAIT | [InferD: honeypots for AI inference infrastructure](research/deferred/ai-infra-honeypots.md) | 2027-01-03 | none | 2026-11-01 |
-| WAIT | [Inference-time / modality injection defenses (activation steering, render-before-reading)](research/deferred/inference-time-injection-defenses.md) | 2026-11-15 | none | 2026-11-08 |
-| WAIT | [Jailbreak-ASR judge variance (how to read an ASR number)](research/deferred/jailbreak-asr-judge-variance.md) | 2026-11-15 | none | 2026-10-25 |
+| WAIT | [InferD: honeypots for AI inference infrastructure](research/deferred/ai-infra-honeypots.md) | 2027-01-03 | none | 2026-11-15 |
+| WAIT | [Inference-time / modality injection defenses (activation steering, render-before-reading)](research/deferred/inference-time-injection-defenses.md) | 2026-12-20 | none | 2026-11-15 |
+| WAIT | [Jailbreak-ASR judge variance (how to read an ASR number)](research/deferred/jailbreak-asr-judge-variance.md) | 2026-11-22 | none | 2026-11-15 |
 | WAIT | [Jailbreaks across agent components (SoK)](research/deferred/agentic-jailbreak-taxonomy.md) | 2026-11-22 | none | 2026-09-27 |
 | WAIT | [Joint bypass of multi-scanner guardrail stacks (BRANCH)](research/deferred/guardrail-stack-bypass.md) | 2026-11-22 | none | 2026-10-11 |
 | WAIT | [Keyless steganographic collusion between independently deployed agents (Codetta)](research/deferred/multi-agent-covert-collusion.md) | 2026-11-22 | none | 2026-10-04 |
-| WAIT | [Lab blueprint — Safeguard surface: refusal direction, prefill, and cover story](research/deferred/lab-blueprint-safeguard-surface.md) | 2026-10-30 | none | 2026-09-30 |
 | WAIT | [Learnable trust-boundary delimiters for prompt injection (LTBD)](research/deferred/learned-trust-delimiters.md) | 2026-11-22 | none | 2026-11-08 |
 | WAIT | [Learned poison-set selection for LLM backdoors (SAILS)](research/deferred/poison-set-selection-backdoors.md) | 2026-11-22 | none | 2026-11-01 |
 | WAIT | [MCP filesystem capability laundering (declared category understates access)](research/deferred/mcp-filesystem-capability-laundering.md) | 2026-11-22 | none | 2026-10-18 |
 | WAIT | [MCP gateway security benchmark (GatewayBench)](research/deferred/mcp-gateway-security.md) | 2026-12-06 | none | 2026-11-08 |
 | WAIT | [MCP runtime-gated tool-metadata poisoning (Deadbugz)](research/deferred/mcp-runtime-metadata-rug-pull.md) | 2026-11-22 | none | 2026-11-08 |
 | WAIT | [MCP tool poisoning measured across frameworks with real execution](research/deferred/mcp-tool-poisoning-prevalence.md) | 2026-12-13 | none | 2026-11-08 |
-| WAIT | [Measured effect and cost of coding-agent harness security mechanisms (HarnessSecurity)](research/deferred/coding-agent-harness-mechanisms.md) | 2026-11-15 | none | 2026-11-01 |
-| WAIT | [Measured-endpoint taxonomy and testbed for RAG protection research](research/deferred/rag-defense-measured-endpoints.md) | 2026-12-20 | none | 2026-11-08 |
+| WAIT | [Measured effect and cost of coding-agent harness security mechanisms (HarnessSecurity)](research/deferred/coding-agent-harness-mechanisms.md) | 2026-12-20 | none | 2026-11-15 |
+| WAIT | [Measured-endpoint taxonomy and testbed for RAG protection research](research/deferred/rag-defense-measured-endpoints.md) | 2026-12-20 | none | 2026-11-15 |
 | WAIT | [MoE router telemetry as a membership-inference side channel](research/deferred/moe-router-membership-inference.md) | 2026-11-22 | none | 2026-11-08 |
 | WAIT | [Monitor evidence-path failures and canary contracts](research/deferred/monitor-evidence-path-integrity.md) | 2026-12-20 | none | 2026-11-01 |
 | WAIT | [Mosaic effect: agents disclose prohibited composite conclusions](research/deferred/agent-mosaic-aggregation-disclosure.md) | 2026-12-20 | none | 2026-11-01 |
@@ -70,13 +71,13 @@ Every topic the weekly review has decided on, so nothing is reconsidered without
 | WAIT | [NameTrap: steering coding agents to write vulnerable code via identifier names](research/deferred/coding-agent-identifier-steering.md) | 2026-12-27 | none | 2026-11-01 |
 | WAIT | [Near-target prompt injection: fixed-target benchmarks overstate robustness](research/deferred/near-target-injection-evaluation.md) | 2026-12-13 | none | 2026-11-08 |
 | WAIT | [Numerical & physical side channels on LLM serving (logit/token recovery)](research/deferred/llm-numerical-side-channels.md) | 2026-11-22 | none | 2026-10-18 |
-| WAIT | [Out-of-band / kernel-level enforcement of agent oversight](research/deferred/out-of-band-oversight-enforcement.md) | 2026-12-06 | none | 2026-11-08 |
+| WAIT | [Out-of-band / kernel-level enforcement of agent oversight](research/deferred/out-of-band-oversight-enforcement.md) | 2026-11-29 | none by the weekly review. NOTE: `lessons/module-33/lesson-01.md` (33.1) covers out-of-band evidence capture (ACE corpus); not yet linked in `_sidebar.md` | 2026-11-15 |
 | WAIT | [Poisoning via reused reasoning-trace KV cache (R²ECAP)](research/deferred/reasoning-kv-cache-poisoning.md) | 2026-12-20 | none | 2026-10-25 |
-| WAIT | [Post-fine-tuning safety recovery for fine-tuning-as-a-service (SLDR)](research/deferred/finetuning-as-a-service-defense.md) | 2026-11-22 | none | 2026-10-11 |
-| WAIT | [Proactive over-authorization (non-adversarial excessive agency)](research/deferred/proactive-over-authorization.md) | 2026-11-22 | none | 2026-11-08 |
+| WAIT | [Post-fine-tuning safety recovery for fine-tuning-as-a-service (SLDR)](research/deferred/finetuning-as-a-service-defense.md) | 2026-11-22 | none | 2026-11-15 |
+| WAIT | [Proactive over-authorization (non-adversarial excessive agency)](research/deferred/proactive-over-authorization.md) | 2026-11-22 | none | 2026-11-15 |
 | WAIT | [Program Decision Hijacking of typed-decision judges (Jev)](research/deferred/typed-decision-judge-hijacking.md) | 2026-11-22 | none | 2026-11-01 |
 | WAIT | [Prompt injection via agent rule files (AGENTS.md / .cursorrules) driving package substitution (PackHallu)](research/deferred/rule-file-package-substitution.md) | 2026-11-22 | none | 2026-10-11 |
-| WAIT | [Quantized-artifact signing verifiability (what you sign is not what you run)](research/deferred/quantized-model-signing-verifiability.md) | 2026-11-22 | none | 2026-10-18 |
+| WAIT | [Quantized-artifact signing verifiability (what you sign is not what you run)](research/deferred/quantized-model-signing-verifiability.md) | 2026-11-22 | none | 2026-11-15 |
 | WAIT | [Reasoning-based image geolocation and targeted clue-editing defense (GeoTrace / GeoShift)](research/deferred/vlm-geolocation-privacy.md) | 2026-12-20 | none | 2026-10-25 |
 | WAIT | [Recursive red-team-then-align training loops (ReSI)](research/deferred/automated-safety-training-loop.md) | 2026-12-06 | none | 2026-10-11 |
 | WAIT | [Rowhammer against LLM-serving JIT compilation (LLVMhammer)](research/deferred/llm-infra-hardware-fault-attacks.md) | 2027-01-17 | none | 2026-10-25 |
@@ -90,8 +91,10 @@ Every topic the weekly review has decided on, so nothing is reconsidered without
 | WAIT | [Step-zero attacks: agent harm before the context window is observable](research/deferred/pre-observability-agent-harm.md) | 2026-12-20 | none | 2026-11-08 |
 | WAIT | [Text-vector integrity gap in offline RAG (signed text, unsigned vectors)](research/deferred/rag-text-vector-integrity.md) | 2026-12-20 | none | 2026-11-08 |
 | WAIT | [The trust-region effect: where an injection is placed changes compliance](research/deferred/injection-placement-trust-region.md) | 2026-12-27 | none | 2026-11-01 |
+| WAIT | [Thought injection: indirect injections styled as the model's own reasoning trace](research/deferred/thought-injection-reasoning-agents.md) | 2027-01-10 | none | 2026-11-15 |
 | WAIT | [TOCTOU / state drift for transaction-signing agents (Proof-Gated Signing)](research/deferred/agent-toctou-state-drift.md) | 2026-11-29 | none | 2026-10-04 |
 | WAIT | [Tool-parameter poisoning (right tool, wrong arguments)](research/deferred/tool-parameter-poisoning.md) | 2026-12-20 | none | 2026-11-08 |
+| WAIT | [Training-free neuron-edit backdoors in agent models (Lazarus)](research/deferred/training-free-neuron-edit-backdoor.md) | 2027-01-10 | none | 2026-11-15 |
 | WAIT | [Unified single/multi-agent guardrails with a charter control plane (MAS-Guard)](research/deferred/multi-agent-guardrail-control-plane.md) | 2026-12-20 | none | 2026-10-25 |
 | WAIT | [Unlearning as a privacy control: verification failures (snapshot differencing, state-only fake forgetting)](research/deferred/unlearning-integrity-verification.md) | 2026-12-13 | none | 2026-11-01 |
 | WAIT | [Utility-hijacking of instruction-data selectors (CONCERT)](research/deferred/data-selector-poisoning.md) | 2026-12-20 | none | 2026-10-25 |

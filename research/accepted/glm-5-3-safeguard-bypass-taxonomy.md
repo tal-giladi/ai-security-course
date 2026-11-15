@@ -1,11 +1,9 @@
 # GLM-5.3 safeguard-bypass taxonomy — refusal ablation, thinking-prefill, cover-story
 
 - **Topic ID:** glm-5-3-safeguard-bypass-taxonomy
-- **Status:** WAIT
-- **Next review:** 2026-10-30
-- **Course change:** none yet. Candidate input for the red-team safeguard-measurement unit
-  (see `research/deferred/agentic-jailbreak-taxonomy.md`, which is already queued and overlaps on prefill
-  and persona framing). Do not adopt both without deciding which one owns "safeguard circumvention."
+- **Status:** ADD
+- **Next review:** on new evidence
+- **Course change:** `lessons/module-34/lesson-01.md` (34.1 The safeguard surface) and `lessons/module-34/lesson-02.md` (34.2), with `labs/module-34/`; added directly by the maintainer during the Academy migration (merged 2026-11-11), outside the weekly review; recorded here by the 2026-W46 reconciliation
 - **Candidates:** C-20260930-01
 
 ## Summary
@@ -116,3 +114,4 @@ should be rebuilt against a local toy model instead.
 ## History
 
 - 2026-09-30 — WAIT — recorded as taxonomy + evaluation design; overlapping with the queued agentic-jailbreak SoK, pending a decision on which topic owns "safeguard circumvention" — daily/2026-09-30.md — candidates C-20260930-01
+- 2026-11-15 — ADD — reconciliation, no course change this week: the topic was overdue (2026-10-30) and is already taught in Module 34 (34.1/34.2, in `_sidebar.md`), which the maintainer added outside the weekly process; status recorded so the registry matches the course — weekly/2026-W46.md — candidates none (due review)

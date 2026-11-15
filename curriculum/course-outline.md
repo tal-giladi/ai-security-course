@@ -176,6 +176,14 @@ Only as much classical security as AI security requires — no generic pentest c
   Appended to lesson 24.1 as an advanced extension; depends on M24.1, M23, M05, M17.2. Layer:
   Current (InjecGuard, PromptShield, PIDS-Bench) → Emerging (agent-format re-evaluation,
   non-imperative steering). Lab: `labs/lab-37-injection-detector-eval`.
+- **23.2 Watermarking and provenance of AI-generated text** (added 2026-11-15) — generation-time
+  green-list watermark built from scratch (keyed green lists, logit bias, one-sided z-test); the
+  threshold bounds FPR while recall depends on length, entropy and edits; removal by editing vs
+  forgery by watermark stealing (why forgery breaks attribution); the context-width trade-off;
+  layered provenance (watermark + output logging/retrieval + metadata) and the EU AI Act Art. 50
+  marking duty. New lesson in M23; depends on M23.1, M12.1, M02.2. Layer: Foundational
+  (Kirchenbauer 2023, watermark stealing 2024) → Current (SynthID-Text, Art. 50) → Emerging (2026
+  semantic / multi-bit schemes). Lab: `labs/module-23/watermark`.
 
 ---
 
@@ -216,6 +224,7 @@ Only as much classical security as AI security requires — no generic pentest c
 | F.2 MITRE ATT&CK v20 AI techniques & AI-enabled exfiltration detection | M05, M16, M17.2, M23, M26, F.1 | Current (T1608.007 research: Emerging) | `labs/lab-35-attack-ai-detection` |
 | 16.2 ext. Trust-zoned agent memory | M16.1, M16.2, M05, M15 | Current→Emerging | `labs/lab-36-trust-zoned-memory` |
 | 24.1 ext. Evaluating prompt-injection detectors | M24.1, M23, M05, M17.2 | Current→Emerging | `labs/lab-37-injection-detector-eval` |
+| 23.2 Watermarking and provenance of AI-generated text | M23.1, M12.1, M02.2 | Foundational→Current | `labs/module-23/watermark` |
 
 *"sibling"* = provided by the LLM Research Engineer course; see `prerequisite-map.md`.
 
