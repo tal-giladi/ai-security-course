@@ -47,3 +47,45 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** multi-agent module extension: toy MAS with N scripted sub-agents and one malicious one; compare majority/LLM-judge aggregation vs consistency-based selection; then add k colluders to find the break point.
 - **Confidence:** low-medium (single preprint, abstract only)
 - **Recommendation:** monitor; revisit on code release or a second group's evaluation.
+
+### C-20261117-01 · Frozen guardrail probes silently change operating point when the backbone model is updated (AUC stable, FPR up to 15x)
+
+- **Class:** B
+- **Date discovered:** 2026-11-17
+- **Date published:** 2026-11-14
+- **Source:** https://arxiv.org/abs/2611.19216 (verified resolves; abstract via arXiv API, abs page fetched)
+- **Organization/researchers:** Yusuf Khalid Shire, Sang-Chul Kim (affiliation not stated on the abs page; Comments: submitted to the IEEE)
+- **Category:** detection/monitoring (guardrail calibration; defense maintenance)
+- **What changed:** Measures what happens to an activation-probe guardrail when its threshold is frozen and the underlying public LM is updated: across 18 cells covering 16 public model updates, a threshold set for 1% FPR fails closed in 8 of 9 first-phase cells and fails closed or open in 3 of 9 second-phase (registered) cells; the worst FPR goes 1.01% -> 15.12% while ROC-AUC moves by at most 0.0058.
+- **Technical summary:** A benchmark's staleness criteria flag none of these cells; a rule built on them flags 0.019 of layer cells whose rate doubles/halves, while a label-free rate estimate flags 0.918. A two-moment (mean/variance shift) model predicts the change within 1.5x in 0.905 of 63 registered cells. Re-thresholding on stored benign prompts restores FPR without new labels, but poisoning 1% of that stored benign set leaves at most 0.017 of harmful prompts flagged; an attacker who controls the update suppressed detection of one of three targeted categories in 3 of 5 seeds, and both label-free checks missed it (a labelled post-hoc check caught it). All numbers from the abstract; full text not read.
+- **Why it might matter:** A concrete, measurable operations lesson: AUC is the wrong regression metric for a deployed detector because it is threshold-free, while the thing that breaks in production is the operating point. It also turns the obvious fix (recalibrate on stored benign data) into a new poisoning surface — a clean purple-team loop (drift -> recalibrate -> poison the calibration set -> labelled canary check). CPU-teachable with synthetic score distributions.
+- **Evidence of adoption:** none
+- **Major organizations using it:** none
+- **Open-source implementation:** code and data listed on the abs page as https://doi.org/10.5281/zenodo.2415402 (not verified: doi.org and zenodo.org unreachable from this session; the record number looks unusually low for a 2026 deposit, so treat the link as unconfirmed)
+- **Paper:** https://arxiv.org/abs/2611.19216
+- **Code:** unverified (see above)
+- **Relationship to existing course material:** extends the detector operating-point / ROC material in `lessons/module-23/lesson-01.md`, `lessons/module-23/lesson-02.md` and `lessons/module-24/lesson-01.md` (which teach choosing a threshold, not its decay under model updates); adjacent to `research/deferred/safety-probe-scaling.md` (probe monitoring, not yet placed in the course).
+- **Potential course lesson:** M24 extension "Detector regression under model updates": simulate probe scores before/after a mean/variance shift, show AUC unchanged while FPR at the frozen threshold multiplies; implement label-free rate monitoring and benign-set recalibration; then poison 1% of the benign set and measure the recall collapse; add a small labelled canary set as the guard.
+- **Confidence:** low-medium (single preprint, two authors, code link unconfirmed)
+- **Recommendation:** monitor; revisit if the code is confirmed or a second group reports the same AUC-stable / FPR-drift effect on deployed guard classifiers.
+
+### C-20261117-02 · Agent Card manipulation in the A2A protocol: ten discovery-time attack classes, an Internet-wide measurement of deployed cards, and a layered validator (SECCARD) with measured FPR
+
+- **Class:** B
+- **Date discovered:** 2026-11-17
+- **Date published:** 2026-11-13
+- **Source:** https://arxiv.org/abs/2611.18887 (verified resolves; abstract via arXiv API, abs page fetched)
+- **Organization/researchers:** Miguel A. Guirao Aguilera, Satyajayant Misra, Efren Lopez-Morales (affiliation not stated on the abs page); to appear at AIDC'26, workshop co-located with IEEE ACSAC
+- **Category:** agent-security (multi-agent discovery; attack + defense)
+- **What changed:** Treats A2A Agent Cards as a pre-invocation trust boundary: attacker-controlled natural-language fields steer an orchestrator's agent selection before any provider is called. Gives a taxonomy of ten card-manipulation attacks, probes 36.1M domains and collects 310 deployed Agent Cards (two annotators, 96.8% agreement), and builds SECCARD (protocol checks + deterministic analysis + LLM semantic judge).
+- **Technical summary:** Benchmarks: 660-card perturbation set built from real cards with matched benign controls, and a 260-card synthetic adversarial set across all ten classes. Best semantic judge: 97.0% security recall at 1.7% FPR on attacks injected into real cards; across nine LLM judges on the synthetic set, recall ranges 25.8%–92.3% — the defense's effectiveness is dominated by judge choice. No adaptive attacker against SECCARD is mentioned in the abstract; no code link on the abs page.
+- **Why it might matter:** The course already names "capability over-claim via agent card" in M28 as a threat; this adds the first ecosystem measurement of real deployed cards, a fuller taxonomy, and a detector with stated FPR — useful material for turning the M28 threat row into a measured detect/mitigate step. The judge-variance result is also a good M24 lesson in "the defense is the judge".
+- **Evidence of adoption:** none (measurement of the A2A ecosystem, not adoption of SECCARD)
+- **Major organizations using it:** none
+- **Open-source implementation:** none listed
+- **Paper:** https://arxiv.org/abs/2611.18887
+- **Code:** none
+- **Relationship to existing course material:** extends `lessons/module-28/lesson-01.md` and `labs/module-28/` (A2A trust fabric; "capability over-claim" threat row, agent-card discovery step); adjacent to `research/deferred/multi-agent-guardrail-control-plane.md`.
+- **Potential course lesson:** M28 lab extension: a toy orchestrator that routes by card text; craft benign-marker card manipulations from a few taxonomy classes; implement deterministic card checks + a scripted semantic judge; measure recall/FPR on a small benign corpus; then adapt the card to evade the deterministic layer.
+- **Confidence:** medium (peer-reviewed workshop venue, measured FPR, but single group and no code)
+- **Recommendation:** monitor; revisit on code/dataset release or an adaptive-attack evaluation of card validators.
