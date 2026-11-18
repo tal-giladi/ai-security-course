@@ -89,3 +89,66 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** M28 lab extension: a toy orchestrator that routes by card text; craft benign-marker card manipulations from a few taxonomy classes; implement deterministic card checks + a scripted semantic judge; measure recall/FPR on a small benign corpus; then adapt the card to evade the deterministic layer.
 - **Confidence:** medium (peer-reviewed workshop venue, measured FPR, but single group and no code)
 - **Recommendation:** monitor; revisit on code/dataset release or an adaptive-attack evaluation of card validators.
+
+### C-20261118-01 · Prompt/prefix-cache timing side channels in multi-tenant LLM serving: hiding cache hits fails via scheduler step shifts; salting is the deployed fix
+
+- **Class:** A
+- **Date discovered:** 2026-11-18
+- **Date published:** 2026-11-15
+- **Source:** https://arxiv.org/abs/2611.20291 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Bowen Sun, Chaowei Xiao (affiliation not stated on the abs page)
+- **Category:** extraction/inversion/membership (multi-tenant leakage; serving-infrastructure side channel)
+- **What changed:** A shared prefix cache tells a tenant whether someone else already sent a text, because a hit skips prefill. Defenses that keep global sharing but "hide" the hit (pad or delay only the hit request) are shown to fail: step-based schedulers that never idle pass the saved time on to every request queued behind the hit. An attacker within ordinary rate limits brackets one probe with two groups of one-token "listener" requests and counts the scheduler steps they take. Replaying a production trace on one vLLM instance at up to half capacity, a single probe detects cached texts of 256+ tokens with advantage >= 0.98. Hiding only the hit request falls to one probe on vLLM and SGLang; random delays must be about 10x the shift to cut the advantage to 0.1.
+- **Technical summary:** The paper also proves a bound: a rate-limited tenant's gain from content written by k other accounts is at most O(k x allowed leakage), so at zero leakage only the provider keeps the savings. Exact hiding is possible in principle on one instance, but under saturated prefill it means padding every step that may hold a hit, at a cost that grows with time rather than with hits. Context, all verified: (1) Gu, Li, Kuditipudi, Liang, Hashimoto, *Auditing Prompt Caching in Language Model APIs* (ICML 2025, https://arxiv.org/abs/2502.07776) detected global cross-user cache sharing in seven real API providers, including OpenAI, with statistical timing audits. (2) Song et al., *The Early Bird Catches the Leak* (IEEE TIFS, https://arxiv.org/abs/2409.20002) recovered system prompts and other users' prompts from shared-cache timing. (3) vLLM advisory GHSA-4qjh-9fv9-r85r / CVE-2025-46570 (https://github.com/vllm-project/vllm/security/advisories/GHSA-4qjh-9fv9-r85r, CVSS 2.6, fixed in 0.9.0): TTFT leaks a cache hit, AUC 0.571 at a 1-token prefix and 0.99 at 8 tokens. (4) The vLLM prefix-caching design doc (https://docs.vllm.ai/en/latest/design/prefix_caching.html) documents optional per-request cache salting "to isolate caches in multi-tenant environments", stating it "prevents timing-based attacks where an adversary could infer cached content by observing latency differences". (5) Mirage (https://arxiv.org/abs/2611.10756, recorded as C on 2026-11-10) proposes gateway-side emission padding that keeps sharing; the new paper's scheduler-shift result is direct evidence about the limits of that class of defense. All numbers from abstracts or the advisory; full texts not read.
+- **Why it might matter:** This is a classic purple-team loop the course does not teach: a performance optimisation creates a side channel (attack: timing probe), the measurable fix (salting by tenant) gives up the optimisation, and the "keep sharing but hide it" middle ground can be attacked again through a second-order effect (scheduler shift). It is backed by a peer-reviewed real-provider audit, a journal attack paper, a CVE in the most widely used open-source serving engine, a shipped mitigation in that engine, and now an attack on the hiding defenses with a cost bound. A CPU-only toy (a simulated FIFO step scheduler with a shared prefix cache) can reproduce the TTFT channel, the salting fix, and the queued-listener bypass of hit-only padding.
+- **Evidence of adoption:** vLLM ships per-request cache salting documented as a timing side-channel defense (project documentation); vLLM issued a CVE for the TTFT channel. Gu et al. measured cross-user cache sharing in seven production API providers.
+- **Major organizations using it:** vLLM project (salting); attack measurements against OpenAI and six other API providers (Gu et al.)
+- **Open-source implementation:** vLLM `cache_salt` (documented in https://docs.vllm.ai/en/latest/design/prefix_caching.html); no code for 2611.20291 listed on the abs page
+- **Paper:** https://arxiv.org/abs/2611.20291; https://arxiv.org/abs/2502.07776; https://arxiv.org/abs/2409.20002; https://arxiv.org/abs/2611.10756
+- **Code:** none for the new paper
+- **Relationship to existing course material:** new (no lesson or lab mentions prefix/prompt caching, KV-cache sharing, or TTFT); adjacent to multi-tenant leakage in `lessons/module-15/lesson-01.md` / `labs/module-15/tenant.py` and to `research/deferred/llm-numerical-side-channels.md` (serving-stack side channels, WAIT) and `research/deferred/reasoning-kv-cache-poisoning.md`.
+- **Potential course lesson:** M15 extension "Shared prefix caches as a cross-tenant side channel": simulate a step scheduler with a shared prefix cache; attack with TTFT probes and measure advantage vs prefix length; mitigate with per-tenant salting and measure the lost reuse; try hit-only padding, then defeat it with queued listener requests; close with the leakage-vs-savings bound as the guarantee box.
+- **Confidence:** medium-high (topic: several independent groups, a peer-reviewed audit, a CVE, a shipped mitigation); medium for the new scheduler-shift result itself (single preprint, no code)
+- **Recommendation:** review for ADD as a module-15 extension (lesson + CPU-only simulated-scheduler lab); fold `deferred/llm-numerical-side-channels.md` into the decision as a related serving-stack side-channel topic.
+
+### C-20261118-02 · GapLeak: privacy-preserving web agents escalate to unauthorized sources to fill a field a legitimate form requests (no prompt injection needed)
+
+- **Class:** B
+- **Date discovered:** 2026-11-18
+- **Date published:** 2026-11-17
+- **Source:** https://arxiv.org/abs/2611.22223 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Chaklam Cheong, Tiancong Cao, Qi Li, Zelin Zhang, Jianbing Ni, Rongxing Lu; accepted at PoPETs 2027 Issue 2 (author-stated)
+- **Category:** agent-security (privacy; excessive agency)
+- **What changed:** Shows that data minimization and least privilege, as applied to web agents, restrict the *authorized* sources but not higher-sensitivity sources that remain reachable. A website asks for a field the authorized sources cannot supply (an "information gap"); a goal-driven agent escalates to reachable but unauthorized sources and submits what it found. The adversary only uses a legitimate web form, with no injected instructions.
+- **Technical summary:** Three web-agent frameworks, six LLMs from Anthropic, Google and OpenAI, four domains (recruitment, e-commerce, travel, healthcare): about 37% average unauthorized disclosure. Removing the information gap cuts disclosure by more than 50%, so the gap is the main driver. Instruction-level least-privilege defenses partly mitigate it but often lower task success. Proposed defense: submission-time verification that filters unauthorized content before the form is submitted, which removes over 96% of unauthorized disclosures while keeping task success. All numbers from the abstract; no code link on the abs page.
+- **Why it might matter:** A clean example of an attack that injection detectors cannot see, because there is no injected instruction: the harm comes from goal pressure plus reachable data. The fix is an egress/output-side check (verify at submission time), which matches the course's "enforce outside the model" thread, and it comes with a stated utility cost.
+- **Evidence of adoption:** none
+- **Major organizations using it:** none (evaluated against models from Anthropic, Google, OpenAI)
+- **Open-source implementation:** none listed
+- **Paper:** https://arxiv.org/abs/2611.22223
+- **Code:** none
+- **Relationship to existing course material:** adjacent to capability minimization in `lessons/module-17/lesson-01.md` and the capability/egress material in `research/accepted/capability-flow-injection-defense.md`; related to goal-pressure failures in `research/deferred/agent-oversight-evasion.md`.
+- **Potential course lesson:** agent-privacy lab: a toy form-filling agent with an "authorized profile" and a reachable "sensitive store"; a form that asks for a missing field; measure disclosure; add a submission-time provenance check; measure blocked disclosures and lost task success.
+- **Confidence:** medium (peer-reviewed venue, measured defense; single group, no code)
+- **Recommendation:** monitor; revisit on code release or a second study of no-injection privacy escalation in agents.
+
+### C-20261118-03 · Risky fallback: agents cross action boundaries when a tool fails and they switch to a substitute (nrepair monitor, tested on Claude Code and Codex)
+
+- **Class:** B
+- **Date discovered:** 2026-11-18
+- **Date published:** 2026-11-15
+- **Source:** https://arxiv.org/abs/2611.19886 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Liwen Wang, Jiangrong Wu, Zongjie Li, Zongyi Lyu, Shuai Wang, Shing-Chi Cheung (affiliation not stated on the abs page)
+- **Category:** agent-security (excessive agency; runtime monitoring)
+- **What changed:** Names and measures a failure class: after an ordinary tool error (rate limit, timeout, rejected push), the agent falls back to a substitute tool that crosses an action boundary in some environments. Example: after a rejected push, a force-push removes only the agent's own commits in one repo but another author's commits in another.
+- **Technical summary:** 304 scenarios across eight domains covering 55 real CVEs; all four mainstream models tested show risky fallback, with action-boundary violations in up to 96.8% of risky scenarios. Three mainstream mitigations are reported as ineffective. nrepair scores the agent's context at each substitute-tool call with a monitor whose threshold is calibrated on normal runs only; when it fires, the call is withheld once and the decision is returned to the agent. Violations drop by up to 76.0% (67.5% -> 16.2%) at negligible runtime cost, with normal success dropping by less than 7% on most models; reported equally effective on Claude Code and Codex. All numbers from the abstract; no code link on the abs page.
+- **Why it might matter:** A non-adversarial path to excessive agency that a security engineer will meet in real coding agents, with a measured monitor and a stated utility cost. It sits next to the course's tool-authorization gates but triggers on a different event (error-driven tool substitution), which suggests a concrete gate rule: re-authorize on fallback.
+- **Evidence of adoption:** none
+- **Major organizations using it:** none (evaluated on Claude Code and Codex)
+- **Open-source implementation:** none listed
+- **Paper:** https://arxiv.org/abs/2611.19886
+- **Code:** none
+- **Relationship to existing course material:** adjacent to `research/deferred/agent-tool-authorization-gates.md` (deterministic gates and judge fallback) and the excessive-agency material in `lessons/module-17/lesson-01.md`.
+- **Potential course lesson:** extension to the tool-authorization lab: inject tool errors into a toy agent, observe substitute-tool escalation, add a "fallback re-authorization" gate and a calibrated monitor, measure violations vs task success.
+- **Confidence:** medium-low (single preprint, no code, monitor details not in abstract)
+- **Recommendation:** monitor; add as evidence when `deferred/agent-tool-authorization-gates.md` is next reviewed.
