@@ -152,3 +152,66 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** extension to the tool-authorization lab: inject tool errors into a toy agent, observe substitute-tool escalation, add a "fallback re-authorization" gate and a calibrated monitor, measure violations vs task success.
 - **Confidence:** medium-low (single preprint, no code, monitor details not in abstract)
 - **Recommendation:** monitor; add as evidence when `deferred/agent-tool-authorization-gates.md` is next reviewed.
+
+### C-20261119-01 · Coverage, not ASR: adaptive prompt-injection red teamers mode-collapse, and diverse attacks are what make adversarial training work (AutoPI, PIPETTE)
+
+- **Class:** B
+- **Date discovered:** 2026-11-19
+- **Date published:** 2026-11-18
+- **Source:** https://arxiv.org/abs/2611.24313 (verified resolves; abstract via arXiv API); https://arxiv.org/abs/2611.24362 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** AutoPI: Stavros Damianakis, Konstantinos Psounis. PIPETTE: Lipeng He, Yihan Wang, Jiawen Zhang, N. Asokan. Two independent groups (affiliations not stated on the abs pages).
+- **Category:** red-teaming (prompt-injection; evaluation/benchmark)
+- **What changed:** On the same day, two groups report the same problem: adaptive injection red teamers tuned for attack success rate (ASR) keep finding the same few techniques. PIPETTE shows that two RL-based red teamers (RL-Hammer, PISmith) mode-collapse, so their extra successes add *no* robustness when used for adversarial training. AutoPI proposes reporting technique coverage next to ASR: the fraction of taxonomy classes, techniques and sub-techniques with at least one successful injection.
+- **Technical summary:** AutoPI (black-box, training-free) uses a prompt-injection taxonomy (PIAtlas) both to drive search and to score coverage. An attacker LLM writes one injection per sub-technique and reworks failures using LLM-judge feedback. It plugs into AgentDojo and IPI Arena in place of fixed templates. On AgentDojo it finds a successful injection against Qwen3.6-35B in all six taxonomy classes and >90% of techniques; against Claude Haiku 5.5 (the most robust target tested) it reports 20–50% higher ASR and 25–400% higher class-level coverage than recent adaptive red teamers. PIPETTE adds a dictionary-learning reward for strategy diversity to RL red teaming and feeds the attacks into on-policy adversarial training. Defenders reach near-zero ASR on static attacks on AgentDojo and ASB, withstand "strong adaptive attacks", and keep benign utility close to the undefended baseline. All numbers from the abstracts; full texts not read.
+- **Why it might matter:** Lesson 25.1 already says a red teamer's value is coverage across families. These papers turn that claim into evidence: ASR alone is a misleading score for a red-team tool, and low coverage directly limits how much the defender can learn from it. Coverage is a cheap metric that can be added to the course's M24/M25 harness.
+- **Evidence of adoption:** none yet (AutoPI code released under MIT; PIPETTE no code listed)
+- **Major organizations using it:** none (AutoPI evaluated against open-weight and proprietary targets, including Claude Haiku 5.5)
+- **Open-source implementation:** https://github.com/stevendamianakis/autopi (author-stated on arXiv; page viewed via web fetch: src, configs, tests, MIT license; not cloned or run)
+- **Paper:** https://arxiv.org/abs/2611.24313; https://arxiv.org/abs/2611.24362
+- **Code:** https://github.com/stevendamianakis/autopi (AutoPI only)
+- **Relationship to existing course material:** extends `lessons/module-25/lesson-01.md` (the "coverage over families" point and the reporter's per-family coverage); adjacent to `research/deferred/automated-agent-redteaming.md` (WAIT, review 2026-11-22) and `research/deferred/automated-safety-training-loop.md` (red-team-then-train loops, WAIT).
+- **Potential course lesson:** 25.1 extension: on the toy target, run an ASR-greedy attacker and a coverage-seeking attacker with the same budget; report ASR and taxonomy coverage for each; harden the toy defense (for example, filter rules or examples) from each attacker's finds and measure held-out ASR. The expected result: the higher-ASR attacker gives the weaker defense.
+- **Confidence:** medium (two independent groups, same finding; one has code; both preprints, own benchmarks plus AgentDojo)
+- **Recommendation:** monitor; consider at the 2026-11-22 review of `deferred/automated-agent-redteaming.md` as evidence for a coverage metric in 25.1.
+
+### C-20261119-02 · SkillCFI: control-flow integrity for agent skills, compiled into a contract that a deterministic enforcer checks before each tool call
+
+- **Class:** B
+- **Date discovered:** 2026-11-19
+- **Date published:** 2026-11-18
+- **Source:** https://arxiv.org/abs/2611.24185 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Bonan Ruan, Yuhao Sun, Jiahao Liu, Qixiao Lin, Jian Mao, Zhenkai Liang (affiliation not stated on the abs page)
+- **Category:** defense/guardrail (agent-security)
+- **What changed:** A skill's procedure (for example, "validate, then overwrite") is prose that the model interprets at runtime, so a permission allowlist admits order violations that use only permitted operations. A monitor can also be evaded by "regime migration", where the model simply *claims* a check passed. SkillCFI compiles a skill once and runs no LLM at runtime. From the skill it produces agent instructions plus an executable contract. A deterministic runtime enforcer admits a tool request only on trusted evidence and refuses unmediated channels such as inline scripts.
+- **Technical summary:** A formal enforceability criterion decides which obligations can be enforced (those whose evidence crosses the tool boundary). A skill whose mandatory obligation leaves nothing to check is rejected. Results: on 8 self-written skills, no compiled contract permits more than its source under 24 source mutations. In 770 sessions it blocks all 240 order violations before dispatch, all of which an allowlist admits. Normal tasks complete "nearly as often" as without it. Listing the next legal steps in a refusal raises recovery from 21% to 65%. Checking takes ~2% of task time, and session slowdown falls from 1.32x to 1.08x with a compact command form. None of 53 public skills is accepted as written; the diagnostics guided 7 into enforceable contracts. All numbers from the abstract; no code link on the abs page.
+- **Why it might matter:** Lesson 22.2 and lab 34 teach runtime capability enforcement for skills (*what* a skill may touch). SkillCFI adds enforcement of *order and evidence* (which step may run after which), with a measured cost and a clear false-negative boundary (unenforceable obligations are rejected up front). It is also a clean anti-pattern lesson: a monitor that trusts the model's claim that a check passed can be evaded.
+- **Evidence of adoption:** none
+- **Major organizations using it:** none
+- **Open-source implementation:** none listed
+- **Paper:** https://arxiv.org/abs/2611.24185
+- **Code:** none
+- **Relationship to existing course material:** extends `research/accepted/skill-trust-boundary.md` (`lessons/module-22/lesson-02.md`, `labs/lab-34-skill-supply-chain/`); overlaps `research/deferred/agent-tool-authorization-gates.md` (deterministic gates, judge fallback) and the control-flow-integrity framing in `lessons/module-17/lesson-02.md` / `labs/lab-33-capability-flow/`.
+- **Potential course lesson:** lab-34 extension: write a two-step skill contract (validate then write); show that an allowlist admits write-before-validate and that a "check passed" claim fools a transcript monitor; enforce the order with an evidence-based state machine; measure blocked violations, false refusals and per-call overhead.
+- **Confidence:** medium-low (single preprint, self-written skills, no code)
+- **Recommendation:** monitor; add as evidence to `deferred/agent-tool-authorization-gates.md` at its next review, and revisit on a code release.
+
+### C-20261119-03 · ACaM: capability laundering through description–code inconsistency in agent tools, found by deriving capabilities from tool code (43 real agents, 10 PoCs)
+
+- **Class:** B
+- **Date discovered:** 2026-11-19
+- **Date published:** 2026-11-17
+- **Source:** https://arxiv.org/abs/2611.23507 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Monika Santra, Dhilung Kirat, Qiushi Wu, Kevin Eykholt, Xiaokui Shu, Ian Molloy (affiliation not stated on the abs page)
+- **Category:** tool/mcp-security (supply-chain; detection/monitoring)
+- **What changed:** The paper names description–code inconsistency (DCI): a tool's natural-language description is trusted as a proxy for its behaviour, but nothing enforces that the two agree. That enables "capability laundering", where dangerous behaviour the description omits (from drift or a supply-chain compromise) runs whenever the agent calls the tool for its stated, benign purpose. ACaM derives each tool's capabilities from its code. Static analysis establishes facts that no LLM output may override, and the LLM supplies only the behavioural meaning.
+- **Technical summary:** The paper compiles agent source into an Agent Capability Property Graph and reconstructs multi-call threat chains. On 24 hand-annotated agents: 98.3% macro-F1 on capability properties and a threat-chain score of 0.980, 8 points above the strongest baseline. Run on 43 unmodified real-world agents (9 multi-agent), it reports "hundreds of structural vulnerabilities", 10 of them confirmed with proof-of-concept exploits. No disclosure or CVE details in the abstract. No code link on the abs page.
+- **Why it might matter:** This is the second group after MCP-FSD (deferred) to show that declared tool capability understates actual access. It moves the analysis from registry categories to tool code, using a "static facts win over LLM output" design rule that the course can teach as a general pattern for LLM-assisted security analysis.
+- **Evidence of adoption:** none
+- **Major organizations using it:** none
+- **Open-source implementation:** none listed
+- **Paper:** https://arxiv.org/abs/2611.23507
+- **Code:** none
+- **Relationship to existing course material:** new evidence for `research/deferred/mcp-filesystem-capability-laundering.md` (WAIT, review 2026-11-22; same "capability laundering" framing at the MCP-registry layer); adjacent to the under-declared-capability placement in `lessons/module-22/lesson-02.md` and tool-description poisoning in `lessons/module-17/lesson-01.md` / `lessons/module-19/lesson-01.md`.
+- **Potential course lesson:** M19/M22 exercise: three toy tools whose descriptions understate their code (one adds a network call, one reads outside its directory); trust the descriptions and miss the problem; then extract capabilities from the code with Python `ast` and diff them against the descriptions; measure misses and false flags.
+- **Confidence:** medium-low (single preprint, no code, no disclosure details)
+- **Recommendation:** monitor; fold into the 2026-11-22 review of `deferred/mcp-filesystem-capability-laundering.md` as a second, independent group.
