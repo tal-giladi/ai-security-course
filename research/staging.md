@@ -215,3 +215,66 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** M19/M22 exercise: three toy tools whose descriptions understate their code (one adds a network call, one reads outside its directory); trust the descriptions and miss the problem; then extract capabilities from the code with Python `ast` and diff them against the descriptions; measure misses and false flags.
 - **Confidence:** medium-low (single preprint, no code, no disclosure details)
 - **Recommendation:** monitor; fold into the 2026-11-22 review of `deferred/mcp-filesystem-capability-laundering.md` as a second, independent group.
+
+### C-20261120-01 · BlockJack: Rowhammer on vLLM's paged-KV block tables redirects one tenant's KV reads to another tenant's blocks (confidentiality + integrity; vendor-confirmed)
+
+- **Class:** B
+- **Date discovered:** 2026-11-20
+- **Date published:** 2026-11-19
+- **Source:** https://arxiv.org/abs/2611.25945 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Qifan Wang, Jeremy Boy, Jonas Sander, Yansong Gao, Hongsheng Hu, Ye Dong, Thomas Eisenbarth, David Oswald (affiliations not stated on the abs page)
+- **Category:** infra-vuln/CVE (multi-tenant serving; extraction/inversion/membership)
+- **What changed:** Earlier LLM fault attacks flip bits in the *data plane* (weights, KV contents). BlockJack targets the *mapping*: vLLM's block table, which maps each request's logical KV blocks to physical blocks the way an OS page table does. A corrupted entry makes a request read another tenant's KV blocks, with no change to weights, prompts or cached states.
+- **Technical summary:** The authors formally characterize when a redirect target is predictable in vLLM's paged KV cache. Confidentiality: across seven models (Qwen, Llama, Gemma, Phi), a faulted mapping exposes victim context in the attacker's response. Integrity: attacker-supplied context steers the victim's answer; on a 248-scene medical benchmark up to 41.1% of responses recommend less urgent care while still looking consistent with the question. They show physical feasibility with Rowhammer and evaluate assignment validation (checking the block-to-request assignment) as a defense. The abstract states that vLLM and Sonar confirmed the vulnerability after responsible disclosure and proposed patches, which the authors reviewed. No public advisory found: a web search for a vLLM GHSA on block-table validation returned only older, unrelated KV-cache advisories. No code link on the abs page. All numbers from the abstract.
+- **Why it might matter:** The course treats multi-tenant serving as a trust boundary (staged prefix-cache timing item C-20261118-01). BlockJack shows the same boundary failing through the serving engine's own address translation, and that integrity loss (steered answers) is as serious as leakage. "Validate metadata that maps tenants to memory" is a teachable defense pattern that does not need Rowhammer hardware: a fault can be simulated by editing a block table in a toy allocator.
+- **Evidence of adoption:** vendor confirmation and patches proposed, per the authors (not independently verified; no advisory found)
+- **Major organizations using it:** none (vLLM affected, per the authors)
+- **Open-source implementation:** none listed
+- **Paper:** https://arxiv.org/abs/2611.25945
+- **Code:** none
+- **Relationship to existing course material:** new evidence for `research/deferred/llm-infra-hardware-fault-attacks.md` (WAIT, review 2027-01-17; its condition asks for "a mitigation ... with cost", and BlockJack evaluates one); adjacent to staged C-20261118-01 (multi-tenant prefix-cache side channels) and the 2026-11-18 C item on bit flips in a shared KV-cache block (https://arxiv.org/abs/2611.22243). An earlier checksum-based countermeasure for Rowhammer on shared prefix-cache blocks exists (https://arxiv.org/abs/2604.17249, April 2026, not in the registry).
+- **Potential course lesson:** M30 infra extension (simulated, no hardware): a toy paged-KV allocator for two tenants; flip one block-table entry and show tenant B's context appear in tenant A's output; add assignment validation (block owner tag checked on read) and measure detection and per-step overhead.
+- **Confidence:** medium-low (single preprint, no code; vendor confirmation stated by the authors only)
+- **Recommendation:** monitor; add as evidence to `deferred/llm-infra-hardware-fault-attacks.md` at its next review, sooner if a vLLM advisory or patch appears.
+
+### C-20261120-02 · Malicious peers in decentralized multi-agent systems with hop-by-hop delegation, plus a cryptographically verified execution trace and an auditor that attributes 98% of attacks
+
+- **Class:** B
+- **Date discovered:** 2026-11-20
+- **Date published:** 2026-11-18
+- **Source:** https://arxiv.org/abs/2611.25056 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Matthew D. Laws, Maria Lazou, Alina Oprea, Cristina Nita-Rotaru (affiliation not stated on the abs page)
+- **Category:** agent-security (multi-agent; detection/monitoring)
+- **What changed:** In decentralized multi-agent LLM systems, each agent has its own operator, model, memory and configuration. Agents decompose tasks and pass what remains to peers, and no single party sees the whole execution or can enforce correct behaviour. The paper systematizes what a single malicious agent can do in this setting and proposes a cryptographic protocol with an auditor that detects it and attributes it to the right agent.
+- **Technical summary:** Attacks on integrity, availability and confidentiality: one malicious agent causes up to 100% task failure, inflates token use by up to 7.7x and runtime by up to 3.2x, and exfiltrates up to 94% of relevant prior tasks from benign agents. Defense: a protocol that produces an irrefutable, verified execution trace of every action, plus an auditor over those traces. On HiddenBench with gpt-6.1-sol and Qwen3.8-27B-FP8, the protocol adds "negligible" latency, and the auditor detects and correctly attributes 98% of attacks, including attacks that comply with the protocol. 17 pages; no code link on the abs page. All numbers from the abstract.
+- **Why it might matter:** Lesson 28.1 and `labs/module-28/` teach A2A-style delegation with a central fabric. This paper covers the harder decentralized case and pairs each attack with a measured defense and its cost (attribution, not only detection), which is the purple-team shape the course wants. It also gives evidence for the deferred provenance cluster: a tamper-evident trace is useful only if an auditor can attribute misbehaviour from it.
+- **Evidence of adoption:** none
+- **Major organizations using it:** none
+- **Open-source implementation:** none listed
+- **Paper:** https://arxiv.org/abs/2611.25056
+- **Code:** none
+- **Relationship to existing course material:** extends `lessons/module-28/lesson-01.md` / `labs/module-28/mas.py` (delegation fabric); new evidence for `research/deferred/execution-audit-provenance.md` (WAIT, review 2026-12-20); adjacent to `research/deferred/multi-agent-guardrail-control-plane.md`, `research/deferred/agent-denial-of-wallet.md` (token inflation) and `research/deferred/multi-agent-topology-leakage.md` (exfiltration of prior tasks).
+- **Potential course lesson:** lab-28 extension: remove the central fabric, let toy agents delegate hop by hop; plant one malicious agent (drop, inflate, leak a synthetic canary); add HMAC-chained per-hop action records and a rule-based auditor; measure detection, attribution accuracy and latency overhead, then try a protocol-compliant attack against your own auditor.
+- **Confidence:** medium-low (single preprint, no code, own benchmark setup)
+- **Recommendation:** monitor; add as evidence to `deferred/execution-audit-provenance.md` at its 2026-12-20 review; revisit on a code release.
+
+### C-20261120-03 · Living off the local model: browser-embedded LLMs (Gemini Nano in Chrome) as a vendor-signed, network-invisible post-exploitation engine
+
+- **Class:** B
+- **Date discovered:** 2026-11-20
+- **Date published:** 2026-11-18
+- **Source:** https://arxiv.org/abs/2611.25086 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** William Fleshman, Joseph Lucas (affiliation not stated on the abs page)
+- **Category:** agent-security (other: endpoint post-exploitation)
+- **What changed:** Browsers now ship local language models to ordinary endpoints; Chrome includes Gemini Nano for features such as summarization, running entirely on device. The paper treats each installed model as a "living off the land" asset for an attacker who already has code execution: it is installed, signed by the vendor, multimodal, and its inference causes no network traffic.
+- **Technical summary:** The authors drive the model from the host using only interpreters that ship with the operating system. The one-time user-activation check that gates the model download is satisfied with a simulated click or bypassed entirely. They measure the model's ability to find credentials on the host, detect PII in email, classify images and call custom tools, and chain these in a simulated operation: read a password from a webcam image, unlock an encrypted archive, triage its contents and stage a private key for exfiltration, with no user interaction. Simulated operation only; no code link on the abs page. Claims from the abstract.
+- **Why it might matter:** The course's threat models put the LLM on the defender's side or as the target. Here the attacker uses an LLM the defender installed, which changes detection assumptions: no model download, no API traffic, no unusual binary. Concrete blue-team questions follow: monitor local model API invocation, enforce the activation gate, and use enterprise policy to disable on-device models.
+- **Evidence of adoption:** none
+- **Major organizations using it:** none (Google Chrome's on-device model is the abused component)
+- **Open-source implementation:** none listed
+- **Paper:** https://arxiv.org/abs/2611.25086
+- **Code:** none
+- **Relationship to existing course material:** new (lookup for "on-device", "post-exploitation", "Gemini Nano", "living off" found no topic file); adjacent to ATLAS-mapped threat modelling in `lessons/module-27/lesson-01.md` / `lessons/module-31/lesson-01.md` and the "everything around the model" infra framing in M30.
+- **Potential course lesson:** M30/M31 discussion plus a safe exercise: with a small local model in the lab container, script inference through a host interpreter, then write a detection (process lineage, model-runtime API calls) and measure false positives on benign summarization use. No real browser models and no real credentials.
+- **Confidence:** low (single preprint, no code; full text not read)
+- **Recommendation:** monitor; revisit if a second group, a vendor response (for example, a hardened activation gate or enterprise policy), or detection guidance appears.
