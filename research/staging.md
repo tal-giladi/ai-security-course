@@ -278,3 +278,66 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** M30/M31 discussion plus a safe exercise: with a small local model in the lab container, script inference through a host interpreter, then write a detection (process lineage, model-runtime API calls) and measure false positives on benign summarization use. No real browser models and no real credentials.
 - **Confidence:** low (single preprint, no code; full text not read)
 - **Recommendation:** monitor; revisit if a second group, a vendor response (for example, a hardened activation gate or enterprise policy), or detection guidance appears.
+
+### C-20261121-01 · Tether: stateful, Lean-verified policy enforcement for agents over side effects observed in a throwaway sandbox (100% of in-scope attacks blocked, benign FPR under 5%)
+
+- **Class:** B
+- **Date discovered:** 2026-11-21
+- **Date published:** 2026-11-19
+- **Source:** https://arxiv.org/abs/2611.25599 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Meghana Aparna Sistla, Alaia Solko-Breslin, Somesh Jha, Aditya Kanade, Krishnamurthy Dj Dvijotham (affiliations not stated on the abs page)
+- **Category:** defense/guardrail (agent sandboxing; information-flow control)
+- **What changed:** Agent action monitors are usually either LLM judges (no guarantee) or stateless allow/deny rules over the proposed command, which miss multi-step data flows and side effects the policy language does not model (for example, a network call made inside a Python script). Tether first runs each proposed action in an ephemeral, isolated sandbox, infers what the action actually did from the observed system calls, and only then lets it proceed if a stateful policy allows it.
+- **Technical summary:** Action semantics are inferred from syscalls and expressed, together with policies, in an embedded DSL in Lean 4. Labels propagate from sources to destinations across actions, so one rule enforces information-flow control over multi-step flows of any length (for example, "no network access after reading a sensitive file"), and the policies can be formally verified against global security invariants. On coding-agent benchmarks with benign and adversarial trajectories, one policy shared across all tasks blocks 100% of in-scope attacks with a benign false-positive rate under 5%. The abstract gives no latency or execution-cost figure for running every action twice (sandbox, then real), and "in-scope" limits the 100% claim. No code link on the abs page. All numbers from the abstract.
+- **Why it might matter:** This is a measured defense with a stated false-positive cost, the shape the course's guarantee boxes need. It moves enforcement from "what the agent said it will do" to "what the action did at the syscall level", which is the thesis of the deferred out-of-band enforcement topic, and it adds stateful IFC across steps that 17.2's flow-control material describes at the planner level.
+- **Evidence of adoption:** none
+- **Major organizations using it:** none
+- **Open-source implementation:** none listed
+- **Paper:** https://arxiv.org/abs/2611.25599
+- **Code:** none
+- **Relationship to existing course material:** new evidence for `research/deferred/out-of-band-oversight-enforcement.md` (WAIT, review 2026-11-29; its condition asks for replication, code or adoption, none of which this provides, but it is a second independent enforcement design with a measured FPR); adjacent to `research/accepted/capability-flow-injection-defense.md` (FIDES-style IFC at the planner) and staged C-20261119-02 (SkillCFI, pre-call contract enforcement).
+- **Potential course lesson:** M33 / 17.2 extension: run each toy-agent action in a scratch container, log file and socket syscalls (strace-level), map them to abstract effects, and enforce a two-label taint rule ("secret read => no egress"); then bypass your own monitor (an effect the syscall-to-semantics mapping does not model, a delayed action that only fires outside the sandbox run) and measure FPR and per-action overhead.
+- **Confidence:** medium-low (single preprint, no code, cost of double execution not stated)
+- **Recommendation:** monitor; add as evidence to `deferred/out-of-band-oversight-enforcement.md` at its 2026-11-29 review; revisit on code release or a reported overhead figure.
+
+### C-20261121-02 · ROGUE-AI: replicating 108 real agent incidents offline with matched controls; most real harm had no attacker, and a hazard-naming warning cut it where injection defenses cannot
+
+- **Class:** B
+- **Date discovered:** 2026-11-21
+- **Date published:** 2026-11-19
+- **Source:** https://arxiv.org/abs/2611.26553 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Mengxiao Wang, Mahbub Alam, Kalyan Nakka, Nitesh Saxena (affiliation not stated on the abs page)
+- **Category:** evaluation/benchmark (agent-security; incident analysis)
+- **What changed:** Incident catalogs record that agents failed (for example, a coding agent deleting a production database) and benchmarks record whether agents fail, but neither tests the cause an incident report blames. ROGUE-AI is a multi-agent framework that rebuilds each reported incident offline together with a matched control that lacks only the blamed cause, then runs current agents on both.
+- **Technical summary:** 108 attempted replications; reported harm reproduced in 89%. Agents on five current GPT, Claude, Gemini and DeepSeek models made the reported mistake in 18–33% of runs, against at most 1% without the blamed cause. Of 72 incidents with real-world harm, 62 had no attacker: the agent did what the task asked but missed an ordinary hazard (for example, a database shared with the live site). For all five models, attacker-free replications caused more harm than prompt-injection replications. Prompt-injection defenses look for injected instructions and these cases contain none. A warning after each tool output that names the hazard and its consequence lowered harm for all five models, while a same-length note that does not name the hazard left most harm in place. 21 pages, 13 tables. The abs page links a project page (https://rogue-ai.surge.sh) that could not be fetched from this session (host blocked by the egress proxy); no code repository linked. All numbers from the abstract.
+- **Why it might matter:** It is a causal method (incident plus matched control) for turning news reports into reproducible test cases, and it measures a finding the course should state plainly: most real agent harm in this sample came from excessive agency without an adversary, which injection filters do not address. The hazard-warning ablation (naming the hazard matters, length does not) is a small measured mitigation with a control.
+- **Evidence of adoption:** none
+- **Major organizations using it:** none
+- **Open-source implementation:** project page listed, not verified (unreachable from this session)
+- **Paper:** https://arxiv.org/abs/2611.26553
+- **Code:** none verified
+- **Relationship to existing course material:** new (lookup for "incident", "replication", "Replit", "hazard" found no topic on incident replication); adjacent to `research/deferred/proactive-over-authorization.md` and the 2026-11-20 C item on continuation audits (https://arxiv.org/abs/2611.24491), to `research/deferred/fabricated-hazard-steering.md` (the inverse case: an attacker-planted hazard), and to the excessive-agency material referenced by `research/accepted/owasp-llm-top10-2026.md`.
+- **Potential course lesson:** M31/M25 exercise: pick a public agent incident, rebuild it in the lab with a synthetic shared database and a matched control without the blamed hazard, measure the failure rate difference over N runs, then add a hazard-naming tool-output annotation and a length-matched placebo note and compare.
+- **Confidence:** medium-low (single preprint; code availability unknown; replications built by an LLM framework)
+- **Recommendation:** monitor; revisit if code/data are released or a second group replicates the "no attacker" finding.
+
+### C-20261121-03 · GEOHunter: a paid generative-engine-optimization network measured in the wild supplies 4.5–20% of retrievable cited pages across nine AI answer engines
+
+- **Class:** B
+- **Date discovered:** 2026-11-21
+- **Date published:** 2026-11-19
+- **Source:** https://arxiv.org/abs/2611.26564 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Sean Tang, Peiran Wang, Ying Li, Esha Shivakumar, Tao Meng, Yuan Tian (affiliation not stated on the abs page)
+- **Category:** rag-security (retrieval poisoning, in-the-wild measurement)
+- **What changed:** Earlier evidence for poisoning web-searching LLMs was controlled experiments (a single attacker page in a data void). This paper measures a real commercial operation: a generative engine optimization (GEO) service that sells visibility in AI answers by publishing promotional articles on user-generated-content (UGC) platforms.
+- **Technical summary:** Across three major Chinese UGC platforms the authors attribute 1,985 accounts and 466,357 inferred promotional placements to one network, running coordinated multi-month, multi-platform campaigns with evolving listicle content, including in medical and financial categories. Across nine generative engines (US and Chinese), 4.5% to 20% of retrievable cited pages are attributable to the network, depending on how strictly attribution is drawn. On eight engines its clients are named in 52% of answers, against 68% for category leaders. The authors find content-level defenses insufficient against coordinated UGC placement and argue that account-level and platform-level signals are needed. No code or data link on the abs page. All numbers from the abstract.
+- **Why it might matter:** It is the in-the-wild, adversary-funded counterpart to the deferred data-void poisoning topic: retrieval poisoning as a business, measured at scale on production engines. It also gives a defense-side lesson (per-document filtering fails against many coordinated, individually benign pages; provenance and account signals are needed), which bears on the "measured answer-side defense" the deferred topic waits for, though no defense is measured here.
+- **Evidence of adoption:** n/a (measurement of an operating attacker; no defense adopted)
+- **Major organizations using it:** none (nine production generative engines measured; names not given in the abstract)
+- **Open-source implementation:** none listed
+- **Paper:** https://arxiv.org/abs/2611.26564
+- **Code:** none
+- **Relationship to existing course material:** new evidence for `research/deferred/ai-search-result-poisoning.md` (WAIT, review 2026-12-06; condition: independent replication or a measured answer-side defense — this is a second group with in-the-wild evidence, but no defense); taught context: `lessons/frontier/update-02.md` (ATT&CK T1608.007 AI Result Poisoning, "looks like ordinary publishing or SEO").
+- **Potential course lesson:** M14 extension with an offline toy corpus: plant many individually benign promotional pages from a cluster of synthetic accounts, show a per-document filter passes all of them while the synthesizer's answer shifts, then add a source-diversity / account-clustering signal and measure answer shift and false positives on organic content.
+- **Confidence:** medium (large in-the-wild measurement; single preprint; attribution depends on the authors' clustering)
+- **Recommendation:** monitor; add as evidence to `deferred/ai-search-result-poisoning.md` at its 2026-12-06 review.
