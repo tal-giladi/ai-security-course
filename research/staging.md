@@ -341,3 +341,24 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** M14 extension with an offline toy corpus: plant many individually benign promotional pages from a cluster of synthetic accounts, show a per-document filter passes all of them while the synthesizer's answer shifts, then add a source-diversity / account-clustering signal and measure answer shift and false positives on organic content.
 - **Confidence:** medium (large in-the-wild measurement; single preprint; attribution depends on the authors' clustering)
 - **Recommendation:** monitor; add as evidence to `deferred/ai-search-result-poisoning.md` at its 2026-12-06 review.
+
+### C-20261122-01 · Kaer: securing the orchestrator's replanning step in multi-agent systems against instructions hidden in sub-agent feedback (abstract templates + deterministic repair operators)
+
+- **Class:** B
+- **Date discovered:** 2026-11-22
+- **Date published:** 2026-11-18
+- **Source:** https://arxiv.org/abs/2611.24839 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Tushin Mallick, Evan Rose, Matthew Laws, Alina Oprea, Cristina Nita-Rotaru (affiliation not stated on the abs page)
+- **Category:** agent-security (multi-agent; defense/guardrail)
+- **What changed:** Orchestrator-style multi-agent systems (e.g. Magentic-One) revise their plan from sub-agent feedback when a step fails. That feedback is untrusted text that flows straight into the planner, so a malicious or compromised sub-agent can hijack the revised plan. Existing defenses (per-tool access control, static pre-execution policy such as ControlValve) do not cover the replanning phase.
+- **Technical summary:** Kaer passes diagnostics to the replanner only through abstract failure templates, never raw feedback text; plan revisions are limited to a fixed set of deterministic repair operators; every revised plan must satisfy preset policies before execution. The authors build Cintra, a benchmark of simulated tasks that need replanning, paired with adversarial objectives aimed at the replanning phase, and compare against Magentic-One (undefended) and ControlValve. Abstract claims higher robustness than both with utility comparable to ControlValve; templates "slightly constrain utility on select tasks". The abstract gives no ASR, utility or latency numbers and no code link. All claims from the abstract.
+- **Why it might matter:** It names a concrete, teachable injection point (feedback into the replanner) and a defense that is the planner-level analogue of data/control separation: untrusted content is reduced to a typed, finite vocabulary before it can influence control flow. That is the same design idea as the accepted capability/flow defense, applied to multi-agent orchestration.
+- **Evidence of adoption:** none
+- **Major organizations using it:** none
+- **Open-source implementation:** none listed
+- **Paper:** https://arxiv.org/abs/2611.24839
+- **Code:** none
+- **Relationship to existing course material:** new (lookup for "Kaer", "replanning", "ControlValve" found nothing); extends `lessons/module-28/lesson-01.md` (attacking multi-agent systems & A2A) and is adjacent to `research/accepted/capability-flow-injection-defense.md` and staged C-20261120-02 (malicious peers in hop-by-hop delegation) and C-20261116-02 (ReMA aggregation attacks).
+- **Potential course lesson:** M28 lab extension: a toy orchestrator that replans from sub-agent error text; a malicious sub-agent embeds a LAB-CANARY instruction in its failure message; then restrict feedback to an enum of failure templates plus three deterministic repair operators (retry, reassign, drop step) with a policy check, and measure canary success and task completion before and after; then try to bypass via template choice alone.
+- **Confidence:** medium-low (single preprint, no numbers in abstract, no code)
+- **Recommendation:** monitor; revisit when numbers/code are available or alongside the other multi-agent staged items at the weekly review.
