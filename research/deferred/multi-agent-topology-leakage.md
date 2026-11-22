@@ -2,7 +2,7 @@
 
 - **Topic ID:** multi-agent-topology-leakage
 - **Status:** WAIT
-- **Next review:** 2026-11-22
+- **Next review:** 2027-01-03
 - **Course change:** none
 - **Candidates:** C-20261015-11, C-20261031-04, C-20261103-05
 
@@ -32,3 +32,4 @@ Released code; independent reproduction of the topology effect; a CPU-feasible M
 - 2026-10-18 — WAIT — clean, systematic demonstration that multi-agent privacy is topological, directly relevant to M28, but single preprint without code; ADD budget used on skill-trust-boundary — weekly/2026-W42.md — candidates C-20261015-11
 - 2026-11-01 — WAIT — a candidate unifying formalism for the multi-agent privacy cluster; no code or benchmark access; keep scheduled review — weekly/2026-W44.md — candidates C-20261031-04
 - 2026-11-08 — WAIT — first defense-side preprint added; date unchanged — weekly/2026-W45.md — candidates C-20261103-05
+- 2026-11-22 — WAIT — due; no new evidence this week (no replication, code or adoption found in the week's daily records), so the stated condition is still unmet — next review 2027-01-03 — weekly/2026-W47.md — no new candidate

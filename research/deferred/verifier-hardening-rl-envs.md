@@ -2,7 +2,7 @@
 
 - **Topic ID:** verifier-hardening-rl-envs
 - **Status:** WAIT
-- **Next review:** 2026-11-22
+- **Next review:** 2027-01-03
 - **Course change:** none
 - **Candidates:** C-20261012-04, C-20261015-19
 
@@ -29,3 +29,4 @@ reduction across iterations) for M25.
 ## History
 
 - 2026-10-18 — WAIT — the real adoption claim is unusually strong, but unverified this run and the companion transmissibility paper lacks quantitative figures; verify the adoption before any ADD — weekly/2026-W42.md — candidates C-20261012-04, C-20261015-19
+- 2026-11-22 — WAIT — due; no new evidence this week (no replication, code or adoption found in the week's daily records), so the stated condition is still unmet — next review 2027-01-03 — weekly/2026-W47.md — no new candidate

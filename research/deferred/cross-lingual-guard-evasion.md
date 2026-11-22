@@ -2,7 +2,7 @@
 
 - **Topic ID:** cross-lingual-guard-evasion
 - **Status:** WAIT
-- **Next review:** 2026-11-22
+- **Next review:** 2027-01-03
 - **Course change:** none
 - **Candidates:** C-20261016-04
 
@@ -27,3 +27,4 @@ makes a CPU-feasible exercise plausible.
 ## History
 
 - 2026-10-18 — WAIT — clean experimental design, many real guards, large released dataset, but single preprint, no independent replication; ADD budget used on skill-trust-boundary — weekly/2026-W42.md — candidates C-20261016-04
+- 2026-11-22 — WAIT — due; no new evidence this week (no replication, code or adoption found in the week's daily records), so the stated condition is still unmet — next review 2027-01-03 — weekly/2026-W47.md — no new candidate

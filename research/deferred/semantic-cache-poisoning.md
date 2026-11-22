@@ -2,7 +2,7 @@
 
 - **Topic ID:** semantic-cache-poisoning
 - **Status:** WAIT
-- **Next review:** 2026-11-22
+- **Next review:** 2027-01-03
 - **Course change:** none
 - **Candidates:** C-20260930-04
 
@@ -26,3 +26,4 @@ validity check.
 ## History
 
 - 2026-10-04 — WAIT — novel serving-layer surface with a measured-cost defense, but single paper, no validation — weekly/2026-W40.md — candidates C-20260930-04
+- 2026-11-22 — WAIT — due; no new evidence this week (no replication, code or adoption found in the week's daily records), so the stated condition is still unmet — next review 2027-01-03 — weekly/2026-W47.md — no new candidate

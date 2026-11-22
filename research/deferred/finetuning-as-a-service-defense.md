@@ -2,7 +2,7 @@
 
 - **Topic ID:** finetuning-as-a-service-defense
 - **Status:** WAIT
-- **Next review:** 2026-11-22
+- **Next review:** 2027-01-03
 - **Course change:** none
 - **Candidates:** C-20261008-02, C-20261114-02
 
@@ -23,3 +23,4 @@ An adaptive-attack evaluation (attacker aware of the router) by an independent g
 
 - 2026-10-11 — WAIT — peer-reviewed and code-released, but no adaptive evaluation of the routing gate and the threat model (FTaaS alignment removal) is not yet taught as a prerequisite — weekly/2026-W41.md — candidates C-20261008-02
 - 2026-11-15 — WAIT — the threat widens to RL-as-a-service (harmful reward functions strip alignment for ~USD 20, author claim) with a provider-side reward-probing defense and released code; the adaptive analysis is the authors' own and no FP/utility numbers are in the abstract; scheduled review 2026-11-22 unchanged; consider widening the topic to fine-tuning/RL-as-a-service then — weekly/2026-W46.md — candidates C-20261114-02
+- 2026-11-22 — WAIT — due; no new evidence this week (no replication, code or adoption found in the week's daily records), so the stated condition is still unmet — next review 2027-01-03 — weekly/2026-W47.md — no new candidate

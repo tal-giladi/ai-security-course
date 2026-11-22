@@ -2,7 +2,7 @@
 
 - **Topic ID:** cryptographic-hidden-backdoor
 - **Status:** WAIT
-- **Next review:** 2026-11-22
+- **Next review:** 2027-01-03
 - **Course change:** none
 - **Candidates:** C-20261012-02
 
@@ -29,3 +29,4 @@ If it holds, a strong M11 "limits of capability elicitation" extension.
 ## History
 
 - 2026-10-18 — WAIT — peer-reviewed venue, released artifacts and a clear cryptographic + experimental argument, but a single new paper on one proxy task with no independent replication; ADD budget used on skill-trust-boundary — weekly/2026-W42.md — candidates C-20261012-02
+- 2026-11-22 — WAIT — due; no new evidence this week (no replication, code or adoption found in the week's daily records), so the stated condition is still unmet — next review 2027-01-03 — weekly/2026-W47.md — no new candidate

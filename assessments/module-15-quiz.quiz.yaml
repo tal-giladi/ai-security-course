@@ -143,3 +143,20 @@
     tenant-only result. That turns the control into a regression guard that fails the commit rather
     than a claim in a design document, and it is cheap precisely because the test set is two tenants
     and one document.
+- id: q10
+  question: >-
+    A tenant-isolation review of your inference fleet finds that retrieval is pre-filtered per tenant,
+    but the serving engine's prefix cache is shared across all tenants and a fixed public system
+    prompt is used by every customer. Customers also add short private account details after it. What
+    do you change?
+  options:
+    - Nothing, because the retrieval layer is pre-filtered and no document can cross tenants.
+    - Salt the cache per tenant, and accept losing cross-tenant reuse of the public system prompt.
+    - Add a random delay of a few milliseconds to every reply, which hides cache hits completely.
+    - Delay the reply of any request that hits another tenant's blocks by the time it saved.
+  correct: 1
+  explanation: >-
+    The shared cache is a second cross-tenant path that pre-filtered retrieval does not cover: timing
+    reveals whether another customer already sent a guessed prefix. Per-tenant salting removes the
+    shared state; small random delays only lower the advantage, and hit-only padding leaks through the
+    requests queued behind the hit.

@@ -2,7 +2,7 @@
 
 - **Topic ID:** guardrail-stack-bypass
 - **Status:** WAIT
-- **Next review:** 2026-11-22
+- **Next review:** 2027-01-03
 - **Course change:** none
 - **Candidates:** C-20261009-01
 
@@ -21,3 +21,4 @@ Code release or an independent reproduction; vendor acknowledgement. Fits as a 2
 ## History
 
 - 2026-10-11 — WAIT — strong claims, days old, no code, partially covered by 08.1 (adaptive/black-box search) and 23.1 (defense composition) — weekly/2026-W41.md — candidates C-20261009-01
+- 2026-11-22 — WAIT — due; no new evidence this week (no replication, code or adoption found in the week's daily records), so the stated condition is still unmet — next review 2027-01-03 — weekly/2026-W47.md — no new candidate

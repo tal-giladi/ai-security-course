@@ -19,6 +19,7 @@ module that teaches the idea in depth rather than repeating it here.
 - **Backdoor** — a behaviour hidden in a model or dataset that activates on a specific trigger, absent otherwise.
 - **Base rate** — the real-world frequency of the thing being detected. Determines how many of a detector's alerts are false positives; the reason detectors alert rather than block.
 - **Blast radius (container)** — scope of damage from a foothold; bound with least-privilege service accounts, minimal secret mounts, blocked metadata.
+- **Cache salt** — a per-tenant (or per-trust-group) value mixed into a prefix cache's first block hash so that only requests with the same salt can reuse cached blocks; vLLM's fix for prefix-cache timing leaks. Module 15.2.
 - **Canary (LAB-CANARY-\*)** — the synthetic secret used throughout the labs so that "the attack worked" is observable without any real credential.
 - **Capability over-claim** — an agent card advertises skills it should not have, to get routed sensitive tasks.
 - **Cluster/orchestration dashboard** — job scheduler UI; exposed + job submission = cluster RCE (ShadowRay).
@@ -67,6 +68,7 @@ module that teaches the idea in depth rather than repeating it here.
 - **Perplexity** — how surprising a token sequence is to the model. Higher perplexity than the surrounding context is a classic injection/jailbreak signal.
 - **Persistence (agentic)** — a planted directive re-activating across sessions; P_fire(n)=1-(1-pq)^n -> 1 with use. No weight change needed.
 - **PGD (projected gradient descent)** — iterative adversarial optimisation that stays in an ε-ball; a strictly stronger attack than FGSM. Module 09.
+- **Prefix cache** — reuse of the KV state of prompt prefixes already processed, keyed by chained block hashes; shared across tenants, its hits become a timing side channel. Module 15.2.
 - **Prompt injection** — content that makes a model treat data as instructions. The direct/indirect/multimodal taxonomy is modules 04–06.
 - **Purple-team close** — done = objective captured + highest-leverage fix named + retest shows it denied.
 - **Quarantine (memory)** — dropping untrusted-sourced memories from retrieval entirely (q->0); strongest lever, beats stealth.
@@ -92,6 +94,7 @@ module that teaches the idea in depth rather than repeating it here.
 - **Trust boundary** — a line where data or control crosses from a less-trusted to a more-trusted context. Every injection crosses one.
 - **Trust graph** — directed graph where edges are "who accepts messages/tasks from whom"; every edge is an injection channel.
 - **Trust tag / write provenance** — recording each memory's source (user/trusted_tool/untrusted); never elevate untrusted.
+- **TTFT (time to first token)** — latency from request arrival to the first output token; dominated by prefill, so it reveals prefix-cache hits. Module 15.2.
 - **vec2text** — method reconstructing fluent text from black-box embeddings (Morris et al. 2023).
 - **Watermark (text)** — a keyed bias in a model's token choices (e.g. a green list per context) that a key holder can detect statistically; bounds false positives on unmarked text but misses short, low-entropy or edited text. Module 23.2.
 - **Watermark stealing** — estimating a watermark's green lists from its outputs alone, which enables forgery (spoofing) and cheaper removal (scrubbing). Module 23.2.

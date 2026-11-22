@@ -4,7 +4,7 @@
 - **Status:** WAIT
 - **Next review:** 2026-12-20
 - **Course change:** none
-- **Candidates:** C-20261003-02, C-20261008-04, C-20261023-02, C-20261030-08
+- **Candidates:** C-20261003-02, C-20261008-04, C-20261023-02, C-20261030-08, C-20261120-02
 
 ## Summary
 
@@ -22,6 +22,7 @@ drops to 1.6–6.3%); held-out entailment F1 0.868 / FA 0.094. Extends M19/M22 p
 - https://arxiv.org/abs/2610.09793 — MFOTL/MonPoly study: provenance metadata is itself spoofable (one planted line defeats a naive check in 94–99% of runs); binding provenance to the originating lookup closes the gap. Peer-reviewed workshop (CCS-colocated). Added 2026-10-11.
 - https://arxiv.org/abs/2610.30738 — AgentTriage: replayable, deterministic claim-to-evidence diagnosis across 5 runtimes; grounded joint diagnosis 0.858, unsupported-claim rate 0.036, +0.175 over baseline (95% CI [0.092, 0.258]); code https://github.com/AsnGs/agenttriage-open-source. Added 2026-10-25.
 - https://arxiv.org/abs/2610.39109 — PCM proof-carrying messages: Merkle-log inclusion proofs + delegated authority bound to a recorded human approval; accepts 10/712 planted lies (1.4%) vs 504–712 for modelled deployed protocols; ~1 ms/message; code claimed at github.com/Cygnux-Labs/PCM-protocol (single author/company, own benchmark). Added 2026-11-01.
+- https://arxiv.org/abs/2611.25056 — malicious peers in hop-by-hop delegation (C-20261120-02): cryptographically verified execution trace + auditor attributing 98% of attacks; own benchmark; no code. Added 2026-11-22.
 
 ## What would change the decision
 
@@ -35,3 +36,4 @@ Released code or independent reproduction. Candidate for an M19/M22 provenance l
 - 2026-10-25 — WAIT — first entry in the cluster with released code and CIs, meeting part of the stated reopening condition (code); still no independent replication; pulled forward to 2026-11-15 — weekly/2026-W43.md — candidates C-20261023-02
 - 2026-11-01 — WAIT — mechanism-distinct multi-agent addition to the provenance cluster with code; single author, own baselines; keep scheduled review — weekly/2026-W44.md — candidates C-20261030-08
 - 2026-11-15 — WAIT — due today; no independent reproduction of the claim-anchored contract appeared this week; AgentTriage and PCM have code but are not reproductions — weekly/2026-W46.md — candidates none (due review)
+- 2026-11-22 — WAIT — another single-preprint audit design without code; date unchanged — next review 2026-12-20 — weekly/2026-W47.md — candidates C-20261120-02

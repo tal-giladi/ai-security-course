@@ -5,6 +5,21 @@ bar in [the weekly review protocol](research/PROTOCOL-weekly.md). New material e
 existing lessons and labs; it never replaces them. "No curriculum changes this week" is a normal
 entry.
 
+## 2026-W47 (2026-11-22)
+
+- **Added** a new lesson [15.2 · Shared prefix caches as a cross-tenant side channel](lessons/module-15/lesson-02.md)
+  to Module 15 (multi-tenant leakage). Serving engines reuse the KV state of prompt prefixes; when
+  that cache is shared across customers, a faster first token tells one tenant that another already
+  sent the same text. You build a toy engine (chained block hashes, a step scheduler with a token
+  budget), measure a timing probe's advantage against cached length, and recover a synthetic
+  `LAB-CANARY` from a templated system prompt. Then you deploy per-tenant cache salting (vLLM's
+  `cache_salt`, the fix for CVE-2025-46570) and measure the reuse it costs, show why "keep sharing,
+  pad the hit" fails against listener requests queued behind the probe, and price random delay.
+  Built on Gu et al. (ICML 2025), Song et al. (IEEE TIFS), the vLLM advisory and design docs, and
+  Sun and Xiao (2026 preprint, EMERGING). Lab: [Lab 15.2 · Prefix-cache side channel](labs/module-15/prefix_cache/README.md);
+  the Module 15 quiz gained one question. Nothing existing was changed (later sidebar running
+  numbers moved up by one). Review: [research/weekly/2026-W47.md](research/weekly/2026-W47.md).
+
 ## 2026-W46 (2026-11-15)
 
 - **Added** a new lesson [23.2 · Watermarking and provenance of AI-generated text](lessons/module-23/lesson-02.md)

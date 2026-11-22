@@ -60,74 +60,75 @@
   - [Module 14 quiz](assessments/module-14-quiz.md)
 - **Module 15 — Multi-tenant retrieval leakage**
   - [17 · Multi-tenant retrieval leakage](lessons/module-15/lesson-01.md)
+  - [18 · Shared prefix caches as a cross-tenant side channel](lessons/module-15/lesson-02.md)
   - [Module 15 quiz](assessments/module-15-quiz.md)
 
 - Stage 7 — Agent security
 - **Module 16 — The agent attack surface**
-  - [18 · The agent attack surface](lessons/module-16/lesson-01.md)
-  - [19 · Agent memory poisoning & stealth](lessons/module-16/lesson-02.md)
+  - [19 · The agent attack surface](lessons/module-16/lesson-01.md)
+  - [20 · Agent memory poisoning & stealth](lessons/module-16/lesson-02.md)
   - [Module 16 quiz](assessments/module-16-quiz.md)
 - **Module 17 — Tool poisoning & abuse**
-  - [20 · Tool poisoning & abuse](lessons/module-17/lesson-01.md)
+  - [21 · Tool poisoning & abuse](lessons/module-17/lesson-01.md)
   - [Module 17 quiz](assessments/module-17-quiz.md)
 - **Module 18 — End-to-end attack chains**
-  - [21 · End-to-end attack chains](lessons/module-18/lesson-01.md)
+  - [22 · End-to-end attack chains](lessons/module-18/lesson-01.md)
   - [Module 18 quiz](assessments/module-18-quiz.md)
 
 - Stage 8 — Frameworks and adjacent surfaces
 - **Module 19 — MCP security**
-  - [22 · MCP security](lessons/module-19/lesson-01.md)
+  - [23 · MCP security](lessons/module-19/lesson-01.md)
   - [Module 19 quiz](assessments/module-19-quiz.md)
 - **Module 20 — Multimodal security (deep)**
-  - [23 · Multimodal security (deep)](lessons/module-20/lesson-01.md)
-  - [24 · Render before reading](lessons/module-20/lesson-02.md)
+  - [24 · Multimodal security (deep)](lessons/module-20/lesson-01.md)
+  - [25 · Render before reading](lessons/module-20/lesson-02.md)
   - [Module 20 quiz](assessments/module-20-quiz.md)
 - **Module 21 — Code-agent security**
-  - [25 · Code-agent security](lessons/module-21/lesson-01.md)
+  - [26 · Code-agent security](lessons/module-21/lesson-01.md)
   - [Module 21 quiz](assessments/module-21-quiz.md)
 - **Module 22 — AI supply-chain security**
-  - [26 · AI supply-chain security](lessons/module-22/lesson-01.md)
+  - [27 · AI supply-chain security](lessons/module-22/lesson-01.md)
   - [Module 22 quiz](assessments/module-22-quiz.md)
 
 - Stage 9 — Defending and measuring
 - **Module 23 — Blue team**
-  - [27 · Defensive engineering](lessons/module-23/lesson-01.md)
-  - [28 · Watermarking and provenance of AI-generated text](lessons/module-23/lesson-02.md)
+  - [28 · Defensive engineering](lessons/module-23/lesson-01.md)
+  - [29 · Watermarking and provenance of AI-generated text](lessons/module-23/lesson-02.md)
   - [Module 23 quiz](assessments/module-23-quiz.md)
 - **Module 24 — Security evaluation**
-  - [29 · Security evaluation](lessons/module-24/lesson-01.md)
+  - [30 · Security evaluation](lessons/module-24/lesson-01.md)
   - [Module 24 quiz](assessments/module-24-quiz.md)
 - **Module 25 — Automated red teaming**
-  - [30 · Automated red teaming](lessons/module-25/lesson-01.md)
+  - [31 · Automated red teaming](lessons/module-25/lesson-01.md)
   - [Module 25 quiz](assessments/module-25-quiz.md)
 - **Module 26 — Purple-team synthesis**
-  - [31 · Purple-team synthesis, standards & capstones](lessons/module-26/lesson-01.md)
+  - [32 · Purple-team synthesis, standards & capstones](lessons/module-26/lesson-01.md)
   - [Module 26 quiz](assessments/module-26-quiz.md)
 
 - Stage 10 — Practitioner track (OffSec AI-300 parity)
 - **Module 27 — Reconnaissance for AI targets**
-  - [32 · Reconnaissance for AI targets](lessons/module-27/lesson-01.md)
+  - [33 · Reconnaissance for AI targets](lessons/module-27/lesson-01.md)
   - [Module 27 quiz](assessments/module-27-quiz.md)
 - **Module 28 — Multi-agent systems & A2A**
-  - [33 · Attacking multi-agent systems & A2A protocols](lessons/module-28/lesson-01.md)
+  - [34 · Attacking multi-agent systems & A2A protocols](lessons/module-28/lesson-01.md)
   - [Module 28 quiz](assessments/module-28-quiz.md)
 - **Module 29 — Embedding attacks**
-  - [34 · Attacking embeddings: inversion & extraction](lessons/module-29/lesson-01.md)
+  - [35 · Attacking embeddings: inversion & extraction](lessons/module-29/lesson-01.md)
   - [Module 29 quiz](assessments/module-29-quiz.md)
 - **Module 30 — AI infrastructure & deployment**
-  - [35 · AI infrastructure & deployment exploits](lessons/module-30/lesson-01.md)
+  - [36 · AI infrastructure & deployment exploits](lessons/module-30/lesson-01.md)
   - [Module 30 quiz](assessments/module-30-quiz.md)
 - **Module 31 — Capstone engagement**
-  - [36 · Full-spectrum AI red-team engagement](lessons/module-31/lesson-01.md)
+  - [37 · Full-spectrum AI red-team engagement](lessons/module-31/lesson-01.md)
   - [Module 31 quiz](assessments/module-31-quiz.md)
 
 - Stage 12 — Advanced track (GPU, optional)
 - **Module 34 — Advanced safeguard evaluation**
-  - [39 · The safeguard surface](lessons/module-34/lesson-01.md)
-  - [40 · Running refusal ablations on an open-weight model](lessons/module-34/lesson-02.md)
+  - [40 · The safeguard surface](lessons/module-34/lesson-01.md)
+  - [41 · Running refusal ablations on an open-weight model](lessons/module-34/lesson-02.md)
   - [Module 34 quiz](assessments/module-34-quiz.md)
 - **Module 35 — Agentic vulnerability discovery**
-  - [41 · Agentic vulnerability discovery: the iFinder case study](lessons/module-35/lesson-01.md)
+  - [42 · Agentic vulnerability discovery: the iFinder case study](lessons/module-35/lesson-01.md)
   - [Module 35 quiz](assessments/module-35-quiz.md)
 
 - Reference

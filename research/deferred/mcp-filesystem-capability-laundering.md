@@ -2,9 +2,9 @@
 
 - **Topic ID:** mcp-filesystem-capability-laundering
 - **Status:** WAIT
-- **Next review:** 2026-11-22
+- **Next review:** 2027-01-03
 - **Course change:** none
-- **Candidates:** C-20261016-02
+- **Candidates:** C-20261016-02, C-20261119-03
 
 ## Summary
 
@@ -19,6 +19,7 @@ MCP-server (not skill) layer.
 ## Evidence
 
 - https://arxiv.org/abs/2610.22301 — Huang et al.; 21k-server scan, 150 confirmed exploitable, two CVEs via coordinated disclosure (independent adjudication). Single preprint; MCP-FSD code not confirmed public from the abstract.
+- https://arxiv.org/abs/2611.23507 — ACaM (C-20261119-03): capability laundering via description–code inconsistency, found by deriving capabilities from tool code (43 real agents, 10 PoCs); single preprint, no code, no disclosure details. A second, independent group on the same framing. Added 2026-11-22.
 
 ## What would change the decision
 
@@ -29,3 +30,4 @@ enforcement). Strong future M19 extension given the real CVEs.
 ## History
 
 - 2026-10-18 — WAIT — real independently-adjudicated CVEs and a very large scan make this unusually strong for a 1-day-old preprint, but it overlaps the ADDed M22.2 capability theme and the ADD budget is used; revisit as an M19-specific extension with verified CVE references — weekly/2026-W42.md — candidates C-20261016-02
+- 2026-11-22 — WAIT — second independent group on capability laundering, but no CVE cross-check, scanner release or disclosure record yet — next review 2027-01-03 — weekly/2026-W47.md — candidates C-20261119-03

@@ -137,6 +137,7 @@ Rows added by the weekly curriculum review (`research/`); existing tables above 
 | OWASP Agentic Top 10 (2026) ASI06 Memory & Context Poisoning / MITRE ATLAS AML.T0080.000 AI Agent Context Poisoning: Memory — misattributed, laundered and cross-user memory writes; runtime-assigned trust zones + scope + promotion gate (persistence ≠ authority) | [16.2 ext.](../lessons/module-16/lesson-02.md) | lab-36 | 2026-11-01 |
 | OWASP LLM01:2026 Prompt Injection / NIST AI RMF Measure — evaluating injection detectors at a fixed threshold across distributions: over-defense on curated vs external hard-benign text, obfuscation, agent-format (tool-output) shift, ranking vs calibration, PPV at a base rate | [24.1 ext.](../lessons/module-24/lesson-01.md) | lab-37 | 2026-11-08 |
 | EU AI Act (Reg. 2024/1689) Art. 50(2) machine-readable marking of AI-generated content / NIST AI RMF Manage (content provenance) — generation-time text watermarking: z-test detection and its FPR bound, removal by editing, forgery by watermark stealing, layered provenance | [23.2](../lessons/module-23/lesson-02.md) | module-23/watermark | 2026-11-15 |
+| OWASP LLM02:2025 Sensitive Information Disclosure / CWE-208 Observable Timing Discrepancy — cross-tenant prefix-cache timing side channel (vLLM CVE-2025-46570): TTFT membership probe, per-tenant cache salting and its reuse cost, hit-only padding vs listener requests, random delay | [15.2](../lessons/module-15/lesson-02.md) | module-15/prefix_cache | 2026-11-22 |
 
 ## MITRE ATT&CK v20 — AI techniques (added 2026-10-25)
 

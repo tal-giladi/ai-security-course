@@ -184,6 +184,14 @@ Only as much classical security as AI security requires — no generic pentest c
   marking duty. New lesson in M23; depends on M23.1, M12.1, M02.2. Layer: Foundational
   (Kirchenbauer 2023, watermark stealing 2024) → Current (SynthID-Text, Art. 50) → Emerging (2026
   semantic / multi-bit schemes). Lab: `labs/module-23/watermark`.
+- **15.2 Shared prefix caches as a cross-tenant side channel** (added 2026-11-22) — prefix
+  caching with chained block hashes as a cross-tenant membership oracle (TTFT probe; one correct
+  guess unlocks a known suffix); single-probe advantage $2\Phi(\Delta/2\sigma)-1$; per-tenant
+  salting (vLLM `cache_salt`) closes the channel at the cost of cross-tenant reuse; hit-only
+  padding defeated by listener requests on a step-based scheduler; random delay priced against the
+  step shift. New lesson in M15; depends on M15.1, M12.1. Layer: Foundational/Current (ICML 2025
+  audit of seven API providers, IEEE TIFS attack, vLLM CVE-2025-46570 + salting) → Emerging (2026
+  scheduler-shift result). Lab: `labs/module-15/prefix_cache`.
 
 ---
 
@@ -225,6 +233,7 @@ Only as much classical security as AI security requires — no generic pentest c
 | 16.2 ext. Trust-zoned agent memory | M16.1, M16.2, M05, M15 | Current→Emerging | `labs/lab-36-trust-zoned-memory` |
 | 24.1 ext. Evaluating prompt-injection detectors | M24.1, M23, M05, M17.2 | Current→Emerging | `labs/lab-37-injection-detector-eval` |
 | 23.2 Watermarking and provenance of AI-generated text | M23.1, M12.1, M02.2 | Foundational→Current | `labs/module-23/watermark` |
+| 15.2 Shared prefix caches as a cross-tenant side channel | M15.1, M12.1 | Current (scheduler-shift result: Emerging) | `labs/module-15/prefix_cache` |
 
 *"sibling"* = provided by the LLM Research Engineer course; see `prerequisite-map.md`.
 

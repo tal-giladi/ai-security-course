@@ -2,7 +2,7 @@
 
 - **Topic ID:** poison-set-selection-backdoors
 - **Status:** WAIT
-- **Next review:** 2026-11-22
+- **Next review:** 2027-01-03
 - **Course change:** none
 - **Candidates:** C-20260926-04, C-20261026-09
 
@@ -26,3 +26,4 @@ comparing random vs scored poison selection at a fixed budget on a CPU-sized mod
 
 - 2026-09-27 — WAIT — credible authors and a teachable lever, but one fresh preprint without code or reproduction — weekly/2026-W39.md — candidates C-20260926-04
 - 2026-11-01 — WAIT — same data-efficient-selection theme in a new domain (code models); no code or replication; keep scheduled review — weekly/2026-W44.md — candidates C-20261026-09
+- 2026-11-22 — WAIT — due; no new evidence this week (no replication, code or adoption found in the week's daily records), so the stated condition is still unmet — next review 2027-01-03 — weekly/2026-W47.md — no new candidate

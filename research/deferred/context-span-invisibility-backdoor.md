@@ -2,7 +2,7 @@
 
 - **Topic ID:** context-span-invisibility-backdoor
 - **Status:** WAIT
-- **Next review:** 2026-11-22
+- **Next review:** 2027-01-03
 - **Course change:** none
 - **Candidates:** C-20261015-01
 
@@ -28,3 +28,4 @@ noninterference check + distilled backdoor + probe-detection tradeoff) for an M1
 ## History
 
 - 2026-10-18 — WAIT — rigorous and broadly validated dual-use primitive with a code-review-evasion application fitting M22, but single paper, author identity unverified, no code; ADD budget used on skill-trust-boundary — weekly/2026-W42.md — candidates C-20261015-01
+- 2026-11-22 — WAIT — due; no new evidence this week (no replication, code or adoption found in the week's daily records), so the stated condition is still unmet — next review 2027-01-03 — weekly/2026-W47.md — no new candidate

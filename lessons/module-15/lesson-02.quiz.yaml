@@ -1,0 +1,56 @@
+- id: q1
+  question: >-
+    Your platform serves many customers from one vLLM fleet with a prefix cache shared by everyone.
+    A customer's system prompt is a public template, then a one-block account code drawn from 20
+    possible values, then a long public instruction suffix. Why is the account code easy to recover?
+  options:
+    - The attacker can read the cached KV blocks directly through the API's logprobs output field.
+    - A correct guess also hits the long suffix, so a right guess saves hundreds of prefill tokens.
+    - Every wrong guess is rejected with an error, so the attacker eliminates candidates one by one.
+    - Block hashes are short, so the attacker can brute-force a collision with the account code block.
+  correct: 1
+  explanation: >-
+    Block hashes are chained, so the suffix blocks hit only when every earlier block hit, including
+    the secret one. A correct guess therefore saves the whole suffix's prefill and a wrong guess
+    saves only the template, which turns a 16-token difference into a large, easily measured one.
+- id: q2
+  question: >-
+    With a prefill cost of 0.02 ms per token and a timing spread of 1.5 ms, roughly what single-probe
+    advantage should you expect when the guess shares 64 cached tokens with the victim's prompt?
+  options:
+    - About 0.33, because the saving of 1.28 ms is less than one spread of timing noise.
+    - About 0.91, because 64 tokens is four full cache blocks and each block always hits.
+    - About 0.05, because only the final block's saving is visible in the time to first token.
+    - About 1.00, because any cache hit skips prefill and the response is then instant.
+  correct: 0
+  explanation: >-
+    The saving is $\Delta = 0.02 \times 64 = 1.28$ ms, so $\Delta / 2\sigma \approx 0.43$ and the
+    advantage is $2\Phi(0.43) - 1 \approx 0.33$. Short shared prefixes leak weakly per probe, which is
+    why the attacker looks for long shared prefixes or a known suffix.
+- id: q3
+  question: >-
+    An engineer proposes to keep the global cache and delay the reply of any request that hit
+    another tenant's blocks by the time it saved. Why does this not close the channel?
+  options:
+    - The delay is computed from the cached token count, which the attacker can read from the usage field.
+    - Attackers can cancel the request before the delay ends and time the cancellation instead.
+    - The saved work makes requests queued behind the hit finish earlier, and those are not delayed.
+    - The delay is applied only to streaming requests, so a non-streaming probe sees the true timing.
+  correct: 2
+  explanation: >-
+    On a step-based scheduler a hit uses less of the step's token budget, so the requests behind it
+    start and finish sooner. An attacker who brackets the probe with one-token listener requests sees
+    the shift in the listeners even though the probe's own reply is padded.
+- id: q4
+  question: >-
+    You turn on per-tenant cache salting. Which statement about the result is correct?
+  options:
+    - Users inside the same tenant can no longer learn anything about each other's prompts.
+    - The cache hit rate is unchanged, because each tenant still reuses its own prompts.
+    - Random reply delays are still needed, because salting only lowers the probe's advantage.
+    - Other tenants' traffic can no longer change your timing, and cross-tenant reuse is lost.
+  correct: 3
+  explanation: >-
+    The salt is mixed into the first block's hash, so only requests with the same salt share blocks:
+    the cross-tenant channel closes and so does cross-tenant reuse. Users who share a salt can still
+    probe each other, and reuse falls whenever tenants shared common prefixes.

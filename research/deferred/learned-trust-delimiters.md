@@ -2,7 +2,7 @@
 
 - **Topic ID:** learned-trust-delimiters
 - **Status:** WAIT
-- **Next review:** 2026-11-22
+- **Next review:** 2027-01-03
 - **Course change:** none
 - **Candidates:** C-20261009-05, C-20261028-02, C-20261031-01, C-20261103-03
 
@@ -26,3 +26,4 @@ Code and an independent adaptive evaluation (the claims are strong for the paper
 - 2026-10-11 — WAIT — strong claims from a very short paper, no code, no replication — weekly/2026-W41.md — candidates C-20261009-05
 - 2026-11-01 — WAIT — architectural trust separation now has a stronger adaptive-attack result (HoS) and a mechanistic explanation of its failure mode (role spoofing); neither has code; keep scheduled review — weekly/2026-W44.md — candidates C-20261028-02, C-20261031-01
 - 2026-11-08 — WAIT — SecPO is the strongest learned-defense datum yet (credible lineage, adaptive-attack evaluation) but the claimed code/model release could not be confirmed and there is no independent reproduction; date unchanged — weekly/2026-W45.md — candidates C-20261103-03
+- 2026-11-22 — WAIT — due; no new evidence this week (no replication, code or adoption found in the week's daily records), so the stated condition is still unmet — next review 2027-01-03 — weekly/2026-W47.md — no new candidate

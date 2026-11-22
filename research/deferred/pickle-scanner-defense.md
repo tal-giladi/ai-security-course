@@ -2,7 +2,7 @@
 
 - **Topic ID:** pickle-scanner-defense
 - **Status:** WAIT
-- **Next review:** 2026-11-22
+- **Next review:** 2026-11-29
 - **Course change:** none
 - **Candidates:** C-20261009-02, C-20261109-01
 
@@ -23,3 +23,4 @@ Release of PickleBench and the scanner; comparison against the scanners already 
 
 - 2026-10-11 — WAIT — measured defense with FP cost for an attack the course teaches, but no released artifact yet and the course's current defense (safetensors / no-pickle) remains the primary control — weekly/2026-W41.md — candidates C-20261009-02
 - 2026-11-15 — WAIT — the stated reopen condition is now largely met: a second, different group (ModelShield, ACSAC 2026 per arXiv comments; abstract verified 2026-11-15) compares against ModelScan/PickleScan/Fickling/ModelAudit with measured FP and latency and an in-the-wild prevalence measurement; not added only because of the one-ADD budget and because neither DITTO nor ModelShield has released code; leading candidate for the 2026-11-22 review as a 13.1 'static vs behavioural model scanning' extension — weekly/2026-W46.md — candidates C-20261109-01
+- 2026-11-22 — WAIT — unchanged evidence (two groups, measured FP/latency, no code from either); budget went to the prefix-cache side channel; still a strong 13.1 extension candidate, re-reviewed next week alongside agent-memory-privacy-erasure — next review 2026-11-29 — weekly/2026-W47.md — no new candidate

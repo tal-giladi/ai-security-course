@@ -2,7 +2,7 @@
 
 - **Topic ID:** backdoor-persistence-and-trigger-variants
 - **Status:** WAIT
-- **Next review:** 2026-11-22
+- **Next review:** 2027-01-03
 - **Course change:** none
 - **Candidates:** C-20261007-02, C-20261007-03, C-20261008-06, C-20261021-06, C-20261103-02, C-20261106-08, C-20261107-03, C-20261111-02
 
@@ -31,3 +31,4 @@ Independent reproduction of any one mechanism, or a measured defense. The most t
 - 2026-10-25 — WAIT — adds an incentive-driven adoption mechanism that survives decontamination; single preprint without code; keep 2026-11-22 — weekly/2026-W43.md — candidates C-20261021-06
 - 2026-11-08 — WAIT — three new single-preprint variants (no code); date unchanged — weekly/2026-W45.md — candidates C-20261103-02, C-20261106-08, C-20261107-03
 - 2026-11-15 — WAIT — a measured 'static ASR is not erasure' result for weight-editing backdoor defenses (rebound to 91.7–100% after 5-sample reactivation); single preprint, no code; scheduled review 2026-11-22 unchanged — weekly/2026-W46.md — candidates C-20261111-02
+- 2026-11-22 — WAIT — due; no new evidence this week (no replication, code or adoption found in the week's daily records), so the stated condition is still unmet — next review 2027-01-03 — weekly/2026-W47.md — no new candidate

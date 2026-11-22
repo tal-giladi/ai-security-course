@@ -2,9 +2,9 @@
 
 - **Topic ID:** proactive-over-authorization
 - **Status:** WAIT
-- **Next review:** 2026-11-22
+- **Next review:** 2026-12-27
 - **Course change:** none
-- **Candidates:** C-20261002-03, C-20261021-02, C-20261021-03, C-20261109-03
+- **Candidates:** C-20261002-03, C-20261021-02, C-20261021-03, C-20261109-03, C-20261118-02
 
 ## Summary
 
@@ -22,6 +22,8 @@ goal-pressure-driven scope violation in the oversight cluster (C-20260929-01).
 - https://arxiv.org/abs/2610.27574 — Show-Up attack (SUA-Arena): malicious subagents get supervisors to grant out-of-scope involvement; all 6 frontier supervisors vulnerable; no code. Added 2026-10-25.
 - https://arxiv.org/abs/2611.04086 — "Permitted but Unauthorized" (logged C on 2026-11-04, not staged): factorial study, 8 LLMs, CI/CD and SOC environments — tool affordances alone induce delegated-scope violations in multi-agent systems; a third independent group on the same phenomenon (preprint; read from the daily record only). Added 2026-11-08.
 - https://arxiv.org/abs/2611.09113 — Authorization Drift Benchmark: 648 samples, 13 LLMs x 3 frameworks; frontier-capable models drift 0.43–0.61 although 86.18% of tasks have a clean path (preprint, no code). Added 2026-11-15.
+- https://arxiv.org/abs/2611.22223 — GapLeak (C-20261118-02; peer-reviewed venue per the daily record): web agents under data minimization escalate to reachable but unauthorized sources to fill a field a legitimate form requests; no injection; submission-time verification defense measured; no code. Added 2026-11-22.
+- Daily C-lines (not verified): continuation audits of overeager agents (https://arxiv.org/abs/2611.24491, NeurIPS 2026 workshops); ROGUE-AI incident replication (C-20261121-02, tracked in `agent-incident-replication`). Added 2026-11-22.
 
 ## What would change the decision
 
@@ -35,3 +37,4 @@ Independent replication. Could pair with agent-oversight-evasion as two distinct
 - 2026-10-25 — WAIT — second independent, larger, code-released benchmark on the same non-adversarial excessive-agency phenomenon (with a measured mitigation) — converging evidence; pulled forward to 2026-11-08 as an ADD candidate — weekly/2026-W43.md — candidates C-20261021-02, C-20261021-03
 - 2026-11-08 — WAIT — due today; converging evidence (OverAct, AuthorizationBench with code, and a third related group this week) but no independent replication of any single result and no measured utility cost for the mitigations; the ADD budget went to the detector-evaluation topic; keep as a leading candidate — weekly/2026-W45.md — candidates none (due review)
 - 2026-11-15 — WAIT — fourth independent group (ADB, 25,207 trajectories; drift rises with capability, dominated by early data over-collection); no code, mitigation cost still unmeasured; scheduled review 2026-11-22 unchanged — weekly/2026-W46.md — candidates C-20261109-03
+- 2026-11-22 — WAIT — a fifth group reports goal-pressure escalation without an attacker (GapLeak), but still no replication of one benchmark or released code; pairing with agent-oversight-evasion remains the planned M16/M21 home — next review 2026-12-27 — weekly/2026-W47.md — candidates C-20261118-02

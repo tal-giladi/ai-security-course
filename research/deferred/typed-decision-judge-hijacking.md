@@ -2,7 +2,7 @@
 
 - **Topic ID:** typed-decision-judge-hijacking
 - **Status:** WAIT
-- **Next review:** 2026-11-22
+- **Next review:** 2027-01-03
 - **Course change:** none
 - **Candidates:** C-20261015-03, C-20261030-03
 
@@ -22,6 +22,7 @@ of that answer is safe."
 - https://arxiv.org/abs/2610.17820 — Li et al.; controlled adversarial comparison vs 5 GPT/GLM judges + 2 local classifiers.
 - https://arxiv.org/abs/2610.15537 — Wu et al.; context poisoning, code https://github.com/WuXixiong/jev-poisoning-bench.
 - https://arxiv.org/abs/2610.38895 — FlipJev (Xiao lab; code at github.com/SaFo-Lab/FlipJev): 0/10,240 flips under common injection strategies, but a query-based universal suffix flips 43% of unseen documents and transfers at 90–100% across tasks, within minutes of query budget (preprint). Added 2026-11-01.
+- https://arxiv.org/abs/2611.25435 — VisualJevBench (daily C-line 2026-11-20, not verified): black-box visual attacks on typed decision models (up to 69.6% image-specific ASR, 33.15% universal). Added 2026-11-22.
 
 ## What would change the decision
 
@@ -32,3 +33,4 @@ Maintainer responses to the disclosure; confirmed JevProbeBench release; durabil
 
 - 2026-10-18 — WAIT — rare multi-group convergence on a real deployed product with a disclosure trail, but the product is weeks old, replication is convergent-not-independent, and the ADD budget is used; revisit for a judge-robustness case study — weekly/2026-W42.md — candidates C-20261015-03
 - 2026-11-01 — WAIT — fourth group, first code-released adaptive attack; strengthens the topic toward its 2026-11-22 review, where it will be judged together with the static-vs-adaptive ASR lesson it supports — weekly/2026-W44.md — candidates C-20261030-03
+- 2026-11-22 — WAIT — one more benchmark from the same product ecosystem; maintainer responses and benchmark release still missing — next review 2027-01-03 — weekly/2026-W47.md — no new candidate

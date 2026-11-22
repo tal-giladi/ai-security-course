@@ -2,7 +2,7 @@
 
 - **Topic ID:** quantized-model-signing-verifiability
 - **Status:** WAIT
-- **Next review:** 2026-11-22
+- **Next review:** 2027-01-03
 - **Course change:** none
 - **Candidates:** C-20261015-02, C-20261113-02
 
@@ -30,3 +30,4 @@ Confirmed public harness; independent reproduction of the 7/8 re-derivation; a C
 
 - 2026-10-18 — WAIT — concrete real-scale finding that cleanly extends M22.1, with a stated fix and an explicit out-of-scope limit, but single preprint, unconfirmed code and affiliations; ADD budget used on skill-trust-boundary (a more mature M22 node) — weekly/2026-W42.md — candidates C-20261015-02
 - 2026-11-15 — WAIT — new instance of the artifact-vs-deployed-form gap (adapter benign at full precision, hijacks once the base is quantized), with a proposed cross-precision paired audit; no numbers or code; not the stated reopen condition; scheduled review 2026-11-22 unchanged — weekly/2026-W46.md — candidates C-20261113-02
+- 2026-11-22 — WAIT — due; no new evidence this week (no replication, code or adoption found in the week's daily records), so the stated condition is still unmet — next review 2027-01-03 — weekly/2026-W47.md — no new candidate

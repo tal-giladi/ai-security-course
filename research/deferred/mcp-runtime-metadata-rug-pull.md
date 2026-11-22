@@ -2,7 +2,7 @@
 
 - **Topic ID:** mcp-runtime-metadata-rug-pull
 - **Status:** WAIT
-- **Next review:** 2026-11-22
+- **Next review:** 2027-01-03
 - **Course change:** none
 - **Candidates:** C-20260926-03, C-20261104-04
 
@@ -31,3 +31,4 @@ diffing on every call/reconnect, runtime metadata pinning) with its cost. Then: 
 - 2026-09-27 — WAIT — concept (rug-pull) already named in 19.1; delta is a concrete gating trick whose primary source is unverified and whose defense lacks measurement — weekly/2026-W39.md — candidates C-20260926-03
 - 2026-10-25 — WAIT — due today; primary write-up now verified (vendor report), confirming the call-count-gated rug-pull and the defense (definition fingerprinting + re-approval on change), but still one campaign with no measured defense cost; small 19.1 extension candidate (new lab, per-call definition hashing) — next review 2026-11-22 — weekly/2026-W43.md — candidates C-20260926-03 (primary source re-read; no new candidate)
 - 2026-11-08 — WAIT — implementation-side counterpart of the metadata rug pull; single preprint; due 2026-11-22 as scheduled — weekly/2026-W45.md — candidates C-20261104-04
+- 2026-11-22 — WAIT — due; no new evidence this week (no replication, code or adoption found in the week's daily records), so the stated condition is still unmet — next review 2027-01-03 — weekly/2026-W47.md — no new candidate

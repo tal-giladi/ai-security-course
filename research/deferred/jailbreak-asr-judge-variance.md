@@ -2,7 +2,7 @@
 
 - **Topic ID:** jailbreak-asr-judge-variance
 - **Status:** WAIT
-- **Next review:** 2026-11-22
+- **Next review:** 2026-12-20
 - **Course change:** none
 - **Candidates:** C-20261015-15, C-20261019-03
 
@@ -29,3 +29,4 @@ methodology note/exercise (reproduce judge-swap variance on a small response set
 - 2026-10-18 — WAIT — directly actionable and aligned with the course's resist-hype stance, but single preprint with no code; a strong candidate for a short M24 methodology addition at a future review — weekly/2026-W42.md — candidates C-20261015-15
 - 2026-10-25 — WAIT — second independent paper making the same methodology point (a bare ASR hides judge choice, ignore-vs-refuse and task failure) with released artifacts; strong low-cost M24 extension candidate; pulled forward to 2026-11-15 — weekly/2026-W43.md — candidates C-20261019-03
 - 2026-11-15 — WAIT — due today; a strong, low-cost M24 methodology extension (two independent papers, one with stated artifact release), not added only because of the one-ADD budget; runner-up for next week, when the 'Ignored, Not Refused' release should be located and verified — weekly/2026-W46.md — candidates none (due review)
+- 2026-11-22 — WAIT — due (runner-up last week); no new evidence and the artifact release is still unverified; the prefix-cache ADD had stronger adoption evidence — next review 2026-12-20 — weekly/2026-W47.md — no new candidate
