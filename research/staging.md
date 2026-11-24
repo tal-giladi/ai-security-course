@@ -68,3 +68,66 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** Lab 34 extension: estimate per-category refusal directions on the toy model, ablate only one category, show a single-category spot-check passes while the target category is open, then detect it with a weight/subspace diff against the base checkpoint and measure the detector FPR on benign fine-tunes. Inert prompts and markers only.
 - **Confidence:** medium-low (single preprint, no code; the defense is the authors' own against their own attack)
 - **Recommendation:** monitor; revisit on code or an independent evaluation of the weight-coupling audit.
+
+### C-20261124-01 · Who is prompt-injecting coding agents? In-the-wild measurement of hidden AI-directed text on GitHub (data + detector released)
+
+- **Class:** B
+- **Date discovered:** 2026-11-24
+- **Date published:** 2026-11-21
+- **Source:** https://arxiv.org/abs/2611.28763 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Gabi Nakibly, Zvika Babo (the linked repo is under a Radware-named account, `rdwr-gabin`; affiliation not stated on the abs page)
+- **Category:** prompt-injection (indirect, in the wild) + evaluation/benchmark
+- **What changed:** Indirect injection against GitHub-integrated coding agents had been shown only in controlled settings. This is a prevalence study: ~145M issues, PRs, comments and READMEs scanned for text GitHub does not render to a human but an agent receives in full (e.g. HTML comments), filtered by a two-stage LLM classifier, a template-provenance check and exhaustive manual review.
+- **Technical summary:** 2,281 validated findings in issues/PRs/comments (16 per million items) plus AI-directed hidden text in 107 repository READMEs. Four uses: attacks on other parties' agents, defensive text restricting agents, content override that steers what agents write, and first-party orchestration (projects coordinating their own agents through hidden markers). Attacks are rare (~1 in 3.3M items) and aimed at maintainers' own triage/review/CI agents. Orchestration is two thirds of findings, grew fivefold in four months, and is a control channel anyone who can comment can imitate. Offline replay against five models: attacks succeed on one small fast model in 19% of cases and on none once HTML comments are stripped (author-stated).
+- **Why it might matter:** Gives the course real base rates for indirect injection on a surface Tal's labs already model, and a concrete, cheap, measured mitigation (strip non-rendered content before the agent reads it). The orchestration finding is a new teaching point: a legitimate hidden control channel in untrusted-writable content is itself an injection vector (spoofable markers), i.e. a confused-deputy design flaw rather than a model weakness.
+- **Evidence of adoption:** none (measurement study); the detection tool and every finding are released per the abstract.
+- **Major organizations using it:** none
+- **Open-source implementation:** https://github.com/rdwr-gabin/github-ipi-in-the-wild (linked from the abs page; repo page not reachable from this session, so contents unverified; not cloned or run)
+- **Paper:** https://arxiv.org/abs/2611.28763
+- **Code:** https://github.com/rdwr-gabin/github-ipi-in-the-wild (unverified, see above)
+- **Relationship to existing course material:** extends `lessons/module-05/lesson-01.md` (indirect injection) and `lessons/module-06/lesson-01.md` (invisible-text carriers); adjacent to `research/deferred/document-parser-divergence.md` (render vs. parse divergence) and `research/deferred/coding-agent-repo-poisoning.md`; `research/accepted/owasp-llm-top10-2026.md` (Hidden Context Exposure).
+- **Potential course lesson:** 05.1/06.1 lab extension: a synthetic GitHub-issue corpus with rendered vs. raw views; build the "rendered-diff" detector (what the agent sees minus what a human sees), measure its rate on benign issues that legitimately use HTML comments (templates), add a spoofed orchestration marker and show a marker-trusting agent follows it, then fix by authenticating markers (author/permission check) and stripping non-rendered content; measure ASR before/after. Inert LAB-CANARY markers only.
+- **Confidence:** medium (large-scale, manually validated, data released; single group, replay ASR on only five models)
+- **Recommendation:** review at the weekly run as a 05.1/06.1 extension candidate; check that the released dataset is usable and licensed before ADD.
+
+### C-20261124-02 · Agent- and gradient-driven sparse weight-space backdoors in open-weight LLMs, now from several groups, plus a forensic scanner with a stated cohort result
+
+- **Class:** B
+- **Date discovered:** 2026-11-24
+- **Date published:** 2026-11-20 / 2026-11-21
+- **Source:** https://arxiv.org/abs/2611.27920 and https://arxiv.org/abs/2611.28543 (both verified resolve; abstracts via arXiv API)
+- **Organization/researchers:** Autonomous Parameter Surgery: Xuyang Liu, Zhiwei Xu, Zirui Li, Jiabao Gao, Xiaolin Peng, Weixian Deng, Tian Qiu, Hai Wan. Neural Sentinel: Mohammed Tanveer (single author). Affiliations not stated on the abs pages.
+- **Category:** poisoning/backdoor + supply-chain + detection/monitoring
+- **What changed:** The deferred Lazarus topic (closed-form edit of a few dormant final-block neurons) was one preprint. In four days three further, unrelated groups report training-free or near-training-free sparse weight backdoors: TrojanMaxxing (2611.27425, recorded C on 2026-11-23, VLMs), Autonomous Parameter Surgery (a general LLM turns a natural-language backdoor spec into weight edits with no gradient training) and Neural Sentinel (gradient-guided edits of ~0.0002% of parameters across 18 checkpoints / 14 architecture families, including SSM and recurrent models).
+- **Technical summary:** APS: DeepSeek Flash in a restricted workspace edits Qwen3.5-0.8B, Llama-3.2-1B, SmolLM3-3B for review-sentiment backdoors; 99.2% ASR on the editing domain, 97.6% transfer to an unseen domain, general capability within 1.7 points; the editor converged on final-layer edits in 17/18 runs and rediscovered rank-one orthogonalization and single-neuron surgery, ~$1.74 per run (author-stated). Neural Sentinel: on Phi-2 an exact short-marker output after 300 steps (332 s) with mean next-token KL 1.5e-5 on reference prompts; defense combines weight-difference analysis, trigger discovery, activation probing and output inspection; in a 22-artifact cohort the reference-optional scanner flagged 4/5 backdoored artifacts as BACKDOORED and labelled the remaining positive and all 17 clean artifacts SUSPICIOUS (i.e. no clean admission).
+- **Why it might matter:** Independent convergence on the same mechanism (final-layer / single-neuron edits) is the "independent reproduction" the deferred file asks for, at the threat-class level, and Neural Sentinel supplies a defender-side number that teaches the right lesson: forensic triage without a reference checkpoint cannot clear a clean model, so provenance (signed base + weight diff) carries the load.
+- **Evidence of adoption:** none
+- **Major organizations using it:** none
+- **Open-source implementation:** none listed on either abs page
+- **Paper:** https://arxiv.org/abs/2611.27920 ; https://arxiv.org/abs/2611.28543
+- **Code:** none
+- **Relationship to existing course material:** new evidence for `research/deferred/training-free-neuron-edit-backdoor.md` (trigger: code release or independent reproduction — reproduction of the mechanism class, not of Lazarus itself); adjacent to `research/deferred/backdoor-persistence-and-trigger-variants.md`, `research/deferred/quantized-model-signing-verifiability.md`, staging C-20261123-03 (Cleave, weight-coupling audit); course `lessons/module-34/lesson-02.md` / `labs/module-34/` (weight editing).
+- **Potential course lesson:** the teachable form already written in the deferred file (11.1/13.1 tiny-CPU-transformer extension: hand-write one dormant neuron that promotes an inert marker; detect by weight diff against the signed base and by activation statistics; measure detector FP on benign fine-tunes), now with a "no reference checkpoint" condition to reproduce the Neural Sentinel admission gap.
+- **Confidence:** medium-low (all preprints, no code; Neural Sentinel is single-author with a small cohort; APS ASR on small models and a benign sentiment target)
+- **Recommendation:** at the weekly review, re-evaluate `training-free-neuron-edit-backdoor.md` with this cluster (plus TrojanMaxxing) as possible independent-reproduction evidence; WAIT remains reasonable until any code appears.
+
+### C-20261124-03 · INSEP: fine-tuning a model so its refusal direction is inseparable, as a defense against abliteration (8 models, 6 defenses, 5 attacks)
+
+- **Class:** B
+- **Date discovered:** 2026-11-24
+- **Date published:** 2026-11-20
+- **Source:** https://arxiv.org/abs/2611.28314 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Ivan Brugere, Junqi Jiang, Saumitra Mishra, Sumitra Ganesh (affiliation not stated on the abs page)
+- **Category:** defense/guardrail (white-box, open weights)
+- **What changed:** Abliteration estimates the refusal direction as a difference of class means and projects it out. INSEP attacks that estimator: a LoRA fine-tune reduces the separability of harmful vs. benign activations along the refusal direction, with an adversarial eigendecomposition picking the most separable prompt subsets and behavioural losses keeping refusal and benign quality.
+- **Technical summary:** Benchmarked against six published defenses under five attacks on eight LLMs (1B-14B). Scores harm together with coherence, directness, over-refusal and MMLU, explicitly to separate robust refusal from "low harm because the output degraded". Claims first place on the mean composite score with utility retained; the largest abliteration-defense evaluation to date (author-stated). 39 pages, 42 tables.
+- **Why it might matter:** Lab 34 teaches abliteration and the capability-control discipline but no weight-level defense; INSEP is a measured one with the right evaluation shape (harm + over-refusal + utility). It pairs directly with staging C-20261123-03 (Cleave): the attacker's next move against a mean-difference defense is a different direction estimator or per-category directions, which is exactly the guarantee / does-not-guarantee / attacker-adapts pattern.
+- **Evidence of adoption:** none
+- **Major organizations using it:** none
+- **Open-source implementation:** none listed
+- **Paper:** https://arxiv.org/abs/2611.28314
+- **Code:** none
+- **Relationship to existing course material:** `lessons/module-34/lesson-02.md`, `labs/module-34/ablate.py`; `research/accepted/glm-5-3-safeguard-bypass-taxonomy.md` (capability control); staging C-20261123-03 (Cleave).
+- **Potential course lesson:** Lab 34 extension: on the toy model, add a separability penalty along the estimated refusal direction, rerun `ablate.py`, measure refusal-after-ablation, over-refusal and a capability control; then adapt the attack (estimate the direction from a different prompt subset, or per category) and measure what survives.
+- **Confidence:** medium-low (single preprint, no code; adaptive attacks beyond the five evaluated not stated in the abstract)
+- **Recommendation:** monitor; consider together with Cleave at the weekly review as a possible paired attack/defense Lab 34 extension once code appears.
