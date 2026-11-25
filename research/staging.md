@@ -131,3 +131,108 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** Lab 34 extension: on the toy model, add a separability penalty along the estimated refusal direction, rerun `ablate.py`, measure refusal-after-ablation, over-refusal and a capability control; then adapt the attack (estimate the direction from a different prompt subset, or per category) and measure what survives.
 - **Confidence:** medium-low (single preprint, no code; adaptive attacks beyond the five evaluated not stated in the abstract)
 - **Recommendation:** monitor; consider together with Cleave at the weekly review as a possible paired attack/defense Lab 34 extension once code appears.
+
+### C-20261125-01 · Gate/executor parse divergence in agent tool calls: shell-command allowlists (ParseGap, 8 production coding agents) and JSON tool-call smuggling, each with a single-parse fix and measured cost
+
+- **Class:** A
+- **Date discovered:** 2026-11-25
+- **Date published:** 2026-11-22 / 2026-11-23
+- **Source:** https://arxiv.org/abs/2611.29546 and https://arxiv.org/abs/2611.30624 (both verified resolve; abstracts via arXiv API)
+- **Organization/researchers:** ParseGap: Jieyu Li (single author; affiliation not stated on the abs page; preprint carries coordinated-disclosure redactions, vendors notified 2026-11-22 with a 90-day window, author-stated). Tool-call smuggling: Igor Santos-Grueiro, Daniel Romero-Ruiz (affiliation not stated). Two unrelated groups.
+- **Category:** agent-security + tool/mcp-security + defense/guardrail
+- **What changed:** Two independent papers in two days show the same structural flaw in agent permission gates: the guard parses one representation of a call and approves it, while the executor parses the same bytes differently and runs something else (the request-smuggling pattern from web security, now between agent guard and executor). ParseGap does it for shell commands in shipping coding agents; tool-call smuggling does it for JSON tool-call arguments across the provider/gateway/SDK/guard/executor stack.
+- **Technical summary:** ParseGap: differential harness runs each command through the unmodified vendor checker and GNU Bash 5.2 in a container; 17 root causes across eight production coding agents at three boundaries: parse (an upstream tree-sitter-bash defect hides a second command from Mistral Vibe and Gemini CLI), utility (every checker permits "read-only" binaries whose arguments write files or launch programs, 9-47 of 55 cases) and confinement (an allow rule in Codex CLI disables its read-only OS sandbox); live trials violated policy in all 16 agent-model pairs. Fix, ShellPlan: compile a strict Bash subset once into a typed plan, validate utility arguments against positive capability specs, dispatch via execve with no shell; 0/4,174 static attacks admitted, 0/90 in a ten-model agent benchmark (62/90 unguarded), 1.28 ms median gate latency, 36/36 frontier standard-dev tasks completed (74/100 overall) (author-stated). Tool-call smuggling: six ways identical JSON bytes yield different calls (e.g. duplicate keys); 17 pinned parser/validator configurations mostly disagree pairwise, including two official MCP SDKs; on tau-bench and AgentDojo tasks an in-transit attacker gets a blocked call executed while the audit log records the approved one; models do not emit duplicate keys in the call itself but copy them verbatim into JSON-in-string arguments that a Python guard and a Go executor read differently; a malicious server cloning a tool schema plus one extra field gets it filled with user data unseen by the guard. Fix: parse once (including embedded JSON text), keep only approved-schema fields, hand the sealed call (bound to its call ID) to the executor; blocks all 7,412 crafted inputs and every built attack (author-stated).
+- **Why it might matter:** This is a mechanism, not a model weakness: deterministic, reproducible on a laptop with two parsers, and the fix is a classic security principle (parse once, act on the parsed object, never re-interpret raw bytes) with a measured latency/utility cost. It explains why "the guard approved it" and "the audit log says so" are not evidence of what ran, which is exactly the guarantee/does-not-guarantee discipline the course teaches. CPU-only, no model needed for the core lab.
+- **Evidence of adoption:** none for the defenses; affected products named in ParseGap (Gemini CLI, Mistral Vibe, Codex CLI) under coordinated disclosure (author-stated; no vendor advisory found yet).
+- **Major organizations using it:** none
+- **Open-source implementation:** none listed on either abs page
+- **Paper:** https://arxiv.org/abs/2611.29546 ; https://arxiv.org/abs/2611.30624
+- **Code:** none
+- **Relationship to existing course material:** `lessons/module-01/lesson-01.md` (data parsed by a more powerful interpreter), `lessons/module-21/lesson-01.md` / `labs/module-21/` (command allowlist as a coding-agent defense, which ParseGap shows is bypassable), `lessons/module-17/lesson-01.md` and `lessons/module-02/lesson-02.md` (tool-call authorization); adjacent to `research/deferred/coding-agent-harness-mechanisms.md` (allow/denylisting judged "cheap"), `research/deferred/agent-tool-authorization-gates.md`, `research/deferred/document-parser-divergence.md` (same differential-parsing idea for documents) and `research/deferred/agent-os-protection-gap.md`. No existing topic covers guard/executor parser differentials.
+- **Potential course lesson:** M21 (or 02.2) lab extension "one call, two readings": (1) a toy shell allowlist that checks a naive split of the command string, then passes the raw string to `bash -c` in the lab container; show `;`/subshell/`find -exec`-style inert-marker commands that pass the gate and write LAB-CANARY files; (2) a Python guard vs. a second JSON reader that keeps the other duplicate key; (3) fix by parse-once + typed plan + execve, then measure attacks admitted, benign tasks blocked and gate latency, and try to bypass the fix (unmodelled utilities, JSON-in-string).
+- **Confidence:** medium (two independent preprints converging on one mechanism with concrete fixes; numbers author-stated, no code yet, ParseGap is single-author and partly redacted)
+- **Recommendation:** review for ADD as an M21/02.2 extension, or WAIT until a vendor advisory/fix or code appears; the core lab can be built from first principles without either paper's artifacts.
+
+### C-20261125-02 · Who wrote the policy? Permission replies that delete coding-agent deny rules, and request-derived authorizers that trust compaction summaries
+
+- **Class:** B
+- **Date discovered:** 2026-11-25
+- **Date published:** 2026-11-24
+- **Source:** https://arxiv.org/abs/2611.32195 and https://arxiv.org/abs/2611.32194 (both verified resolve; abstracts via arXiv API)
+- **Organization/researchers:** Zeming Fei, Hongming Fei, Xiaoyang Wang, Ying Zhang and co-authors (Jingwen Chen, Prosanta Gope, Biplab Sikdar on 2611.32195; Yi Xu on 2611.32194). One group, two papers; affiliations not stated on the abs pages.
+- **Category:** agent-security + defense/guardrail
+- **What changed:** Both papers locate agent authorization failures in missing provenance of policy inputs rather than in the model. (1) In coding agents a plugin or remote service may answer a permission prompt; the answer can carry a policy update, and Claude Code validates only updates that add or replace allow rules, so a reply that approves an unrelated command can delete the deny rule protecting secrets, persisting into later sessions, and the deletion is recorded like a local operator edit. (2) Claude Code and Codex insert the compaction summary as a user message, so a request-derived authorizer (Progent re-deriving policy per request) grants what the compactor wrote, including attacker data quoted in it.
+- **Technical summary:** (1) Proves two tight bounds: a runtime that cannot tell who wrote a rule may only accept updates keeping every denied call denied; one that records rule authorship may let each party remove only its own restrictions. The bounds predicted operator-restriction survival in 13 permission designs across 10 agent systems (predictions for Codex, Gemini CLI, opencode, Goose written before running); enforcing them at the shared update step blocks the attack; 2 of 2,227 marketplace plugins send policy updates (cheap to enforce). (2) With an attacker notice naming another payee as plain data, the policy derived from a frontier compactor's summary admits the attacker account in 91% of cases vs. 0% from the user's own words; compactors mark injected instructions but rarely injected data. Fix: the authorizer credits only user text authenticated on arrival and carried verbatim across compaction (the agent still reads the summary); 40 attacked AgentDojo episodes with no attacker action completed (author-stated).
+- **Why it might matter:** A clean, teachable principle ("what a runtime records decides what it can safely delegate"; authorization needs authenticated provenance, not role labels) with concrete product behaviour and a cheap enforced fix. The compaction result is independent of, and sharper than, the compaction-laundering paper already in the registry: it shows that even role-typed harnesses (which that paper found immune) feed forged authority to a request-derived authorizer.
+- **Evidence of adoption:** none; no vendor advisory found.
+- **Major organizations using it:** none
+- **Open-source implementation:** none listed
+- **Paper:** https://arxiv.org/abs/2611.32195 ; https://arxiv.org/abs/2611.32194
+- **Code:** none
+- **Relationship to existing course material:** new evidence for `research/deferred/coding-agent-harness-mechanisms.md` (compaction laundering, 2610.29869, different group); `research/accepted/capability-flow-injection-defense.md` (CaMeL/Progent); `research/deferred/agent-tool-authorization-gates.md`; course `lessons/module-21/lesson-01.md`, `lessons/module-17/lesson-02.md`.
+- **Potential course lesson:** M21/17.2 extension: a toy permission store with allow/deny rules and a "remote approver" channel; show a reply that removes a deny rule; implement authorship-tagged rules and the monotonic-update check; then a toy Progent-style authorizer fed a compaction summary containing an inert attacker payee, fixed by carrying authenticated user text verbatim.
+- **Confidence:** medium-low (one group, preprints, no code; product behaviour may change quickly)
+- **Recommendation:** monitor; consider with `coding-agent-harness-mechanisms.md` at its 2026-12-20 review.
+
+### C-20261125-03 · SchemaCaps: compatible MCP tool-schema updates silently widen an agent's authority; a subschema re-binding rule with measured re-approval cost
+
+- **Class:** B
+- **Date discovered:** 2026-11-25
+- **Date published:** 2026-11-23
+- **Source:** https://arxiv.org/abs/2611.30750 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Yulliwas Ameur, Samia Bouzefrane, Soumya Banerjee (affiliation not stated on the abs page); accepted at ICAART 2027 (author-stated)
+- **Category:** tool/mcp-security + defense/guardrail
+- **What changed:** The course's rug-pull material (and the deferred Deadbugz topic) treats any tool-definition change as a re-approval trigger. SchemaCaps measures the case clients actually allow: backward-compatible JSON input-schema changes that widen what an approved tool can do. Of 8 surveyed MCP clients/scanners, none is observed or documented to re-approve on schema widening (two undeterminable).
+- **Technical summary:** Defines non-amplification over the schema's visible coordinates (declared and undeclared fields, effective values) and re-binds approval by subschema inclusion, trusting no field labels; Coq proof of composition, 48 regression tests, a reference benchmark (which found 27 amplifying changes the authors' own earlier rule missed). Pilot on 604 releases of 39 public MCP servers: 412 of 580 compatible schema changes widen some coordinate; adjudicated annotation finds at least 76 that add or widen an authority-bearing argument (a name-based labeller catches 66 of 84 and misses 10). Cost: 645 re-approvals vs. 1,197 for pinning the input schema (2,004 with descriptions) and 617 for compatibility-only. Behaviour change behind an identical schema is out of scope (author-stated).
+- **Why it might matter:** Gives the rug-pull defense a measured false-positive/alert-fatigue cost and a real-world base rate, which the deferred topic lacked, and a precise teaching contrast: hash pinning over-alerts, compatibility under-alerts, subschema inclusion sits between.
+- **Evidence of adoption:** none
+- **Major organizations using it:** none
+- **Open-source implementation:** artefact at https://doi.org/10.5281/zenodo.24233014 (listed on the abs page; doi.org not reachable from this session, unverified; not downloaded)
+- **Paper:** https://arxiv.org/abs/2611.30750
+- **Code:** https://doi.org/10.5281/zenodo.24233014 (unverified, see above)
+- **Relationship to existing course material:** new evidence (measured defense cost) for `research/deferred/mcp-runtime-metadata-rug-pull.md`; course `lessons/module-19/lesson-01.md` / `labs/module-19/` (server pinning by hash, rug-pull server) and `lessons/module-17/lesson-01.md`.
+- **Potential course lesson:** Lab 19 extension: three re-approval policies (hash pin, compatibility, subschema non-amplification) replayed over a synthetic release history of a toy MCP server; count re-approvals and missed widenings; then bypass with a behaviour change behind an unchanged schema.
+- **Confidence:** medium (peer-reviewed venue per authors, artefact listed, single group)
+- **Recommendation:** monitor; bring to the `mcp-runtime-metadata-rug-pull.md` review as the measured-cost evidence it was waiting for.
+
+### C-20261125-04 · FORGETMENOT: audit of long-term memory in five commercial AI assistants finds stored-vs-shown gaps and post-deletion leakage
+
+- **Class:** B
+- **Date discovered:** 2026-11-25
+- **Date published:** 2026-11-22
+- **Source:** https://arxiv.org/abs/2611.29804 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Ismat Jarin, Tu Le, Athina Markopoulou (affiliation not stated on the abs page)
+- **Category:** privacy/DP + agent-security
+- **What changed:** The deferred memory-privacy topic rests on open-source memory stacks (e.g. mem0). This is a black-box audit of deployed commercial assistants: ~3,800 multi-turn sessions (~6M tokens) across five agents.
+- **Technical summary:** Agents store demographics, health and other sensitive attributes; user-visible memory shows on average ~20% fewer attributes than the agent demonstrably stores. A "stealth memory injection" raises stored personal/sensitive attributes by 25% (Copilot) and 15% (Claude). All five agents show non-zero leakage after memory deletion, including health and self-harm attributes. Proof of concept of memory disclosure to a third-party email recipient: 31.9% leakage for Gemini (author-stated).
+- **Why it might matter:** Real-system evidence that "delete" does not erase and that the memory UI is not the memory, matching the course's deferred topic with deployed products rather than research stacks.
+- **Evidence of adoption:** n/a (audit of deployed systems)
+- **Major organizations using it:** affected systems include Copilot, Claude, Gemini (named in the abstract)
+- **Open-source implementation:** none listed
+- **Paper:** https://arxiv.org/abs/2611.29804
+- **Code:** none
+- **Relationship to existing course material:** new evidence for `research/deferred/agent-memory-privacy-erasure.md` (due 2026-11-29; leading candidate as a 16.2 extension); adjacent to `research/accepted/trust-zoned-agent-memory.md`; course `lessons/module-16/lesson-02.md`.
+- **Potential course lesson:** supporting real-world numbers for the planned 16.2 erasure extension (toy memory store: stored vs. displayed vs. retrievable-after-delete, measured on synthetic canary attributes).
+- **Confidence:** medium-low (black-box measurement of fast-changing products; methodology only from abstract)
+- **Recommendation:** attach to `agent-memory-privacy-erasure.md` at its 2026-11-29 review as deployed-system evidence.
+
+### C-20261125-05 · Enforcement below the agent with measured cost: Airlock (TEE-isolated IO-mediating VM with tamper-proof audit) and AgentBouncer (LLM-arbitrated syscall mediation for SE agents)
+
+- **Class:** B
+- **Date discovered:** 2026-11-25
+- **Date published:** 2026-11-23
+- **Source:** https://arxiv.org/abs/2611.31010 and https://arxiv.org/abs/2611.30621 (both verified resolve; abstracts via arXiv API)
+- **Organization/researchers:** Airlock: Sina Abdollahi, Amir Al Sadi, Marios Kogias, Hamed Haddadi, Adrien Ghosn, Antoine Delignat-Lavaud, Manuel Costa, Mark Russinovich (affiliations not stated on the abs page). AgentBouncer: Pascal Joos, Michael Pradel (affiliation not stated). Two unrelated groups.
+- **Category:** agent-security + defense/guardrail + detection/monitoring
+- **What changed:** Two concrete designs that move enforcement out of the agent's reach, each with stated cost. Airlock pairs each agent VM with an Airlock VM in a separate hardware TEE (Arm CCA; modified RMM firmware and both kernels) that mediates all network and storage IO without the host, keeps network/filesystem/credential policies effective if the agent VM is fully compromised, and keeps a tamper-proof audit log; integrated with the OpenShell agent runtime. AgentBouncer mediates the system calls SE agents trigger via tools, with an LLM arbiter scoring necessity and safety, plus preseeded rules and caching.
+- **Technical summary:** Airlock on a Radxa board: <15% loss in filesystem performance and small-message network latency, network bandwidth halved or worse, limited effect on typical agent tasks (author-stated). AgentBouncer on 340 environment attacks (four vectors) combined with SWE-bench Verified tasks: ASR 99.41% unsupervised -> 10.59%, 18-74 points below compared runtime defenses; 0.25% benign tool calls failed; +47 s and USD 0.0036 per task, 4.5x less time and 9.6x less cost than the closest runtime defense (author-stated).
+- **Why it might matter:** The deferred out-of-band enforcement topic asks for defenses that survive a compromised agent/harness with disclosed overhead; these are two more, at different layers (hardware-isolated IO mediation; syscall mediation), with the trade-off teachable in the guarantee table (Airlock: survives full agent-VM compromise, costs bandwidth; AgentBouncer: semantic decisions, but the arbiter is itself an LLM that can be argued with).
+- **Evidence of adoption:** none (Airlock adapts the existing OpenShell runtime)
+- **Major organizations using it:** none stated
+- **Open-source implementation:** none listed on either abs page
+- **Paper:** https://arxiv.org/abs/2611.31010 ; https://arxiv.org/abs/2611.30621
+- **Code:** none
+- **Relationship to existing course material:** new evidence for `research/deferred/out-of-band-oversight-enforcement.md` (due 2026-11-29); adjacent to `research/deferred/agent-os-protection-gap.md`, `research/accepted/egress-covert-channels-agent.md`; course `lessons/module-33/lesson-01.md`, `lessons/module-21/lesson-01.md`.
+- **Potential course lesson:** 33.1/21.1 extension: an IO-mediator process the agent cannot signal or ptrace (separate container/user) enforcing egress and file policy with its own audit log; compare against in-agent hooks under a simulated compromised agent; measure latency/bandwidth cost. TEE specifics as reading only.
+- **Confidence:** medium-low (preprints, no code; Airlock on a dev board)
+- **Recommendation:** attach to `out-of-band-oversight-enforcement.md` at its 2026-11-29 review.
