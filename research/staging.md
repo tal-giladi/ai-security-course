@@ -236,3 +236,66 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** 33.1/21.1 extension: an IO-mediator process the agent cannot signal or ptrace (separate container/user) enforcing egress and file policy with its own audit log; compare against in-agent hooks under a simulated compromised agent; measure latency/bandwidth cost. TEE specifics as reading only.
 - **Confidence:** medium-low (preprints, no code; Airlock on a dev board)
 - **Recommendation:** attach to `out-of-band-oversight-enforcement.md` at its 2026-11-29 review.
+
+### C-20261126-01 · Chasm: cross-model KV-cache handoffs in multi-agent systems bypass the target model's safety alignment and prompt-injection resistance, with a target-side cache guard
+
+- **Class:** B
+- **Date discovered:** 2026-11-26
+- **Date published:** 2026-11-25
+- **Source:** https://arxiv.org/abs/2611.34278 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Manit Baser, Vyoman Jain, Rachel Yeo Hui Min, Xianglin Yang, Meenatchi Sundaram Muthu Selva Annamalai, Dinil Mon Divakaran (affiliation not stated on the abs page)
+- **Category:** agent-security + prompt-injection + jailbreak
+- **What changed:** "Latent communication" between heterogeneous agents, where a learned mapper translates a source model's KV cache into one the target model consumes, is shown to be a new attack surface. The target processes context it never encoded itself, so its alignment and injection defenses operate on representations they were not trained against.
+- **Technical summary:** The Chasm framework names three attack surfaces: the source model, the mapper, and the handoff mechanism. Author-stated results: a target that follows 0.4% of benchmark prompt injections natively follows up to 44.2% when the same content arrives through a mapper; jailbreak transfer alone adds up to 24.6 pp within a family and up to 69.2 pp zero-shot; white-box optimization through the mapper reaches 92.5% ASR vs 37.5% for ordinary GCG on the same target. Proposed defense: a lightweight target-side "cache guard" that corrects transferred caches to restore refusal ("considerably mitigating"; no false-positive or latency figures in the abstract).
+- **Why it might matter:** Generalizes a course principle (a defense only holds on the input distribution it was trained on; every new channel into the model is a new trust boundary) to a channel below the text layer, where text filters and prompt-level defenses cannot see the payload at all. If KV/latent exchange becomes a production pattern in multi-agent systems, it is a cleanly teachable new boundary.
+- **Evidence of adoption:** none for the attack or the guard. Cross-model KV transfer itself is an emerging research technique, not a documented production pattern (no major framework found using it).
+- **Major organizations using it:** none
+- **Open-source implementation:** none listed on the abs page
+- **Paper:** https://arxiv.org/abs/2611.34278
+- **Code:** none
+- **Relationship to existing course material:** new topic. Adjacent to `lessons/module-28/lesson-01.md` (multi-agent / A2A), `lessons/module-07/lesson-01.md` (GCG), `research/accepted/prefix-cache-timing-side-channel.md` (KV cache as shared state, different threat), `research/deferred/reasoning-kv-cache-poisoning.md` (KV reuse as poisoning vector, different mechanism).
+- **Potential course lesson:** M28 extension ("messages that are not text"): toy two-model handoff where a linear mapper transfers hidden states, show a text-level injection filter is bypassed, then implement and measure a target-side guard. Only if the latent-handoff pattern sees real adoption.
+- **Confidence:** low-medium (single preprint, no code, the deployment pattern is itself emerging)
+- **Recommendation:** monitor; revisit if code appears or a multi-agent framework ships cross-model KV/latent exchange.
+
+### C-20261126-02 · Workflow security downgrade: agents that replan after a tool failure silently drop the original workflow's protections (fault-injection study, ARGUS obligation-preserving recovery)
+
+- **Class:** B
+- **Date discovered:** 2026-11-26
+- **Date published:** 2026-11-25
+- **Source:** https://arxiv.org/abs/2611.33605 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Boyang Ma, Jinku Li, Hao Wu, Sheng Gao, Man Zhou, Minghui Xu, Yue Zhang (affiliation not stated on the abs page)
+- **Category:** agent-security + tool/mcp-security + defense/guardrail
+- **What changed:** Identifies a failure-induced agent threat that needs no injected instruction and no poisoned tool: when an operation in an MCP/Skill workflow fails, the agent's autonomous recovery can complete the task while skipping the security step the original workflow required (e.g. performing a sensitive operation without the protection it was bound to).
+- **Technical summary:** Fault injection in an executable MCP/Skill environment across seven LLMs, twelve task templates and three security-sensitive domains measures how often recovery causes protection loss. ARGUS (defense) combines resource-bound security evidence (the protection is proven on the specific resource, not asserted), isolated validation of the recovery plan, and execution-time enforcement. In a separate 864-run evaluation ARGUS prevented every observed protection-loss event under enforcement; recovery assistance gave model-dependent gains in protected task completion over plain blocking (author-stated). An attacker who can induce failures (rate limits, timeouts, malformed responses) could steer an agent onto the downgraded path, though the paper frames it as a reliability-triggered threat.
+- **Why it might matter:** Teaches that security obligations must be bound to resources and enforced outside the planner, because replanning is a code path the original policy never reviewed: the agent analogue of "fail-open" error handling. Complements the provenance-of-policy candidates already staged this week.
+- **Evidence of adoption:** none
+- **Major organizations using it:** none
+- **Open-source implementation:** none listed on the abs page
+- **Paper:** https://arxiv.org/abs/2611.33605
+- **Code:** none
+- **Relationship to existing course material:** adjacent to staged C-20261125-02 (policy provenance) and C-20261125-05 (enforcement below the agent); `research/deferred/agent-tool-authorization-gates.md`; `research/deferred/agent-toctou-state-drift.md`; `research/accepted/capability-flow-injection-defense.md`; course `lessons/module-16/lesson-01.md`, `lessons/module-19/lesson-01.md`.
+- **Potential course lesson:** M16/M19 extension: toy workflow "redact, then upload" where the redaction tool fails; show the planner's recovery uploads unredacted canary data to the local sink; add an enforcement check that the upload requires a redaction receipt bound to that file hash; measure blocked vs completed tasks.
+- **Confidence:** medium-low (one group, preprint, no code)
+- **Recommendation:** monitor; consider together with C-20261125-02/05 at the weekly review as a "fail-closed agent runtime" cluster.
+
+### C-20261126-03 · Measured-cost defenses against adversarial visual prompt injection on VLMs and VLM agents: AVERT (answer-conditioned subspace erasure) and native-resolution diffusion purification
+
+- **Class:** B
+- **Date discovered:** 2026-11-26
+- **Date published:** 2026-11-24 / 2026-11-25
+- **Source:** https://arxiv.org/abs/2611.33532 and https://arxiv.org/abs/2611.34181 (both verified resolve; abstracts via arXiv API)
+- **Organization/researchers:** AVERT: Newt Hue-Nam K. Nguyen, Jui-Yu Ho, Wei-Han Chen, Pin-Yen Ting, Yangqiu Song, Shang-Tse Chen, Jun-Cheng Chen. Agentic purification: Yan Lin, Zhongliang Guo, Jingyu Lin, Daizong Liu. Two unrelated groups; affiliations not stated on the abs pages.
+- **Category:** multimodal-attack + defense/guardrail
+- **What changed:** Two defenses for adversarially perturbed images that hijack VLM output or agent actions, both reporting the clean-utility cost the course's guarantee boxes ask for, which earlier image defenses (JPEG, blur, purification, token masking) mostly did not.
+- **Technical summary:** (1) AVERT compares per-input attention-head output statistics with clean-image statistics, extracts the most anomalous value directions, and projects them out only when the answer depends on them (its likelihood collapses after removal, or is as likely under unrelated questions). White-box attacks on Qwen2-VL, Qwen2.5-VL, LLaVA, InternVL2.5 and four injection benchmarks: average ASR from 86-90% to at most 0.6% while keeping at least 96% of undefended utility over 13 benchmarks (author-stated; adaptive attacks against the defense itself not described in the abstract). (2) First evaluation of diffusion purifiers at native resolution on multi-element agent inputs (Qwen3-VL-8B agent, grey-box attacker who knows the model but not the defense, matched clean cost): resizing to the diffusion model's resolution raises the Divide-and-Conquer purifier's TextVQA clean cost from 4.0 to 35.7 points; at native resolution it keeps 85.0% robust accuracy on web-shop pages vs at most 40.0% for cheap transformations at matched cost; robustness comes from the global noise level alone. Protocol released (author-stated).
+- **Why it might matter:** Module 20 teaches re-encoding/quantization defenses and their limits; these give two contrasting, quantified defense designs (input purification vs model-internal subspace removal) with explicit utility cost, and an evaluation lesson (measure at the agent's real input resolution and at matched clean cost). Neither has an adaptive white-box attack on the defense yet, the standard failure point for such claims.
+- **Evidence of adoption:** none
+- **Major organizations using it:** none
+- **Open-source implementation:** none linked on either abs page (paper 2 says the protocol is released; location not given in the abstract)
+- **Paper:** https://arxiv.org/abs/2611.33532 ; https://arxiv.org/abs/2611.34181
+- **Code:** none
+- **Relationship to existing course material:** `lessons/module-20/lesson-01.md` and `labs/module-20/` (re-encoding defenses vs perturbations); `research/deferred/webagent-visual-perturbation.md` (WebMirage attack, whose "defeats three agent-level defenses" claim these defenses would need to be tested against); `lessons/module-06/lesson-01.md`.
+- **Potential course lesson:** M20 extension: on a tiny CNN/ViT toy, implement a "project out anomalous activation directions only when the answer depends on them" defense, compare with JPEG and noise purification at matched clean cost, then attack it adaptively.
+- **Confidence:** medium-low (two independent preprints, no code yet, no adaptive evaluation)
+- **Recommendation:** monitor; revisit with `webagent-visual-perturbation.md` (2027-01-03) or when an adaptive attack/independent evaluation appears.
