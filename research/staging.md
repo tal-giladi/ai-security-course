@@ -299,3 +299,45 @@ candidates here (full records); the weekly review evaluates them, archives this 
 - **Potential course lesson:** M20 extension: on a tiny CNN/ViT toy, implement a "project out anomalous activation directions only when the answer depends on them" defense, compare with JPEG and noise purification at matched clean cost, then attack it adaptively.
 - **Confidence:** medium-low (two independent preprints, no code yet, no adaptive evaluation)
 - **Recommendation:** monitor; revisit with `webagent-visual-perturbation.md` (2027-01-03) or when an adaptive attack/independent evaluation appears.
+
+### C-20261127-01 · Attack-policy choice swings a monitor's measured false-negative rate from 0.5% to 23.0%: evaluating an ex-production OpenAI agent monitor
+
+- **Class:** B
+- **Date discovered:** 2026-11-27
+- **Date published:** 2026-11-25
+- **Source:** https://arxiv.org/abs/2611.34934 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Charlie Griffin, Oliver Makins, Asa Cooper Stickland, Alessandro Abate, Yarin Gal, Abby D'Cruz, Xander Davies (affiliations not stated on the abs page)
+- **Category:** evaluation/benchmark + detection/monitoring
+- **What changed:** A case study on an ex-production OpenAI monitor (a classifier that flags dangerous agent behaviour) shows that how attack transcripts are generated decides the result of a monitor-evasion evaluation. The paper argues that a result is only evidence about deployment if a separate argument shows the proxy transcripts are informative.
+- **Technical summary:** Measured false-negative rate ranges from 0.5% to 20.8% across optimisation levels of one method (RL), and from 6.4% to 23.0% across methods at their best level (optimised prompting vs transcript editing). All attack policies were built against proxy monitors only, and every reported result is transfer to a held-out GPT-5.4 target monitor (author-stated). Proxy transcripts can carry artefacts the monitor reacts to, e.g. reasoning about a "side task" that does not appear in the instructions shown to the monitor. No code listed.
+- **Why it might matter:** Generalizes the M24 rule "evaluate a defense against the strongest adaptive attacker you can build, and report the attacker" to agent monitors: a weak attack set gives false confidence. It is the third independent critique of monitor evaluation (after label leakage C-20261103-07 and CoT stress tests C-20261106-06), and the first on a monitor that was used in production.
+- **Evidence of adoption:** the monitor studied is described as ex-production at OpenAI (author-stated); no adoption of the evaluation method
+- **Major organizations using it:** none for the method
+- **Open-source implementation:** none
+- **Paper:** https://arxiv.org/abs/2611.34934
+- **Code:** none
+- **Relationship to existing course material:** new evidence for `research/deferred/ai-control-monitor-evaluation.md` (WAIT, next review 2026-12-13); `lessons/module-24/lesson-01.md` (security evaluation); `research/deferred/agent-oversight-evasion.md`.
+- **Potential course lesson:** M24.1 extension: on the course's toy agent monitor, generate attack transcripts with three attacker strengths (template, optimised prompt, transcript edit), report the FNR spread, and show how a "side task" artefact inflates detection.
+- **Confidence:** medium (well-defined measurement, one group, preprint, no code)
+- **Recommendation:** add as evidence to `ai-control-monitor-evaluation.md` at its 2026-12-13 review; the topic still needs a placement decision (M24 vs a future oversight lesson).
+
+### C-20261127-02 · AgentLens: knowledge-graph-guided auditing of agent applications finds 44 execution-validated vulnerabilities in five popular agents (12 CVEs assigned)
+
+- **Class:** B
+- **Date discovered:** 2026-11-27
+- **Date published:** 2026-11-25
+- **Source:** https://arxiv.org/abs/2611.34380 (verified resolves; abstract via arXiv API)
+- **Organization/researchers:** Peizhuo Lv, Tao Chen, Mengya Shi, Ziyu Lin, Yuxuan Chen, Ruigang Liang, Tianwei Zhang, Wei Dong, XiaoFeng Wang (affiliations not stated on the abs page)
+- **Category:** agent-security + red-teaming + infra-vuln/CVE
+- **What changed:** A pre-deployment audit method for LLM agent implementations that does not stop at static findings: it builds an Audit Knowledge Graph of the agent's code, component interactions and built-in defenses, derives candidate attack paths, then writes path-specific payloads embedded in realistic multi-turn tasks and counts only weaknesses that actually trigger during execution.
+- **Technical summary:** Targets RCE, arbitrary file access, SQL injection and data leakage reachable through the LLM's decisions. On five agent applications with over 24,000 GitHub stars each (not named in the abstract) it finds 44 vulnerabilities, all validated by execution, 3.67x more than AgentFuzz; 12 reported issues have CVE IDs (author-stated; CVE numbers not given in the abstract). No code or venue listed.
+- **Why it might matter:** "Static weakness → reachable through the model → proven by execution" is the purple-team loop the course teaches for agents, applied systematically to real codebases; the CVEs make it evidence of real-world impact rather than a benchmark score.
+- **Evidence of adoption:** 12 CVEs assigned for reported issues (author-stated)
+- **Major organizations using it:** none
+- **Open-source implementation:** none
+- **Paper:** https://arxiv.org/abs/2611.34380
+- **Code:** none
+- **Relationship to existing course material:** new as a method; adjacent to `lessons/module-16/lesson-01.md` (agent attack surface), `lessons/module-21/lesson-01.md` (code-agent security), `lessons/module-24/lesson-01.md`; `research/deferred/agent-os-protection-gap.md`.
+- **Potential course lesson:** M16/M24 exercise: hand-build the attack-path graph for the course's vulnerable local agent (tool → sink edges, which defenses sit on each edge), pick a path, and validate it with a benign canary payload against the local container.
+- **Confidence:** medium-low (one group, preprint, no code, target apps and CVE IDs not named)
+- **Recommendation:** monitor; revisit when the CVE IDs or the code are public so the findings can be checked.
